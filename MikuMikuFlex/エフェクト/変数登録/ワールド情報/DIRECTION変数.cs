@@ -38,7 +38,7 @@ namespace MMF.エフェクト.変数管理.ワールド情報
                     break;
 
                 case Object種別.ライト:
-                    変数.AsVector().Set( RenderContext.Instance.照明行列管理.カメラの方向 );
+                    変数.AsVector().Set( RenderContext.Instance.照明行列管理.照明の方向 );
                     break;
 
                 default:
