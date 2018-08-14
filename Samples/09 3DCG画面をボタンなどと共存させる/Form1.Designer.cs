@@ -1,4 +1,4 @@
-﻿using MMF.Controls.Forms;
+﻿using MMF.コントロール.Forms;
 
 namespace _09_Render3DCGToUserControl
 {
@@ -68,7 +68,7 @@ namespace _09_Render3DCGToUserControl
             // 
             // renderControl1
             // 
-            this.renderControl1.BackgroundColor = new SlimDX.Color3(0F, 0F, 0F);
+            this.renderControl1.BackgroundColor = new SharpDX.Color3(0F, 0F, 0F);
             this.renderControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderControl1.Location = new System.Drawing.Point(0, 0);
             this.renderControl1.Name = "renderControl1";

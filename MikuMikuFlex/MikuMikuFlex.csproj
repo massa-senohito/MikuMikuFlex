@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A04F1A52-5EFD-402A-A207-B239EA15DF55}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MMF</RootNamespace>
+    <AssemblyName>MikuMikuFlex</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="protobuf-net, Version=2.3.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.3.17\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.4.0.1\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Desktop, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Desktop.4.0.1\lib\net45\SharpDX.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.0.1\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D10, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D10.4.0.1\lib\net45\SharpDX.Direct3D10.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.0.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.Effects.4.0.1\lib\net45\SharpDX.Direct3D11.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D9.4.0.1\lib\net45\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.0.1\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.108.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.108.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.108.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TgaLib, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TgaLib.1.0.1\lib\net461\TgaLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ボーン\モーフ変形.cs" />
+    <Compile Include="ボーン\親付与によるFK変形更新.cs" />
+    <Compile Include="ボーン\ボーン.cs" />
+    <Compile Include="DeviceManager\ブレンドステート管理.cs" />
+    <Compile Include="DeviceManager\DrawableGroup.cs" />
+    <Compile Include="DeviceManager\IHitTestable.cs" />
+    <Compile Include="行列\CameraMotion\マウスカメラモーション.cs" />
+    <Compile Include="行列\CameraMotion\ボーン追従カメラモーション.cs" />
+    <Compile Include="行列\CameraMotion\VMDカメラモーション.cs" />
+    <Compile Include="行列\カメラモーション.cs" />
+    <Compile Include="行列\CameraMotion\サイドカメラモーション.cs" />
+    <Compile Include="DeviceManager\ITargetContext.cs" />
+    <Compile Include="エフェクト\ScriptClass.cs" />
+    <Compile Include="エフェクト\ScriptOrder.cs" />
+    <Compile Include="エフェクト\スクリプト\関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\Clear関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\ClearSetColor関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\ClearSetDepth関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\Draw関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\LoopByCount関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\LoopEnd関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\LoopGetIndex関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\Pass関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\RenderColorTarget関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\RenderDepthStencilTarget関数.cs" />
+    <Compile Include="エフェクト\スクリプト\Fuction\ScriptExternal関数.cs" />
+    <Compile Include="エフェクト\スクリプト\ScriptRuntime.cs" />
+    <Compile Include="エフェクト\エフェクト管理.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_subtexture変数.cs" />
+    <Compile Include="モデル\Controller\ControllerComponent\CenterCrossLine.cs" />
+    <Compile Include="モデル\Controller\ControllerComponent\DragControlManager.cs" />
+    <Compile Include="モデル\Controller\ControllerComponent\RotateRingController.cs" />
+    <Compile Include="モデル\Controller\ControllerComponent\ScalingCubeController.cs" />
+    <Compile Include="モデル\Controller\ControllerComponent\TranslaterConeController.cs" />
+    <Compile Include="モデル\Controller\ILockableController.cs" />
+    <Compile Include="モデル\Controller\TransformChangedEventArgs.cs" />
+    <Compile Include="モデル\Controller\TransformController.cs" />
+    <Compile Include="モデル\Controller\TransformType.cs" />
+    <Compile Include="モデル\ISubsetDivided.cs" />
+    <Compile Include="モデル\Shape\四角錐シェイプ.cs" />
+    <Compile Include="モデル\Shape\キューブシェイプ.cs" />
+    <Compile Include="モデル\Shape\Overlay\OverlayConeShape.cs" />
+    <Compile Include="モデル\Shape\Overlay\OverlayCubeShape.cs" />
+    <Compile Include="モデル\Shape\Overlay\OverlaySilinderShape.cs" />
+    <Compile Include="モデル\Shape\シェイプ.cs" />
+    <Compile Include="モデル\Shape\シェイプ用入力エレメント.cs" />
+    <Compile Include="モデル\Shape\シリンダーシェイプ.cs" />
+    <Compile Include="モーフ\モーフ管理.cs" />
+    <Compile Include="モーション\モーフモーションforVME.cs" />
+    <Compile Include="モーション\MMDモーションforVME.cs" />
+    <Compile Include="行列\射影.cs" />
+    <Compile Include="行列\射影変更EventArgs.cs" />
+    <Compile Include="行列\射影変数種別.cs" />
+    <Compile Include="物理演算\Bulletタイマ.cs" />
+    <Compile Include="物理演算\拘束ファクトリ.cs" />
+    <Compile Include="物理演算\動的世界ファクトリ.cs" />
+    <Compile Include="物理演算\六軸ジョイント.cs" />
+    <Compile Include="物理演算\剛体ファクトリ.cs" />
+    <Compile Include="物理演算\剛体物性.cs" />
+    <Compile Include="物理演算\物理演算を超越した特性.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="モーション\ボーンモーションforVME.cs" />
+    <Compile Include="モデル\サブセット.cs" />
+    <Compile Include="DeviceManager\マウス監視.cs" />
+    <Compile Include="DeviceManager\ScreenContext.cs" />
+    <Compile Include="DeviceManager\ワールド空間.cs" />
+    <Compile Include="ライト\照明行列管理.cs" />
+    <Compile Include="エフェクト\Includer\BasicEffectIncluder.cs" />
+    <Compile Include="エフェクト\Includer\IncludeDirectory.cs" />
+    <Compile Include="エフェクト\InvalidMMEEffectShader例外.cs" />
+    <Compile Include="エフェクト\MMEEffect例外.cs" />
+    <Compile Include="エフェクト\パス.cs" />
+    <Compile Include="エフェクト\変数登録\定数\BASICMATERIALCONSTANT変数.cs" />
+    <Compile Include="エフェクト\変数登録\定数\定数バッファ管理.cs" />
+    <Compile Include="エフェクト\変数登録\定数\FULLMATERIALCONSTANT変数.cs" />
+    <Compile Include="エフェクト\変数登録\コントロール\Controlのアノテーション.cs" />
+    <Compile Include="エフェクト\変数登録\コントロール\CONTROLOBJECT変数.cs" />
+    <Compile Include="エフェクト\変数登録\コントロール\TargetObject.cs" />
+    <Compile Include="エフェクト\変数登録\材質\ADDINGSPHERETEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\ADDINGTEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\EDGEWIDTH変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\MATERIALSPHEREMAP変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\MATERIALTEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\MATERIALTOONTEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\MULTIPLYINGSPHERETEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\MULTIPLYINGTEXTURE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\ターゲット種別.cs" />
+    <Compile Include="エフェクト\変数登録\マウス\LEFTMOUSEDOWN変数.cs" />
+    <Compile Include="エフェクト\変数登録\マウス\MOUSEPOSITION変数.cs" />
+    <Compile Include="エフェクト\変数登録\マウス\マウス変数.cs" />
+    <Compile Include="エフェクト\変数登録\マウス\MIDDLEMOUSEDOWN変数.cs" />
+    <Compile Include="エフェクト\変数登録\マウス\RIGHTMOUSEDOWN変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\opadd変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\parthf変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\特殊パラメータ変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\spadd変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\SubsetCount変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\transp変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_spheremap変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_texture変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_toon変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\VertexCount変数.cs" />
+    <Compile Include="エフェクト\変数登録\スクリーン情報\VIEWPORTPIXELSIZE変数.cs" />
+    <Compile Include="エフェクト\変数登録\変数更新時引数.cs" />
+    <Compile Include="エフェクト\変数登録\テクスチャ\RENDERCOLORTARGET変数.cs" />
+    <Compile Include="エフェクト\変数登録\テクスチャ\RENDERDEPTHSTENCILTARGET変数.cs" />
+    <Compile Include="エフェクト\変数登録\テクスチャ\テクスチャのアノテーション解析.cs" />
+    <Compile Include="エフェクト\変数登録\テクスチャ\テクスチャ変数.cs" />
+    <Compile Include="エフェクト\変数登録\時間\TIME変数.cs" />
+    <Compile Include="エフェクト\変数登録\時間\時間変数.cs" />
+    <Compile Include="エフェクト\変数登録\時間\ELAPSEDTIME変数.cs" />
+    <Compile Include="エフェクト\変数登録\更新タイミング.cs" />
+    <Compile Include="エフェクト\変数登録\変数型.cs" />
+    <Compile Include="エフェクト\変数登録\ワールド情報\DIRECTION変数.cs" />
+    <Compile Include="エフェクト\変数登録\ワールド情報\POSITION変数.cs" />
+    <Compile Include="エフェクト\変数登録\ワールド情報\ワールド情報変数.cs" />
+    <Compile Include="モデル\IEdgeDrawable.cs" />
+    <Compile Include="モデル\IGroundShadowDrawable.cs" />
+    <Compile Include="モデル\Shape\プレーンボードシェイプ.cs" />
+    <Compile Include="モデル\Other\DebugDotManager.cs" />
+    <Compile Include="モデル\PMX\PMXサブセット管理.cs" />
+    <Compile Include="モデル\サブリソースローダー.cs" />
+    <Compile Include="モデル\Transformer基本実装.cs" />
+    <Compile Include="グリッド\TargetCross.cs" />
+    <Compile Include="モデル\サブセット管理.cs" />
+    <Compile Include="モデル\バッファ管理.cs" />
+    <Compile Include="モーフ\ボーンモーフ.cs" />
+    <Compile Include="モーフ\グループモーフ.cs" />
+    <Compile Include="モーフ\モーフ.cs" />
+    <Compile Include="モデル\PMX\PMXModel物理変形付き.cs" />
+    <Compile Include="モーフ\材質モーフ.cs" />
+    <Compile Include="モーフ\PMXモーフ管理.cs" />
+    <Compile Include="モーフ\UVモーフ.cs" />
+    <Compile Include="モーフ\頂点モーフ.cs" />
+    <Compile Include="スプライト\動的テクスチャ.cs" />
+    <Compile Include="Utility\拡張メソッド.cs" />
+    <Compile Include="Utility\MMFShaderResourceView.cs" />
+    <Compile Include="スプライト\スプライトの頂点レイアウト.cs" />
+    <Compile Include="モデル\Other\DebugDotInputLayout.cs" />
+    <Compile Include="ボーン\ボーン変形.cs" />
+    <Compile Include="ボーン\手動によるFK変形更新.cs" />
+    <Compile Include="Utility\変形階層リスト.cs" />
+    <Compile Include="Utility\インデックスバッファBuilder.cs" />
+    <Compile Include="Utility\MMFTexture3D.cs" />
+    <Compile Include="Utility\MMFTexture2D.cs" />
+    <Compile Include="Utility\TargaSolver.cs" />
+    <Compile Include="モーション\モーフモーション.cs" />
+    <Compile Include="物理演算\Bullet管理.cs" />
+    <Compile Include="物理演算\PMX物理変形管理.cs" />
+    <Compile Include="RenderContext.cs" />
+    <Compile Include="ボーン\変形更新.cs" />
+    <Compile Include="ボーン\変形階層の物理前後指定種別.cs" />
+    <Compile Include="ボーン\PMXスケルトン物理変形付き.cs" />
+    <Compile Include="Utility\FPSCounter.cs" />
+    <Compile Include="モデル\トゥーンテクスチャ管理.cs" />
+    <Compile Include="モデル\PMX\PMXバッファ管理.cs" />
+    <Compile Include="モデル\頂点レイアウト.cs" />
+    <Compile Include="行列\カメラ.cs" />
+    <Compile Include="行列\カメラ変更EventArgs.cs" />
+    <Compile Include="行列\カメラ変数種別.cs" />
+    <Compile Include="Utility\CGHelper.cs" />
+    <Compile Include="モデル\PMX\PMXサブセット.cs" />
+    <Compile Include="エフェクト\MMELoader.cs" />
+    <Compile Include="グリッド\AxisGridLayout.cs" />
+    <Compile Include="グリッド\BasicGrid.cs" />
+    <Compile Include="グリッド\MeasureGridLayout.cs" />
+    <Compile Include="DeviceManager\IDeviceManager.cs" />
+    <Compile Include="モデル\IDrawable.cs" />
+    <Compile Include="モデル\モデル状態.cs" />
+    <Compile Include="ライト\シャドウマップ.cs" />
+    <Compile Include="エフェクト\ライト\平行光源管理.cs" />
+    <Compile Include="行列\行列管理.cs" />
+    <Compile Include="モデル\PMX\PMXModel.cs" />
+    <Compile Include="エフェクト\EffectParseHelper.cs" />
+    <Compile Include="エフェクト\三状態Boolean.cs" />
+    <Compile Include="エフェクト\エフェクト.cs" />
+    <Compile Include="エフェクト\MMDPass種別.cs" />
+    <Compile Include="エフェクト\テクニック.cs" />
+    <Compile Include="エフェクト\変数登録\材質\AMBIENT変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\DIFFUSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\EDGECOLOR変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\EMISSIVE変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\GROUNDSHADOWCOLOR変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\エフェクト用材質情報.cs" />
+    <Compile Include="エフェクト\変数登録\材質\材質変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\SPECULARPOWER変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\SPECULAR変数.cs" />
+    <Compile Include="エフェクト\変数登録\材質\TOONCOLOR変数.cs" />
+    <Compile Include="エフェクト\変数登録\Objectアノテーション種別.cs" />
+    <Compile Include="エフェクト\変数登録\行列\行列変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\PROJECTIONINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\PROJECTIONINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\PROJECTION変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\PROJECTIONTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEW変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWPROJECTIONINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWPROJECTIONINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWPROJECTION変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWPROJECTIONTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\VIEWTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLD変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEW変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWPROJECTIONINVERSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWPROJECTIONINVERSETRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWPROJECTION変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWPROJECTIONTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\行列\WORLDVIEWTRANSPOSE変数.cs" />
+    <Compile Include="エフェクト\変数登録\変数管理.cs" />
+    <Compile Include="モーション\MMDモーション管理.cs" />
+    <Compile Include="モーション\モーション管理.cs" />
+    <Compile Include="モーション\モーション.cs" />
+    <Compile Include="モーション\IMovable.cs" />
+    <Compile Include="モーション\MMDモーション.cs" />
+    <Compile Include="モーション\モーションタイマ.cs" />
+    <Compile Include="DeviceManager\DeviceManager基本実装.cs" />
+    <Compile Include="コントロール\Forms\RenderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ボーン\PMXボーン.cs" />
+    <Compile Include="モーション\ボーンモーション.cs" />
+    <Compile Include="ボーン\CCDによるIK変形更新.cs" />
+    <Compile Include="ボーン\IKリンク.cs" />
+    <Compile Include="ボーン\スキニング.cs" />
+    <Compile Include="ボーン\PMXスケルトン.cs" />
+    <Compile Include="モデル\PMX\PMXトゥーンテクスチャ管理.cs" />
+    <Compile Include="行列\ワールド行列.cs" />
+    <Compile Include="行列\ワールド行列変数種別.cs" />
+    <Compile Include="行列\ワールド行列変更EventArgs.cs" />
+    <Compile Include="MessagePump.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="コントロール\Forms\RenderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="コントロール\Forms\RenderForm.Designer.cs">
+      <DependentUpon>RenderForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resource\Shader\debugDot.fx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="sharpdx_direct3d11_1_effects_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Resource\Shader\GridShader.fx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\Shader\DefaultShader.fx" />
+    <EmbeddedResource Include="Resource\Shader\SpriteShader.fx" />
+    <EmbeddedResource Include="Resource\Shader\ShapeShader.fx" />
+    <Content Include="Resource\Shader\Xshader.fx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon0.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon1.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon10.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon2.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon3.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon4.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon5.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon6.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon7.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon8.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Toon\toon9.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MMDFileParser\MMDFilePaser.csproj">
+      <Project>{3df05446-6065-4ebb-9bcc-075a0d91dda0}</Project>
+      <Name>MMDFilePaser</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.2.4.3\build\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.4.3\build\Baseclass.Contrib.Nuget.Output.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net45\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -15,7 +15,7 @@
  * 
  * ◎前準備
  * ・MMFの参照追加
- * ・SlimDXの参照追加
+ * ・SharpDXの参照追加
  * 
  * ◎このチュートリアルの工程
  * ①～②
@@ -25,7 +25,6 @@
  * 
  * ◎必須ランタイム
  * DirectX エンドユーザーランタイム
- * SlimDX エンドユーザーランタイム x86 .Net4.0用
  * .Net Framework 4.5
  * 
  * ◎終着点
@@ -34,24 +33,24 @@
  ********************************************************************************************************************************************************************/
 namespace _01_Initialize3DCGToYourForm
 {
-    internal static class Program
-    {
-        /// <summary>
-        ///     アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            //①フォームのメッセージループの方法を変更する。
+	internal static class Program
+	{
+		/// <summary>
+		///     アプリケーションのメイン エントリ ポイントです。
+		/// </summary>
+		[STAThread]
+		private static void Main()
+		{
+			//①フォームのメッセージループの方法を変更する。
 
-            //C#でWindowsフォームアプリケーションを作成すると以下のようなプログラムが生成される。
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
-            //これを以下のように変更する。
-            MMF.MessagePump.Run(new Form1());
+			//C#でWindowsフォームアプリケーションを作成すると以下のようなプログラムが生成される。
+			//Application.EnableVisualStyles();
+			//Application.SetCompatibleTextRenderingDefault(false);
+			//Application.Run(new Form1());
+			//これを以下のように変更する。
+			MMF.MessagePump.Run( new Form1() );
 
-            /*
+			/*
              * ◎上の部分の解説
              * 
              * ②を見ればわかるとおり、Form1はRenderFormを継承する。RenderFormはMMFが定義した3DCG空間を描画するフォームの基底クラスとなる。
@@ -60,6 +59,6 @@ namespace _01_Initialize3DCGToYourForm
              * は、引数に与えられたformのRenderメソッドを呼び続けてくれる静的メソッドである。
              * なお、Alt+Enterでフルスクリーンと切り替えることが可能である。
              */
-        }
-    }
+		}
+	}
 }

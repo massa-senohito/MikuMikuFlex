@@ -1,8 +1,7 @@
-﻿using MMF.Controls.Forms;
+﻿using MMF.コントロール.Forms;
 
 namespace _01_Initialize3DCGToYourForm
 {
-
     //②フォームの基底クラスを変更する。
     //C#でWindowsフォームアプリケーションを作成すると以下のようなプログラムが生成される。
     //public partial class Form1:Form
@@ -26,6 +25,5 @@ namespace _01_Initialize3DCGToYourForm
              */
             //BackgroundColor = new SlimDX.Vector3(1f, 0f, 0f);
         }
-
     }
 }

@@ -6,22 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MMF;
-using MMF.Controls.Forms;
+using MMF.コントロール.Forms;
 
 namespace _08_MultiScreenRendering
 {
-    public partial class ChildForm :D2DSupportedRenderForm
+    public partial class ChildForm : RenderForm
     {
         //③ RenderContextを渡すと、そのRenderContextを用いて初期化してくれる。
         //つまり、同じデバイスを用いて初期化する。
-        public ChildForm(RenderContext context) : base(context)
+        public ChildForm() : base()
         {
             InitializeComponent();
-        }
-
-        protected override void RenderSprite()
-        {
-            
         }
     }
 }

@@ -12,10 +12,6 @@
  * ◎難易度
  * 標準
  * 
- * ◎前準備
- * ・02までの内容を作成したプロジェクトを用意する
- * ★★★重要★★★→Sampleの中のMMFLib内に含まれるx86,x64,Toon,Shaderフォルダーを出力先のフォルダにコピーする。bin\\Debug内など。
- * 
  * ◎このチュートリアルの工程
  * ①～②
  * ・Form1.cs
@@ -24,7 +20,6 @@
  * 
  * ◎必須ランタイム
  * DirectX エンドユーザーランタイム
- * SlimDX エンドユーザーランタイム x86 .Net4.0用
  * .Net Framework 4.5
  * 
  * ◎終着点
@@ -34,15 +29,15 @@
 
 namespace _06_MoveBoneAndMorphFromCode
 {
-    static class Program
-    {
-        /// <summary>
-        /// アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            MMF.MessagePump.Run(new Form1());
-        }
-    }
+	static class Program
+	{
+		/// <summary>
+		/// アプリケーションのメイン エントリ ポイントです。
+		/// </summary>
+		[STAThread]
+		static void Main()
+		{
+			MMF.MessagePump.Run( new Form1() );
+		}
+	}
 }

@@ -13,10 +13,6 @@ using MMF;
  * ◎難易度
  * カンタン♪
  * 
- * ◎前準備
- * ・02までの内容を作成したプロジェクトを用意する
- * ★★★重要★★★→Sampleの中のMMFLib内に含まれるx86,x64,Toon,Shaderフォルダーを出力先のフォルダにコピーする。bin\\Debug内など。
- * 
  * ◎このチュートリアルの工程
  * ①～②
  * ・Form1.cs
@@ -24,7 +20,6 @@ using MMF;
  * 
  * ◎必須ランタイム
  * DirectX エンドユーザーランタイム
- * SlimDX エンドユーザーランタイム x86 .Net4.0用
  * .Net Framework 4.5
  * 
  * ◎終着点
@@ -35,15 +30,15 @@ using _03_ApplyVMDToPMX;
 
 namespace _03_ApplyVMDToPMX
 {
-    internal static class Program
-    {
-        /// <summary>
-        ///     アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            MessagePump.Run(new Form1());
-        }
-    }
+	internal static class Program
+	{
+		/// <summary>
+		///     アプリケーションのメイン エントリ ポイントです。
+		/// </summary>
+		[STAThread]
+		private static void Main()
+		{
+			MessagePump.Run( new Form1() );
+		}
+	}
 }

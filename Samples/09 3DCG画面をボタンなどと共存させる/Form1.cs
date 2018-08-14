@@ -1,65 +1,65 @@
 ﻿using System;
 using System.Windows.Forms;
-using MMF.Model.PMX;
-using MMF.Motion;
+using MMF.モデル.PMX;
+using MMF.モーション;
 
 namespace _09_Render3DCGToUserControl
 {
 
-    //②-A フォームデザイナを利用して画面をレイアウトする
-    public partial class Form1 :Form
-    {
-        private PMXModel model;
-        public Form1()
-        {
-            InitializeComponent();
-        }
+	//②-A フォームデザイナを利用して画面をレイアウトする
+	public partial class Form1 : Form
+	{
+		private PMXModel model;
 
-        /*
+		public Form1()
+		{
+			InitializeComponent();
+		}
+
+		/*
          * ②-B 利用しているRenderControlのInitializeメソッドを呼び出す
          */
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            renderControl1.Initialize();
-        }
+		protected override void OnLoad( EventArgs e )
+		{
+			base.OnLoad( e );
+			renderControl1.Initialize();
+		}
 
-        /*
+		/*
          * ②-C レンダリング時にMessagePumpで呼び出すためのメソッドを定義しておく
          */
-        public void Render()
-        {
-            //使用しているコントロールのRenderメソッドを呼び出すことでコントロールは描画を実行する。
-            renderControl1.Render();
-        }
+		public void Render()
+		{
+			//使用しているコントロールのRenderメソッドを呼び出すことでコントロールは描画を実行する。
+			renderControl1.Render();
+		}
 
+		#region ②-D ボタンに応じて処理をする。今までのサンプルとそこまで内容は変わらない
 
-        #region ②-D ボタンに応じて処理をする。今までのサンプルとそこまで内容は変わらない
+		private void loadMotion_Click( object sender, EventArgs e )
+		{
+			if( model == null ) return;
 
-        private void loadMotion_Click(object sender, EventArgs e)
-        {
-            if (model == null) return;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "vmdモデルファイル(*.vmd)|*.vmd";
-            if (ofd.ShowDialog(this) == DialogResult.OK)
-            {
-                IMotionProvider motion = model.MotionManager.AddMotionFromFile(ofd.FileName, false);
-                model.MotionManager.ApplyMotion(motion);
-            }
-        }
+			var ofd = new OpenFileDialog();
+			ofd.Filter = "vmdモデルファイル(*.vmd)|*.vmd";
+			if( ofd.ShowDialog( this ) == DialogResult.OK )
+			{
+				モーション motion = model.モーション管理.ファイルからモーションを生成し追加する( ofd.FileName, false );
+				model.モーション管理.モーションを適用する( motion );
+			}
+		}
 
-        private void loadModel_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "pmxモデルファイル(*.pmx)|*.pmx";
-            if (ofd.ShowDialog(this) == DialogResult.OK)
-            {
-                model = PMXModelWithPhysics.OpenLoad(ofd.FileName, renderControl1.RenderContext);
-                renderControl1.WorldSpace.AddResource(model);
-            }
-        }
+		private void loadModel_Click( object sender, EventArgs e )
+		{
+			var ofd = new OpenFileDialog();
+			ofd.Filter = "pmxモデルファイル(*.pmx)|*.pmx";
+			if( ofd.ShowDialog( this ) == DialogResult.OK )
+			{
+				model = PMXModel物理変形付き.ファイルから読み込む( ofd.FileName );
+				renderControl1.ScreenContext.ワールド空間.Drawableを追加する( model );
+			}
+		}
 
-        #endregion
-
-    }
+		#endregion
+	}
 }

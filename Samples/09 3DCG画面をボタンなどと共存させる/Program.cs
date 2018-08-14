@@ -6,7 +6,6 @@
  * ◎このセクションの目的
  * 1,RenderControlを利用してフォームに3DCG空間を埋め込む方法を学ぶ
  * 
- * 
  * ◎所要時間
  * 15分
  * 
@@ -15,7 +14,7 @@
  * 
  * ◎前準備
  * ・MMFの参照追加
- * ・SlimDXの参照追加
+ * ・SharpDXの参照追加
  * 
  * ◎このチュートリアルの工程
  * ①～②
@@ -25,7 +24,6 @@
  * 
  * ◎必須ランタイム
  * DirectX エンドユーザーランタイム
- * SlimDX エンドユーザーランタイム x86 .Net4.0用
  * .Net Framework 4.5
  * 
  * ◎終着点
@@ -34,18 +32,18 @@
  ********************************************************************************************************************************************************************/
 namespace _09_Render3DCGToUserControl
 {
-    internal static class Program
-    {
-        /// <summary>
-        ///     アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            //①フォームのメッセージループの方法を変更する。
-            //RenderFormを利用しないので、描画時に呼び出すメソッドを指定する。
-            Form1 form=new Form1();
-            MMF.MessagePump.Run(form,form.Render);
-        }
-    }
+	internal static class Program
+	{
+		/// <summary>
+		///     アプリケーションのメイン エントリ ポイントです。
+		/// </summary>
+		[STAThread]
+		private static void Main()
+		{
+			//①フォームのメッセージループの方法を変更する。
+			//RenderFormを利用しないので、描画時に呼び出すメソッドを指定する。
+			Form1 form = new Form1();
+			MMF.MessagePump.Run( form, form.Render );
+		}
+	}
 }
