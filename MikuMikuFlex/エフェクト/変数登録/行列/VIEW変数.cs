@@ -56,7 +56,8 @@ namespace MMF.エフェクト.変数管理.行列
                     break;
 
                 case Object種別.ライト:
-                    break;      // TODO: 未実装
+                    行列を登録する( RenderContext.Instance.照明行列管理.ビュー行列管理.ビュー行列, 変数 );
+                    break;
             }
 		}
 	}
