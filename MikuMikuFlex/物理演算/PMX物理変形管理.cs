@@ -83,7 +83,7 @@ namespace MMF.物理演算
                     _physicsAsserted = true;
                     continue;
                 }
-                var localPose = globalPose * Matrix.Invert( bone.親ボーン.グローバルポーズ行列 );
+                var localPose = globalPose * ( ( bone.親ボーン != null ) ? Matrix.Invert( bone.親ボーン.グローバルポーズ行列 ) : Matrix.Identity );
                 var mat = Matrix.Translation( bone.ローカル位置 ) * localPose * Matrix.Translation( -bone.ローカル位置 );
                 bone.移動 = new Vector3( mat.M41, mat.M42, mat.M43 );
                 bone.回転 = Quaternion.RotationMatrix( mat );
