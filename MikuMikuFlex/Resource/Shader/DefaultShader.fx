@@ -200,8 +200,9 @@ float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
 	
 	// 色に環境校を加算
 
-	Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMDのAmbientの係数がわからん・・・
-	
+	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMDのAmbientの係数がわからん・・・
+	Color.rgb += AmbientColor.rgb * 0.05;
+
 	return Color;
 }
 
