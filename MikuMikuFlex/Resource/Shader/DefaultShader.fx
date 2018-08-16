@@ -56,8 +56,8 @@ cbuffer BasicMaterialConstant
 SamplerState mySampler
 {
    Filter = MIN_MAG_LINEAR_MIP_POINT;
-   AddressU = MIRROR;
-   AddressV = MIRROR;
+   AddressU = WRAP;
+   AddressV = WRAP;
 };
 
 /////////////////////////////////////////////
