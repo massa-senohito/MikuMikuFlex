@@ -166,18 +166,25 @@ namespace MMF.モデル.PMX
             }
         }
 
-        public void エッジを描画する()
+        public void エッジを描画する( エフェクト.エフェクト effect )
 		{
-            // TODO エッジ描画の実装
-            //foreach (PMXSubset variable in from subset in Subsets where  subset.MaterialInfo.isEdgeEnable select subset)
-            //{
-            //    UpdateConstantByMaterial(variable);
-            //    MMEEffect.ApplyEffectPass(variable, MMEEffectPassType.Edge, (subset) => subset.Draw(device));
-            //}
+            for( int i = 0; i < サブセットリスト.Count; i++ )
+            {
+                var ipmxSubset = サブセットリスト[ i ];
+
+                effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
+
+                effect.エフェクトパスを割り当てつつサブセットを描画する(
+                    サブセットリスト[ i ],
+                    MMDPass種別.エッジ,
+                    ( subset ) => {
+                        subset.描画する( RenderContext.Instance.DeviceManager.D3DDeviceContext );
+                    } );
+            }
         }
 
-        public void 地面影を描画する()
-		{
+        public void 地面影を描画する( エフェクト.エフェクト effect )
+        {
 			// TODO 地面陰の実装
 
 			//foreach (PMXSubset variable in from subset in Subsets where subset.MaterialInfo.isGroundShadowEnable select subset)

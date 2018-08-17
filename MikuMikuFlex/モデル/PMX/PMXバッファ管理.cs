@@ -104,6 +104,7 @@ namespace MMF.モデル.PMX
                 Normal = 頂点データ.法線,
                 UV = 頂点データ.UV,
                 Index = (uint) 頂点レイアウトリスト.Count,
+                EdgeWeight = 頂点データ.エッジ倍率,
             };
 
             switch( 頂点データ.ウェイト変形方式 )

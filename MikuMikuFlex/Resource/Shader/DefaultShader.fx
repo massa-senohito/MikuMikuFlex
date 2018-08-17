@@ -1,62 +1,45 @@
 
+/////////////////////////////////////////////
+// Script 宣言
+
 float Script : STANDARDSGLOBAL <
 	string ScriptClass="scene";
 	string Script="";
 > = 0.8;
 
 
-// 変換行列系
+/////////////////////////////////////////////
+// グローバル変数
 
 float4x4 matWVP : WORLDVIEWPROJECTION < string Object="Camera"; >;
 float4x4 matWV:WORLDVIEW < string Object = "Camera"; >;
 float4x4 WorldMatrix : WORLD;
 float4x4 ViewMatrix : VIEW;
+float2   viewportSize : VIEWPORTPIXELSIZE;
+float4   ViewPointPosition : POSITION < string object="camera"; >;	// カメラ位置（float4）
+float4   LightPointPosition : POSITION < string object="light"; >;	// 光源位置
+float3	 CameraPosition		: POSITION < string Object = "Camera"; > ;	// カメラ位置（float3）
 
-float2 viewportSize : VIEWPORTPIXELSIZE;
+float4x4 BoneTrans[768] : BONETRANS;			// スキニング用
 
-float4 ViewPointPosition : POSITION < string object="camera"; >;
-float4 LightPointPosition : POSITION < string object="light"; >;
+Texture2D Texture : MATERIALTEXTURE;			// サンプリング用テクスチャ
+Texture2D SphereTexture : MATERIALSPHEREMAP;	// サンプリング用スフィアマップテクスチャ
+Texture2D Toon : MATERIALTOONTEXTURE;			// サンプリング用トゥーンテクスチャ
 
-
-// スキニング
-
-float4x4 BoneTrans[768] : BONETRANS;
-
-
-// 材質
-
-
-// サンプリング用テクスチャ
-Texture2D Texture : MATERIALTEXTURE;
-
-// サンプリング用スフィアマップテクスチャ
-Texture2D SphereTexture : MATERIALSPHEREMAP;
-
-// サンプリング用トゥーンテクスチャ
-Texture2D Toon : MATERIALTOONTEXTURE;
+float4 EdgeColor : EDGECOLOR;	// エッジの色
+float  EdgeWidth : EDGEWIDTH;	// エッジの幅
 
 
-// 特殊パラメータ
+// グローバル変数；特殊パラメータ
+
+bool use_spheremap;			// 描画中の材質がスフィアマップを使用するなら true
+bool spadd;					// スフィアマップを使う場合のオプション。（true: 加算スフィア、false: 乗算スフィア）
+bool use_texture;			// 描画中の材質がテクスチャを使用するなら true
+bool use_toon;				// 描画中の材質がトゥーンテクスチャを使用するなら true
+bool use_selfshadow;		// 描画中の材質がセルフ影を使用するなら true
 
 
-// 描画中の材質がスフィアマップを使用するなら true
-bool use_spheremap;
-
-// スフィアマップを使う場合のオプション。
-// true: 加算スフィア、false: 乗算スフィア
-bool spadd;
-
-// 描画中の材質がテクスチャを使用するなら true
-bool use_texture;
-
-// 描画中の材質がトゥーンテクスチャを使用するなら true
-bool use_toon;
-
-// 描画中の材質がセルフ影を使用するなら true
-bool use_selfshadow;
-
-
-// 材質単位で変わらないもの
+// 定数バッファ；材質単位で変わらないもの
 
 cbuffer BasicMaterialConstant
 {
@@ -67,10 +50,7 @@ cbuffer BasicMaterialConstant
 }
 
 
-/////////////////////////////////////////////
-// サンプラーステート
-
-// テクスチャ、スフィアマップ、トゥーンテクスチャで共通
+// サンプラーステート; テクスチャ、スフィアマップ、トゥーンテクスチャで共通
 SamplerState mySampler
 {
    Filter = MIN_MAG_LINEAR_MIP_POINT;
@@ -78,11 +58,12 @@ SamplerState mySampler
    AddressV = WRAP;
 };
 
+
 /////////////////////////////////////////////
-// シェーダー入出力
+// 入出力定義
 
 
-// 頂点シェーダ入力（MMM準拠）
+// 頂点シェーダ入力
 struct MMM_SKINNING_INPUT
 {
 	float4 Pos : POSITION;//頂点位置
@@ -105,58 +86,60 @@ struct MMM_SKINNING_INPUT
 struct VS_OUTPUT
 {
 	float4 Pos		: SV_Position;
-    float2 Tex		: TEXCOORD1;   // テクスチャ
-    float3 Normal	: TEXCOORD2;   // 法線
-    float3 Eye		: TEXCOORD3;   // カメラとの相対位置
-    float2 SpTex	: TEXCOORD4;   // スフィアマップテクスチャ座標
-    float4 Color	: COLOR0;      // ディフューズ色
+	float2 Tex		: TEXCOORD1;   // テクスチャ
+	float3 Normal	: TEXCOORD2;   // 法線
+	float3 Eye		: TEXCOORD3;   // カメラとの相対位置
+	float2 SpTex	: TEXCOORD4;   // スフィアマップテクスチャ座標
+	float4 Color	: COLOR0;      // ディフューズ色
 };
 
 
 /////////////////////////////////////////////
-// 頂点シェーダ実装
+// オブジェクト描画用シェーダ
 
-VS_OUTPUT VS_Main( MMM_SKINNING_INPUT input, uint vid:SV_VertexID )
-{    
+
+// 頂点シェーダ
+
+VS_OUTPUT VS_Main(MMM_SKINNING_INPUT input)
+{
 	VS_OUTPUT Out;
-	
+
 	// スキンメッシュアニメーション
 	float4x4 bt =
-		BoneTrans[ input.BlendIndices[0] ] * input.BoneWeight[0] + 
-		BoneTrans[ input.BlendIndices[1] ] * input.BoneWeight[1] + 
-		BoneTrans[ input.BlendIndices[2] ] * input.BoneWeight[2] + 
-		BoneTrans[ input.BlendIndices[3] ] * input.BoneWeight[3];
+		BoneTrans[input.BlendIndices[0]] * input.BoneWeight[0] +
+		BoneTrans[input.BlendIndices[1]] * input.BoneWeight[1] +
+		BoneTrans[input.BlendIndices[2]] * input.BoneWeight[2] +
+		BoneTrans[input.BlendIndices[3]] * input.BoneWeight[3];
 
 	// 位置（ワールドビュー射影変換）
-	Out.Pos = mul( input.Pos, mul( bt, matWVP ) );
-	
+	Out.Pos = mul(input.Pos, mul(bt, matWVP));
+
 	// カメラとの相対位置
-    Out.Eye = ViewPointPosition - mul( input.Pos, WorldMatrix );
-	
+	Out.Eye = ViewPointPosition - mul(input.Pos, WorldMatrix);
+
 	// 頂点法線
-    Out.Normal = normalize( mul( input.Normal, (float3x3)WorldMatrix ) );
-	
+	Out.Normal = normalize(mul(input.Normal, (float3x3)WorldMatrix));
+
 	// ディフューズ色＋アンビエント色 計算
-    Out.Color.rgb = DiffuseColor.rgb;
+	Out.Color.rgb = DiffuseColor.rgb;
 	Out.Color.a = DiffuseColor.a;
-	Out.Color = saturate( Out.Color );	// 0～1 に丸める
-	
+	Out.Color = saturate(Out.Color);	// 0～1 に丸める
+
 	Out.Tex = input.Tex;
-	
-    if ( use_spheremap )
+
+	if (use_spheremap)
 	{
-        // スフィアマップテクスチャ座標
-        float2 NormalWV = mul( Out.Normal, (float3x3)ViewMatrix );
-        Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
-        Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
-    }
-    
+		// スフィアマップテクスチャ座標
+		float2 NormalWV = mul(Out.Normal, (float3x3)ViewMatrix);
+		Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
+		Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
+	}
+
 	return Out;
 }
 
 
-/////////////////////////////////////////////
-// ピクセルシェーダ実装
+// ピクセルシェーダ
 
 float4 PS_Main( VS_OUTPUT IN ) : SV_Target
 {
@@ -225,14 +208,72 @@ float4 PS_Main( VS_OUTPUT IN ) : SV_Target
 }
 
 
-/////////////////////////////////////////////
-//テクニック
+// テクニックとパス
 
-technique10 DefaultTechnique < string MMDPass = "object"; >
+technique11 DefaultTechnique < string MMDPass = "object"; >
 {
 	pass DefaultPass
-	{		
-		SetVertexShader( CompileShader( vs_5_0, VS_Main() ) );
-		SetPixelShader( CompileShader( ps_5_0, PS_Main() ) );
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS_Main()));
+		SetPixelShader(CompileShader(ps_5_0, PS_Main()));
+	}
+}
+
+
+/////////////////////////////////////////////
+// エッジ描画用シェーダ
+
+
+// 頂点シェーダ
+
+VS_OUTPUT VS_Edge(MMM_SKINNING_INPUT IN)
+{
+	VS_OUTPUT Out;
+
+	// スキンメッシュアニメーション
+	float4x4 bt =
+		BoneTrans[IN.BlendIndices[0]] * IN.BoneWeight[0] +
+		BoneTrans[IN.BlendIndices[1]] * IN.BoneWeight[1] +
+		BoneTrans[IN.BlendIndices[2]] * IN.BoneWeight[2] +
+		BoneTrans[IN.BlendIndices[3]] * IN.BoneWeight[3];
+
+	Out.Pos = mul(IN.Pos, bt);	// 位置（ローカル座標）
+	Out.Eye = ViewPointPosition - mul(IN.Pos, WorldMatrix);	// カメラとの相対位置
+	Out.Normal = normalize(mul(IN.Normal, (float3x3)WorldMatrix));	// 頂点法線
+	Out.Tex = IN.Tex;	// テクスチャ
+
+	// 頂点を法線方向に膨らませる
+	float4 position = Out.Pos + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Pos.xyz, CameraPosition) * 0.002;
+
+	// ワールドビュー射影変換
+	Out.Pos = mul(position, matWVP);
+
+	return Out;
+}
+
+
+// ピクセルシェーダ
+
+float4 PS_Edge( VS_OUTPUT IN ) : SV_Target
+{
+	return EdgeColor;
+}
+
+
+// テクニックとパス
+
+BlendState NoBlend
+{
+	BlendEnable[0] = False;
+};
+technique11 DefaultEdge < string MMDPass = "edge"; >
+{
+	pass DefaultPass
+	{
+		SetBlendState( NoBlend, float4(0.0f,0.0f,0.0f,0.0f), 0xFFFFFFFF );	//AlphaBlendEnable = FALSE;
+		//AlphaTestEnable = FALSE;	--> D3D10 以降は廃止
+
+		SetVertexShader( CompileShader( vs_5_0, VS_Edge() ) );
+		SetPixelShader( CompileShader( ps_5_0, PS_Edge() ) );
 	}
 }

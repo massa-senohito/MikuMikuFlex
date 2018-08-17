@@ -90,7 +90,7 @@ namespace MMF.モデル
 				Format = Format.R32G32B32_Float,
 				AlignedByteOffset = InputElement.AppendAligned
 			},
-			new InputElement
+			new InputElement    // EdgeWeight
 			{
 				SemanticName = "TEXCOORD",
 				Format = Format.R32_Float,

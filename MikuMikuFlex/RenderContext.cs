@@ -111,6 +111,8 @@ namespace MMF
 
         public RasterizerState 両面描画の際のラスタライザステート { get; private set; }
 
+        public RasterizerState 裏側片面描画の際のラスタライザステート { get; private set; }
+
 
         // メソッド
 
@@ -155,6 +157,9 @@ namespace MMF
         {
             foreach( var screenContext in this.ControltoScreenContextマップ )
                 screenContext.Value.Dispose();
+
+            this.裏側片面描画の際のラスタライザステート?.Dispose();
+            this.裏側片面描画の際のラスタライザステート = null;
 
             this.片面描画の際のラスタライザステート?.Dispose();
             this.片面描画の際のラスタライザステート = null;
@@ -253,20 +258,26 @@ namespace MMF
 				this.DeviceManager.Load();
 			}
 
-			var desc片側 = new RasterizerStateDescription() {
+			var desc片面 = new RasterizerStateDescription() {
 				CullMode = SharpDX.Direct3D11.CullMode.Back,
 				FillMode = SharpDX.Direct3D11.FillMode.Solid,
 			};
-			this.片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc片側 );
+			this.片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc片面 );
 
-			var desc両側 = new RasterizerStateDescription() {
+			var desc両面 = new RasterizerStateDescription() {
 				CullMode = SharpDX.Direct3D11.CullMode.None,
 				FillMode = SharpDX.Direct3D11.FillMode.Solid,
 			};
-			this.両面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc両側 );
-		}
+			this.両面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc両面 );
 
-		private void _レンダーターゲットを更新する()
+            var desc裏側片面 = new RasterizerStateDescription() {
+                CullMode = SharpDX.Direct3D11.CullMode.Front,
+                FillMode = SharpDX.Direct3D11.FillMode.Solid,
+            };
+            this.裏側片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc裏側片面 );
+        }
+
+        private void _レンダーターゲットを更新する()
 		{
 			this.レンダーターゲット配列[ 0 ] = this.描画ターゲットコンテキスト.D3Dレンダーターゲットビュー;
 			this.深度ステンシルターゲット = this.描画ターゲットコンテキスト.深度ステンシルビュー;

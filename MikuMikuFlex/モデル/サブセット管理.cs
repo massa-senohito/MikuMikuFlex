@@ -25,8 +25,8 @@ namespace MMF.モデル
 
 		void すべてを描画する( エフェクト.エフェクト effect );
 
-		void エッジを描画する();
+		void エッジを描画する( エフェクト.エフェクト effect );
 
-		void 地面影を描画する();
+		void 地面影を描画する( エフェクト.エフェクト effect );
 	}
 }

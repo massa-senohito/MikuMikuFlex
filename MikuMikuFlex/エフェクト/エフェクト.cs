@@ -455,7 +455,11 @@ namespace MMF.エフェクト
 
             // 両面描画かどうかに応じてカリングの値を切り替える
 
-            if( ipmxSubset.カリングする )
+            if( passType == MMDPass種別.エッジ )
+            {
+                RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.裏側片面描画の際のラスタライザステート;
+            }
+            else if( ipmxSubset.カリングする )
             {
                 RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.片面描画の際のラスタライザステート;
             }
