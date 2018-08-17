@@ -467,23 +467,18 @@ namespace MMF.エフェクト
 
             // 使用するtechniqueを検索する
 
-            //テクニック[] techniques =
-            //    ( from teq in テクニックリスト
-            //      where
-            //        teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
-            //        teq.テクニックを適用する描画対象 == passType &&
-            //        テクニック.CheckExtebdedBoolean( teq.トゥーンレンダリングを使用する, ipmxSubset.エフェクト用材質情報.トゥーンを使用する ) &&
-            //        テクニック.CheckExtebdedBoolean( teq.テクスチャを使用する, ipmxSubset.エフェクト用材質情報.テクスチャ != null ) &&
-            //        テクニック.CheckExtebdedBoolean( teq.スフィアマップを使用する, ipmxSubset.エフェクト用材質情報.スフィアマップ != null ) &&
-            //        テクニック.CheckExtebdedBoolean( teq.乗算スフィアを使用する, ipmxSubset.エフェクト用材質情報.スフィアモード == MMDFileParser.PMXModelParser.スフィアモード.乗算 )
-            //      select teq ).ToArray();
+            テクニック[] techniques =
+                ( from teq in テクニックリスト
+                  where
+                    teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
+                    teq.テクニックを適用する描画対象 == passType
+                  select teq ).ToArray();
 
-            //if( techniques.Length > 0 )
-            //{
-            //    // 最初の１つだけ有効（複数はないはずだが）
-            //    techniques[ 0 ].パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
-            //}
-            テクニックリスト[0].パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
+            if( techniques.Length > 0 )
+            {
+                // 最初の１つだけ有効（複数はないはずだが）
+                techniques[ 0 ].パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
+            }
         }
 
         public static エフェクト ファイルをエフェクトとして読み込む( string ファイルパス, IDrawable 使用対象モデル, サブリソースローダー loader = null )
