@@ -7,9 +7,9 @@ using SharpDX.DXGI;
 namespace MMF.モデル
 {
 	/// <summary>
-	///     MMDModel用のInputLayout
+	///     MMM_SKINNING_INPUT のレイアウトに同じ。
 	/// </summary>
-	public struct 頂点レイアウト
+	public struct MMM_SKINNING_INPUT
 	{
 		public static readonly InputElement[] VertexElements =
 		{
@@ -151,6 +151,6 @@ namespace MMF.モデル
 
 		#endregion
 
-		public static int SizeInBytes => Marshal.SizeOf( typeof( 頂点レイアウト ) );
+		public static int SizeInBytes => Marshal.SizeOf( typeof( MMM_SKINNING_INPUT ) );
 	}
 }

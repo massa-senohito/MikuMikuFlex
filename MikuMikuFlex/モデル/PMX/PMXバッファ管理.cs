@@ -12,7 +12,7 @@ namespace MMF.モデル.PMX
 
 		public SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; private set; }
 
-        public 頂点レイアウト[] 入力頂点リスト { get; private set; }
+        public MMM_SKINNING_INPUT[] 入力頂点リスト { get; private set; }
 
         public int 頂点数 => 入力頂点リスト.Length;
 
@@ -28,7 +28,7 @@ namespace MMF.モデル.PMX
             this.D3D頂点レイアウト = new SharpDX.Direct3D11.InputLayout(
                 RenderContext.Instance.DeviceManager.D3DDevice,
                 d3dEffect.GetTechniqueByIndex( 0 ).GetPassByIndex( 0 ).Description.Signature, 
-                頂点レイアウト.VertexElements );
+                MMM_SKINNING_INPUT.VertexElements );
 		}
 
         public void Dispose()
@@ -67,7 +67,7 @@ namespace MMF.モデル.PMX
 		{
             var d3dDevice = RenderContext.Instance.DeviceManager.D3DDevice;
 			var モデル = (PMXモデル) model;
-			var 頂点リスト = new List<頂点レイアウト>();
+			var 頂点リスト = new List<MMM_SKINNING_INPUT>();
 
 
             // モデルの頂点リストから、頂点データストリームを構築し（ピン止めあり）、D3D頂点バッファと入力頂点リストを更新する。
@@ -77,7 +77,7 @@ namespace MMF.モデル.PMX
 
             _頂点データストリーム = DataStream.Create( 頂点リスト.ToArray(), true, true, pinBuffer: true );   // pinned
 
-			D3D頂点バッファ = CGHelper.D3Dバッファを作成する( d3dDevice, 頂点リスト.Count * 頂点レイアウト.SizeInBytes, SharpDX.Direct3D11.BindFlags.VertexBuffer );
+			D3D頂点バッファ = CGHelper.D3Dバッファを作成する( d3dDevice, 頂点リスト.Count * MMM_SKINNING_INPUT.SizeInBytes, SharpDX.Direct3D11.BindFlags.VertexBuffer );
             d3dDevice.ImmediateContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
 
             入力頂点リスト = 頂点リスト.ToArray();
@@ -97,9 +97,9 @@ namespace MMF.モデル.PMX
             D3Dインデックスバッファ = CGHelper.D3Dバッファを作成する( インデックスリスト, d3dDevice, SharpDX.Direct3D11.BindFlags.IndexBuffer );
 		}
 
-		private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<頂点レイアウト> 頂点レイアウトリスト )
+		private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<MMM_SKINNING_INPUT> 頂点レイアウトリスト )
 		{
-            var layout = new 頂点レイアウト() {
+            var layout = new MMM_SKINNING_INPUT() {
                 Position = new Vector4( 頂点データ.位置, 1f ),
                 Normal = 頂点データ.法線,
                 UV = 頂点データ.UV,

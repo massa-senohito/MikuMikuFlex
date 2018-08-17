@@ -28,9 +28,9 @@ namespace MMF.エフェクト.変数管理.行列
 		{
             // 行列の場合は、それぞれCameraかLightか調べる。
 
-            EffectVariable Ojbectアノテーション = EffectParseHelper.アノテーションを取得する( variable, "Object", "string" );
+            EffectVariable Objectアノテーション = EffectParseHelper.アノテーションを取得する( variable, "Object", "string" );
 
-			string obj = ( Ojbectアノテーション == null ) ? "" : Ojbectアノテーション.AsString().GetString(); // アノテーションが存在しない時は""とする
+			string obj = ( Objectアノテーション == null ) ? "" : Objectアノテーション.AsString().GetString(); // アノテーションが存在しない時は""とする
 
             switch( obj.ToLower() )
             {

@@ -194,7 +194,7 @@ namespace MMF.モデル.PMX
 
             スキニング.エフェクトを適用する( エフェクト管理.既定のエフェクト.D3DEffect );
 
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, 頂点レイアウト.SizeInBytes, 0 ) );
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, MMM_SKINNING_INPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;

@@ -10,7 +10,7 @@ namespace MMF.エフェクト.変数管理.材質
         {
             get
             {
-                return ( セマンティクス == "SPECULARPOWER" || セマンティクス == "EDGETHICKNESS" ) ?
+                return ( セマンティクス == "SPECULARPOWER" || セマンティクス == "EDGEWIDTH" ) ?
                     new[] { 変数型.Float } :
                     new[] { 変数型.Float3, 変数型.Float4 };
             }
@@ -44,38 +44,36 @@ namespace MMF.エフェクト.変数管理.材質
 
             if( !_Objectアノテーションが必須なセマンティクス.Contains( セマンティクス ) )
             {
-                // (A) Ojbect アノテーションが不要なセマンティクスの場合
+                // (A) Object アノテーションが不要なセマンティクスの場合
 
                 return 材質変数登録インスタンスを生成して返す( ターゲット種別.未使用, isVector3 );
             }
             else
             {
-                // (B) Ojbect アノテーションが必須のセマンティクスの場合
+                // (B) Object アノテーションが必須のセマンティクスの場合
 
-                EffectVariable Ojbectアノテーション = EffectParseHelper.アノテーションを取得する( d3dEffectVariable, "Object", "string" );
+                EffectVariable Objectアノテーション = EffectParseHelper.アノテーションを取得する( d3dEffectVariable, "Object", "string" );
 
-                if( Ojbectアノテーション == null )
+                if( Objectアノテーション == null )
                     throw new InvalidMMEEffectShader例外( $"このセマンティクス\"{セマンティクス}\"にはアノテーション「Object」が必須ですが、記述されませんでした。" );
 
-                string annotation = Ojbectアノテーション.AsString().GetString().ToLower();
+                string annotation = Objectアノテーション.AsString().GetString().ToLower();
 
                 if( string.IsNullOrWhiteSpace( annotation ) )
                 {
                     throw new InvalidMMEEffectShader例外( $"このセマンティクス\"{セマンティクス}\"にはアノテーション「Object」が必須ですが、記述されませんでした。" );
                 }
-                else
+
+                switch( annotation )
                 {
-                    switch( annotation )
-                    {
-                        case "geometry":
-                            return 材質変数登録インスタンスを生成して返す( ターゲット種別.ジオメトリ, isVector3 );
+                    case "geometry":
+                        return 材質変数登録インスタンスを生成して返す( ターゲット種別.ジオメトリ, isVector3 );
 
-                        case "light":
-                            return 材質変数登録インスタンスを生成して返す( ターゲット種別.ライト, isVector3 );
+                    case "light":
+                        return 材質変数登録インスタンスを生成して返す( ターゲット種別.ライト, isVector3 );
 
-                        default:
-                            throw new InvalidMMEEffectShader例外( $"アノテーション\"{annotation}\"は認識されません。" );
-                    }
+                    default:
+                        throw new InvalidMMEEffectShader例外( $"アノテーション\"{annotation}\"は認識されません。" );
                 }
             }
         }
@@ -126,7 +124,7 @@ namespace MMF.エフェクト.変数管理.材質
             "DIFFUSE",
             "AMBIENT",
             "SPECULAR",
-            "EDGECOLOR",
+            //"EDGECOLOR",  -> 必須じゃない。
             "GROUNDSHADOWCOLOR",
         };
     }

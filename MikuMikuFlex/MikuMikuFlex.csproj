@@ -282,7 +282,7 @@
     <Compile Include="Utility\FPSCounter.cs" />
     <Compile Include="モデル\トゥーンテクスチャ管理.cs" />
     <Compile Include="モデル\PMX\PMXバッファ管理.cs" />
-    <Compile Include="モデル\頂点レイアウト.cs" />
+    <Compile Include="モデル\MMM_SKINNING_INPUT.cs" />
     <Compile Include="行列\カメラ.cs" />
     <Compile Include="行列\カメラ変更EventArgs.cs" />
     <Compile Include="行列\カメラ変数種別.cs" />
