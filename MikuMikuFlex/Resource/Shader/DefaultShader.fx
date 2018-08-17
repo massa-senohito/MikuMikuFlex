@@ -52,6 +52,9 @@ bool use_texture;
 // 描画中の材質がトゥーンテクスチャを使用するなら true
 bool use_toon;
 
+// 描画中の材質がセルフ影を使用するなら true
+bool use_selfshadow;
+
 
 // 材質単位で変わらないもの
 

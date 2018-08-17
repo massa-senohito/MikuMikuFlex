@@ -22,6 +22,7 @@ namespace MMF.エフェクト.変数管理.材質
         public bool 加算操作である;
         public bool サブテクスチャを使用する;
         public bool トゥーンを使用する;
+        public bool セルフ影を使用する;
         public ShaderResourceView スフィアマップ;
         public ShaderResourceView テクスチャ;
         public ShaderResourceView トゥーンテクスチャ;

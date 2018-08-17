@@ -121,6 +121,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_selfshadow変数.cs" />
     <Compile Include="ボーン\モーフ変形.cs" />
     <Compile Include="ボーン\親付与によるFK変形更新.cs" />
     <Compile Include="ボーン\ボーン.cs" />
