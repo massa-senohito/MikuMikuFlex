@@ -35,7 +35,22 @@ Texture2D SphereTexture : MATERIALSPHEREMAP;
 // サンプリング用トゥーンテクスチャ
 Texture2D Toon : MATERIALTOONTEXTURE;
 
+
+// 特殊パラメータ
+
+
+// 描画中の材質がスフィアマップを使用するなら true
+bool use_spheremap;
+
+// スフィアマップを使う場合のオプション。
+// true: 加算スフィア、false: 乗算スフィア
 bool spadd;
+
+// 描画中の材質がテクスチャを使用するなら true
+bool use_texture;
+
+// 描画中の材質がトゥーンテクスチャを使用するなら true
+bool use_toon;
 
 
 // 材質単位で変わらないもの
@@ -98,7 +113,7 @@ struct VS_OUTPUT
 /////////////////////////////////////////////
 // 頂点シェーダ実装
 
-VS_OUTPUT VS_Main( MMM_SKINNING_INPUT input, uint vid:SV_VertexID, uniform bool useTexture, uniform bool useSphereMap, uniform bool useToon )
+VS_OUTPUT VS_Main( MMM_SKINNING_INPUT input, uint vid:SV_VertexID )
 {    
 	VS_OUTPUT Out;
 	
@@ -125,7 +140,7 @@ VS_OUTPUT VS_Main( MMM_SKINNING_INPUT input, uint vid:SV_VertexID, uniform bool 
 	
 	Out.Tex = input.Tex;
 	
-    if ( useSphereMap )
+    if ( use_spheremap )
 	{
         // スフィアマップテクスチャ座標
         float2 NormalWV = mul( Out.Normal, (float3x3)ViewMatrix );
@@ -140,7 +155,7 @@ VS_OUTPUT VS_Main( MMM_SKINNING_INPUT input, uint vid:SV_VertexID, uniform bool 
 /////////////////////////////////////////////
 // ピクセルシェーダ実装
 
-float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap, uniform bool mulSphere, uniform bool useToon ) : SV_Target
+float4 PS_Main( VS_OUTPUT IN ) : SV_Target
 {
     // 反射色計算
 	
@@ -152,7 +167,7 @@ float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
 
 	// テクスチャサンプリング
 
-	if( useTexture )
+	if( use_texture )
 	{
 		Color *= Texture.Sample( mySampler, IN.Tex );
 	}
@@ -160,15 +175,15 @@ float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
 
 	// スフィアマップサンプリング
 
-	if ( useSphereMap )
+	if ( use_spheremap )
 	{
-		if( mulSphere )
+		if( spadd )
 		{
-			Color.rgb *= SphereTexture.Sample( mySampler, IN.SpTex ).rgb;	// 乗算
+			Color.rgb += SphereTexture.Sample(mySampler, IN.SpTex).rgb;	// 加算
 		}
 		else
 		{
-			Color.rgb += SphereTexture.Sample( mySampler, IN.SpTex ).rgb;	// 加算
+			Color.rgb *= SphereTexture.Sample(mySampler, IN.SpTex).rgb;	// 乗算
 		}
     }
 
@@ -181,7 +196,7 @@ float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
 	
 	// トゥーンテクスチャサンプリング
 	
-	if ( useToon )
+	if ( use_toon )
 	{
         float3 MaterialToon = Toon.Sample( mySampler, float2( 0, shading ) ).rgb;
         Color.rgb *= MaterialToon;
@@ -210,170 +225,11 @@ float4 PS_Main( VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
 /////////////////////////////////////////////
 //テクニック
 
-technique10 TexturedObjectTechnique < 
-	string MMDPass = "object"; 
-	bool UseTexture = true;		// ON:  テクスチャ
-	bool UseSphereMap = false;	// OFF: スフィアマップ
-								// 無視: 乗算スフィア
-	bool UseToon = true; >		// ON:  トゥーンテクスチャ使用
+technique10 DefaultTechnique < string MMDPass = "object"; >
 {
-	pass Textured
+	pass DefaultPass
 	{		
-		SetVertexShader( CompileShader( vs_4_0, VS_Main( true, false, true ) ) );
-		SetPixelShader( CompileShader( ps_4_0, PS_Main( true, false, false, true ) ) );
+		SetVertexShader( CompileShader( vs_5_0, VS_Main() ) );
+		SetPixelShader( CompileShader( ps_5_0, PS_Main() ) );
 	}
-}
-
-technique10 UnTexturedObjectTechnique <
-	string MMDPass = "object";
-	bool UseTexture = false;	// OFF: テクスチャ
-	bool UseSphereMap = false;	// OFF: スフィアマップ
-								// 無視: 乗算スフィア
-	bool UseToon = true; >		// OFF: トゥーンテクスチャ
-{
-	pass UnTextured
-	{
-		SetVertexShader( CompileShader( vs_4_0, VS_Main( false, false, true ) ) );
-		SetPixelShader( CompileShader( ps_4_0, PS_Main( false, false, false, true ) ) );
-	}
-}
-
-technique10 SphereObjectTechnique < 
-	string MMDPass = "object";
-	bool UseTexture = true;		// ON:  テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = false;		// OFF:	乗算スフィア
-	bool UseToon = true; >		// ON:  トゥーンテクスチャ
-{
-	pass TexturedAddSphere
-	{
-		SetVertexShader( CompileShader( vs_4_0, VS_Main( true, true, true ) ) );
-		SetPixelShader( CompileShader( ps_4_0, PS_Main( true, true, false, true ) ) );
-	}
-}
-
-technique10 SpheredUnTextureTechnique < 
-	string MMDPass = "object";
-	bool UseTexture = false;	// OFF: テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = false;		// OFF: 乗算スフィア
-	bool UseToon = true; >		// ON:  トゥーンテクスチャ
-{
-	pass UnTexturedAddSphere
-	{
-		SetVertexShader( CompileShader( vs_4_0, VS_Main( false, true, true ) ) );
-		SetPixelShader( CompileShader( ps_4_0, PS_Main( false, true, false, true ) ) );
-	}
-}
-
-technique10 MulSphereObjectTechnique <
-	string MMDPass = "object";
-	bool UseTexture = true;		// ON:  テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = true;		// ON:  乗算スフィア
-	bool UseToon = true; >		// ON:  トゥーンテクスチャ
-{
-    pass TexturedMulSphere
-    {
-		SetVertexShader( CompileShader( vs_4_0, VS_Main( true, true, true ) ) );
-		SetPixelShader( CompileShader( ps_4_0, PS_Main( true, true, true, true ) ) );
-    }
-}
-
-technique10 MulSpheredUnTextureTechnique <
-	string MMDPass = "object";
-	bool UseTexture = false;	// OFF: テクスチャ
-	bool UseSphereMap = true;	// ON:	スフィアマップ
-	bool MulSphere = true;		// ON:	乗算スフィア
-	bool UseToon=true; >		// ON:	トゥーンテクスチャ
-{
-    pass UnTexturedMulSphere
-    {
-        SetVertexShader(CompileShader(vs_4_0, VS_Main(false, true, true)));
-        SetPixelShader(CompileShader(ps_4_0, PS_Main(false, true, true, true)));
-    }
-}
-
-technique10 TexturedObjectTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = true;		// ON:	テクスチャ
-	bool UseSphereMap = false;	// OFF:	スフィアマップ
-								// 無視: 乗算スフィア
-	bool UseToon = false; >		// OFF: トゥーンテクスチャ
-{
-	pass Textured
-	{		
-		SetVertexShader(CompileShader(vs_4_0, VS_Main(true,false,false)));
-		SetPixelShader(CompileShader(ps_4_0, PS_Main(true,false,false,false)));
-	}
-}
-
-technique10 UnTexturedObjectTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = false;    // OFF: テクスチャ
-	bool UseSphereMap = false;  // OFF: スフィアマップ
-								// 無視: 乗算スフィア
-	bool UseToon = false; >		// OFF: トゥーンテクスチャ
-{
-	pass UnTextured
-	{		
-		SetVertexShader(CompileShader(vs_4_0, VS_Main(false,false,false)));
-		SetPixelShader(CompileShader(ps_4_0, PS_Main(false,false,false,false)));
-	}
-}
-
-technique10 SphereObjectTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = true;		// ON:  テクスチャ
-	bool UseSphereMap = true;	// ON:	スフィアマップ
-	bool MulSphere = false;		// OFF:	乗算スフィア
-	bool UseToon = false; >		// OFF: トゥーンテクスチャ
-{
-	pass TexturedAddSphere
-	{
-		SetVertexShader(CompileShader(vs_4_0,VS_Main(true,true,false)));
-		SetPixelShader(CompileShader(ps_4_0, PS_Main(true,true,false,false)));
-	}
-}
-
-technique10 SpheredUnTextureTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = false;	// OFF: テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = false;		// OFF: 乗算スフィア
-	bool UseToon = false; >		// OFF: トゥーンテクスチャ
-{
-		pass UnTexturedAddSphere
-	{
-		SetVertexShader(CompileShader(vs_4_0,VS_Main(false,true,false)));
-		SetPixelShader(CompileShader(ps_4_0, PS_Main(false,true,false,false)));
-	}
-}
-
-technique10 MulSphereObjectTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = true;		// ON:  テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = true;		// ON:  乗算スフィア
-	bool UseToon = false; >		// OFF:	トゥーンテクスチャ
-{
-    pass TexturedMulSphere
-    {
-        SetVertexShader(CompileShader(vs_4_0, VS_Main(true, true, false)));
-        SetPixelShader(CompileShader(ps_4_0, PS_Main(true, true, true, false)));
-    }
-}
-
-technique10 MulSpheredUnTextureTechniqueUnToon <
-	string MMDPass = "object";
-	bool UseTexture = false;	// OFF: テクスチャ
-	bool UseSphereMap = true;	// ON:  スフィアマップ
-	bool MulSphere = true;		// ON:	乗算スフィア
-	bool UseToon = false; >		// OFF:	トゥーンテクスチャ
-{
-    pass UnTexturedMulSphere
-    {
-        SetVertexShader(CompileShader(vs_4_0, VS_Main(false, true, false)));
-        SetPixelShader(CompileShader(ps_4_0, PS_Main(false, true, true, false)));
-    }
 }

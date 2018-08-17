@@ -27,7 +27,7 @@ namespace MMF.モデル.PMX
 
             this.D3D頂点レイアウト = new SharpDX.Direct3D11.InputLayout(
                 RenderContext.Instance.DeviceManager.D3DDevice,
-                d3dEffect.GetTechniqueByIndex( 1 ).GetPassByIndex( 0 ).Description.Signature, 
+                d3dEffect.GetTechniqueByIndex( 0 ).GetPassByIndex( 0 ).Description.Signature, 
                 頂点レイアウト.VertexElements );
 		}
 
