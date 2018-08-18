@@ -461,11 +461,17 @@ namespace MMF.エフェクト
             }
             else if( ipmxSubset.カリングする )
             {
-                RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.片面描画の際のラスタライザステート;
+                if( ipmxSubset.エフェクト用材質情報.Line描画を使用する )
+                    RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.片面描画の際のラスタライザステートLine;
+                else
+                    RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.片面描画の際のラスタライザステート;
             }
             else
             {
-                RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.両面描画の際のラスタライザステート;
+                if( ipmxSubset.エフェクト用材質情報.Line描画を使用する )
+                    RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.両面描画の際のラスタライザステートLine;
+                else
+                    RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.両面描画の際のラスタライザステート;
             }
 
 

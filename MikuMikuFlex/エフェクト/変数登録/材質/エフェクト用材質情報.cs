@@ -19,10 +19,11 @@ namespace MMF.エフェクト.変数管理.材質
         public Vector4 エッジ色;    // モーフ対応
         public Vector4 放射色;
         public Vector4 地面影色;
-        public bool 加算操作である;
+        public bool 加算合成モードである;
         public bool サブテクスチャを使用する;
         public bool トゥーンを使用する;
         public bool セルフ影を使用する;
+        public bool Line描画を使用する;
         public ShaderResourceView スフィアマップ;
         public ShaderResourceView テクスチャ;
         public ShaderResourceView トゥーンテクスチャ;
@@ -66,6 +67,7 @@ namespace MMF.エフェクト.変数管理.材質
                 エッジ幅 = material.エッジサイズ,
                 エッジが有効である = material.描画フラグ.HasFlag( 描画フラグ.エッジ ),
                 地面影が有効である = material.描画フラグ.HasFlag( 描画フラグ.地面影 ),
+                Line描画を使用する = material.描画フラグ.HasFlag( 描画フラグ.Line描画 ),
                 乗算差分 = new エフェクト用材質情報(),
                 加算差分 = new エフェクト用材質情報(),
             };

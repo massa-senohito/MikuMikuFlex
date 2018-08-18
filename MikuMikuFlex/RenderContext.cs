@@ -111,6 +111,10 @@ namespace MMF
 
         public RasterizerState 両面描画の際のラスタライザステート { get; private set; }
 
+        public RasterizerState 片面描画の際のラスタライザステートLine { get; private set; }
+
+        public RasterizerState 両面描画の際のラスタライザステートLine { get; private set; }
+
         public RasterizerState 裏側片面描画の際のラスタライザステート { get; private set; }
 
 
@@ -160,6 +164,12 @@ namespace MMF
 
             this.裏側片面描画の際のラスタライザステート?.Dispose();
             this.裏側片面描画の際のラスタライザステート = null;
+
+            this.片面描画の際のラスタライザステートLine?.Dispose();
+            this.片面描画の際のラスタライザステートLine = null;
+
+            this.両面描画の際のラスタライザステートLine?.Dispose();
+            this.両面描画の際のラスタライザステートLine = null;
 
             this.片面描画の際のラスタライザステート?.Dispose();
             this.片面描画の際のラスタライザステート = null;
@@ -258,23 +268,30 @@ namespace MMF
 				this.DeviceManager.Load();
 			}
 
-			var desc片面 = new RasterizerStateDescription() {
-				CullMode = SharpDX.Direct3D11.CullMode.Back,
-				FillMode = SharpDX.Direct3D11.FillMode.Solid,
-			};
-			this.片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc片面 );
+            this.片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, new RasterizerStateDescription {
+                CullMode = SharpDX.Direct3D11.CullMode.Back,
+                FillMode = SharpDX.Direct3D11.FillMode.Solid,
+            } );
 
-			var desc両面 = new RasterizerStateDescription() {
-				CullMode = SharpDX.Direct3D11.CullMode.None,
-				FillMode = SharpDX.Direct3D11.FillMode.Solid,
-			};
-			this.両面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc両面 );
+            this.両面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, new RasterizerStateDescription {
+                CullMode = SharpDX.Direct3D11.CullMode.None,
+                FillMode = SharpDX.Direct3D11.FillMode.Solid,
+            } );
 
-            var desc裏側片面 = new RasterizerStateDescription() {
+            this.片面描画の際のラスタライザステートLine = new RasterizerState( DeviceManager.D3DDevice, new RasterizerStateDescription {
+                CullMode = SharpDX.Direct3D11.CullMode.Back,
+                FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+            } );
+
+            this.両面描画の際のラスタライザステートLine = new RasterizerState( DeviceManager.D3DDevice, new RasterizerStateDescription {
+                CullMode = SharpDX.Direct3D11.CullMode.None,
+                FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+            } );
+
+            this.裏側片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, new RasterizerStateDescription {
                 CullMode = SharpDX.Direct3D11.CullMode.Front,
                 FillMode = SharpDX.Direct3D11.FillMode.Solid,
-            };
-            this.裏側片面描画の際のラスタライザステート = new RasterizerState( DeviceManager.D3DDevice, desc裏側片面 );
+            } );
         }
 
         private void _レンダーターゲットを更新する()
