@@ -7,6 +7,8 @@ namespace MMF.エフェクト.変数管理.材質
     {
         public override string セマンティクス => "AMBIENT";
 
+        public override 変数型[] 使える型の配列 => new[] { 変数型.Float3, 変数型.Float4 };
+
 
         public AMBIENT変数()
         {

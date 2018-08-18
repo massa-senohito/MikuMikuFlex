@@ -6,6 +6,8 @@ namespace MMF.エフェクト.変数管理.材質
 	{
 		public override string セマンティクス => "SPECULARPOWER";
 
+        public override 変数型[] 使える型の配列 => new[] { 変数型.Float };
+
 
         private SPECULARPOWER変数( ターゲット種別 target, bool Vector3である )
             : base( target, Vector3である )

@@ -6,6 +6,8 @@ namespace MMF.エフェクト.変数管理.材質
 	{
         public override string セマンティクス => "TOONCOLOR";
 
+        public override 変数型[] 使える型の配列 => new[] { 変数型.Float4, 変数型.Float4 };
+
 
         private TOONCOLOR変数( ターゲット種別 target, bool isVector3 ) 
             : base( target, isVector3 )

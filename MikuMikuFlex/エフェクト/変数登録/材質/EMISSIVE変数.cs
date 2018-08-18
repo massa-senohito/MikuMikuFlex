@@ -6,6 +6,8 @@ namespace MMF.エフェクト.変数管理.材質
     {
         public override string セマンティクス => "EMISSIVE";
 
+        public override 変数型[] 使える型の配列 => new[] { 変数型.Float3, 変数型.Float4 };
+
 
         private EMISSIVE変数( ターゲット種別 target, bool isVector3 )
             : base( target, isVector3 )

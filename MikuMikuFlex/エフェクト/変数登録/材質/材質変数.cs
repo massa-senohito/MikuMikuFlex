@@ -6,16 +6,6 @@ namespace MMF.エフェクト.変数管理.材質
 {
     public abstract class 材質変数 : 変数管理
     {
-        public override 変数型[] 使える型の配列
-        {
-            get
-            {
-                return ( セマンティクス == "SPECULARPOWER" || セマンティクス == "EDGEWIDTH" ) ?
-                    new[] { 変数型.Float } :
-                    new[] { 変数型.Float3, 変数型.Float4 };
-            }
-        }
-
         public override 更新タイミング 更新タイミング => 更新タイミング.材質ごと;
 
         /// <summary>
