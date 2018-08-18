@@ -226,7 +226,7 @@
     <Compile Include="エフェクト\変数登録\特殊パラメータ\transp変数.cs" />
     <Compile Include="エフェクト\変数登録\特殊パラメータ\use_spheremap変数.cs" />
     <Compile Include="エフェクト\変数登録\特殊パラメータ\use_texture変数.cs" />
-    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_toon変数.cs" />
+    <Compile Include="エフェクト\変数登録\特殊パラメータ\use_toontexturemap変数.cs" />
     <Compile Include="エフェクト\変数登録\特殊パラメータ\VertexCount変数.cs" />
     <Compile Include="エフェクト\変数登録\スクリーン情報\VIEWPORTPIXELSIZE変数.cs" />
     <Compile Include="エフェクト\変数登録\変数更新時引数.cs" />

@@ -35,7 +35,7 @@ float  EdgeWidth : EDGEWIDTH;	// エッジの幅
 bool use_spheremap;			// 描画中の材質がスフィアマップを使用するなら true
 bool spadd;					// スフィアマップを使う場合のオプション。（true: 加算スフィア、false: 乗算スフィア）
 bool use_texture;			// 描画中の材質がテクスチャを使用するなら true
-bool use_toon;				// 描画中の材質がトゥーンテクスチャを使用するなら true
+bool use_toontexturemap;	// 描画中の材質がトゥーンテクスチャを使用するなら true
 bool use_selfshadow;		// 描画中の材質がセルフ影を使用するなら true
 
 
@@ -182,7 +182,7 @@ float4 PS_Main( VS_OUTPUT IN ) : SV_Target
 	
 	// トゥーンテクスチャサンプリング
 	
-	if ( use_toon )
+	if ( use_toontexturemap )
 	{
         float3 MaterialToon = Toon.Sample( mySampler, float2( 0, shading ) ).rgb;
         Color.rgb *= MaterialToon;

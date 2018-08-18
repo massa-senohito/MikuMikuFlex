@@ -404,7 +404,7 @@ namespace MMF.エフェクト
                 new transp変数(),
                 new use_spheremap変数(),
                 new use_texture変数(),
-                new use_toon変数(),
+                new use_toontexturemap変数(),
                 new VertexCount変数()
             } )
             {

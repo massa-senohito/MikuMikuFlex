@@ -3,13 +3,12 @@
 namespace MMF.エフェクト.変数管理.特殊パラメータ
 {
     /// <summary>
-    ///     use_toon (bool型)
-    ///     トゥーンレンダリング使用フラグ。
-    ///     PMDモデルの場合にtrue。
+    ///     use_toontexturemap (bool型)
+    ///     トゥーンテクスチャレンダリング使用フラグ。
     /// </summary>
-	public class use_toon変数 : 特殊パラメータ変数
+	public class use_toontexturemap変数 : 特殊パラメータ変数
 	{
-		public override string 変数名 => "use_toon";
+		public override string 変数名 => "use_toontexturemap";
 
 		public override 変数型 変数型 => 変数型.Bool;
 
