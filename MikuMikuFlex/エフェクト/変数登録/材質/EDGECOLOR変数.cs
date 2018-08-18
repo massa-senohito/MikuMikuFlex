@@ -20,6 +20,9 @@ namespace MMF.エフェクト.変数管理.材質
 
         protected override 変数管理 材質変数登録インスタンスを生成して返す( ターゲット種別 target, bool isVector3 )
         {
+            if( target == ターゲット種別.未使用 )
+                target = ターゲット種別.ジオメトリ; // 省略値
+
             return new EDGECOLOR変数( target, isVector3 );
         }
 

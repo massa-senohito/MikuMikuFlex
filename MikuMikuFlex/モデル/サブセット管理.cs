@@ -17,16 +17,12 @@ namespace MMF.モデル
         /// <summary>
         ///     サブセットマネージャを初期化し、サブセット分割を実行します。
         /// </summary>
-        /// <param name="context">デバイス</param>
-        /// <param name="effect"></param>
-        /// <param name="subresourceManager"></param>
-        /// <param name="ToonManager"></param>
         void 初期化する( トゥーンテクスチャ管理 ToonManager, サブリソースローダー subresourceManager );
 
-		void すべてを描画する( エフェクト.エフェクト effect );
+        void すべてを描画する( エフェクト管理 EffectManager );
 
-		void エッジを描画する( エフェクト.エフェクト effect );
+        void エッジを描画する( エフェクト管理 EffectManager );
 
-		void 地面影を描画する( エフェクト.エフェクト effect );
+        void 地面影を描画する( エフェクト管理 EffectManager );
 	}
 }

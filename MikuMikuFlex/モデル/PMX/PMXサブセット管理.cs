@@ -149,11 +149,18 @@ namespace MMF.モデル.PMX
             サブセットリスト.Clear();
         }
 
-        public void すべてを描画する( エフェクト.エフェクト effect )
+        public void すべてを描画する( エフェクト管理 EffectManager )
         {
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {
                 var ipmxSubset = サブセットリスト[ i ];
+
+                var effect = EffectManager.既定のエフェクト;
+                string effectName = EffectManager.サブセットに割り当てられているエフェクト名を取得する( i );
+                if( !string.IsNullOrEmpty( effectName ) )
+                {
+                    effect = EffectManager.名前からエフェクトを取得する( effectName ) ?? EffectManager.既定のエフェクト;
+                }
 
                 effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
 
@@ -166,11 +173,18 @@ namespace MMF.モデル.PMX
             }
         }
 
-        public void エッジを描画する( エフェクト.エフェクト effect )
+        public void エッジを描画する( エフェクト管理 EffectManager )
 		{
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {
                 var ipmxSubset = サブセットリスト[ i ];
+
+                var effect = EffectManager.既定のエフェクト;
+                string effectName = EffectManager.サブセットに割り当てられているエフェクト名を取得する( i );
+                if( !string.IsNullOrEmpty( effectName ) )
+                {
+                    effect = EffectManager.名前からエフェクトを取得する( effectName ) ?? EffectManager.既定のエフェクト;
+                }
 
                 effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
 
@@ -183,7 +197,7 @@ namespace MMF.モデル.PMX
             }
         }
 
-        public void 地面影を描画する( エフェクト.エフェクト effect )
+        public void 地面影を描画する( エフェクト管理 EffectManager )
         {
 			// TODO 地面陰の実装
 

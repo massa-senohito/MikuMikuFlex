@@ -86,9 +86,9 @@ namespace MMF.モデル.PMX
 
                 サブセット管理.初期化する( トゥーン管理, サブリソースローダー );
 
-                エフェクト管理 = エフェクト管理を初期化して返す();
+                エフェクト管理 = エフェクト管理を初期化して返す();    // サブセット管理より後。
 
-                
+
                 // 定数バッファ
 
                 _ZPlotPass = エフェクト管理.既定のエフェクト.D3DEffect.GetTechniqueByIndex( 1 ).GetPassByIndex( 0 );
@@ -135,7 +135,7 @@ namespace MMF.モデル.PMX
 
             var effect = エフェクト.エフェクト.ファイルをエフェクトとして読み込む( filePath, this, loader );
 
-            エフェクト管理.エフェクトを登録する( effect, 既定にする );
+            エフェクト管理.エフェクトをマスタリストに登録する( filePath, effect, 既定にする );
         }
 
 
@@ -189,17 +189,18 @@ namespace MMF.モデル.PMX
         {
             var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
 
-            // 既定のエフェクト
-            エフェクト管理.既定のエフェクト.モデルごとに更新するエフェクト変数を更新する();
-
-            スキニング.エフェクトを適用する( エフェクト管理.既定のエフェクト.D3DEffect );
+            foreach( var effect in エフェクト管理.エフェクトマスタリスト.Values )
+            {
+                effect.モデルごとに更新するエフェクト変数を更新する();
+                スキニング.エフェクトを適用する( effect.D3DEffect );
+            }
 
             IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, MMM_SKINNING_INPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.すべてを描画する( エフェクト管理.既定のエフェクト );
+            サブセット管理.すべてを描画する( エフェクト管理 );
 
             // 既定じゃないエフェクト
             //if( エフェクト管理.エフェクトリスト.Count > 1 )
@@ -228,10 +229,11 @@ namespace MMF.モデル.PMX
 
         public void エッジを描画する()
         {
-            // 既定のエフェクト
-            エフェクト管理.既定のエフェクト.モデルごとに更新するエフェクト変数を更新する();
-
-            スキニング.エフェクトを適用する( エフェクト管理.既定のエフェクト.D3DEffect );
+            foreach( var effect in エフェクト管理.エフェクトマスタリスト.Values )
+            {
+                effect.モデルごとに更新するエフェクト変数を更新する();
+                スキニング.エフェクトを適用する( effect.D3DEffect );
+            }
 
             var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
             IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, MMM_SKINNING_INPUT.SizeInBytes, 0 ) );
@@ -239,7 +241,7 @@ namespace MMF.モデル.PMX
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.エッジを描画する( エフェクト管理.既定のエフェクト );
+            サブセット管理.エッジを描画する( エフェクト管理 );
         }
 
 
@@ -295,7 +297,7 @@ namespace MMF.モデル.PMX
 
             var defaultEffect = エフェクト.エフェクト.リソースをエフェクトとして読み込む( エフェクト.エフェクト.既定のシェーダのリソースパス, this, this.サブリソースローダー );
 
-            effectManager.エフェクトを登録する( defaultEffect, 既定にする: true );
+            effectManager.エフェクトをマスタリストに登録する( エフェクト.エフェクト.既定のシェーダのリソースパス, defaultEffect, これを既定のエフェクトに指定する: true );
 
             return effectManager;
 		}
