@@ -243,7 +243,7 @@ VS_OUTPUT VS_Edge(MMM_SKINNING_INPUT IN)
 	Out.Tex = IN.Tex;	// テクスチャ
 
 	// 頂点を法線方向に膨らませる
-	float4 position = Out.Pos + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Pos.xyz, CameraPosition) * 0.002;
+	float4 position = Out.Pos + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Pos.xyz, CameraPosition) * 0.0005;
 
 	// ワールドビュー射影変換
 	Out.Pos = mul(position, matWVP);
