@@ -37,7 +37,7 @@ namespace MMF.Utility
 							Width = bitmap.Width,
 							MipLevels = 1,
 							OptionFlags = ResourceOptionFlags.None,
-							//Depth = 1,
+							Depth = 1,
 							Usage = ResourceUsage.Default
 						};
 						texture = new Texture3D( device, textureDesc, dataBox );
