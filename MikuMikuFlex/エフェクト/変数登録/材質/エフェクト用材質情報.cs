@@ -32,7 +32,7 @@ namespace MMF.エフェクト.変数管理.材質
         public Vector4 テクスチャ加算値;
         public Vector4 テクスチャ乗算値;
         public Vector4 トゥーン色;
-        public float エッジ幅;
+        public float エッジ幅;  // モーフ対応
         public bool エッジが有効である;
         public bool 地面影が有効である;
 
@@ -130,7 +130,12 @@ namespace MMF.エフェクト.変数管理.材質
             拡散色 = CGHelper.MulEachMember( 初期値.拡散色, 乗算差分.拡散色 ) + 加算差分.拡散色;
             反射色 = CGHelper.MulEachMember( 初期値.反射色, 乗算差分.反射色 ) + 加算差分.反射色;
             反射係数 = 初期値.反射係数 * 乗算差分.反射係数 + 加算差分.反射係数;
-            エッジ色 = CGHelper.MulEachMember( 初期値.エッジ色, 乗算差分.エッジ色 ) + 加算差分.エッジ色;
+
+            if( エッジが有効である )
+            {
+                エッジ色 = CGHelper.MulEachMember( 初期値.エッジ色, 乗算差分.エッジ色 ) + 加算差分.エッジ色;
+                エッジ幅 = 初期値.エッジ幅 * 乗算差分.エッジ幅 + 加算差分.エッジ幅;
+            }
 
             _リセットする();
         }
@@ -143,12 +148,14 @@ namespace MMF.エフェクト.変数管理.材質
             乗算差分.反射色 = new Vector4( 1f );
             乗算差分.反射係数 = 1f;
             乗算差分.エッジ色 = new Vector4( 0f );
+            乗算差分.エッジ幅 = 1f;
 
             加算差分.環境色 = new Vector4( 0f );
             加算差分.拡散色 = new Vector4( 0f );
             加算差分.反射色 = new Vector4( 0f );
             加算差分.反射係数 = 0f;
             加算差分.エッジ色 = new Vector4( 0f );
+            加算差分.エッジ幅 = 1f;
         }
     }
 }
