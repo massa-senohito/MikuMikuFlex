@@ -82,18 +82,17 @@ namespace MMF.ボーン
         {
         }
 
-        /// <summary>
-        ///     BONETRANS セマンティクスに、グローバルポーズ行列の配列を設定する。
-        /// </summary>
         public void エフェクトを適用する( Effect d3dEffect )
 		{
-            var variable = d3dEffect.GetVariableBySemantic( "BONETRANS" );
+            // BONETRANS セマンティクスに、グローバルポーズ行列の配列を設定する。
 
-            if( variable.IsValid )
-                variable.AsMatrix().SetMatrix( ボーンのグローバルポーズ配列 );
-		}
+            //var variable = d3dEffect.GetVariableBySemantic( "BONETRANS" );
 
-		public virtual void 更新する( MMF.モーフ.モーフ morphManager )
+            //if( variable.IsValid )
+            //    variable.AsMatrix().SetMatrix( ボーンのグローバルポーズ配列 );
+        }
+
+        public virtual void 更新する()
 		{
 			ボーンのすべての変形をリセットする();
 

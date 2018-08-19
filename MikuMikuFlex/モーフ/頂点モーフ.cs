@@ -91,7 +91,7 @@ namespace MMF.モーフ
 				_Buffermanager.入力頂点リスト[ vertexMorph.頂点インデックス ].Position += new Vector4( vertexMorph.座標オフセット量 * 進捗率, 0 );
 			}
 
-			_Buffermanager.リセットが必要である = true;
+			_Buffermanager.D3D頂点バッファをリセットする = true;
 
 			return true;
 		}

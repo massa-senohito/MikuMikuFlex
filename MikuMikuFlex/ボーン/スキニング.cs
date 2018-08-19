@@ -25,11 +25,11 @@ namespace MMF.ボーン
         /// <param name="d3dEffect"></param>
         void エフェクトを適用する( Effect d3dEffect );
 
-		/// <summary>
-		///     フレームごとにスキニングのデータを更新するために呼び出します。
-		/// </summary>
-		/// <param name="morphManager"></param>
-		void 更新する( モーフ.モーフ morphManager );
+        /// <summary>
+        ///     フレームごとにスキニングのデータを更新するために呼び出します。
+        /// </summary>
+        /// <param name="morphManager"></param>
+        void 更新する();
 
 		void ボーンのすべての変形をリセットする();
 	}

@@ -173,12 +173,11 @@ namespace MMF.モデル.PMX
 
         public void 更新する()
         {
-            バッファ管理?.必要であれば頂点を再作成する();
+            バッファ管理?.D3D頂点バッファを更新する( スキニング );   // TODO: これここでええん？ 描画する() の中やなくて？
 
             モーフ管理.更新する();
 
-            // モーフの更新結果をスキニングに反映
-            スキニング.更新する( モーフ管理 );
+            スキニング.更新する();
 
             // モーフの更新結果をエフェクト用材質情報に反映
             foreach( var pmxSubset in サブセット管理.サブセットリスト )
@@ -195,33 +194,12 @@ namespace MMF.モデル.PMX
                 スキニング.エフェクトを適用する( effect.D3DEffect );
             }
 
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, MMM_SKINNING_INPUT.SizeInBytes, 0 ) );
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, SKINNING_OUTPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
             サブセット管理.すべてを描画する( エフェクト管理 );
-
-            // 既定じゃないエフェクト
-            //if( エフェクト管理.エフェクトリスト.Count > 1 )
-            //{
-            //    foreach( var effect in エフェクト管理.エフェクトリスト )
-            //    {
-            //        if( effect != エフェクト管理.既定のエフェクト )
-            //        {
-            //            effect.モデルごとに更新するエフェクト変数を更新する();
-
-            //            スキニングプロバイダ.エフェクトを適用する( effect.D3DEffect );
-
-            //            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, 頂点レイアウト.SizeInBytes, 0 ) );
-            //            IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
-            //            IA.InputLayout = バッファ管理.D3D頂点レイアウト;
-            //            IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
-
-            //            サブセット管理.すべてを描画する( effect );
-            //        }
-            //    }
-            //}
         }
 
 
@@ -236,7 +214,7 @@ namespace MMF.モデル.PMX
             }
 
             var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, MMM_SKINNING_INPUT.SizeInBytes, 0 ) );
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, SKINNING_OUTPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
@@ -250,18 +228,6 @@ namespace MMF.モデル.PMX
         public void 地面影を描画する()
         {
             // TODO: 地面影描画を実装する
-
-            //MMEエフェクト管理.モデルごとに登録すべきエフェクト変数を割り当てる();
-
-            //スキニングプロバイダ.エフェクトを適用する( MMEエフェクト管理.D3DEffect );
-
-            //var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
-            //IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, 頂点レイアウト.SizeInBytes, 0 ) );
-            //IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
-            //IA.InputLayout = バッファ管理.D3D頂点レイアウト;
-            //IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
-
-            //サブセット管理.地面影を描画する();
         }
 
 

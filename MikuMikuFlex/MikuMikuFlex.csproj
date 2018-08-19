@@ -128,6 +128,7 @@
     <Compile Include="DeviceManager\ブレンドステート管理.cs" />
     <Compile Include="DeviceManager\DrawableGroup.cs" />
     <Compile Include="DeviceManager\IHitTestable.cs" />
+    <Compile Include="モデル\SKINNING_OUTPUT.cs" />
     <Compile Include="行列\CameraMotion\マウスカメラモーション.cs" />
     <Compile Include="行列\CameraMotion\ボーン追従カメラモーション.cs" />
     <Compile Include="行列\CameraMotion\VMDカメラモーション.cs" />

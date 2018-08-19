@@ -20,8 +20,6 @@ float4   ViewPointPosition : POSITION < string object="camera"; >;	// カメラ位置
 float4   LightPointPosition : POSITION < string object="light"; >;	// 光源位置
 float3	 CameraPosition		: POSITION < string Object = "Camera"; > ;	// カメラ位置（float3）
 
-float4x4 BoneTrans[768] : BONETRANS;			// スキニング用
-
 Texture2D Texture : MATERIALTEXTURE;			// サンプリング用テクスチャ
 Texture2D SphereTexture : MATERIALSPHEREMAP;	// サンプリング用スフィアマップテクスチャ
 Texture2D Toon : MATERIALTOONTEXTURE;			// サンプリング用トゥーンテクスチャ
@@ -64,33 +62,28 @@ SamplerState mySampler
 
 
 // 頂点シェーダ入力
-struct MMM_SKINNING_INPUT
+struct SKINNING_OUTPUT
 {
-	float4 Pos : POSITION;//頂点位置
-	float4 BoneWeight : BLENDWEIGHT;
-	uint4 BlendIndices : BLENDINDICES;
-	float3 Normal : NORMAL;
-	float2 Tex : TEXCOORD0;
-	float4 AddUV1 : TEXCOORD1;
-	float4 AddUV2 : TEXCOORD2;
-	float4 AddUV3 : TEXCOORD3;
-	float4 AddUV4 : TEXCOORD4;
-	float4 SdefC : TEXCOORD5;
-	float3 SdefR0 : TEXCOORD6;
-	float3 SdefR1 : TEXCOORD7;
-	float EdgeWeight : TEXCOORD8;
-	uint Index : PSIZE15;
+	float4 Position   : POSITION;      // スキニング後の座標（ローカル座標）
+	float3 Normal     : NORMAL;        // 法線（ローカル座標）
+	float2 Tex        : TEXCOORD0;     // UV
+	float4 AddUV1     : TEXCOORD1;     // 追加UV1
+	float4 AddUV2     : TEXCOORD2;     // 追加UV2
+	float4 AddUV3     : TEXCOORD3;     // 追加UV3
+	float4 AddUV4     : TEXCOORD4;     // 追加UV4
+	float  EdgeWeight : EDGEWEIGHT;    // エッジウェイト
+	float  Index      : PSIZE15;       // 頂点インデックス値
 };
 
 // 頂点シェーダ出力（＝ピクセルシェーダ入力）
 struct VS_OUTPUT
 {
-	float4 Pos		: SV_Position;
-	float2 Tex		: TEXCOORD1;   // テクスチャ
-	float3 Normal	: TEXCOORD2;   // 法線
-	float3 Eye		: TEXCOORD3;   // カメラとの相対位置
-	float2 SpTex	: TEXCOORD4;   // スフィアマップテクスチャ座標
-	float4 Color	: COLOR0;      // ディフューズ色
+	float4 Position   : SV_POSITION;	// 座標（射影座標）
+	float3 Normal	  : NORMAL;			// 法線
+	float2 Tex		  : TEXCOORD1;		// テクスチャ
+	float3 Eye		  : TEXCOORD3;		// カメラとの相対位置
+	float2 SpTex	  : TEXCOORD4;		// スフィアマップテクスチャ座標
+	float4 Color	  : COLOR0;			// ディフューズ色
 };
 
 
@@ -100,22 +93,15 @@ struct VS_OUTPUT
 
 // 頂点シェーダ
 
-VS_OUTPUT VS_Main(MMM_SKINNING_INPUT input)
+VS_OUTPUT VS_Main(SKINNING_OUTPUT input)
 {
 	VS_OUTPUT Out;
 
-	// スキンメッシュアニメーション
-	float4x4 bt =
-		BoneTrans[input.BlendIndices[0]] * input.BoneWeight[0] +
-		BoneTrans[input.BlendIndices[1]] * input.BoneWeight[1] +
-		BoneTrans[input.BlendIndices[2]] * input.BoneWeight[2] +
-		BoneTrans[input.BlendIndices[3]] * input.BoneWeight[3];
-
 	// 位置（ワールドビュー射影変換）
-	Out.Pos = mul(input.Pos, mul(bt, matWVP));
+	Out.Position = mul(input.Position, matWVP);
 
 	// カメラとの相対位置
-	Out.Eye = ViewPointPosition - mul(input.Pos, WorldMatrix);
+	Out.Eye = ViewPointPosition - mul(input.Position, WorldMatrix);
 
 	// 頂点法線
 	Out.Normal = normalize(mul(input.Normal, (float3x3)WorldMatrix));
@@ -226,27 +212,20 @@ technique11 DefaultTechnique < string MMDPass = "object"; >
 
 // 頂点シェーダ
 
-VS_OUTPUT VS_Edge(MMM_SKINNING_INPUT IN)
+VS_OUTPUT VS_Edge(SKINNING_OUTPUT IN)
 {
 	VS_OUTPUT Out;
 
-	// スキンメッシュアニメーション
-	float4x4 bt =
-		BoneTrans[IN.BlendIndices[0]] * IN.BoneWeight[0] +
-		BoneTrans[IN.BlendIndices[1]] * IN.BoneWeight[1] +
-		BoneTrans[IN.BlendIndices[2]] * IN.BoneWeight[2] +
-		BoneTrans[IN.BlendIndices[3]] * IN.BoneWeight[3];
-
-	Out.Pos = mul(IN.Pos, bt);	// 位置（ローカル座標）
-	Out.Eye = ViewPointPosition - mul(IN.Pos, WorldMatrix);	// カメラとの相対位置
+	Out.Position = IN.Position;	// 位置（ローカル座標）
+	Out.Eye = ViewPointPosition - mul(IN.Position, WorldMatrix);	// カメラとの相対位置
 	Out.Normal = normalize(mul(IN.Normal, (float3x3)WorldMatrix));	// 頂点法線
 	Out.Tex = IN.Tex;	// テクスチャ
 
 	// 頂点を法線方向に膨らませる
-	float4 position = Out.Pos + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Pos.xyz, CameraPosition) * 0.0005;
+	float4 position = Out.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Position.xyz, CameraPosition) * 0.0005;
 
 	// ワールドビュー射影変換
-	Out.Pos = mul(position, matWVP);
+	Out.Position = mul(position, matWVP);
 
 	return Out;
 }

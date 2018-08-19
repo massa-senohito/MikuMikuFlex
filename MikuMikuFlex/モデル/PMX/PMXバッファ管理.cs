@@ -8,17 +8,20 @@ namespace MMF.モデル.PMX
 {
 	public class PMXバッファ管理 : バッファ管理
 	{
-		public SharpDX.Direct3D11.Buffer D3D頂点バッファ { get; private set; }
-
-		public SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; private set; }
-
+        // スキニング 前
         public MMM_SKINNING_INPUT[] 入力頂点リスト { get; private set; }
 
         public int 頂点数 => 入力頂点リスト.Length;
 
-        public SharpDX.Direct3D11.InputLayout D3D頂点レイアウト { get; set; }
+        // スキニング 後
+        public SharpDX.Direct3D11.Buffer D3D頂点バッファ { get; private set; }
 
-        public bool リセットが必要である { get; set; }
+		public SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; private set; }
+
+        // スキニング 後
+        public SharpDX.Direct3D11.InputLayout D3D頂点レイアウト { get; private set; }
+
+        public bool D3D頂点バッファをリセットする { get; set; }
 
 
         public void 初期化する( object model, SharpDX.Direct3D11.Effect d3dEffect )
@@ -28,7 +31,7 @@ namespace MMF.モデル.PMX
             this.D3D頂点レイアウト = new SharpDX.Direct3D11.InputLayout(
                 RenderContext.Instance.DeviceManager.D3DDevice,
                 d3dEffect.GetTechniqueByIndex( 0 ).GetPassByIndex( 0 ).Description.Signature, 
-                MMM_SKINNING_INPUT.VertexElements );
+                SKINNING_OUTPUT.VertexElements );
 		}
 
         public void Dispose()
@@ -46,20 +49,50 @@ namespace MMF.モデル.PMX
             _頂点データストリーム = null;
         }
 
-        public void 必要であれば頂点を再作成する()
+        public void D3D頂点バッファを更新する( MMF.ボーン.スキニング skelton )
         {
-            if( リセットが必要である )
+            var skinning = ( skelton as MMF.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
+            var boneTrans = skinning.ボーンのグローバルポーズ配列;
+
+            if( D3D頂点バッファをリセットする )
             {
-                _頂点データストリーム.WriteRange( 入力頂点リスト );
+                // 現在の入力頂点リストに対して、スキニングを実行。
+                var スキニング後の入力頂点リスト = new SKINNING_OUTPUT[ 入力頂点リスト.Length ];
+                for( int i = 0; i < 入力頂点リスト.Length; i++ )
+                {
+                    // BDEF1, BDEF2, BDEF4
+                    Matrix bt =
+                        boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
+                        boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2 +
+                        boneTrans[ 入力頂点リスト[ i ].BoneIndex3 ] * 入力頂点リスト[ i ].BoneWeight3 +
+                        boneTrans[ 入力頂点リスト[ i ].BoneIndex4 ] * 入力頂点リスト[ i ].BoneWeight4;
+
+                    if( Matrix.Zero == bt )
+                        bt = Matrix.Identity;
+
+                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
+                    スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                    スキニング後の入力頂点リスト[ i ].UV = 入力頂点リスト[ i ].UV;
+                    スキニング後の入力頂点リスト[ i ].AddUV1 = 入力頂点リスト[ i ].AddUV1;
+                    スキニング後の入力頂点リスト[ i ].AddUV2 = 入力頂点リスト[ i ].AddUV2;
+                    スキニング後の入力頂点リスト[ i ].AddUV3 = 入力頂点リスト[ i ].AddUV3;
+                    スキニング後の入力頂点リスト[ i ].AddUV4 = 入力頂点リスト[ i ].AddUV4;
+                    スキニング後の入力頂点リスト[ i ].EdgeWeight = 入力頂点リスト[ i ].EdgeWeight;
+                    スキニング後の入力頂点リスト[ i ].Index = 入力頂点リスト[ i ].Index;
+                }
+
+                // データストリームに、スキニング後の入力頂点リストを書き込む。
+                _頂点データストリーム.WriteRange( スキニング後の入力頂点リスト );
                 _頂点データストリーム.Position = 0;
 
+                // D3D頂点バッファに、スキニング後の入力頂点リストを（データストリーム経由で）書き込む。
                 RenderContext.Instance.DeviceManager.D3DDeviceContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
 
-                リセットが必要である = false;
+                D3D頂点バッファをリセットする = false;
             }
         }
 
-
+        // スキニング 後
         private DataStream _頂点データストリーム;
 
 
@@ -67,23 +100,27 @@ namespace MMF.モデル.PMX
 		{
             var d3dDevice = RenderContext.Instance.DeviceManager.D3DDevice;
 			var モデル = (PMXモデル) model;
-			var 頂点リスト = new List<MMM_SKINNING_INPUT>();
 
+            
+            // モデルの頂点リストから入力頂点リスト（スキニング前）を作成する。
 
-            // モデルの頂点リストから、頂点データストリームを構築し（ピン止めあり）、D3D頂点バッファと入力頂点リストを更新する。
+            var 頂点リスト = new List<MMM_SKINNING_INPUT>(); // スキニング 前
 
             for( int i = 0; i < モデル.頂点リスト.Count; i++ )
 				_頂点データを頂点レイアウトリストに追加する( モデル.頂点リスト[ i ], 頂点リスト );
 
-            _頂点データストリーム = DataStream.Create( 頂点リスト.ToArray(), true, true, pinBuffer: true );   // pinned
-
-			D3D頂点バッファ = CGHelper.D3Dバッファを作成する( d3dDevice, 頂点リスト.Count * MMM_SKINNING_INPUT.SizeInBytes, SharpDX.Direct3D11.BindFlags.VertexBuffer );
-            d3dDevice.ImmediateContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
-
             入力頂点リスト = 頂点リスト.ToArray();
 
 
-            // モデルの面リストから、D3Dインデックスバッファを更新する。
+            // スキニング後のデータストリームと頂点バッファを作成する。
+
+            _頂点データストリーム = new DataStream( 頂点リスト.Count * SKINNING_OUTPUT.SizeInBytes, canRead: true, canWrite: true );  // アンマネージドメモリとして確保される。
+            D3D頂点バッファ = CGHelper.D3Dバッファを作成する( d3dDevice, 頂点リスト.Count * SKINNING_OUTPUT.SizeInBytes, SharpDX.Direct3D11.BindFlags.VertexBuffer );
+
+            D3D頂点バッファをリセットする = true;    // どちらも空なので、描画前に設定すること。
+
+
+            // モデルの面リストから、D3Dインデックスバッファを作成する。
 
             var インデックスリスト = new List<uint>();
 

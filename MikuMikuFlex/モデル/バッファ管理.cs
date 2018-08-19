@@ -16,13 +16,13 @@ namespace MMF.モデル
 
         /// <summary>
         ///     頂点モーフなどにより頂点データが変更された場合に true にする。
-        ///     すると、次回の更新時に <see cref="必要であれば頂点を再作成する"/> が読みだされる。
+        ///     すると、次回の更新時に <see cref="D3D頂点バッファを更新する"/> が読みだされる。
         /// </summary>
-        bool リセットが必要である { get; set; }
+        bool D3D頂点バッファをリセットする { get; set; }
 
 
         void 初期化する( object model, SharpDX.Direct3D11.Effect d3dEffect );
 
-        void 必要であれば頂点を再作成する();
+        void D3D頂点バッファを更新する( MMF.ボーン.スキニング skelton );
     }
 }
