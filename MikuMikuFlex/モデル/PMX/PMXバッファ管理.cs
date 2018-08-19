@@ -103,7 +103,7 @@ namespace MMF.モデル.PMX
                 Position = new Vector4( 頂点データ.位置, 1f ),
                 Normal = 頂点データ.法線,
                 UV = 頂点データ.UV,
-                Index = (uint) 頂点レイアウトリスト.Count,
+                Index = (uint) 頂点レイアウトリスト.Count,    // 現在の要素数 ＝ List<>内でのこの要素のインデックス番号
                 EdgeWeight = 頂点データ.エッジ倍率,
             };
 

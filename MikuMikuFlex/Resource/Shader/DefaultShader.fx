@@ -120,7 +120,7 @@ VS_OUTPUT VS_Main(MMM_SKINNING_INPUT input)
 	// 頂点法線
 	Out.Normal = normalize(mul(input.Normal, (float3x3)WorldMatrix));
 
-	// ディフューズ色＋アンビエント色 計算
+	// ディフューズ色計算
 	Out.Color.rgb = DiffuseColor.rgb;
 	Out.Color.a = DiffuseColor.a;
 	Out.Color = saturate(Out.Color);	// 0～1 に丸める

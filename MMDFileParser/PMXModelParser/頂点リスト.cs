@@ -31,7 +31,20 @@ namespace MMDFileParser.PMXModelParser
 
             for( int i = 0; i < 頂点数; i++ )
                 list.Add( 頂点.読み込む( fs, header ) );
-
+#if DEBUG
+            int[] 出現数 = new int[ 5 ];
+            for( int i = 0; i < 頂点数; i++ )
+            {
+                var ウェイト変換方式 = (byte) list[ i ].ウェイト変形方式;
+                出現数[ (int) ウェイト変換方式 ]++;
+            }
+            Debug.WriteLine( $"   " +
+                $"BDEF1:{出現数[(int)BoneWeight.変形方式.BDEF1]}, "+
+                $"BDEF2:{出現数[ (int) BoneWeight.変形方式.BDEF2 ]}, "+
+                $"BDEF4:{出現数[ (int) BoneWeight.変形方式.BDEF4 ]}, "+
+                $"SDEF:{出現数[ (int) BoneWeight.変形方式.SDEF ]}, "+
+                $"QDEF:{出現数[ (int) BoneWeight.変形方式.QDEF ]}" );
+#endif
             return list;
         }
     }

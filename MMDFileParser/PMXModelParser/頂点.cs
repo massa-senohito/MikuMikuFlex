@@ -100,8 +100,8 @@ namespace MMDFileParser.PMXModelParser
                     break;
 
                 case BoneWeight.変形方式.QDEF:
-                    if( header.PMXバージョン != 2.1f )
-                        throw new InvalidDataException( "QDEFはPMX2.1でのみサポートされます。" );
+                    if( header.PMXバージョン < 2.1f )
+                        throw new InvalidDataException( "QDEFはPMX2.1以降でのみサポートされます。" );
                     vertex.ウェイト変形方式 = BoneWeight.変形方式.QDEF;
                     vertex.ボーンウェイト = new BoneWeight.QDEF() {
                         Bone1ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
