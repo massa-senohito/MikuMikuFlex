@@ -3,7 +3,7 @@
 // Script 宣言
 
 float Script : STANDARDSGLOBAL <
-	string ScriptClass="scene";
+	string ScriptClass="object";
 	string Script="";
 > = 0.8;
 
@@ -216,16 +216,14 @@ VS_OUTPUT VS_Edge(SKINNING_OUTPUT IN)
 {
 	VS_OUTPUT Out;
 
-	Out.Position = IN.Position;	// 位置（ローカル座標）
-	Out.Eye = ViewPointPosition - mul(IN.Position, WorldMatrix);	// カメラとの相対位置
 	Out.Normal = normalize(mul(IN.Normal, (float3x3)WorldMatrix));	// 頂点法線
-	Out.Tex = IN.Tex;	// テクスチャ
 
-	// 頂点を法線方向に膨らませる
-	float4 position = Out.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(Out.Position.xyz, CameraPosition) * 0.0005;
-
-	// ワールドビュー射影変換
+	// 位置（ローカル座標）を、法線方向に膨らませてから、ワールドビュー射影変換する。
+	float4 position = IN.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(IN.Position.xyz, CameraPosition) * 0.0005;
 	Out.Position = mul(position, matWVP);
+
+	Out.Eye = ViewPointPosition - mul(IN.Position, WorldMatrix);	// カメラとの相対位置
+	Out.Tex = IN.Tex;	// テクスチャ
 
 	return Out;
 }
