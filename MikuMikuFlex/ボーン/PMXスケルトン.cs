@@ -14,7 +14,7 @@ namespace MMF.ボーン
     /// </summary>
 	public class PMXスケルトン : スキニング
 	{
-		public Matrix[] ボーンのグローバルポーズ配列;
+		public Matrix[] ボーンのモデルポーズ配列;
 
 		public event EventHandler スケルトンが更新された = delegate { };
 
@@ -42,7 +42,7 @@ namespace MMF.ボーン
 		{
 			// ボーンの数だけ初期化
 			ボーン配列 = new PMXボーン[ model.ボーンリスト.Count ];
-            ボーンのグローバルポーズ配列 = new Matrix[ model.ボーンリスト.Count ];
+            ボーンのモデルポーズ配列 = new Matrix[ model.ボーンリスト.Count ];
             IKボーンリスト = new List<PMXボーン>();
 			
             // ボーンを読み込む
@@ -84,38 +84,32 @@ namespace MMF.ボーン
 
         public void エフェクトを適用する( Effect d3dEffect )
 		{
-            // BONETRANS セマンティクスに、グローバルポーズ行列の配列を設定する。
-
-            //var variable = d3dEffect.GetVariableBySemantic( "BONETRANS" );
-
-            //if( variable.IsValid )
-            //    variable.AsMatrix().SetMatrix( ボーンのグローバルポーズ配列 );
         }
 
         public virtual void 更新する()
 		{
 			ボーンのすべての変形をリセットする();
 
-            現在の回転行列に基づいてルートボーンからグローバルポーズを再計算する();
+            現在の回転行列に基づいてルートボーンからモデルポーズを再計算する();
 
             foreach( 変形更新 kinematicsProvider in 変形更新リスト )
 			{
 				if( kinematicsProvider.変形を更新する() )  // すぐ行列を更新するなら true
 				{
-					現在の回転行列に基づいてルートボーンからグローバルポーズを再計算する();
+					現在の回転行列に基づいてルートボーンからモデルポーズを再計算する();
                     //ボーンのすべての変形をリセットする();// BUG これなんでいれたっけ？
                 }
             }
             foreach( var pmxBone in ボーンのルート )
             {
-            	pmxBone.グローバルポーズを更新する();
+            	pmxBone.モデルポーズを更新する();
             }
 
             スケルトンが更新された?.Invoke( this, new EventArgs() );
 
             for( int i = 0; i < ボーン配列.Length; i++ )
             {
-                ボーンのグローバルポーズ配列[ ボーン配列[ i ].ボーンインデックス ] = ボーン配列[ i ].グローバルポーズ行列;
+                ボーンのモデルポーズ配列[ ボーン配列[ i ].ボーンインデックス ] = ボーン配列[ i ].モデルポーズ行列;
             }
 		}
 
@@ -130,11 +124,11 @@ namespace MMF.ボーン
 		}
 
 
-        protected void 現在の回転行列に基づいてルートボーンからグローバルポーズを再計算する()
+        protected void 現在の回転行列に基づいてルートボーンからモデルポーズを再計算する()
         {
             foreach( var root in ボーンのルート )
             {
-                root.グローバルポーズを更新する();
+                root.モデルポーズを更新する();
             }
         }
 

@@ -175,7 +175,7 @@ namespace MMF.エフェクト.変数管理.コントロール
 
                 foreach( var bone in targetBone )
                 {
-                    Matrix mat = bone.グローバルポーズ行列 * RenderContext.Instance.行列管理.ワールド行列管理.モデルのワールド変換行列を作成して返す( targetDrawable );
+                    Matrix mat = bone.モデルポーズ行列 * RenderContext.Instance.行列管理.ワールド行列管理.モデルのワールド変換行列を作成して返す( targetDrawable );
 
                     switch( _variableType )
                     {

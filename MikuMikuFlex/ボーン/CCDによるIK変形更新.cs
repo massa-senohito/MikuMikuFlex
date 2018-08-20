@@ -52,10 +52,10 @@ namespace MMF.ボーン
             // すべての IKリンク について……
             foreach( var ikLink in IKbone.IKリンクリスト )
             {
-                var IKリンクのローカル座標へ変換する行列 = Matrix.Invert( ikLink.IKリンクボーン.グローバルポーズ行列 );
+                var IKリンクのローカル座標へ変換する行列 = Matrix.Invert( ikLink.IKリンクボーン.モデルポーズ行列 );
 
-                var IKリンクローカル座標でのエフェクタ位置 = Vector3.TransformCoordinate( エフェクタ.ローカル位置, エフェクタ.グローバルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
-                var IKリンクローカル座標でのターゲット位置 = Vector3.TransformCoordinate( ターゲット.ローカル位置, ターゲット.グローバルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
+                var IKリンクローカル座標でのエフェクタ位置 = Vector3.TransformCoordinate( エフェクタ.ローカル位置, エフェクタ.モデルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
+                var IKリンクローカル座標でのターゲット位置 = Vector3.TransformCoordinate( ターゲット.ローカル位置, ターゲット.モデルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
 
                 var V1 = Vector3.Normalize( IKリンクローカル座標でのエフェクタ位置 - ikLink.IKリンクボーン.ローカル位置 );
                 var V2 = Vector3.Normalize( IKリンクローカル座標でのターゲット位置 - ikLink.IKリンクボーン.ローカル位置 );
@@ -170,7 +170,7 @@ namespace MMF.ボーン
                 }
 
                 // IKリンクの新しい回転行列を反映。
-                ikLink.IKリンクボーン.グローバルポーズを更新する();
+                ikLink.IKリンクボーン.モデルポーズを更新する();
             }
 
             return true;

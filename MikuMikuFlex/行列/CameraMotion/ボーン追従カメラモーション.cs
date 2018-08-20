@@ -49,7 +49,7 @@ namespace MMF.行列.CameraMotion
             // ボーンのワールド座標を求める行列を作成
 
             Matrix ボーンポーズ行列 =
-                bone.グローバルポーズ行列 * 
+                bone.モデルポーズ行列 * 
                 Matrix.Scaling( model.モデル状態.倍率 ) *
                 Matrix.RotationQuaternion( model.モデル状態.回転 ) *
                 Matrix.Translation( model.モデル状態.位置 );

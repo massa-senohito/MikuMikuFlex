@@ -59,7 +59,7 @@ namespace MMF.物理演算
 
                     this._Bullet管理.剛体を移動する(     // ボーン行列を適用
                         _Bulletの剛体リスト[ i ], 
-                        剛体.初期姿勢行列 * bone.グローバルポーズ行列 );
+                        剛体.初期姿勢行列 * bone.モデルポーズ行列 );
                 }
             }
             
@@ -83,11 +83,11 @@ namespace MMF.物理演算
                     _physicsAsserted = true;
                     continue;
                 }
-                var localPose = globalPose * ( ( bone.親ボーン != null ) ? Matrix.Invert( bone.親ボーン.グローバルポーズ行列 ) : Matrix.Identity );
+                var localPose = globalPose * ( ( bone.親ボーン != null ) ? Matrix.Invert( bone.親ボーン.モデルポーズ行列 ) : Matrix.Identity );
                 var mat = Matrix.Translation( bone.ローカル位置 ) * localPose * Matrix.Translation( -bone.ローカル位置 );
                 bone.移動 = new Vector3( mat.M41, mat.M42, mat.M43 );
                 bone.回転 = Quaternion.RotationMatrix( mat );
-                bone.グローバルポーズを更新する();
+                bone.モデルポーズを更新する();
             }
 
             // (4) ボーン位置あわせタイプの剛体の位置移動量にボーンの位置移動量を設定
@@ -100,7 +100,7 @@ namespace MMF.物理演算
                     剛体.物理計算種別 == MMDFileParser.PMXModelParser.剛体.剛体の物理演算.物理演算とボーン位置合わせ )
                 {
                     var bone = this._ボーン配列[ 剛体.ボーンインデックス ];
-                    var v = new Vector3( bone.グローバルポーズ行列.M41, bone.グローバルポーズ行列.M42, bone.グローバルポーズ行列.M43 );   // ボーンの移動量
+                    var v = new Vector3( bone.モデルポーズ行列.M41, bone.モデルポーズ行列.M42, bone.モデルポーズ行列.M43 );   // ボーンの移動量
                     var p = new Vector3( 剛体.初期姿勢行列.M41, 剛体.初期姿勢行列.M42, 剛体.初期姿勢行列.M43 ) + v;
                     var m = this._Bullet管理.物理演算結果のワールド行列を取得する( this._Bulletの剛体リスト[ i ] );
                     m.M41 = p.X;

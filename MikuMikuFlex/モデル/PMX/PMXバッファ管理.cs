@@ -51,45 +51,144 @@ namespace MMF.モデル.PMX
 
         public void D3D頂点バッファを更新する( MMF.ボーン.スキニング skelton )
         {
+            if( !( D3D頂点バッファをリセットする ) )
+                return;
+
             var skinning = ( skelton as MMF.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
-            var boneTrans = skinning.ボーンのグローバルポーズ配列;
+            var boneTrans = skinning.ボーンのモデルポーズ配列;
 
-            if( D3D頂点バッファをリセットする )
+            // 現在の入力頂点リストに対して、スキニングを実行。
+            var スキニング後の入力頂点リスト = new SKINNING_OUTPUT[ 入力頂点リスト.Length ];
+            for( int i = 0; i < 入力頂点リスト.Length; i++ )
             {
-                // 現在の入力頂点リストに対して、スキニングを実行。
-                var スキニング後の入力頂点リスト = new SKINNING_OUTPUT[ 入力頂点リスト.Length ];
-                for( int i = 0; i < 入力頂点リスト.Length; i++ )
+                switch( 入力頂点リスト[ i ].変形方式 )
                 {
-                    // BDEF1, BDEF2, BDEF4
-                    Matrix bt =
-                        boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
-                        boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2 +
-                        boneTrans[ 入力頂点リスト[ i ].BoneIndex3 ] * 入力頂点リスト[ i ].BoneWeight3 +
-                        boneTrans[ 入力頂点リスト[ i ].BoneIndex4 ] * 入力頂点リスト[ i ].BoneWeight4;
+                    case 変形方式.BDEF1:
+                        #region " *** "
+                        //----------------
+                        {
+                            Matrix bt =
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ];
 
-                    if( Matrix.Zero == bt )
-                        bt = Matrix.Identity;
+                            if( Matrix.Zero == bt )
+                                bt = Matrix.Identity;
 
-                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
-                    スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
-                    スキニング後の入力頂点リスト[ i ].UV = 入力頂点リスト[ i ].UV;
-                    スキニング後の入力頂点リスト[ i ].AddUV1 = 入力頂点リスト[ i ].AddUV1;
-                    スキニング後の入力頂点リスト[ i ].AddUV2 = 入力頂点リスト[ i ].AddUV2;
-                    スキニング後の入力頂点リスト[ i ].AddUV3 = 入力頂点リスト[ i ].AddUV3;
-                    スキニング後の入力頂点リスト[ i ].AddUV4 = 入力頂点リスト[ i ].AddUV4;
-                    スキニング後の入力頂点リスト[ i ].EdgeWeight = 入力頂点リスト[ i ].EdgeWeight;
-                    スキニング後の入力頂点リスト[ i ].Index = 入力頂点リスト[ i ].Index;
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                        }
+                        //----------------
+                        #endregion
+                        break;
+
+                    case 変形方式.BDEF2:
+                        #region " *** "
+                        //----------------
+                        {
+                            Matrix bt =
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2;
+
+                            if( Matrix.Zero == bt )
+                                bt = Matrix.Identity;
+
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                        }
+                        //----------------
+                        #endregion
+                        break;
+
+                    case 変形方式.BDEF4:
+                    case 変形方式.QDEF:
+                        #region " *** "
+                        //----------------
+                        {
+                            Matrix bt =
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2 +
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex3 ] * 入力頂点リスト[ i ].BoneWeight3 +
+                                boneTrans[ 入力頂点リスト[ i ].BoneIndex4 ] * 入力頂点リスト[ i ].BoneWeight4;
+
+                            if( Matrix.Zero == bt )
+                                bt = Matrix.Identity;
+
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                        }
+                        //----------------
+                        #endregion
+                        break;
+
+                    case 変形方式.SDEF:
+                        #region " *** "
+                        //----------------
+                        {
+                            // 参考: 
+                            // 自分用メモ「PMXのスフィリカルデフォームのコードっぽいもの」（sma42氏）
+                            // https://www.pixiv.net/member_illust.php?mode=medium&illust_id=60755964
+
+                            var 頂点 = 入力頂点リスト[ i ];
+
+                            #region " 影響度0,1 の算出 "
+                            //----------------
+                            float 影響度0 = 0f;  // 固定値であるSDEFパラメータにのみ依存するので、これらの値も固定値。
+                            float 影響度1 = 0f;  //
+                            {
+                                float L0 = ( 頂点.SdefR0 - (Vector3) skinning.ボーン配列[ 頂点.BoneIndex2 ].ローカル位置 ).Length();   // 子ボーンからR0までの距離
+                                float L1 = ( 頂点.SdefR1 - (Vector3) skinning.ボーン配列[ 頂点.BoneIndex2 ].ローカル位置 ).Length();   // 子ボーンからR1までの距離
+
+                                影響度0 = ( System.Math.Abs( L0 - L1 ) < 0.0001f ) ? 0.5f : SharpDX.MathUtil.Clamp( L0 / ( L0 + L1 ), 0.0f, 1.0f );
+                                影響度1 = 1.0f - 影響度0;
+                            }
+                            //----------------
+                            #endregion
+
+                            Matrix モデルポーズ行列L = boneTrans[ 頂点.BoneIndex1 ] * 頂点.BoneWeight1;
+                            Matrix モデルポーズ行列R = boneTrans[ 頂点.BoneIndex2 ] * 頂点.BoneWeight2;
+                            Matrix モデルポーズ行列C = モデルポーズ行列L + モデルポーズ行列R;
+
+                            Vector4 点C = Vector4.Transform( 頂点.Sdef_C, モデルポーズ行列C );    // BDEF2で計算された点Cの位置
+                            Vector4 点P = Vector4.Transform( 頂点.Position, モデルポーズ行列C );  // BDEF2で計算された頂点の位置
+
+                            Matrix 重み付き回転行列 = Matrix.RotationQuaternion(
+                                Quaternion.Slerp(   // 球体線形補間
+                                    skinning.ボーン配列[ 頂点.BoneIndex1 ].回転 * 頂点.BoneWeight1,
+                                    skinning.ボーン配列[ 頂点.BoneIndex2 ].回転 * 頂点.BoneWeight2,
+                                    頂点.BoneWeight1 ) );
+
+                            Vector4 点R0 = Vector4.Transform( new Vector4( 頂点.SdefR0, 1f ), ( モデルポーズ行列L + ( モデルポーズ行列C * -頂点.BoneWeight1 ) ) );
+                            Vector4 点R1 = Vector4.Transform( new Vector4( 頂点.SdefR1, 1f ), ( モデルポーズ行列R + ( モデルポーズ行列C * -頂点.BoneWeight2 ) ) );
+                            点C += ( 点R0 * 影響度0 ) + ( 点R1 * 影響度1 );   // 膨らみすぎ防止
+
+                            点P -= 点C;     // 頂点を点Cが中心になるよう移動して
+                            点P = Vector4.Transform( 点P, 重み付き回転行列 );   // 回転して
+                            点P += 点C;     // 元の位置へ
+
+                            スキニング後の入力頂点リスト[ i ].Position = 点P;
+                            スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, 重み付き回転行列 );
+                        }
+                        //----------------
+                        #endregion
+                        break;
                 }
 
-                // データストリームに、スキニング後の入力頂点リストを書き込む。
-                _頂点データストリーム.WriteRange( スキニング後の入力頂点リスト );
-                _頂点データストリーム.Position = 0;
-
-                // D3D頂点バッファに、スキニング後の入力頂点リストを（データストリーム経由で）書き込む。
-                RenderContext.Instance.DeviceManager.D3DDeviceContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
-
-                D3D頂点バッファをリセットする = false;
+                スキニング後の入力頂点リスト[ i ].UV = 入力頂点リスト[ i ].UV;
+                スキニング後の入力頂点リスト[ i ].AddUV1 = 入力頂点リスト[ i ].AddUV1;
+                スキニング後の入力頂点リスト[ i ].AddUV2 = 入力頂点リスト[ i ].AddUV2;
+                スキニング後の入力頂点リスト[ i ].AddUV3 = 入力頂点リスト[ i ].AddUV3;
+                スキニング後の入力頂点リスト[ i ].AddUV4 = 入力頂点リスト[ i ].AddUV4;
+                スキニング後の入力頂点リスト[ i ].EdgeWeight = 入力頂点リスト[ i ].EdgeWeight;
+                スキニング後の入力頂点リスト[ i ].Index = 入力頂点リスト[ i ].Index;
             }
+
+            // データストリームに、スキニング後の入力頂点リストを書き込む。
+            _頂点データストリーム.WriteRange( スキニング後の入力頂点リスト );
+            _頂点データストリーム.Position = 0;
+
+            // D3D頂点バッファに、スキニング後の入力頂点リストを（データストリーム経由で）書き込む。
+            RenderContext.Instance.DeviceManager.D3DDeviceContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
+
+            D3D頂点バッファをリセットする = false;
         }
 
         // スキニング 後
@@ -142,6 +241,7 @@ namespace MMF.モデル.PMX
                 UV = 頂点データ.UV,
                 Index = (uint) 頂点レイアウトリスト.Count,    // 現在の要素数 ＝ List<>内でのこの要素のインデックス番号
                 EdgeWeight = 頂点データ.エッジ倍率,
+                変形方式 = 頂点データ.ウェイト変形方式,
             };
 
             switch( 頂点データ.ウェイト変形方式 )
@@ -166,7 +266,6 @@ namespace MMF.モデル.PMX
 
                 case 変形方式.SDEF:
                     {
-                        //TODO: 以下はまだBDEF2としての実装であり、これをSDEFとして実装すること。
                         var v = (SDEF) 頂点データ.ボーンウェイト;
                         layout.BoneIndex1 = (uint) v.Bone1ReferenceIndex;
                         layout.BoneIndex2 = (uint) v.Bone2ReferenceIndex;

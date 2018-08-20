@@ -55,7 +55,7 @@ namespace MMF.ボーン
 
         public Matrix ローカルポーズ行列 { get; set; }
 
-        public Matrix グローバルポーズ行列 { get; private set; }
+        public Matrix モデルポーズ行列 { get; private set; }
 
 
         public PMXボーン( List<MMDFileParser.PMXModelParser.ボーン> bones, int index, int layer, スキニング skinning )
@@ -152,7 +152,6 @@ namespace MMF.ボーン
 
 		public float 付与率 { get; private set; }
 
-
         // その他
 
 		public void 子ボーンを追加する( PMXボーン child )
@@ -161,7 +160,7 @@ namespace MMF.ボーン
 			child.親ボーン = this;
 		}
 
-		public void グローバルポーズを更新する()
+		public void モデルポーズを更新する()
 		{
 			ローカルポーズ行列 = 
                 Matrix.Translation( -ローカル位置 ) * // 原点に戻って
@@ -169,13 +168,13 @@ namespace MMF.ボーン
                 Matrix.Translation( 移動 ) *          // 平行移動したのち
                 Matrix.Translation( ローカル位置 );   // 元の位置に戻す
 
-            グローバルポーズ行列 = 
+            モデルポーズ行列 = 
                 ローカルポーズ行列 *
-                ( 親ボーン?.グローバルポーズ行列 ?? Matrix.Identity );    // 親ボーンがあるなら親ボーンのグローバルポーズを反映。
+                ( 親ボーン?.モデルポーズ行列 ?? Matrix.Identity );    // 親ボーンがあるなら親ボーンのモデルポーズを反映。
 
             // すべての子ボーンについて更新。
             foreach( var 子ボーン in 子ボーンリスト )
-				子ボーン.グローバルポーズを更新する();
+				子ボーン.モデルポーズを更新する();
 		}
 
 

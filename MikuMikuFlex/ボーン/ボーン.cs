@@ -8,9 +8,9 @@ namespace MMF.ボーン
 
 		Quaternion 回転 { get; set; }
 
-		Matrix グローバルポーズ行列 { get; }
+		Matrix モデルポーズ行列 { get; }
 
 
-		void グローバルポーズを更新する();
+		void モデルポーズを更新する();
 	}
 }
