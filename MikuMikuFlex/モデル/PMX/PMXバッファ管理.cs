@@ -67,14 +67,17 @@ namespace MMF.モデル.PMX
                         #region " *** "
                         //----------------
                         {
+                            var 頂点 = 入力頂点リスト[ i ];
+
                             Matrix bt =
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ];
+                                boneTrans[ 頂点.BoneIndex1 ];
 
                             if( Matrix.Zero == bt )
                                 bt = Matrix.Identity;
 
-                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
-                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal.Normalize();
                         }
                         //----------------
                         #endregion
@@ -84,36 +87,41 @@ namespace MMF.モデル.PMX
                         #region " *** "
                         //----------------
                         {
+                            var 頂点 = 入力頂点リスト[ i ];
+
                             Matrix bt =
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2;
+                                boneTrans[ 頂点.BoneIndex1 ] * 頂点.BoneWeight1 +
+                                boneTrans[ 頂点.BoneIndex2 ] * 頂点.BoneWeight2;
 
                             if( Matrix.Zero == bt )
                                 bt = Matrix.Identity;
 
-                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
-                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal.Normalize();
                         }
                         //----------------
                         #endregion
                         break;
 
                     case 変形方式.BDEF4:
-                    case 変形方式.QDEF:
                         #region " *** "
                         //----------------
                         {
+                            var 頂点 = 入力頂点リスト[ i ];
+
                             Matrix bt =
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex1 ] * 入力頂点リスト[ i ].BoneWeight1 +
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex2 ] * 入力頂点リスト[ i ].BoneWeight2 +
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex3 ] * 入力頂点リスト[ i ].BoneWeight3 +
-                                boneTrans[ 入力頂点リスト[ i ].BoneIndex4 ] * 入力頂点リスト[ i ].BoneWeight4;
+                                boneTrans[ 頂点.BoneIndex1 ] * 頂点.BoneWeight1 +
+                                boneTrans[ 頂点.BoneIndex2 ] * 頂点.BoneWeight2 +
+                                boneTrans[ 頂点.BoneIndex3 ] * 頂点.BoneWeight3 +
+                                boneTrans[ 頂点.BoneIndex4 ] * 頂点.BoneWeight4;
 
                             if( Matrix.Zero == bt )
                                 bt = Matrix.Identity;
 
-                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 入力頂点リスト[ i ].Position, bt );
-                            スキニング後の入力頂点リスト[ i ].Normal = 入力頂点リスト[ i ].Normal;
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal.Normalize();
                         }
                         //----------------
                         #endregion
@@ -166,6 +174,48 @@ namespace MMF.モデル.PMX
 
                             スキニング後の入力頂点リスト[ i ].Position = 点P;
                             スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, 重み付き回転行列 );
+                            スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                        }
+                        //----------------
+                        #endregion
+                        break;
+
+                    case 変形方式.QDEF:
+                        #region " *** "
+                        //----------------
+                        {
+                            // ※ QDEFを使ったモデルが見つからないのでテストしてません。あれば教えてください！
+
+                            var 頂点 = 入力頂点リスト[ i ];
+
+                            var dualQuaternion = new DualQuaternion[ 4 ];   // 最大４ボーンまで対応
+
+                            var boneIndexes = new[] { 頂点.BoneIndex1, 頂点.BoneIndex2, 頂点.BoneIndex3, 頂点.BoneIndex4 };
+                            var boneWeights = new[] { 頂点.BoneWeight1, 頂点.BoneWeight2, 頂点.BoneWeight3, 頂点.BoneWeight4 };
+
+                            for( int b = 0; b < 4; b++ )
+                            {
+                                if( boneWeights[ b ] == 0f )
+                                {
+                                    dualQuaternion[ b ] = DualQuaternion.Zero;  // 未使用
+                                }
+                                else
+                                {
+                                    dualQuaternion[ b ] = new DualQuaternion( boneTrans[ boneIndexes[ b ] ] );
+                                }
+                            }
+
+                            Matrix bt = (
+                                dualQuaternion[ 0 ] * boneWeights[ 0 ] +
+                                dualQuaternion[ 1 ] * boneWeights[ 1 ] +
+                                dualQuaternion[ 2 ] * boneWeights[ 2 ] +
+                                dualQuaternion[ 3 ] * boneWeights[ 3 ] ).ToMatrix();
+
+                            if( Matrix.Zero == bt )
+                                bt = Matrix.Identity;
+
+                            スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                            スキニング後の入力頂点リスト[ i ].Normal = 頂点.Normal;
                         }
                         //----------------
                         #endregion
