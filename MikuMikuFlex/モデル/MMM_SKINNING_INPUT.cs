@@ -6,7 +6,7 @@ using SharpDX.DXGI;
 
 namespace MMF.モデル
 {
-	public struct MMM_SKINNING_INPUT
+	public struct MMM_SKINNING_INPUT    // CS_INPUT と同義
 	{
 		public Vector4 Position;
 
@@ -48,6 +48,9 @@ namespace MMF.モデル
 
 		public UInt32 Index;
 
-        public MMDFileParser.PMXModelParser.BoneWeight.変形方式 変形方式;
-	}
+        /// <summary>
+        ///     <see cref="MMDFileParser.PMXModelParser.BoneWeight.変形方式"/> の値
+        /// </summary>
+        public UInt32 変形方式;
+    }
 }

@@ -62,7 +62,28 @@ SamplerState mySampler
 // 既定の入出力定義 ///////////////////////////////////////
 
 
-// 頂点シェーダ入力
+// スキニングシェーダ（コンピュートシェーダー）入力
+
+struct CS_INPUT
+{
+    float4 Pos          : POSITION;     // 座標（ローカル座標）
+    float4 BoneWeight   : BLENDWEIGHT;  // ボーンウェイト1～4
+    uint4  BlendIndices : BLENDINDICES; // ボーンインデックス1～4
+    float3 Normal       : NORMAL;       // 法線（ローカル座標）
+    float2 Tex          : TEXCOORD0;    // UV
+    float4 AddUV1       : TEXCOORD1;    // 追加UV1
+    float4 AddUV2       : TEXCOORD2;    // 追加UV2
+    float4 AddUV3       : TEXCOORD3;    // 追加UV3
+    float4 AddUV4       : TEXCOORD4;    // 追加UV4
+    float4 SdefC        : TEXCOORD5;    // SDEF用C座標
+    float3 SdefR0       : TEXCOORD6;    // SDEF用R0座標
+    float3 SdefR1       : TEXCOORD7;    // SDEF用R1座標
+    float  EdgeWeight   : TEXCOORD8;    // エッジ幅
+    uint   Index        : PSIZE15;      // 頂点インデックス値
+};
+
+
+// 頂点シェーダ入力（＝スキニングシェーダ出力）
 
 struct PS_INPUT
 {
@@ -77,6 +98,7 @@ struct PS_INPUT
 	float  Index      : PSIZE15;       // 頂点インデックス値
 };
 
+
 // 頂点シェーダ出力
 
 struct VS_OUTPUT
@@ -88,6 +110,17 @@ struct VS_OUTPUT
 	float2 SpTex	  : TEXCOORD4;		// スフィアマップテクスチャ座標
 	float4 Color	  : COLOR0;			// ディフューズ色
 };
+
+// スキニング /////////////////////////////////////////////////
+
+PS_INPUT CS_Skinning(CS_INPUT IN)
+{
+    PS_INPUT Out;
+
+
+
+	return Out;
+}
 
 
 // オブジェクト描画 ///////////////////////////////////////////

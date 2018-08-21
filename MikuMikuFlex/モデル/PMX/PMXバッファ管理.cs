@@ -63,7 +63,7 @@ namespace MMF.モデル.PMX
             {
                 switch( 入力頂点リスト[ i ].変形方式 )
                 {
-                    case 変形方式.BDEF1:
+                    case (uint) 変形方式.BDEF1:
                         #region " *** "
                         //----------------
                         {
@@ -83,7 +83,7 @@ namespace MMF.モデル.PMX
                         #endregion
                         break;
 
-                    case 変形方式.BDEF2:
+                    case (uint) 変形方式.BDEF2:
                         #region " *** "
                         //----------------
                         {
@@ -104,7 +104,7 @@ namespace MMF.モデル.PMX
                         #endregion
                         break;
 
-                    case 変形方式.BDEF4:
+                    case (uint) 変形方式.BDEF4:
                         #region " *** "
                         //----------------
                         {
@@ -127,7 +127,7 @@ namespace MMF.モデル.PMX
                         #endregion
                         break;
 
-                    case 変形方式.SDEF:
+                    case (uint) 変形方式.SDEF:
                         #region " *** "
                         //----------------
                         {
@@ -180,7 +180,7 @@ namespace MMF.モデル.PMX
                         #endregion
                         break;
 
-                    case 変形方式.QDEF:
+                    case (uint) 変形方式.QDEF:
                         #region " *** "
                         //----------------
                         {
@@ -291,7 +291,7 @@ namespace MMF.モデル.PMX
                 UV = 頂点データ.UV,
                 Index = (uint) 頂点レイアウトリスト.Count,    // 現在の要素数 ＝ List<>内でのこの要素のインデックス番号
                 EdgeWeight = 頂点データ.エッジ倍率,
-                変形方式 = 頂点データ.ウェイト変形方式,
+                変形方式 = (uint) 頂点データ.ウェイト変形方式,
             };
 
             switch( 頂点データ.ウェイト変形方式 )
