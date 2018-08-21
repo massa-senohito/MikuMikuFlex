@@ -1,6 +1,7 @@
 
-/////////////////////////////////////////////
-// Script 宣言
+
+// Script 宣言 ///////////////////////////////////////////
+
 
 float Script : STANDARDSGLOBAL <
 	string ScriptClass="object";
@@ -8,13 +9,13 @@ float Script : STANDARDSGLOBAL <
 > = 0.8;
 
 
-/////////////////////////////////////////////
-// グローバル変数
+// グローバル変数 ///////////////////////////////////////////
 
-float4x4 matWVP : WORLDVIEWPROJECTION < string Object="Camera"; >;
-float4x4 matWV:WORLDVIEW < string Object = "Camera"; >;
-float4x4 WorldMatrix : WORLD;
-float4x4 ViewMatrix : VIEW;
+
+float4x4 matWVP       : WORLDVIEWPROJECTION < string Object="Camera"; >;
+float4x4 matWV        : WORLDVIEW < string Object = "Camera"; >;
+float4x4 WorldMatrix  : WORLD;
+float4x4 ViewMatrix   : VIEW;
 float2   viewportSize : VIEWPORTPIXELSIZE;
 float4   ViewPointPosition : POSITION < string object="camera"; >;	// カメラ位置（float4）
 float4   LightPointPosition : POSITION < string object="light"; >;	// 光源位置
@@ -49,6 +50,7 @@ cbuffer BasicMaterialConstant
 
 
 // サンプラーステート; テクスチャ、スフィアマップ、トゥーンテクスチャで共通
+
 SamplerState mySampler
 {
    Filter = MIN_MAG_LINEAR_MIP_POINT;
@@ -57,12 +59,12 @@ SamplerState mySampler
 };
 
 
-/////////////////////////////////////////////
-// 入出力定義
+// 既定の入出力定義 ///////////////////////////////////////
 
 
 // 頂点シェーダ入力
-struct SKINNING_OUTPUT
+
+struct PS_INPUT
 {
 	float4 Position   : POSITION;      // スキニング後の座標（ローカル座標）
 	float3 Normal     : NORMAL;        // 法線（ローカル座標）
@@ -75,7 +77,8 @@ struct SKINNING_OUTPUT
 	float  Index      : PSIZE15;       // 頂点インデックス値
 };
 
-// 頂点シェーダ出力（＝ピクセルシェーダ入力）
+// 頂点シェーダ出力
+
 struct VS_OUTPUT
 {
 	float4 Position   : SV_POSITION;	// 座標（射影座標）
@@ -87,13 +90,22 @@ struct VS_OUTPUT
 };
 
 
-/////////////////////////////////////////////
-// オブジェクト描画用シェーダ
+// オブジェクト描画 ///////////////////////////////////////////
+
+
+technique11 DefaultObject < string MMDPass = "object"; >
+{
+	pass DefaultPass
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS_Object()));
+		SetPixelShader(CompileShader(ps_5_0, PS_Object()));
+	}
+}
 
 
 // 頂点シェーダ
 
-VS_OUTPUT VS_Main(SKINNING_OUTPUT input)
+VS_OUTPUT VS_Object(PS_INPUT input)
 {
 	VS_OUTPUT Out;
 
@@ -127,7 +139,7 @@ VS_OUTPUT VS_Main(SKINNING_OUTPUT input)
 
 // ピクセルシェーダ
 
-float4 PS_Main( VS_OUTPUT IN ) : SV_Target
+float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 {
     // 反射色計算
 	
@@ -194,25 +206,30 @@ float4 PS_Main( VS_OUTPUT IN ) : SV_Target
 }
 
 
-// テクニックとパス
 
-technique11 DefaultTechnique < string MMDPass = "object"; >
+// エッジ描画 ////////////////////////////////////////////////
+
+
+BlendState NoBlend
+{
+	BlendEnable[0] = False;
+};
+technique11 DefaultEdge < string MMDPass = "edge"; >
 {
 	pass DefaultPass
 	{
-		SetVertexShader(CompileShader(vs_5_0, VS_Main()));
-		SetPixelShader(CompileShader(ps_5_0, PS_Main()));
+		SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);	//AlphaBlendEnable = FALSE;
+		//AlphaTestEnable = FALSE;	--> D3D10 以降は廃止
+
+		SetVertexShader(CompileShader(vs_5_0, VS_Edge()));
+		SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
 	}
 }
 
 
-/////////////////////////////////////////////
-// エッジ描画用シェーダ
-
-
 // 頂点シェーダ
 
-VS_OUTPUT VS_Edge(SKINNING_OUTPUT IN)
+VS_OUTPUT VS_Edge(PS_INPUT IN)
 {
 	VS_OUTPUT Out;
 
@@ -236,21 +253,3 @@ float4 PS_Edge( VS_OUTPUT IN ) : SV_Target
 	return EdgeColor;
 }
 
-
-// テクニックとパス
-
-BlendState NoBlend
-{
-	BlendEnable[0] = False;
-};
-technique11 DefaultEdge < string MMDPass = "edge"; >
-{
-	pass DefaultPass
-	{
-		SetBlendState( NoBlend, float4(0.0f,0.0f,0.0f,0.0f), 0xFFFFFFFF );	//AlphaBlendEnable = FALSE;
-		//AlphaTestEnable = FALSE;	--> D3D10 以降は廃止
-
-		SetVertexShader( CompileShader( vs_5_0, VS_Edge() ) );
-		SetPixelShader( CompileShader( ps_5_0, PS_Edge() ) );
-	}
-}

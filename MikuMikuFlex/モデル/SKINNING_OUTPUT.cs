@@ -9,7 +9,7 @@ namespace MMF.モデル
     /// <summary>
     ///     スキニング計算後のデータのフォーマット。
     /// </summary>
-	public struct SKINNING_OUTPUT
+	public struct SKINNING_OUTPUT   // PS_INPUT と同義
 	{
         #region 順番入れ替え危険
 
