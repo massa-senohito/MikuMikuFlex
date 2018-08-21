@@ -40,7 +40,7 @@ bool use_selfshadow;		// 描画中の材質がセルフ影を使用するなら true
 
 // 定数バッファ；材質単位で変わらないもの
 
-cbuffer BasicMaterialConstant
+cbuffer BasicMaterialConstant   // cbuffer にはセマンティックを付けられないので、名前によって識別され、アプリからデータが書き込まれる。
 {
 	float4 AmbientColor:packoffset(c0);
 	float4 DiffuseColor:packoffset(c1);
@@ -62,30 +62,9 @@ SamplerState mySampler
 // 既定の入出力定義 ///////////////////////////////////////
 
 
-// スキニングシェーダ（コンピュートシェーダー）入力
+// 頂点シェーダ入力
 
-struct CS_INPUT
-{
-    float4 Pos          : POSITION;     // 座標（ローカル座標）
-    float4 BoneWeight   : BLENDWEIGHT;  // ボーンウェイト1～4
-    uint4  BlendIndices : BLENDINDICES; // ボーンインデックス1～4
-    float3 Normal       : NORMAL;       // 法線（ローカル座標）
-    float2 Tex          : TEXCOORD0;    // UV
-    float4 AddUV1       : TEXCOORD1;    // 追加UV1
-    float4 AddUV2       : TEXCOORD2;    // 追加UV2
-    float4 AddUV3       : TEXCOORD3;    // 追加UV3
-    float4 AddUV4       : TEXCOORD4;    // 追加UV4
-    float4 SdefC        : TEXCOORD5;    // SDEF用C座標
-    float3 SdefR0       : TEXCOORD6;    // SDEF用R0座標
-    float3 SdefR1       : TEXCOORD7;    // SDEF用R1座標
-    float  EdgeWeight   : TEXCOORD8;    // エッジ幅
-    uint   Index        : PSIZE15;      // 頂点インデックス値
-};
-
-
-// 頂点シェーダ入力（＝スキニングシェーダ出力）
-
-struct PS_INPUT
+struct VS_INPUT
 {
 	float4 Position   : POSITION;      // スキニング後の座標（ローカル座標）
 	float3 Normal     : NORMAL;        // 法線（ローカル座標）
@@ -111,34 +90,12 @@ struct VS_OUTPUT
 	float4 Color	  : COLOR0;			// ディフューズ色
 };
 
-// スキニング /////////////////////////////////////////////////
-
-PS_INPUT CS_Skinning(CS_INPUT IN)
-{
-    PS_INPUT Out;
-
-
-
-	return Out;
-}
-
-
 // オブジェクト描画 ///////////////////////////////////////////
-
-
-technique11 DefaultObject < string MMDPass = "object"; >
-{
-	pass DefaultPass
-	{
-		SetVertexShader(CompileShader(vs_5_0, VS_Object()));
-		SetPixelShader(CompileShader(ps_5_0, PS_Object()));
-	}
-}
 
 
 // 頂点シェーダ
 
-VS_OUTPUT VS_Object(PS_INPUT input)
+VS_OUTPUT VS_Object(VS_INPUT input)
 {
 	VS_OUTPUT Out;
 
@@ -239,30 +196,24 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 }
 
 
+// テクニックとパス
+
+technique11 DefaultObject < string MMDPass = "object"; >
+{
+    pass DefaultPass
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Object()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Object()));
+    }
+}
+
 
 // エッジ描画 ////////////////////////////////////////////////
 
 
-BlendState NoBlend
-{
-	BlendEnable[0] = False;
-};
-technique11 DefaultEdge < string MMDPass = "edge"; >
-{
-	pass DefaultPass
-	{
-		SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);	//AlphaBlendEnable = FALSE;
-		//AlphaTestEnable = FALSE;	--> D3D10 以降は廃止
-
-		SetVertexShader(CompileShader(vs_5_0, VS_Edge()));
-		SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
-	}
-}
-
-
 // 頂点シェーダ
 
-VS_OUTPUT VS_Edge(PS_INPUT IN)
+VS_OUTPUT VS_Edge(VS_INPUT IN)
 {
 	VS_OUTPUT Out;
 
@@ -286,3 +237,21 @@ float4 PS_Edge( VS_OUTPUT IN ) : SV_Target
 	return EdgeColor;
 }
 
+
+// テクニックとパス
+
+BlendState NoBlend
+{
+    BlendEnable[0] = False;
+};
+technique11 DefaultEdge < string MMDPass = "edge"; >
+{
+    pass DefaultPass
+    {
+        SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF); //AlphaBlendEnable = FALSE;
+		//AlphaTestEnable = FALSE;	--> D3D10 以降は廃止
+
+        SetVertexShader(CompileShader(vs_5_0, VS_Edge()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
+    }
+}
