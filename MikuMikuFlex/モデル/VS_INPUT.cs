@@ -7,96 +7,30 @@ using SharpDX.DXGI;
 namespace MMF.モデル
 {
     /// <summary>
-    ///     スキニング計算後のデータのフォーマット。
+    ///     頂点シェーダーの入力
     /// </summary>
 	public struct VS_INPUT
 	{
-        #region " 順番入れ替え危険 "
-        //----------------
         public Vector4 Position;
-
         public Vector3 Normal;
-
         public Vector2 UV;
-
         public Vector4 AddUV1;
-
         public Vector4 AddUV2;
-
         public Vector4 AddUV3;
-
         public Vector4 AddUV4;
-
         public float EdgeWeight;
-
         public UInt32 Index;
-        //----------------
-        #endregion
 
         public static readonly InputElement[] VertexElements = {
-             #region " エレメントリスト "
-            //----------------
-			new InputElement
-			{
-				SemanticName = "POSITION",
-				Format = Format.R32G32B32A32_Float
-			},
-			new InputElement
-			{
-				SemanticName = "NORMAL",
-				Format = Format.R32G32B32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-			new InputElement    // UV
-            {
-				SemanticName = "TEXCOORD",
-				Format = Format.R32G32_Float,
-				SemanticIndex = 0,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-			new InputElement    //AddUV1
-            {
-				SemanticName = "TEXCOORD",
-				SemanticIndex = 1,
-				Format = Format.R32G32B32A32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-            new InputElement    //AddUV2
-            {
-				SemanticName = "TEXCOORD",
-				SemanticIndex = 2,
-				Format = Format.R32G32B32A32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-            new InputElement    //AddUV3
-            {
-				SemanticName = "TEXCOORD",
-				SemanticIndex = 3,
-				Format = Format.R32G32B32A32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-			new InputElement    //AddUV4
-            {
-				SemanticName = "TEXCOORD",
-				SemanticIndex = 4,
-				Format = Format.R32G32B32A32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-			new InputElement    // EdgeWeight
-			{
-				SemanticName = "EDGEWEIGHT",
-				Format = Format.R32_Float,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-			new InputElement    // Index
-			{
-				SemanticName = "PSIZE",
-				SemanticIndex = 15,
-				Format = Format.R32_UInt,
-				AlignedByteOffset = InputElement.AppendAligned
-			},
-            //----------------
-            #endregion
+			new InputElement { SemanticName = "POSITION", Format = Format.R32G32B32A32_Float },
+			new InputElement { SemanticName = "NORMAL",   Format = Format.R32G32B32_Float, AlignedByteOffset = InputElement.AppendAligned },
+			new InputElement { SemanticName = "TEXCOORD", Format = Format.R32G32_Float,	SemanticIndex = 0, AlignedByteOffset = InputElement.AppendAligned },  // UV
+			new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 1, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV1
+            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 2, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV2
+            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 3, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV3
+			new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 4, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV4
+			new InputElement { SemanticName = "EDGEWEIGHT", Format = Format.R32_Float, AlignedByteOffset = InputElement.AppendAligned },  // EdgeWeight
+			new InputElement { SemanticName = "PSIZE", SemanticIndex = 15, Format = Format.R32_UInt, AlignedByteOffset = InputElement.AppendAligned },  // Index
 		};
 
 		public static int SizeInBytes => Marshal.SizeOf( typeof( VS_INPUT ) );

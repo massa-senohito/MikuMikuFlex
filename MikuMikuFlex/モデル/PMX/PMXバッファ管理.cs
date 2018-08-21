@@ -9,7 +9,7 @@ namespace MMF.モデル.PMX
 	public class PMXバッファ管理 : バッファ管理
 	{
         // スキニング 前
-        public MMM_SKINNING_INPUT[] 入力頂点リスト { get; private set; }
+        public CS_INPUT[] 入力頂点リスト { get; private set; }
 
         public int 頂点数 => 入力頂点リスト.Length;
 
@@ -253,7 +253,7 @@ namespace MMF.モデル.PMX
             
             // モデルの頂点リストから入力頂点リスト（スキニング前）を作成する。
 
-            var 頂点リスト = new List<MMM_SKINNING_INPUT>(); // スキニング 前
+            var 頂点リスト = new List<CS_INPUT>(); // スキニング 前
 
             for( int i = 0; i < モデル.頂点リスト.Count; i++ )
 				_頂点データを頂点レイアウトリストに追加する( モデル.頂点リスト[ i ], 頂点リスト );
@@ -283,9 +283,9 @@ namespace MMF.モデル.PMX
             D3Dインデックスバッファ = CGHelper.D3Dバッファを作成する( インデックスリスト, d3dDevice, SharpDX.Direct3D11.BindFlags.IndexBuffer );
 		}
 
-		private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<MMM_SKINNING_INPUT> 頂点レイアウトリスト )
+		private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
 		{
-            var layout = new MMM_SKINNING_INPUT() {
+            var layout = new CS_INPUT() {
                 Position = new Vector4( 頂点データ.位置, 1f ),
                 Normal = 頂点データ.法線,
                 UV = 頂点データ.UV,

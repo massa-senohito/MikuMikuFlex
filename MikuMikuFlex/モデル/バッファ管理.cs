@@ -8,7 +8,7 @@ namespace MMF.モデル
 
         SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; }
 
-		MMM_SKINNING_INPUT[] 入力頂点リスト { get; }
+		CS_INPUT[] 入力頂点リスト { get; }
 
         SharpDX.Direct3D11.InputLayout D3D頂点レイアウト { get; }
 

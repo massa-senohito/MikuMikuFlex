@@ -62,6 +62,14 @@ SamplerState mySampler
 // 既定の入出力定義 ///////////////////////////////////////
 
 
+// コンピュートシェーダ入力
+
+struct CS_INPUT
+{
+
+};
+
+
 // 頂点シェーダ入力
 
 struct VS_INPUT
