@@ -64,10 +64,34 @@ SamplerState mySampler
 
 // コンピュートシェーダ入力
 
+float4x4 BoneTrans[768] : BONETRANS;
+
 struct CS_INPUT
 {
-
+    float4 Position;
+    float4 BoneWeight;
+    uint4  BoneIndex;
+    float3 Normal;
+    float2 Tex;
+    float4 AddUV1;
+    float4 AddUV2;
+    float4 AddUV3;
+    float4 AddUV4;
+    float4 Sdef_C;
+    float3 Sdef_R0;
+    float3 Sdef_R1;
+    float  EdgeWeight;
+    uint   Index;
+    uint   Deform;
 };
+
+StructuredBuffer<CS_INPUT> CSBuffer : register(t0);
+
+#define DEFORM_BDEF1    0
+#define DEFORM_BDEF2    1
+#define DEFORM_BDEF4    2
+#define DEFORM_SDEF     3
+#define DEFORM_QDEF     4
 
 
 // 頂点シェーダ入力
@@ -82,8 +106,10 @@ struct VS_INPUT
 	float4 AddUV3     : TEXCOORD3;     // 追加UV3
 	float4 AddUV4     : TEXCOORD4;     // 追加UV4
 	float  EdgeWeight : EDGEWEIGHT;    // エッジウェイト
-	float  Index      : PSIZE15;       // 頂点インデックス値
+	uint   Index      : PSIZE15;       // 頂点インデックス値
 };
+
+RWByteAddressBuffer VSBuffer : register(u0);
 
 
 // 頂点シェーダ出力
@@ -97,6 +123,75 @@ struct VS_OUTPUT
 	float2 SpTex	  : TEXCOORD4;		// スフィアマップテクスチャ座標
 	float4 Color	  : COLOR0;			// ディフューズ色
 };
+
+#define VS_OUTPUT_SIZE  (18*4)
+
+
+// スキニング /////////////////////////////////////////////////
+
+
+// コンピュートシェーダー
+// 　Xしか扱わないので、Dispach は (頂点数/64+1, 1, 1) とすること。
+// 　例: 頂点数が 130 なら Dispach( 3, 1, 1 )
+
+[numthreads(64,1,1)]
+void CS_Skinning( uint3 id : SV_DispatchThreadID )
+{
+    uint csIndex = id.x;    // 頂点番号（0～頂点数-1）
+    uint vsIndex = csIndex * VS_OUTPUT_SIZE;    // 出力位置[byte単位（必ず4の倍数であること）]
+
+    CS_INPUT input = CSBuffer[csIndex];
+
+
+    // ボーンウェイト変形を適用して、新しい位置と法線を求める。
+
+    float4 position = { 0, 0, 0, 0 };
+    float3 normal = { 0, 0, 0 };
+
+    switch (input.Deform)
+    {
+        case DEFORM_BDEF1:
+        case DEFORM_BDEF2:
+        case DEFORM_BDEF4:
+        case DEFORM_SDEF:
+        case DEFORM_QDEF:
+            {
+                float4x4 bt =
+                    BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+                    BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+                    BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+                    BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+
+                position = mul(input.Position, bt);
+                normal = normalize(mul(input.Normal, bt));
+                break;
+            }
+    }
+
+    
+    // 頂点バッファへ出力する。
+
+    VSBuffer.Store4(vsIndex + 0, position);
+    VSBuffer.Store3(vsIndex + 16, normal);
+    VSBuffer.Store2(vsIndex + 28, input.Tex);
+    VSBuffer.Store4(vsIndex + 36, input.AddUV1);
+    VSBuffer.Store4(vsIndex + 52, input.AddUV2);
+    VSBuffer.Store4(vsIndex + 68, input.AddUV3);
+    VSBuffer.Store4(vsIndex + 84, input.AddUV4);
+    VSBuffer.Store(vsIndex + 100, input.EdgeWeight);
+    VSBuffer.Store(vsIndex + 104, asuint(input.Index));
+}
+
+
+// テクニックとパス
+
+technique11 DefaultSkinning < string MMDPass = "skinning"; >
+{
+    pass DefaultPass
+    {
+        SetComputeShader(CompileShader(cs_5_0, CS_Skinning()));
+    }
+}
 
 // オブジェクト描画 ///////////////////////////////////////////
 
@@ -130,6 +225,11 @@ VS_OUTPUT VS_Object(VS_INPUT input)
 		Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
 		Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
 	}
+    else
+    {
+        Out.SpTex.x = 0.0f;
+        Out.SpTex.y = 0.0f;
+    }
 
 	return Out;
 }

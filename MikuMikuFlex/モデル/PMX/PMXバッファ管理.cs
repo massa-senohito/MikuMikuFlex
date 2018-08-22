@@ -1,64 +1,245 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
 using MMF.Utility;
+using MMF.エフェクト;
 using SharpDX;
 
 namespace MMF.モデル.PMX
 {
-	public class PMXバッファ管理 : バッファ管理
-	{
-        // スキニング 前
+    public class PMXバッファ管理 : バッファ管理
+    {
+        /// <summary>
+        ///     コンピュートシェーダーの入力（の元になる配列）。
+        /// </summary>
+        /// <remarks>
+        ///     進行時、この配列の内容は、各モーフから直接更新される。
+        ///     描画時、コンピューターシェーダーの入力として、<see cref="_頂点データストリーム"/> 経由で
+        ///     <see cref="D3Dスキニングバッファ"/> に書き込まれる。
+        /// </remarks>
         public CS_INPUT[] 入力頂点リスト { get; private set; }
 
-        public int 頂点数 => 入力頂点リスト.Length;
+        /// <summary>
+        ///     コンピュートシェーダーの入力。
+        /// </summary>
+        public SharpDX.Direct3D11.Buffer D3Dスキニングバッファ { get; private set; }
 
-        // スキニング 後
+        /// <summary>
+        ///     コンピュートシェーダーの出力、兼、頂点シェーダーの入力（＝入力アセンブラの入力）。
+        /// </summary>
         public SharpDX.Direct3D11.Buffer D3D頂点バッファ { get; private set; }
 
-		public SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; private set; }
+        /// <summary>
+        ///     入力アセンブラの入力。プリミティブの各頂点のインデックスを示す。
+        /// </summary>
+        public SharpDX.Direct3D11.Buffer D3Dインデックスバッファ { get; private set; }
 
-        // スキニング 後
+        /// <summary>
+        ///     入力アセンブラの入力。頂点バッファの要素のレイアウトを示す。
+        /// </summary>
         public SharpDX.Direct3D11.InputLayout D3D頂点レイアウト { get; private set; }
 
-        public bool D3D頂点バッファをリセットする { get; set; }
+        /// <summary>
+        ///     コンピュートシェーダーが入力（<see cref="D3Dスキニングバッファ"/>）に対して適用するビュー。
+        /// </summary>
+        public SharpDX.Direct3D11.ShaderResourceView D3DスキニングバッファSRView { get; private set; }
+
+        /// <summary>
+        ///     コンピュートシェーダーが出力（<see cref="D3D頂点バッファ"/>）に対して適用するビュー。
+        /// </summary>
+        public SharpDX.Direct3D11.UnorderedAccessView D3D頂点バッファビューUAView { get; private set; }
+
+        /// <summary>
+        ///     これを true にすると、現在の <see cref="入力頂点リスト"/> の内容が <see cref="D3Dスキニングバッファ"/> に書き込まれる。
+        ///     書き込んだ後は自動的に false に戻る。
+        /// </summary>
+        public bool D3Dスキニングバッファをリセットする { get; set; }
 
 
         public void 初期化する( object model, SharpDX.Direct3D11.Effect d3dEffect )
-		{
-            _バッファを初期化する( model );
+        {
+            var d3dDevice = RenderContext.Instance.DeviceManager.D3DDevice;
+            var モデル = (PMXモデル) model;
+
+
+            // 入力頂点リストを作成する。
+
+            var 頂点リスト = new List<CS_INPUT>();
+
+            for( int i = 0; i < モデル.頂点リスト.Count; i++ )
+                this._頂点データを頂点レイアウトリストに追加する( モデル.頂点リスト[ i ], 頂点リスト );
+
+            this.入力頂点リスト = 頂点リスト.ToArray();
+
+
+            // インデックスバッファを作成する。内容は モデルの面リスト で初期化。
+
+            var インデックスリスト = new List<uint>();
+
+            foreach( 面 surface in モデル.面リスト )
+            {
+                インデックスリスト.Add( surface.頂点1 );
+                インデックスリスト.Add( surface.頂点2 );
+                インデックスリスト.Add( surface.頂点3 );
+            }
+
+            this.D3Dインデックスバッファ = CGHelper.D3Dバッファを作成する( インデックスリスト, d3dDevice, SharpDX.Direct3D11.BindFlags.IndexBuffer );
+
+
+            // 頂点データストリームを作成する。内容は空。
+
+            this._頂点データストリーム = new DataStream( this.入力頂点リスト.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
+
+
+            // D3Dスキニングバッファを作成する。内容は空。
+
+            this.D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
+                d3dDevice,
+                new SharpDX.Direct3D11.BufferDescription {
+                    SizeInBytes = CS_INPUT.SizeInBytes * this.入力頂点リスト.Length,
+                    Usage = SharpDX.Direct3D11.ResourceUsage.Default,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.ShaderResource | SharpDX.Direct3D11.BindFlags.UnorderedAccess,
+                    CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
+                    OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.BufferStructured,   // 構造化バッファ
+                    StructureByteStride = CS_INPUT.SizeInBytes,
+                } );
+
+            D3Dスキニングバッファをリセットする = true;    // 今はストリームもスキニングバッファも空なので、描画前に設定するようフラグを立てておく。
+
+
+            // 頂点バッファを作成する。
+
+            this.D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
+                d3dDevice,
+                new SharpDX.Direct3D11.BufferDescription {
+                    SizeInBytes = VS_INPUT.SizeInBytes * this.入力頂点リスト.Length,
+                    Usage = SharpDX.Direct3D11.ResourceUsage.Default,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.VertexBuffer | SharpDX.Direct3D11.BindFlags.ShaderResource | SharpDX.Direct3D11.BindFlags.UnorderedAccess,  // 非順序アクセス
+                    CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
+                    OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
+                } );
+
+            // 頂点シェーダー用の入力レイアウトを作成する。
 
             this.D3D頂点レイアウト = new SharpDX.Direct3D11.InputLayout(
-                RenderContext.Instance.DeviceManager.D3DDevice,
-                d3dEffect.GetTechniqueByIndex( 0 ).GetPassByIndex( 0 ).Description.Signature, 
-                SKINNING_OUTPUT.VertexElements );
-		}
+                d3dDevice,
+                d3dEffect.GetTechniqueByName( "DefaultObject" ).GetPassByIndex( 0 ).Description.Signature,
+                VS_INPUT.VertexElements );
+
+
+            // コンピュートシェーダー入力用のシェーダーリソースビューを作成する。
+
+            this.D3DスキニングバッファSRView = new SharpDX.Direct3D11.ShaderResourceView(
+                d3dDevice,
+                this.D3Dスキニングバッファ,  // 構造化バッファ
+                new SharpDX.Direct3D11.ShaderResourceViewDescription {
+                    Format = SharpDX.DXGI.Format.Unknown,
+                    Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.ExtendedBuffer,
+                    BufferEx = new SharpDX.Direct3D11.ShaderResourceViewDescription.ExtendedBufferResource {
+                        FirstElement = 0,
+                        ElementCount = this.入力頂点リスト.Length,
+                    },
+                } );
+
+
+            // コンピュートシェーダー出力用の非順序アクセスビューを作成する。
+
+            this.D3D頂点バッファビューUAView = new SharpDX.Direct3D11.UnorderedAccessView(
+                d3dDevice,
+                this.D3D頂点バッファ,
+                new SharpDX.Direct3D11.UnorderedAccessViewDescription {
+                    Format = SharpDX.DXGI.Format.R32_Typeless,
+                    Dimension = SharpDX.Direct3D11.UnorderedAccessViewDimension.Buffer,
+                    Buffer = new SharpDX.Direct3D11.UnorderedAccessViewDescription.BufferResource {
+                        FirstElement = 0,
+                        ElementCount = VS_INPUT.SizeInBytes * 入力頂点リスト.Length / 4,
+                        Flags = SharpDX.Direct3D11.UnorderedAccessViewBufferFlags.Raw,
+                    },
+                } );
+        }
 
         public void Dispose()
         {
-            D3D頂点バッファ?.Dispose();
-            D3D頂点バッファ = null;
+            this.D3D頂点バッファビューUAView?.Dispose();
+            this.D3D頂点バッファビューUAView = null;
+
+            this.D3DスキニングバッファSRView?.Dispose();
+            this.D3DスキニングバッファSRView = null;
+
+            this.D3D頂点レイアウト?.Dispose();
+            this.D3D頂点レイアウト = null;
+
+            this.D3D頂点バッファ?.Dispose();
+            this.D3D頂点バッファ = null;
+
+            this.D3Dスキニングバッファ?.Dispose();
+            this.D3Dスキニングバッファ = null;
+
+            this._頂点データストリーム?.Dispose();   // pinned 解放
+            this._頂点データストリーム = null;
 
             D3Dインデックスバッファ?.Dispose();
             D3Dインデックスバッファ = null;
 
-            D3D頂点レイアウト?.Dispose();
-            D3D頂点レイアウト = null;
-
-            _頂点データストリーム?.Dispose();   // pinned 解放
-            _頂点データストリーム = null;
+            this.入力頂点リスト = null;
         }
 
-        public void D3D頂点バッファを更新する( MMF.ボーン.スキニング skelton )
+        public void D3Dスキニングバッファを更新する( MMF.ボーン.スキニング skelton, エフェクト.エフェクト effect )
         {
-            if( !( D3D頂点バッファをリセットする ) )
+            if( !( D3Dスキニングバッファをリセットする ) )
                 return;
 
             var skinning = ( skelton as MMF.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
             var boneTrans = skinning.ボーンのモデルポーズ配列;
 
-            // 現在の入力頂点リストに対して、スキニングを実行。
-            var スキニング後の入力頂点リスト = new SKINNING_OUTPUT[ 入力頂点リスト.Length ];
+            var d3dContext = RenderContext.Instance.DeviceManager.D3DDeviceContext;
+
+
+            // BONETRANS セマンティックを持つエフェクト変数にボーンのモデルポーズ配列を設定する。
+
+            effect.D3DEffect.GetVariableBySemantic( "BONETRANS" ).AsMatrix().SetMatrix( boneTrans );
+
+
+            // 現在の入力頂点リストをスキニングバッファに転送する。
+
+            this._頂点データストリーム.WriteRange( 入力頂点リスト );
+            this._頂点データストリーム.Position = 0;
+            d3dContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3Dスキニングバッファ, 0 );
+
+
+            // 使用するtechniqueを検索する。
+
+            テクニック technique =
+                ( from teq in effect.テクニックリスト
+                  where
+                    teq.テクニックを適用する描画対象 == MMDPass種別.スキニング
+                  select teq ).FirstOrDefault();
+
+            if( null != technique )
+            {
+                // パスを通じてコンピュートシェーダーステートを設定する。
+
+                technique.パスリスト.ElementAt( 0 ).Value.D3DPass.Apply( d3dContext );
+
+
+                // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
+
+                d3dContext.ComputeShader.SetShaderResource( 0, this.D3DスキニングバッファSRView );
+                d3dContext.ComputeShader.SetUnorderedAccessView( 0, this.D3D頂点バッファビューUAView );
+                d3dContext.Dispatch( ( 入力頂点リスト.Length / 64 ) + 1, 1, 1 );
+            }
+
+            // UAVを外す（このあと頂点シェーダーが使えるように）
+
+            d3dContext.ComputeShader.SetUnorderedAccessView( 0, null );
+
+
+            #region " （CPUで行ったときのソース）"
+            //----------------
+            /*
+            var スキニング後の入力頂点リスト = new VS_INPUT[ 入力頂点リスト.Length ];
+
             for( int i = 0; i < 入力頂点リスト.Length; i++ )
             {
                 switch( 入力頂点リスト[ i ].変形方式 )
@@ -237,54 +418,23 @@ namespace MMF.モデル.PMX
 
             // D3D頂点バッファに、スキニング後の入力頂点リストを（データストリーム経由で）書き込む。
             RenderContext.Instance.DeviceManager.D3DDeviceContext.UpdateSubresource( new DataBox( _頂点データストリーム.DataPointer, 0, 0 ), D3D頂点バッファ, 0 );
+            */
+            //----------------
+            #endregion
 
-            D3D頂点バッファをリセットする = false;
+            D3Dスキニングバッファをリセットする = false;
         }
 
-        // スキニング 後
+
+        /// <summary>
+        ///     <see cref="入力頂点リスト"/> を <see cref="D3Dスキニングバッファ"/> に書き込む際に使用。
+        ///     アンマネージドメモリに確保されるので、最初に一度だけ確保しておく。
+        /// </summary>
         private DataStream _頂点データストリーム;
 
 
-        private void _バッファを初期化する( object model )
-		{
-            var d3dDevice = RenderContext.Instance.DeviceManager.D3DDevice;
-			var モデル = (PMXモデル) model;
-
-            
-            // モデルの頂点リストから入力頂点リスト（スキニング前）を作成する。
-
-            var 頂点リスト = new List<CS_INPUT>(); // スキニング 前
-
-            for( int i = 0; i < モデル.頂点リスト.Count; i++ )
-				_頂点データを頂点レイアウトリストに追加する( モデル.頂点リスト[ i ], 頂点リスト );
-
-            入力頂点リスト = 頂点リスト.ToArray();
-
-
-            // スキニング後のデータストリームと頂点バッファを作成する。
-
-            _頂点データストリーム = new DataStream( 頂点リスト.Count * SKINNING_OUTPUT.SizeInBytes, canRead: true, canWrite: true );  // アンマネージドメモリとして確保される。
-            D3D頂点バッファ = CGHelper.D3Dバッファを作成する( d3dDevice, 頂点リスト.Count * SKINNING_OUTPUT.SizeInBytes, SharpDX.Direct3D11.BindFlags.VertexBuffer );
-
-            D3D頂点バッファをリセットする = true;    // どちらも空なので、描画前に設定すること。
-
-
-            // モデルの面リストから、D3Dインデックスバッファを作成する。
-
-            var インデックスリスト = new List<uint>();
-
-            foreach( 面 surface in モデル.面リスト )
-			{
-				インデックスリスト.Add( surface.頂点1 );
-				インデックスリスト.Add( surface.頂点2 );
-				インデックスリスト.Add( surface.頂点3 );
-			}
-
-            D3Dインデックスバッファ = CGHelper.D3Dバッファを作成する( インデックスリスト, d3dDevice, SharpDX.Direct3D11.BindFlags.IndexBuffer );
-		}
-
-		private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
-		{
+        private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
+        {
             var layout = new CS_INPUT() {
                 Position = new Vector4( 頂点データ.位置, 1f ),
                 Normal = 頂点データ.法線,
@@ -345,6 +495,6 @@ namespace MMF.モデル.PMX
             }
 
             頂点レイアウトリスト.Add( ( layout ) );
-		}
+        }
     }
 }

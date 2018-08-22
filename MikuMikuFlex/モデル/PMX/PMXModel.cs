@@ -163,7 +163,7 @@ namespace MMF.モデル.PMX
 
         public int サブセット数 => サブセット管理.サブセットリストの要素数;
 
-        public int 頂点数 => バッファ管理.頂点数;
+        public int 頂点数 => バッファ管理.入力頂点リスト.Length;
 
         public Vector4 セルフシャドウ色 { get; set; }
 
@@ -177,7 +177,7 @@ namespace MMF.モデル.PMX
 
             スキニング.更新する();
 
-            バッファ管理?.D3D頂点バッファを更新する( スキニング );   // TODO: これここでええん？ 描画する() の中やなくて？
+            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
 
             // モーフの更新結果をエフェクト用材質情報に反映
             foreach( var pmxSubset in サブセット管理.サブセットリスト )
@@ -194,7 +194,7 @@ namespace MMF.モデル.PMX
                 スキニング.エフェクトを適用する( effect.D3DEffect );
             }
 
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, SKINNING_OUTPUT.SizeInBytes, 0 ) );
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
@@ -214,7 +214,7 @@ namespace MMF.モデル.PMX
             }
 
             var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, SKINNING_OUTPUT.SizeInBytes, 0 ) );
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
             IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;

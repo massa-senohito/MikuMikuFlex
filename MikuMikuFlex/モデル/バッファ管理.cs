@@ -12,17 +12,15 @@ namespace MMF.モデル
 
         SharpDX.Direct3D11.InputLayout D3D頂点レイアウト { get; }
 
-        int 頂点数 { get; }
-
         /// <summary>
         ///     頂点モーフなどにより頂点データが変更された場合に true にする。
-        ///     すると、次回の更新時に <see cref="D3D頂点バッファを更新する"/> が読みだされる。
+        ///     すると、次回の更新時に <see cref="D3Dスキニングバッファを更新する"/> が読みだされる。
         /// </summary>
-        bool D3D頂点バッファをリセットする { get; set; }
+        bool D3Dスキニングバッファをリセットする { get; set; }
 
 
         void 初期化する( object model, SharpDX.Direct3D11.Effect d3dEffect );
 
-        void D3D頂点バッファを更新する( MMF.ボーン.スキニング skelton );
+        void D3Dスキニングバッファを更新する( MMF.ボーン.スキニング skelton, エフェクト.エフェクト effect );
     }
 }

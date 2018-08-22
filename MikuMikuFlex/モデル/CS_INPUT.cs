@@ -36,24 +36,6 @@ namespace MMF.モデル
         /// </summary>
         public UInt32 変形方式;
 
-        public static readonly InputElement[] VertexElements = {
-			new InputElement { SemanticName = "POSITION", Format = Format.R32G32B32A32_Float },
-            new InputElement { SemanticName = "BLENDWEIGHT",  Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "BLENDINDICES", Format = Format.R32G32B32A32_UInt, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "NORMAL", Format = Format.R32G32B32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 0, Format = Format.R32G32_Float, AlignedByteOffset = InputElement.AppendAligned },        // UV
-            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 1, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV1
-            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 2, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV2
-            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 3, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV3
-            new InputElement { SemanticName = "TEXCOORD", SemanticIndex = 4, Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },  // AddUV4
-            new InputElement { SemanticName = "SDEF_C",  Format = Format.R32G32B32A32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "SDEF_R0", Format = Format.R32G32B32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "SDEF_R1", Format = Format.R32G32B32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "EDGEWEIGHT", Format = Format.R32_Float, AlignedByteOffset = InputElement.AppendAligned },
-            new InputElement { SemanticName = "PSIZE", SemanticIndex = 15, Format = Format.R32_UInt, AlignedByteOffset = InputElement.AppendAligned },  // Index
-            new InputElement { SemanticName = "DEFORM", Format = Format.R32_UInt, AlignedByteOffset = InputElement.AppendAligned },  // 変形方式
-        };
-
         public static int SizeInBytes => Marshal.SizeOf( typeof( CS_INPUT ) );
     }
 }

@@ -477,17 +477,17 @@ namespace MMF.エフェクト
 
             // 使用するtechniqueを検索する
 
-            テクニック[] techniques =
+            テクニック technique =
                 ( from teq in テクニックリスト
                   where
                     teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
                     teq.テクニックを適用する描画対象 == passType
-                  select teq ).ToArray();
+                  select teq ).FirstOrDefault();
 
-            if( techniques.Length > 0 )
+            if( null != technique )
             {
                 // 最初の１つだけ有効（複数はないはずだが）
-                techniques[ 0 ].パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
+                technique.パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
             }
         }
 
