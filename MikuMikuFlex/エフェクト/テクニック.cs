@@ -134,6 +134,10 @@ namespace MMF.エフェクト
                         テクニックを適用する描画対象 = MMDPass種別.エッジ;
                         break;
 
+                    case "skinning":
+                        テクニックを適用する描画対象 = MMDPass種別.スキニング;
+                        break;
+
                     default:
                         throw new InvalidOperationException( "予期しない識別子" );
                 }

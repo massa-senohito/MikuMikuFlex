@@ -52,7 +52,7 @@ namespace MMF.エフェクト
 			{
                 // このパスに Script が存在しない場合は、そのまま描画する。
 				D3DPass.Apply( RenderContext.Instance.DeviceManager.D3DDeviceContext );
-				drawAction( ipmxSubset );
+				drawAction?.Invoke( ipmxSubset );
 			}
 			else
 			{

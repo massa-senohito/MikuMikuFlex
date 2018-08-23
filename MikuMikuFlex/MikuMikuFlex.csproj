@@ -129,7 +129,8 @@
     <Compile Include="DeviceManager\ブレンドステート管理.cs" />
     <Compile Include="DeviceManager\DrawableGroup.cs" />
     <Compile Include="DeviceManager\IHitTestable.cs" />
-    <Compile Include="モデル\SKINNING_OUTPUT.cs" />
+    <Compile Include="モデル\CS_INPUT.cs" />
+    <Compile Include="モデル\VS_INPUT.cs" />
     <Compile Include="行列\CameraMotion\マウスカメラモーション.cs" />
     <Compile Include="行列\CameraMotion\ボーン追従カメラモーション.cs" />
     <Compile Include="行列\CameraMotion\VMDカメラモーション.cs" />
@@ -284,7 +285,6 @@
     <Compile Include="Utility\FPSCounter.cs" />
     <Compile Include="モデル\トゥーンテクスチャ管理.cs" />
     <Compile Include="モデル\PMX\PMXバッファ管理.cs" />
-    <Compile Include="モデル\MMM_SKINNING_INPUT.cs" />
     <Compile Include="行列\カメラ.cs" />
     <Compile Include="行列\カメラ変更EventArgs.cs" />
     <Compile Include="行列\カメラ変数種別.cs" />

@@ -15,8 +15,10 @@ namespace MMF.ボーン
 	public class PMXスケルトン : スキニング
 	{
 		public Matrix[] ボーンのモデルポーズ配列;
+        public Vector3[] ボーンのローカル位置;
+        public Vector4[] ボーンの回転;
 
-		public event EventHandler スケルトンが更新された = delegate { };
+        public event EventHandler スケルトンが更新された = delegate { };
 
 		/// <summary>
 		///     FK, IK を行うインターフェースのリスト
@@ -43,6 +45,8 @@ namespace MMF.ボーン
 			// ボーンの数だけ初期化
 			ボーン配列 = new PMXボーン[ model.ボーンリスト.Count ];
             ボーンのモデルポーズ配列 = new Matrix[ model.ボーンリスト.Count ];
+            ボーンのローカル位置 = new Vector3[ model.ボーンリスト.Count ];
+            ボーンの回転 = new Vector4[ model.ボーンリスト.Count ];
             IKボーンリスト = new List<PMXボーン>();
 			
             // ボーンを読み込む
@@ -109,9 +113,16 @@ namespace MMF.ボーン
 
             for( int i = 0; i < ボーン配列.Length; i++ )
             {
-                ボーンのモデルポーズ配列[ ボーン配列[ i ].ボーンインデックス ] = ボーン配列[ i ].モデルポーズ行列;
+                int index = ボーン配列[ i ].ボーンインデックス;
+
+                ボーンのモデルポーズ配列[ index ] = ボーン配列[ i ].モデルポーズ行列;
+                ボーンのモデルポーズ配列[ index ].Transpose();  // SharpDX.Matrix は行優先だが HLSL の既定は列優先
+
+                ボーンのローカル位置[ index ] = ボーン配列[ i ].ローカル位置;
+
+                ボーンの回転[ index ] = new Vector4( ボーン配列[ i ].回転.ToArray() );
             }
-		}
+        }
 
 		public void ボーンのすべての変形をリセットする()
 		{
