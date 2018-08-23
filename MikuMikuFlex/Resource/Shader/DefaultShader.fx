@@ -130,6 +130,47 @@ struct VS_OUTPUT
 // スキニング /////////////////////////////////////////////////
 
 
+void BDEF(CS_INPUT input, out float4 position, out float3 normal)
+{
+    float4x4 bt =
+        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+
+    position = mul(input.Position, bt);
+    normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
+}
+
+void SDEF(CS_INPUT input, out float4 position, out float3 normal)
+{
+    // TODO: SDEF の実装に変更する。
+
+    float4x4 bt =
+        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+
+    position = mul(input.Position, bt);
+    normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
+}
+
+void QDEF(CS_INPUT input, out float4 position, out float3 normal)
+{
+    // TODO: QDEF の実装に変更する。
+
+    float4x4 bt =
+        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+
+    position = mul(input.Position, bt);
+    normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
+}
+
+
 // コンピュートシェーダー
 // 　Xしか扱わないので、Dispach は (頂点数/64+1, 1, 1) とすること。
 // 　例: 頂点数が 130 なら Dispach( 3, 1, 1 )
@@ -153,19 +194,16 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
         case DEFORM_BDEF1:
         case DEFORM_BDEF2:
         case DEFORM_BDEF4:
-        case DEFORM_SDEF:
-        case DEFORM_QDEF:
-            {
-                float4x4 bt =
-                    BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-                    BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-                    BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-                    BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+            BDEF(input, position, normal);
+            break;
 
-                position = mul(position, bt);
-                normal = normalize(mul(float4(normal, 0), bt)).xyz;
-                break;
-            }
+        case DEFORM_SDEF:
+            SDEF(input, position, normal);
+            break;
+
+        case DEFORM_QDEF:
+            QDEF(input, position, normal);
+            break;
     }
 
     
@@ -181,7 +219,6 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
     VSBuffer.Store(vsIndex + 100, asuint(input.EdgeWeight));
     VSBuffer.Store(vsIndex + 104, asuint(input.Index));
 }
-
 
 // テクニックとパス
 
