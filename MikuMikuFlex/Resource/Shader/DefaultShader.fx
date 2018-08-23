@@ -109,6 +109,8 @@ struct VS_INPUT
 	uint   Index      : PSIZE15;       // 頂点インデックス値
 };
 
+#define VS_INPUT_SIZE  ((4+3+2+4+4+4+4+1+1)*4)
+
 RWByteAddressBuffer VSBuffer : register(u0);
 
 
@@ -124,8 +126,6 @@ struct VS_OUTPUT
 	float4 Color	  : COLOR0;			// ディフューズ色
 };
 
-#define VS_OUTPUT_SIZE  (18*4)
-
 
 // スキニング /////////////////////////////////////////////////
 
@@ -138,15 +138,15 @@ struct VS_OUTPUT
 void CS_Skinning( uint3 id : SV_DispatchThreadID )
 {
     uint csIndex = id.x;    // 頂点番号（0～頂点数-1）
-    uint vsIndex = csIndex * VS_OUTPUT_SIZE;    // 出力位置[byte単位（必ず4の倍数であること）]
+    uint vsIndex = csIndex * VS_INPUT_SIZE;    // 出力位置[byte単位（必ず4の倍数であること）]
 
     CS_INPUT input = CSBuffer[csIndex];
 
 
     // ボーンウェイト変形を適用して、新しい位置と法線を求める。
 
-    float4 position = { 0, 0, 0, 0 };
-    float3 normal = { 0, 0, 0 };
+    float4 position = input.Position;
+    float3 normal = input.Normal;
 
     switch (input.Deform)
     {
@@ -162,8 +162,8 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
                     BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
                     BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
 
-                position = mul(input.Position, bt);
-                normal = normalize(mul(input.Normal, bt));
+                position = mul(position, bt);
+                normal = normalize(mul(float4(normal, 0), bt)).xyz;
                 break;
             }
     }
@@ -200,13 +200,13 @@ technique11 DefaultSkinning < string MMDPass = "skinning"; >
 
 VS_OUTPUT VS_Object(VS_INPUT input)
 {
-	VS_OUTPUT Out;
+    VS_OUTPUT Out = (VS_OUTPUT) 0;
 
 	// 位置（ワールドビュー射影変換）
 	Out.Position = mul(input.Position, matWVP);
 
 	// カメラとの相対位置
-	Out.Eye = ViewPointPosition - mul(input.Position, WorldMatrix);
+    Out.Eye = (ViewPointPosition - mul(input.Position, WorldMatrix)).xyz;
 
 	// 頂点法線
 	Out.Normal = normalize(mul(input.Normal, (float3x3)WorldMatrix));
@@ -221,7 +221,7 @@ VS_OUTPUT VS_Object(VS_INPUT input)
 	if (use_spheremap)
 	{
 		// スフィアマップテクスチャ座標
-		float2 NormalWV = mul(Out.Normal, (float3x3)ViewMatrix);
+        float2 NormalWV = mul(float4(Out.Normal, 0), ViewMatrix).xy;
 		Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
 		Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
 	}
@@ -241,8 +241,8 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 {
     // 反射色計算
 	
-	float3 LightDirection = -normalize( mul( LightPointPosition, matWV ) );
-	float3 HalfVector = normalize(normalize( IN.Eye ) + -mul( LightDirection, matWV ) );
+	float3 LightDirection = -normalize( mul( LightPointPosition, matWV ) ).xyz;
+    float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), matWV).xyz);
     float3 Specular = pow( max( 0.00001, dot( HalfVector, normalize( IN.Normal ) ) ), SpecularPower ) * SpecularColor.rgb;
 	float4 Color = IN.Color;
 
@@ -272,7 +272,7 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 	
 	// シェーディング
 
-	float LightNormal = dot( IN.Normal, -mul( LightDirection,matWV ) );
+    float LightNormal = dot(IN.Normal, -mul(float4(LightDirection, 0), matWV).xyz);
 	float shading = saturate( LightNormal );	// 0～1 に丸める
     
 	
@@ -323,7 +323,7 @@ technique11 DefaultObject < string MMDPass = "object"; >
 
 VS_OUTPUT VS_Edge(VS_INPUT IN)
 {
-	VS_OUTPUT Out;
+    VS_OUTPUT Out = (VS_OUTPUT) 0;
 
 	Out.Normal = normalize(mul(IN.Normal, (float3x3)WorldMatrix));	// 頂点法線
 
@@ -331,7 +331,7 @@ VS_OUTPUT VS_Edge(VS_INPUT IN)
 	float4 position = IN.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(IN.Position.xyz, CameraPosition) * 0.0005;
 	Out.Position = mul(position, matWVP);
 
-	Out.Eye = ViewPointPosition - mul(IN.Position, WorldMatrix);	// カメラとの相対位置
+    Out.Eye = (ViewPointPosition - mul(IN.Position, WorldMatrix)).xyz; // カメラとの相対位置
 	Out.Tex = IN.Tex;	// テクスチャ
 
 	return Out;
