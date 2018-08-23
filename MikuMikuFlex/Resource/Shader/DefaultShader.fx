@@ -1,4 +1,90 @@
 
+// クォータニオン /////////////////////////////////////////
+
+#define QUATERNION_IDENTITY float4(0, 0, 0, 1)
+
+float4 q_slerp(float4 a, float4 b, float t)
+{
+    // if either input is zero, return the other.
+    if (length(a) == 0.0)
+    {
+        if (length(b) == 0.0)
+        {
+            return QUATERNION_IDENTITY;
+        }
+        return b;
+    }
+    else if (length(b) == 0.0)
+    {
+        return a;
+    }
+
+    float cosHalfAngle = a.w * b.w + dot(a.xyz, b.xyz);
+
+    if (cosHalfAngle >= 1.0 || cosHalfAngle <= -1.0)
+    {
+        return a;
+    }
+    else if (cosHalfAngle < 0.0)
+    {
+        b.xyz = -b.xyz;
+        b.w = -b.w;
+        cosHalfAngle = -cosHalfAngle;
+    }
+
+    float blendA;
+    float blendB;
+    if (cosHalfAngle < 0.99)
+    {
+        // do proper slerp for big angles
+        float halfAngle = acos(cosHalfAngle);
+        float sinHalfAngle = sin(halfAngle);
+        float oneOverSinHalfAngle = 1.0 / sinHalfAngle;
+        blendA = sin(halfAngle * (1.0 - t)) * oneOverSinHalfAngle;
+        blendB = sin(halfAngle * t) * oneOverSinHalfAngle;
+    }
+    else
+    {
+        // do lerp if angle is really small.
+        blendA = 1.0 - t;
+        blendB = t;
+    }
+
+    float4 result = float4(blendA * a.xyz + blendB * b.xyz, blendA * a.w + blendB * b.w);
+    if (length(result) > 0.0)
+    {
+        return normalize(result);
+    }
+    return QUATERNION_IDENTITY;
+}
+
+float4x4 quaternion_to_matrix(float4 quat)
+{
+    float4x4 m = float4x4(float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0));
+
+    float x = quat.x, y = quat.y, z = quat.z, w = quat.w;
+    float x2 = x + x, y2 = y + y, z2 = z + z;
+    float xx = x * x2, xy = x * y2, xz = x * z2;
+    float yy = y * y2, yz = y * z2, zz = z * z2;
+    float wx = w * x2, wy = w * y2, wz = w * z2;
+
+    m[0][0] = 1.0 - (yy + zz);
+    m[0][1] = xy - wz;
+    m[0][2] = xz + wy;
+
+    m[1][0] = xy + wz;
+    m[1][1] = 1.0 - (xx + zz);
+    m[1][2] = yz - wx;
+
+    m[2][0] = xz - wy;
+    m[2][1] = yz + wx;
+    m[2][2] = 1.0 - (xx + yy);
+
+    m[3][3] = 1.0;
+
+    return m;
+}
+
 
 // Script 宣言 ///////////////////////////////////////////
 
@@ -64,7 +150,20 @@ SamplerState mySampler
 
 // コンピュートシェーダ入力
 
-float4x4 BoneTrans[768] : BONETRANS;
+#define MAX_BONE    768
+
+cbuffer BoneTransBuffer
+{
+    float4x4 BoneTrans[MAX_BONE]; // ボーンのモデルポーズの配列
+}
+cbuffer BoneLocalPositionBuffer
+{
+    float3 BoneLocalPosition[MAX_BONE]; // ボーンのローカル位置の配列（SDEFで使用）
+}
+cbuffer BoneQuaternionBuffer
+{
+    float4 BoneQuaternion[MAX_BONE]; // ボーンの回転（クォータニオン）の配列（SDEFで使用）
+}
 
 struct CS_INPUT
 {
@@ -129,7 +228,6 @@ struct VS_OUTPUT
 
 // スキニング /////////////////////////////////////////////////
 
-
 void BDEF(CS_INPUT input, out float4 position, out float3 normal)
 {
     float4x4 bt =
@@ -144,16 +242,49 @@ void BDEF(CS_INPUT input, out float4 position, out float3 normal)
 
 void SDEF(CS_INPUT input, out float4 position, out float3 normal)
 {
-    // TODO: SDEF の実装に変更する。
+    // 参考: 
+    // 自分用メモ「PMXのスフィリカルデフォームのコードっぽいもの」（sma42氏）
+    // https://www.pixiv.net/member_illust.php?mode=medium&illust_id=60755964
 
-    float4x4 bt =
-        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+    float w0 = 0.0f; // 固定値であるSDEFパラメータにのみ依存するので、これらの値も固定値。
+    float w1 = 0.0f; //
 
-    position = mul(input.Position, bt);
-    normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
+    float L0 = length(input.Sdef_R0 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR0までの距離
+    float L1 = length(input.Sdef_R1 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR1までの距離
+
+    if( abs(L0-L1) < 0.0001f)
+    {
+        w0 = 0.5f;
+    }
+    else
+    {
+        w0 = saturate(L0 / (L0 + L1));
+    }
+    w1 = 1.0f - w0;
+
+    float4x4 modelPoseL = BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0];
+    float4x4 modelPoseR = BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
+    float4x4 modelPoseC = modelPoseL + modelPoseR;
+
+    float4 Cpos = mul(input.Sdef_C, modelPoseC);   // BDEF2で計算された点Cの位置
+    float4 Ppos = mul(input.Position, modelPoseC); // BDEF2で計算された頂点の位置
+
+    float4 qp = q_slerp(
+        BoneQuaternion[input.BoneWeight[0]] * input.BoneWeight[0],
+        BoneQuaternion[input.BoneWeight[1]] * input.BoneWeight[1],
+        input.BoneWeight[0]);
+    float4x4 qpm = quaternion_to_matrix(qp);
+
+    float4 R0pos = mul(float4(input.Sdef_R0, 1.0f), (modelPoseL + (modelPoseC * -input.BoneWeight[0])));
+    float4 R1pos = mul(float4(input.Sdef_R1, 1.0f), (modelPoseR + (modelPoseC * -input.BoneWeight[1])));
+    Cpos += (R0pos * w0) + (R1pos * w1); // 膨らみすぎ防止
+
+    Ppos -= Cpos;           // 頂点を点Cが中心になるよう移動して
+    Ppos = mul(Ppos, qpm);  // 回転して
+    Ppos += Cpos;           // 元の位置へ
+
+    position = Ppos;
+    normal = normalize(mul(float4(input.Normal, 0), qpm)).xyz;
 }
 
 void QDEF(CS_INPUT input, out float4 position, out float3 normal)
@@ -174,7 +305,6 @@ void QDEF(CS_INPUT input, out float4 position, out float3 normal)
 // コンピュートシェーダー
 // 　Xしか扱わないので、Dispach は (頂点数/64+1, 1, 1) とすること。
 // 　例: 頂点数が 130 なら Dispach( 3, 1, 1 )
-
 [numthreads(64,1,1)]
 void CS_Skinning( uint3 id : SV_DispatchThreadID )
 {

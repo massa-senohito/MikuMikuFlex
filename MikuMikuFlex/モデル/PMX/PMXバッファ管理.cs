@@ -157,10 +157,57 @@ namespace MMF.モデル.PMX
                         Flags = SharpDX.Direct3D11.UnorderedAccessViewBufferFlags.Raw,
                     },
                 } );
+
+            // 定数バッファを作成する。
+
+            this._D3DBoneTransデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
+
+            this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
+                d3dDevice,
+                new SharpDX.Direct3D11.BufferDescription {
+                    SizeInBytes = 入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                } );
+
+            this._D3DBoneLocalPositionデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
+
+            this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
+                d3dDevice,
+                new SharpDX.Direct3D11.BufferDescription {
+                    SizeInBytes = 入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                } );
+
+            this._D3DBoneQuaternionデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
+
+            this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
+                d3dDevice,
+                new SharpDX.Direct3D11.BufferDescription {
+                    SizeInBytes = 入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                } );
         }
 
         public void Dispose()
         {
+            this._D3DBoneQuaternionデータストリーム?.Dispose();
+            this._D3DBoneQuaternionデータストリーム = null;
+
+            this._D3DBoneLocalPositionデータストリーム?.Dispose();
+            this._D3DBoneLocalPositionデータストリーム = null;
+
+            this._D3DBoneTransデータストリーム?.Dispose();
+            this._D3DBoneTransデータストリーム = null;
+
+            this._D3DBoneQuaternion定数バッファ?.Dispose();
+            this._D3DBoneQuaternion定数バッファ = null;
+
+            this._D3DBoneLocalPosition定数バッファ?.Dispose();
+            this._D3DBoneLocalPosition定数バッファ = null;
+
+            this._D3DBoneTrans定数バッファ?.Dispose();
+            this._D3DBoneTrans定数バッファ = null;
+
             this.D3D頂点バッファビューUAView?.Dispose();
             this.D3D頂点バッファビューUAView = null;
 
@@ -176,7 +223,7 @@ namespace MMF.モデル.PMX
             this.D3Dスキニングバッファ?.Dispose();
             this.D3Dスキニングバッファ = null;
 
-            this._頂点データストリーム?.Dispose();   // pinned 解放
+            this._頂点データストリーム?.Dispose();
             this._頂点データストリーム = null;
 
             D3Dインデックスバッファ?.Dispose();
@@ -191,14 +238,25 @@ namespace MMF.モデル.PMX
                 return;
 
             var skinning = ( skelton as MMF.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
-            var boneTrans = skinning.ボーンのモデルポーズ配列;
-
             var d3dContext = RenderContext.Instance.DeviceManager.D3DDeviceContext;
 
 
-            // BONETRANS セマンティックを持つエフェクト変数にボーンのモデルポーズ配列を設定する。
+            // エフェクト変数にボーンの情報を設定する。
 
-            effect.D3DEffect.GetVariableBySemantic( "BONETRANS" ).AsMatrix().SetMatrix( boneTrans );
+            this._D3DBoneTransデータストリーム.WriteRange( skinning.ボーンのモデルポーズ配列 );
+            this._D3DBoneTransデータストリーム.Position = 0;
+            d3dContext.UpdateSubresource( new DataBox( _D3DBoneTransデータストリーム.DataPointer, 0, 0 ), _D3DBoneTrans定数バッファ, 0 );
+            effect.D3DEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
+
+            this._D3DBoneLocalPositionデータストリーム.WriteRange( skinning.ボーンのローカル位置 );
+            this._D3DBoneLocalPositionデータストリーム.Position = 0;
+            d3dContext.UpdateSubresource( new DataBox( _D3DBoneLocalPositionデータストリーム.DataPointer, 0, 0 ), _D3DBoneLocalPosition定数バッファ, 0 );
+            effect.D3DEffect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
+
+            this._D3DBoneQuaternionデータストリーム.WriteRange( skinning.ボーンの回転 );
+            this._D3DBoneQuaternionデータストリーム.Position = 0;
+            d3dContext.UpdateSubresource( new DataBox( _D3DBoneQuaternionデータストリーム.DataPointer, 0, 0 ), _D3DBoneQuaternion定数バッファ, 0 );
+            effect.D3DEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
 
             // 現在の入力頂点リストをスキニングバッファに転送する。
@@ -238,6 +296,7 @@ namespace MMF.モデル.PMX
             #region " （CPUで行ったときのソース）"
             //----------------
             /*
+            var boneTrans = skinning.ボーンのモデルポーズ配列;
             var スキニング後の入力頂点リスト = new VS_INPUT[ 入力頂点リスト.Length ];
 
             for( int i = 0; i < 入力頂点リスト.Length; i++ )
@@ -431,6 +490,57 @@ namespace MMF.モデル.PMX
         ///     アンマネージドメモリに確保されるので、最初に一度だけ確保しておく。
         /// </summary>
         private DataStream _頂点データストリーム;
+
+
+        // DefaultShader.fx のスキニングシェーダーでは、以下の３つのボーン情報を使用するので定数バッファとして準備する。
+
+        protected struct _D3DBoneTrans  // private じゃなく protected なのは warning CS0649 封じのため
+        {
+            /// <summary>
+            ///     <see cref="MMF.ボーン.ボーン.モデルポーズ行列"/> が格納される。
+            /// </summary>
+            public Matrix boneTrans;
+
+            /// <summary>
+            ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
+            /// </summary>
+            public static int SizeInBytes
+                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
+        }
+        private DataStream _D3DBoneTransデータストリーム;
+        private SharpDX.Direct3D11.Buffer _D3DBoneTrans定数バッファ;
+
+        protected struct _D3DBoneLocalPosition  // private じゃなく protected なのは warning CS0649 封じのため
+        {
+            /// <summary>
+            ///     <see cref="MMF.ボーン.ボーン.移動"/> が格納される。
+            /// </summary>
+            public Vector3 boneLocalPosition;
+
+            /// <summary>
+            ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
+            /// </summary>
+            public static int SizeInBytes
+                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneLocalPosition ) ) ) / 16 + 1 ) * 16;
+        }
+        private DataStream _D3DBoneLocalPositionデータストリーム;
+        private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
+
+        protected struct _D3DBoneQuaternion // private じゃなく protected なのは warning CS0649 封じのため
+        {
+            /// <summary>
+            ///     <see cref="MMF.ボーン.ボーン.回転"/> が格納される。
+            /// </summary>
+            public Vector4 boneQuaternion;
+
+            /// <summary>
+            ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
+            /// </summary>
+            public static int SizeInBytes
+                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
+        }
+        private DataStream _D3DBoneQuaternionデータストリーム;
+        private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
 
         private void _頂点データを頂点レイアウトリストに追加する( 頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
