@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MikuMikuFlex</id>
+    <version>2.0.0-alpha1</version>
+    <authors>FROM/Kenji Yamazaki</authors>
+    <owners>FROM</owners>
+    <licenseUrl>https://github.com/DTXMania/MikuMikuFlex/blob/develop/LICENSEE</licenseUrl>
+    <projectUrl>https://github.com/DTXMania/MikuMikuFlex</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex/Resource/mmf.jpg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MikuMikuDance drawing library for C#.</description>
+    <copyright>Copyright 2018 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
+    <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
+    <language>ja-JP</language>
+  </metadata>
+</package>
