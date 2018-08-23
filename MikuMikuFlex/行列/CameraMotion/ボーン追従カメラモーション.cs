@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using MMF.ボーン;
-using MMF.モデル.PMX;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
-namespace MMF.行列.CameraMotion
+namespace MikuMikuFlex.行列.CameraMotion
 {
 	public class ボーン追従カメラモーション : カメラモーション
 	{

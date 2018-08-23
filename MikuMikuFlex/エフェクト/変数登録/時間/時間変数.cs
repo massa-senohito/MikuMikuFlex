@@ -1,8 +1,8 @@
-﻿using MMF.モデル.PMX;
-using MMF.モーション;
+﻿using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーション;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.時間
+namespace MikuMikuFlex.エフェクト.変数管理.時間
 {
 	public abstract class 時間変数 : 変数管理
 	{

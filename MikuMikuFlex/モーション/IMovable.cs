@@ -1,6 +1,6 @@
-﻿using MMF.ボーン;
+﻿using MikuMikuFlex.ボーン;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	public interface IMovable
 	{

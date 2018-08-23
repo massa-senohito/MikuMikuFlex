@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.モーフ;
-using MMF.Utility;
+using MikuMikuFlex.モーフ;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
 	class 親付与によるFK変形更新 : 変形更新
 	{

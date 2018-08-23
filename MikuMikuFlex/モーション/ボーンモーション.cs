@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MMF.ボーン;
-using MMF.Utility;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	/// <summary>
 	///     VMDモーションデータを使ってボーンを更新するクラス。

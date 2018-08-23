@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MMF.ボーン;
-using MMF.モデル.PMX;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
 namespace _06_MoveBoneAndMorphFromCode

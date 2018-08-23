@@ -1,7 +1,7 @@
-﻿using MMF.モデル;
-using MMF.モーフ;
+﻿using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
 	public interface 変形更新
 	{

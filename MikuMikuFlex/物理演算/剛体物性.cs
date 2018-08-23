@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	internal class 剛体物性
 	{

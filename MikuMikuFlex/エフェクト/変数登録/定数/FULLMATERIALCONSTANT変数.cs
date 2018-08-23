@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.定数
+namespace MikuMikuFlex.エフェクト.変数管理.定数
 {
 	internal class FULLMATERIALCONSTANT変数 : 変数管理, IDisposable
 	{

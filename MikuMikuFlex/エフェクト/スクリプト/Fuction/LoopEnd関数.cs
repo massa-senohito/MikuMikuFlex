@@ -1,7 +1,7 @@
 ﻿using System;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 
-namespace MMF.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.Script.Function
 {
     internal class LoopEnd関数 : 関数
     {

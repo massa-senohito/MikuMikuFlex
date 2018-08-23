@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX;
 
-namespace MMF.Utility
+namespace MikuMikuFlex.Utility
 {
     struct DualQuaternion
     {

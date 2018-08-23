@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 
-namespace MMF.グリッド
+namespace MikuMikuFlex.グリッド
 {
 	/// <summary>
 	///     デバッグ用にボーンの位置などを示す際などに利用するもの

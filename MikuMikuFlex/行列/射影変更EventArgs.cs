@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MMF.行列
+namespace MikuMikuFlex.行列
 {
 	public class 射影変更EventArgs : EventArgs
 	{

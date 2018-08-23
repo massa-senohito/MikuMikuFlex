@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX.Direct3D11;
 
-namespace MMF.スプライト
+namespace MikuMikuFlex.スプライト
 {
     public interface 動的テクスチャ : IDisposable
     {

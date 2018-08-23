@@ -1,9 +1,9 @@
 ﻿using System;
 using MMDFileParser.PMXModelParser;
-using MMF.エフェクト.変数管理.材質;
+using MikuMikuFlex.エフェクト.変数管理.材質;
 using SharpDX.Direct3D11;
 
-namespace MMF.モデル.PMX
+namespace MikuMikuFlex.モデル.PMX
 {
 	/// <summary>
 	///     描画単位

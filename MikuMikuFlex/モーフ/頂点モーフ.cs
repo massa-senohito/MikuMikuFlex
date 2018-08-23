@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
-using MMF.モデル;
-using MMF.モデル.PMX;
-using MMF.モーション;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーション;
 using SharpDX;
 
-namespace MMF.モーフ
+namespace MikuMikuFlex.モーフ
 {
 	public class 頂点モーフ : モーフ
 	{

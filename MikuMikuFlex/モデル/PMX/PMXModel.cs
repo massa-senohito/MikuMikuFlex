@@ -16,16 +16,16 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using MMDFileParser.PMXModelParser;
-using MMF.ボーン;
-using MMF.エフェクト;
-using MMF.モーフ;
-using MMF.モーション;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.エフェクト;
+using MikuMikuFlex.モーフ;
+using MikuMikuFlex.モーション;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 
-namespace MMF.モデル.PMX
+namespace MikuMikuFlex.モデル.PMX
 {
 	public class PMXModel : ISubsetDivided, IMovable, IEdgeDrawable, IGroundShadowDrawable
 	{

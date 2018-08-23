@@ -1,4 +1,4 @@
-﻿namespace MMF.モデル
+﻿namespace MikuMikuFlex.モデル
 {
 	public interface IEdgeDrawable : IDrawable
 	{

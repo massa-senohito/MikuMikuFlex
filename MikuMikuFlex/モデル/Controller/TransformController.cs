@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.DeviceManager;
-using MMF.モデル.Controller.ControllerComponent;
-using MMF.モデル.Shape;
+using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.モデル.Controller.ControllerComponent;
+using MikuMikuFlex.モデル.Shape;
 using SharpDX;
 
-namespace MMF.モデル.Controller
+namespace MikuMikuFlex.モデル.Controller
 {
 	public class TransformController : IDrawable, ILockableController
 	{

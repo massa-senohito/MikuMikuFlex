@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MMF.モーション;
+using MikuMikuFlex.モーション;
 
-namespace MMF.モーフ
+namespace MikuMikuFlex.モーフ
 {
 	public interface モーフ
 	{

@@ -1,5 +1,5 @@
 ﻿
-namespace MMF.エフェクト.Includer
+namespace MikuMikuFlex.エフェクト.Includer
 {
 	/// <summary>
 	///     Includeファイルの検索に利用するディレクトリ

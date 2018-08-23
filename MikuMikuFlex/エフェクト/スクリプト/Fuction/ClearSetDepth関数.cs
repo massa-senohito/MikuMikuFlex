@@ -1,8 +1,8 @@
 ﻿using System;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.Script.Function
 {
     /// <summary>
     ///     <see cref="RenderContext"/> のクリア深度を設定する関数。

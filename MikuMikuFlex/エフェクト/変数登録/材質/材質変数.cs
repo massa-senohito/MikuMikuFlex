@@ -2,7 +2,7 @@
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.材質
+namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
     public abstract class 材質変数 : 変数管理
     {

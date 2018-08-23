@@ -1,7 +1,7 @@
-﻿using MMF.行列;
+﻿using MikuMikuFlex.行列;
 using SharpDX;
 
-namespace MMF.ライト
+namespace MikuMikuFlex.ライト
 {
 	public class 照明行列管理
 	{

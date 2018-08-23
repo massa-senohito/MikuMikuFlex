@@ -1,5 +1,5 @@
 ﻿
-namespace MMF.エフェクト.変数管理
+namespace MikuMikuFlex.エフェクト.変数管理
 {
 	public enum 変数型
 	{

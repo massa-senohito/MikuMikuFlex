@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using MMDFileParser.PMXModelParser;
-using MMF.モデル;
-using MMF.Utility;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.材質
+namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
     public class エフェクト用材質情報 : IDisposable
     {

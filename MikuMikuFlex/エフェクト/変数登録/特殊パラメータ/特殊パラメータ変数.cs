@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
 {
 	public abstract class 特殊パラメータ変数
 	{

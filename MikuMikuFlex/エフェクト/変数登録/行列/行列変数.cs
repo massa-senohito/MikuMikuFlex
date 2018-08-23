@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.行列
+namespace MikuMikuFlex.エフェクト.変数管理.行列
 {
 	public abstract class 行列変数 : 変数管理
 	{

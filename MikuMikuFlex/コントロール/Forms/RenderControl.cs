@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MMF.DeviceManager;
-using MMF.Utility;
+using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.DXGI;
 
-namespace MMF.コントロール.Forms
+namespace MikuMikuFlex.コントロール.Forms
 {
 	/// <summary>
 	///     レンダリングビューの基本クラス

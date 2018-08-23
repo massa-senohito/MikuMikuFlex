@@ -6,7 +6,7 @@ using System.Linq;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.Utility
+namespace MikuMikuFlex.Utility
 {
 	/// <summary>
 	///		Texture2D を生成するヘルパメソッドを提供する。

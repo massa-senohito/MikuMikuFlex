@@ -4,7 +4,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MMF.モデル
+namespace MikuMikuFlex.モデル
 {
     /// <summary>
     ///     コンピュートシェーダーの入力

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX.Direct3D11;
 
-namespace MMF.Utility
+namespace MikuMikuFlex.Utility
 {
 	/// <summary>
 	///		インデックスバッファを作成するためのビルダ。

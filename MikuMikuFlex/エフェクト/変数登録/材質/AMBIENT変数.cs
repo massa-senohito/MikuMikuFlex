@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.材質
+namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
     internal sealed class AMBIENT変数 : 材質変数
     {

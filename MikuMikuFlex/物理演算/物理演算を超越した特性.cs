@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	internal class 物理演算を超越した特性
 	{

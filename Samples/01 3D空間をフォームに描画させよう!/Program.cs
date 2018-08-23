@@ -48,7 +48,7 @@ namespace _01_Initialize3DCGToYourForm
 			//Application.SetCompatibleTextRenderingDefault(false);
 			//Application.Run(new Form1());
 			//これを以下のように変更する。
-			MMF.MessagePump.Run( new Form1() );
+			MikuMikuFlex.MessagePump.Run( new Form1() );
 
 			/*
              * ◎上の部分の解説

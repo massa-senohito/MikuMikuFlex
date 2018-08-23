@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MMF.モデル.Controller
+namespace MikuMikuFlex.モデル.Controller
 {
     [Flags]
     public enum TransformType

@@ -5,11 +5,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.行列;
-using MMF.モデル.Shape.Overlay;
+using MikuMikuFlex.行列;
+using MikuMikuFlex.モデル.Shape.Overlay;
 using SharpDX;
 
-namespace MMF.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.Controller.ControllerComponent
 {
 	class RotateRingController : OverlaySilinderShape
 	{

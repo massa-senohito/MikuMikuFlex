@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using MMF.エフェクト;
+using MikuMikuFlex.エフェクト;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	/// <summary>
 	///     IDeviceManager の基礎クラス。

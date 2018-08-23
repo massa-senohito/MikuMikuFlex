@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト
+namespace MikuMikuFlex.エフェクト
 {
 	/// <summary>
 	///     エフェクトのパースのヘルパークラス

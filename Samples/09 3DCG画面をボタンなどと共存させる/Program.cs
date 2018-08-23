@@ -43,7 +43,7 @@ namespace _09_Render3DCGToUserControl
 			//①フォームのメッセージループの方法を変更する。
 			//RenderFormを利用しないので、描画時に呼び出すメソッドを指定する。
 			Form1 form = new Form1();
-			MMF.MessagePump.Run( form, form.Render );
+			MikuMikuFlex.MessagePump.Run( form, form.Render );
 		}
 	}
 }

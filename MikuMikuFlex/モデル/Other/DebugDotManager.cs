@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace MMF.モデル.Other
+namespace MikuMikuFlex.モデル.Other
 {
 	public class DebugDotManager
 	{

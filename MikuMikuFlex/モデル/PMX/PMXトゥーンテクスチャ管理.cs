@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using SharpDX.Direct3D11;
 
-namespace MMF.モデル.PMX
+namespace MikuMikuFlex.モデル.PMX
 {
 	internal class PMXトゥーンテクスチャ管理 : トゥーンテクスチャ管理
 	{

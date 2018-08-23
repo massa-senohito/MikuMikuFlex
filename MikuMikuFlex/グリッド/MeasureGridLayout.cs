@@ -3,7 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MMF.グリッド
+namespace MikuMikuFlex.グリッド
 {
 	/// <summary>
 	///     グリッド描画用の入力レイアウト

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MMF.モデル;
-using MMF.モーフ;
-using MMF.Utility;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
     /// <summary>
     ///     CCDIKでIKボーンを更新するクラス

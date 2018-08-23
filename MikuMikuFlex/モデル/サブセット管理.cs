@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMF.エフェクト;
+using MikuMikuFlex.エフェクト;
 
-namespace MMF.モデル
+namespace MikuMikuFlex.モデル
 {
 	/// <summary>
 	///     レンダリングの方法を引き受けるインターフェース

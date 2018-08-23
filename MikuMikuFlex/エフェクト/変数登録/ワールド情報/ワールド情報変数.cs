@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.ワールド情報
+namespace MikuMikuFlex.エフェクト.変数管理.ワールド情報
 {
 	public abstract class ワールド情報変数 : 変数管理
 	{

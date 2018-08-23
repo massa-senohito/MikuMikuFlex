@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MMF.モデル;
-using MMF.モーション;
-using MMF.スプライト;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーション;
+using MikuMikuFlex.スプライト;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	public class ワールド空間 : IDisposable
 	{

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.モデル.Shape
+namespace MikuMikuFlex.モデル.Shape
 {
 	public class シリンダーシェイプ : シェイプ
 	{

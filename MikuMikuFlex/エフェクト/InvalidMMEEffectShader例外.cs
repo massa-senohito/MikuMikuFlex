@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace MMF.エフェクト
+namespace MikuMikuFlex.エフェクト
 {
 	internal class InvalidMMEEffectShader例外 : MMEEffect例外
 	{

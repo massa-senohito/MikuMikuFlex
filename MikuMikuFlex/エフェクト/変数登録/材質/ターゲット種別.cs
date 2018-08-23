@@ -1,5 +1,5 @@
 ﻿
-namespace MMF.エフェクト.変数管理.材質
+namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
 	/// <summary>
 	///     マテリアルなどの取得対象

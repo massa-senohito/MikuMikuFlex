@@ -1,4 +1,4 @@
-﻿namespace MMF.行列
+﻿namespace MikuMikuFlex.行列
 {
 	public enum 射影変数種別
 	{

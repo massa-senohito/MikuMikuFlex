@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MMF.ボーン;
-using MMF.モデル;
-using MMF.モデル.PMX;
-using MMF.モーフ;
-using MMF.Utility;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーフ;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.コントロール
+namespace MikuMikuFlex.エフェクト.変数管理.コントロール
 {
     internal sealed class CONTROLOBJECT変数 : 変数管理
     {

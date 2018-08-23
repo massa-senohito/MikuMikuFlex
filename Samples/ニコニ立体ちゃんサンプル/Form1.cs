@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MMF.コントロール.Forms;
-using MMF.モデル.PMX;
-using MMF.モーション;
-using MMF.行列.CameraMotion;
+using MikuMikuFlex.コントロール.Forms;
+using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーション;
+using MikuMikuFlex.行列.CameraMotion;
 
 namespace ニコニ立体ちゃんサンプル
 {

@@ -3,13 +3,13 @@ using System.Diagnostics;
 using BulletSharp;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.JointParam;
-using MMF.ボーン;
-using MMF.モデル;
-using MMF.モーフ;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
 using SharpDX;
 using IDisposable = System.IDisposable;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	public class PMX物理変形管理 : 変形更新, IDisposable
 	{

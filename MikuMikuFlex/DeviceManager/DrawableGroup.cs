@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	public class DrawableGroup : IComparable<DrawableGroup>, IDisposable
 	{

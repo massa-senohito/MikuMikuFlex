@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using MMF.モデル;
-using MMF.Utility;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 
-namespace MMF.グリッド
+namespace MikuMikuFlex.グリッド
 {
 	/// <summary>
 	///     標準的なグリッド

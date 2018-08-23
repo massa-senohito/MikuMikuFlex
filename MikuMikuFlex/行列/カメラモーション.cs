@@ -1,6 +1,6 @@
-﻿using MMF.行列;
+﻿using MikuMikuFlex.行列;
 
-namespace MMF.行列
+namespace MikuMikuFlex.行列
 {
 	public interface カメラモーション
 	{

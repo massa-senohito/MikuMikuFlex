@@ -1,4 +1,4 @@
-﻿namespace MMF.モデル.Controller
+﻿namespace MikuMikuFlex.モデル.Controller
 {
 	interface ILockableController
 	{

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MMF.DeviceManager;
-using MMF.ライト;
-using MMF.行列;
-using MMF.モデル;
-using MMF.モーション;
+using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.ライト;
+using MikuMikuFlex.行列;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーション;
 using SharpDX;
 using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;
 
-namespace MMF
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     レンダリングに関する様々な情報を保持します。

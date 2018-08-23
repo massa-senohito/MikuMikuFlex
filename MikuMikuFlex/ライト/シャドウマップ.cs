@@ -1,9 +1,9 @@
 ﻿using System;
-using MMF.行列;
-using MMF.モデル;
+using MikuMikuFlex.行列;
+using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MMF.ライト
+namespace MikuMikuFlex.ライト
 {
 	/// <summary>
 	///     影を落とすことができるものにつけるインターフェース

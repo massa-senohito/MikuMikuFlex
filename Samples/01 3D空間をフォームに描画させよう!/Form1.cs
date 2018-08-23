@@ -1,4 +1,4 @@
-﻿using MMF.コントロール.Forms;
+﻿using MikuMikuFlex.コントロール.Forms;
 
 namespace _01_Initialize3DCGToYourForm
 {

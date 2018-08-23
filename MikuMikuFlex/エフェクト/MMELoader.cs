@@ -10,7 +10,7 @@ using SharpDX;
 using SharpDX.D3DCompiler;
 using Application = System.Windows.Forms.Application;
 
-namespace MMF.エフェクト
+namespace MikuMikuFlex.エフェクト
 {
 	/// <summary>
 	///     エフェクトのキャッシュをとっておくクラス

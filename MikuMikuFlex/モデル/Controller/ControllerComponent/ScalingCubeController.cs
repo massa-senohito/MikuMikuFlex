@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.モデル.Shape.Overlay;
+using MikuMikuFlex.モデル.Shape.Overlay;
 using SharpDX;
 
-namespace MMF.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.Controller.ControllerComponent
 {
 	class ScalingCubeController : OverlayCubeShape
 	{

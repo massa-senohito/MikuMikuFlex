@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 
-namespace MMF.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.Script.Function
 {
     internal class ScriptExternal関数 : 関数
     {

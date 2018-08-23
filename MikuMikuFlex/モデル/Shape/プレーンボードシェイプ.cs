@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMF.スプライト;
-using MMF.Utility;
+using MikuMikuFlex.スプライト;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.モデル.Shape
+namespace MikuMikuFlex.モデル.Shape
 {
     /// <summary>
     ///     長方形または正方形のシェイプ。

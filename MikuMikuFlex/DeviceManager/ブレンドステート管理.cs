@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX.Direct3D11;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	public class ブレンドステート管理 : IDisposable
 	{

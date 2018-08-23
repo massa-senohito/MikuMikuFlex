@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using BulletSharp;
 using SharpDX;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	/// <summary>
 	///     剛体を作るクラス

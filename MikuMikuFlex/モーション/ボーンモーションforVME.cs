@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MMF.ボーン;
-using MMF.Utility;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.Utility;
 using OpenMMDFormat;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	/// <summary>
 	/// VMEモーションデータを使ってボーンを更新するクラス

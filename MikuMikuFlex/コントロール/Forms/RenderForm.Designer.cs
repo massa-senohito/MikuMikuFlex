@@ -1,4 +1,4 @@
-﻿namespace MMF.コントロール.Forms
+﻿namespace MikuMikuFlex.コントロール.Forms
 {
     partial class RenderForm
     {

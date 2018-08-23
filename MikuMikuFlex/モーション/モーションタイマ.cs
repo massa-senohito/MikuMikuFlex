@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	/// <summary>
 	///     モーションに関するタイマー

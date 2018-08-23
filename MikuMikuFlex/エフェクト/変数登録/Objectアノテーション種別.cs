@@ -1,5 +1,5 @@
 ﻿
-namespace MMF.エフェクト.変数管理
+namespace MikuMikuFlex.エフェクト.変数管理
 {
     /// <summary>
     ///     string Object アノテーションの種別。

@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.行列.CameraMotion
+namespace MikuMikuFlex.行列.CameraMotion
 {
 	/// <summary>
 	///     VMDファイルを用いて動かすカメラ用のモーションを管理するクラス

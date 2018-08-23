@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using MMF;
-using MMF.コントロール.Forms;
-using MMF.モデル.PMX;
+using MikuMikuFlex;
+using MikuMikuFlex.コントロール.Forms;
+using MikuMikuFlex.モデル.PMX;
 
 namespace _02_SimpleRenderPMX
 {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SharpDX;
 using BulletSharp;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	internal class 六軸ジョイントにつながる剛体
 	{

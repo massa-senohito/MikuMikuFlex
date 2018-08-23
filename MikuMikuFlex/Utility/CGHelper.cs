@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using MMDFileParser.MotionParser;
-using MMF.エフェクト;
-using MMF.モデル;
+using MikuMikuFlex.エフェクト;
+using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace MMF.Utility
+namespace MikuMikuFlex.Utility
 {
 	public static class CGHelper
 	{

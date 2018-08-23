@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MMDFileParser.PMXModelParser;
-using MMF.エフェクト;
+using MikuMikuFlex.エフェクト;
 using SharpDX.Direct3D11;
 
-namespace MMF.モデル.PMX
+namespace MikuMikuFlex.モデル.PMX
 {
 	internal class PMXサブセット管理 : サブセット管理
 	{
@@ -228,7 +228,7 @@ namespace MMF.モデル.PMX
                 var texture = (ShaderResourceView) null;
 
                 if( stream != null )
-                    texture = MMF.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
+                    texture = MikuMikuFlex.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
 
                 _テクスチャキャッシュ.Add( name, texture );
 

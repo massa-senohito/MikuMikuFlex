@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.材質
+namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
     internal sealed class EDGECOLOR変数 : 材質変数
     {

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
-using MMF.モデル;
-using MMF.モーフ;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
 using SharpDX;
 using SharpDX.Direct3D11;
 using Debug=System.Diagnostics.Debug;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
     /// <summary>
     ///     モデルからボーンだけを抽出して管理するクラス。

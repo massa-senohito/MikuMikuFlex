@@ -3,7 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MMF.モデル.Other
+namespace MikuMikuFlex.モデル.Other
 {
 	public struct DebugDotInputLayout
 	{

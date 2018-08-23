@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	public class モーフモーション
 	{

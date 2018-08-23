@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using BulletSharp;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	internal class 動的世界ファクトリ : IDisposable
 	{

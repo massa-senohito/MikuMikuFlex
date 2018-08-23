@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using MMF;
+using MikuMikuFlex;
 using SharpDX.Windows;
-using RenderForm = MMF.コントロール.Forms.RenderForm;
+using RenderForm = MikuMikuFlex.コントロール.Forms.RenderForm;
 
-namespace MMF
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///		描画ループをまわすためのメソッドを提供するクラス

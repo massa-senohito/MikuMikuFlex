@@ -3,7 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MMF.スプライト
+namespace MikuMikuFlex.スプライト
 {
     public struct スプライトの頂点レイアウト
     {

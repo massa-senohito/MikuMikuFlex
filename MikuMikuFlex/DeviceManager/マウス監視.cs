@@ -1,8 +1,8 @@
 ﻿using System.Windows.Forms;
-using MMF.モーション;
+using MikuMikuFlex.モーション;
 using SharpDX;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	/// <summary>
 	/// 主にマウスなどのパネル上の動きを監視するクラス

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MMF.物理演算
+namespace MikuMikuFlex.物理演算
 {
 	/// <summary>
 	///     経過時間[ms]を計るクラス

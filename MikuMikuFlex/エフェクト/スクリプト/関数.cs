@@ -1,7 +1,7 @@
 ﻿using System;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 
-namespace MMF.エフェクト.Script
+namespace MikuMikuFlex.エフェクト.Script
 {
     /// <summary>
     ///     string Script の中に記されるファンクションの基底クラス。

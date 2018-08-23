@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace MMF.エフェクト.ライト
+namespace MikuMikuFlex.エフェクト.ライト
 {
     /// <summary>
     ///     平行光源管理

@@ -5,8 +5,8 @@ using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MMF;
-using MMF.コントロール.Forms;
+using MikuMikuFlex;
+using MikuMikuFlex.コントロール.Forms;
 
 namespace _08_MultiScreenRendering
 {

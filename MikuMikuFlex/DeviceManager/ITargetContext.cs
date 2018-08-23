@@ -1,8 +1,8 @@
 ﻿using System;
-using MMF.行列;
+using MikuMikuFlex.行列;
 using SharpDX.Direct3D11;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
     /// <summary>
     ///     描画先のリソース一式。

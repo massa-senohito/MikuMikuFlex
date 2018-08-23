@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using MMDFileParser.PMXModelParser;
-using MMF.ボーン;
-using MMF.モデル;
-using MMF.モーフ;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	/// <summary>
 	///     動かせるモデル用

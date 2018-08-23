@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MMF.行列;
-using MMF.行列.CameraMotion;
-using MMF.モデル.PMX;
+using MikuMikuFlex.行列;
+using MikuMikuFlex.行列.CameraMotion;
+using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
 namespace _05_HowToUpdateCamera

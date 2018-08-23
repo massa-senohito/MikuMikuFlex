@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using SharpDX.D3DCompiler;
 
-namespace MMF.エフェクト.Includer
+namespace MikuMikuFlex.エフェクト.Includer
 {
     /// <summary>
     ///     基本的な#includeのパス解決クラス

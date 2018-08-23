@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.ワールド情報
+namespace MikuMikuFlex.エフェクト.変数管理.ワールド情報
 {
 	internal sealed class DIRECTION変数 : ワールド情報変数
 	{

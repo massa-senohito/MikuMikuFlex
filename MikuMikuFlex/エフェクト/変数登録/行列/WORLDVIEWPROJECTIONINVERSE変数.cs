@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.行列
+namespace MikuMikuFlex.エフェクト.変数管理.行列
 {
 	internal sealed class WORLDVIEWPROJECTIONINVERSE変数 : 行列変数
 	{

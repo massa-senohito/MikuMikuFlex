@@ -1,8 +1,8 @@
 ﻿using System;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 using SharpDX;
 
-namespace MMF.行列
+namespace MikuMikuFlex.行列
 {
     /// <summary>
     ///     一般的なワールド行列の管理クラス

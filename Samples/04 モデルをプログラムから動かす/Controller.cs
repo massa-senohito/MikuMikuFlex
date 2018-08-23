@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using MMF.モデル.PMX;
+using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
 namespace _04_TransformModelFormCode

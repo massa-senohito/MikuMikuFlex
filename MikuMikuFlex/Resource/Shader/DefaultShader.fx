@@ -313,7 +313,6 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
 
     CS_INPUT input = CSBuffer[csIndex];
 
-
     // ボーンウェイト変形を適用して、新しい位置と法線を求める。
 
     float4 position = input.Position;

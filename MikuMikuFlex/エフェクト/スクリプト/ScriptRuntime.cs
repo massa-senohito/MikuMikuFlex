@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMF.エフェクト.Script.Function;
-using MMF.モデル;
+using MikuMikuFlex.エフェクト.Script.Function;
+using MikuMikuFlex.モデル;
 
-namespace MMF.エフェクト.Script
+namespace MikuMikuFlex.エフェクト.Script
 {
     /// <remarks>
     ///     string Script の構文: ファンクション[;ファンクション]*;

@@ -2,11 +2,11 @@
 using System.Linq;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
-using MMF.Utility;
-using MMF.エフェクト;
+using MikuMikuFlex.Utility;
+using MikuMikuFlex.エフェクト;
 using SharpDX;
 
-namespace MMF.モデル.PMX
+namespace MikuMikuFlex.モデル.PMX
 {
     public class PMXバッファ管理 : バッファ管理
     {
@@ -232,12 +232,12 @@ namespace MMF.モデル.PMX
             this.入力頂点リスト = null;
         }
 
-        public void D3Dスキニングバッファを更新する( MMF.ボーン.スキニング skelton, エフェクト.エフェクト effect )
+        public void D3Dスキニングバッファを更新する( MikuMikuFlex.ボーン.スキニング skelton, エフェクト.エフェクト effect )
         {
             if( !( D3Dスキニングバッファをリセットする ) )
                 return;
 
-            var skinning = ( skelton as MMF.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
+            var skinning = ( skelton as MikuMikuFlex.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
             var d3dContext = RenderContext.Instance.DeviceManager.D3DDeviceContext;
 
 
@@ -497,7 +497,7 @@ namespace MMF.モデル.PMX
         protected struct _D3DBoneTrans  // private じゃなく protected なのは warning CS0649 封じのため
         {
             /// <summary>
-            ///     <see cref="MMF.ボーン.ボーン.モデルポーズ行列"/> が格納される。
+            ///     <see cref="MikuMikuFlex.ボーン.ボーン.モデルポーズ行列"/> が格納される。
             /// </summary>
             public Matrix boneTrans;
 
@@ -513,7 +513,7 @@ namespace MMF.モデル.PMX
         protected struct _D3DBoneLocalPosition  // private じゃなく protected なのは warning CS0649 封じのため
         {
             /// <summary>
-            ///     <see cref="MMF.ボーン.ボーン.移動"/> が格納される。
+            ///     <see cref="MikuMikuFlex.ボーン.ボーン.移動"/> が格納される。
             /// </summary>
             public Vector3 boneLocalPosition;
 
@@ -529,7 +529,7 @@ namespace MMF.モデル.PMX
         protected struct _D3DBoneQuaternion // private じゃなく protected なのは warning CS0649 封じのため
         {
             /// <summary>
-            ///     <see cref="MMF.ボーン.ボーン.回転"/> が格納される。
+            ///     <see cref="MikuMikuFlex.ボーン.ボーン.回転"/> が格納される。
             /// </summary>
             public Vector4 boneQuaternion;
 

@@ -1,7 +1,7 @@
-﻿using MMF.モーション;
+﻿using MikuMikuFlex.モーション;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理.時間
+namespace MikuMikuFlex.エフェクト.変数管理.時間
 {
 	internal sealed class TIME変数 : 時間変数
 	{

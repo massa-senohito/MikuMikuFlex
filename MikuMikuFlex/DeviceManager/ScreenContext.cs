@@ -1,12 +1,12 @@
 ﻿using System.Windows.Forms;
-using MMF.行列;
+using MikuMikuFlex.行列;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Resource = SharpDX.Direct3D11.Resource;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	public class ScreenContext : ITargetContext
 	{

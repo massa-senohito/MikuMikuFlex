@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace MMF.Utility
+namespace MikuMikuFlex.Utility
 {
 	/// <summary>
 	///		TGA ファイルから PNG ストリームを生成するヘルパメソッドを提供する。

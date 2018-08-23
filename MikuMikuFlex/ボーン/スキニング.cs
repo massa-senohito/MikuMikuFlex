@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMF.モデル;
-using MMF.モーフ;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モーフ;
 using SharpDX.Direct3D11;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
 	public interface スキニング : IDisposable
 	{

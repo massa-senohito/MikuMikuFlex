@@ -1,7 +1,7 @@
-﻿using MMF.モデル;
+﻿using MikuMikuFlex.モデル;
 using SharpDX;
 
-namespace MMF.行列
+namespace MikuMikuFlex.行列
 {
 	public class 行列管理
 	{

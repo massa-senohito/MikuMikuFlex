@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MMF.モデル.Shape
+namespace MikuMikuFlex.モデル.Shape
 {
 	public class 四角錐シェイプ : シェイプ
 	{

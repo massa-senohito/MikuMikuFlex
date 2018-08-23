@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Drawing;
-using MMF.DeviceManager;
-using MMF.Utility;
+using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MMF.モデル.Shape
+namespace MikuMikuFlex.モデル.Shape
 {
 	public abstract class シェイプ : IDrawable, IHitTestable
 	{

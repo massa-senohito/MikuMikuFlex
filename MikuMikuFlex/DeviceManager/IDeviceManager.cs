@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MMF.DeviceManager
+namespace MikuMikuFlex.DeviceManager
 {
 	public interface IDeviceManager : IDisposable
 	{

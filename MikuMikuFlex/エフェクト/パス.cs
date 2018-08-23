@@ -1,9 +1,9 @@
 ﻿using System;
-using MMF.エフェクト.Script;
-using MMF.モデル;
+using MikuMikuFlex.エフェクト.Script;
+using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト
+namespace MikuMikuFlex.エフェクト
 {
 	/// <summary>
 	///     エフェクトのパスを管理するクラス

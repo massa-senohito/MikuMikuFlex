@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
-using MMF.モデル;
-using MMF.モデル.PMX;
-using MMF.モーション;
+using MikuMikuFlex.モデル;
+using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーション;
 
-namespace MMF.モーフ
+namespace MikuMikuFlex.モーフ
 {
 	/// <summary>
 	/// PMX標準のモーフを管理するクラス

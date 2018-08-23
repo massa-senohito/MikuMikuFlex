@@ -5,10 +5,10 @@ using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MMF;
-using MMF.コントロール.Forms;
-using MMF.モデル.PMX;
-using MMF.モーション;
+using MikuMikuFlex;
+using MikuMikuFlex.コントロール.Forms;
+using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モーション;
 
 namespace _03_ApplyVMDToPMX
 {

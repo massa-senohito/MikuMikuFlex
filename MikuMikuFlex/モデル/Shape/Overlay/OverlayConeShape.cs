@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace MMF.モデル.Shape.Overlay
+namespace MikuMikuFlex.モデル.Shape.Overlay
 {
 	class OverlayConeShape : 四角錐シェイプ
 	{

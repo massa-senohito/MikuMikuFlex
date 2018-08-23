@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MMF.Properties {
+namespace MikuMikuFlex.Properties {
     using System;
     
     

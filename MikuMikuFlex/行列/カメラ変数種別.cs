@@ -1,4 +1,4 @@
-﻿namespace MMF.行列
+﻿namespace MikuMikuFlex.行列
 {
 	/// <summary>
 	///     カメラの変更内容に利用する

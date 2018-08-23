@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MMF.エフェクト
+namespace MikuMikuFlex.エフェクト
 {
 	/// <summary>
 	///     MMEエフェクトのエラー

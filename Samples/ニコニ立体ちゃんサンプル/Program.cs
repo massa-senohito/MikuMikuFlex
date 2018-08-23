@@ -18,7 +18,7 @@ namespace ニコニ立体ちゃんサンプル
             Application.SetCompatibleTextRenderingDefault( false );
 
             // 一定間隔で RenderForm を更新・描画する。
-            MMF.MessagePump.Run( new Form1() );
+            MikuMikuFlex.MessagePump.Run( new Form1() );
         }
     }
 }

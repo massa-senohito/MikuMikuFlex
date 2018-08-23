@@ -37,7 +37,7 @@ namespace _06_MoveBoneAndMorphFromCode
 		[STAThread]
 		static void Main()
 		{
-			MMF.MessagePump.Run( new Form1() );
+			MikuMikuFlex.MessagePump.Run( new Form1() );
 		}
 	}
 }

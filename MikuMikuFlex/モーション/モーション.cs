@@ -1,8 +1,8 @@
 ﻿using System;
-using MMF.ボーン;
-using MMF.モーフ;
+using MikuMikuFlex.ボーン;
+using MikuMikuFlex.モーフ;
 
-namespace MMF.モーション
+namespace MikuMikuFlex.モーション
 {
 	public interface モーション
 	{

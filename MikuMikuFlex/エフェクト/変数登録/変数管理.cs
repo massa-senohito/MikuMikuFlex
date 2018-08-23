@@ -2,7 +2,7 @@
 using System.Text;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.変数管理
+namespace MikuMikuFlex.エフェクト.変数管理
 {
 	/// <summary>
 	///     エフェクト変数を管理し更新するための基底クラス。

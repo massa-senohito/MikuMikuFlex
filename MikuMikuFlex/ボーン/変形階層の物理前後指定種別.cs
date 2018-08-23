@@ -1,4 +1,4 @@
-﻿namespace MMF.ボーン
+﻿namespace MikuMikuFlex.ボーン
 {
 	public enum 変形階層の物理前後指定種別
 	{

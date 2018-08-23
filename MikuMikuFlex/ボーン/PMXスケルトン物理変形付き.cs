@@ -1,7 +1,7 @@
 ﻿using MMDFileParser.PMXModelParser;
-using MMF.物理演算;
+using MikuMikuFlex.物理演算;
 
-namespace MMF.ボーン
+namespace MikuMikuFlex.ボーン
 {
 	internal class PMXスケルトン物理変形付き : PMXスケルトン
 	{

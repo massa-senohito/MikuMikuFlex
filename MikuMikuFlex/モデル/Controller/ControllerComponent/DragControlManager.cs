@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace MMF.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.Controller.ControllerComponent
 {
 	class DragControlManager
 	{

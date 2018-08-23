@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using MMF.Utility;
+using MikuMikuFlex.Utility;
 
-namespace MMF.モデル
+namespace MikuMikuFlex.モデル
 {
 	/// <summary>
 	///     標準的なリソース読み込みの実装。

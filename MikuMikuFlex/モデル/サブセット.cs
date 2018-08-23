@@ -1,8 +1,8 @@
 ﻿using System;
-using MMF.エフェクト.変数管理.材質;
+using MikuMikuFlex.エフェクト.変数管理.材質;
 using SharpDX.Direct3D11;
 
-namespace MMF.モデル
+namespace MikuMikuFlex.モデル
 {
 	public interface サブセット : IDisposable
 	{

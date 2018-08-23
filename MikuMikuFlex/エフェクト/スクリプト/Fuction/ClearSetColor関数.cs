@@ -1,9 +1,9 @@
 ﻿using System;
-using MMF.モデル;
+using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MMF.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.Script.Function
 {
     /// <summary>
     ///     <see cref="RenderContext"/> のクリア色を設定する関数。
