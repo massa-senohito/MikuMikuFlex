@@ -171,14 +171,14 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
     
     // 頂点バッファへ出力する。
 
-    VSBuffer.Store4(vsIndex + 0, position);
-    VSBuffer.Store3(vsIndex + 16, normal);
-    VSBuffer.Store2(vsIndex + 28, input.Tex);
-    VSBuffer.Store4(vsIndex + 36, input.AddUV1);
-    VSBuffer.Store4(vsIndex + 52, input.AddUV2);
-    VSBuffer.Store4(vsIndex + 68, input.AddUV3);
-    VSBuffer.Store4(vsIndex + 84, input.AddUV4);
-    VSBuffer.Store(vsIndex + 100, input.EdgeWeight);
+    VSBuffer.Store4(vsIndex + 0, asuint(position));
+    VSBuffer.Store3(vsIndex + 16, asuint(normal));
+    VSBuffer.Store2(vsIndex + 28, asuint(input.Tex));
+    VSBuffer.Store4(vsIndex + 36, asuint(input.AddUV1));
+    VSBuffer.Store4(vsIndex + 52, asuint(input.AddUV2));
+    VSBuffer.Store4(vsIndex + 68, asuint(input.AddUV3));
+    VSBuffer.Store4(vsIndex + 84, asuint(input.AddUV4));
+    VSBuffer.Store(vsIndex + 100, asuint(input.EdgeWeight));
     VSBuffer.Store(vsIndex + 104, asuint(input.Index));
 }
 
