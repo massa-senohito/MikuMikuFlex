@@ -5,11 +5,14 @@
     <version>2.0.0-alpha1</version>
     <authors>FROM/Kenji Yamazaki</authors>
     <owners>FROM</owners>
-    <licenseUrl>https://github.com/DTXMania/MikuMikuFlex/blob/develop/LICENSEE</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/DTXMania/MikuMikuFlex</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex/Resource/mmf.jpg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>MikuMikuDance drawing library for .NET Framework</description>
+    <description>
+MikuMikuDance drawing library for .NET.
+This package supports .NET Framework 4.7.1+ and the x86 architecture.
+    </description>
     <copyright>Copyright 2018 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
@@ -21,6 +24,6 @@
     いずれこのような手順が不要になるよう改善されることを願いたい。
     -->
     <file src="sharpdx_direct3d11_1_effects_x86.dll" target="content"/>
-    <file src="sharpdx_direct3d11_1_effects_x64.dll" target="content"/>
+    <!--<file src="sharpdx_direct3d11_1_effects_x64.dll" target="content"/>-->
   </files>
 </package>
