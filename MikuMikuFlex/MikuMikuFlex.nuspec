@@ -9,9 +9,18 @@
     <projectUrl>https://github.com/DTXMania/MikuMikuFlex</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex/Resource/mmf.jpg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>MikuMikuDance drawing library for C#.</description>
+    <description>MikuMikuDance drawing library for .NET Framework</description>
     <copyright>Copyright 2018 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
   </metadata>
+  <files>
+    <!-- 
+    ネイティブ dll の扱いについて：
+    SharpDX.Direct3D11.Effects では、以下のファイルを、参照が自動付与される lib ではなく、自動付与されない content フォルダに格納する必要がある。
+    いずれこのような手順が不要になるよう改善されることを願いたい。
+    -->
+    <file src="sharpdx_direct3d11_1_effects_x86.dll" target="content"/>
+    <file src="sharpdx_direct3d11_1_effects_x64.dll" target="content"/>
+  </files>
 </package>
