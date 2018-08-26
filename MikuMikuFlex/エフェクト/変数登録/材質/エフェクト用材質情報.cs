@@ -10,6 +10,9 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
 {
     public class エフェクト用材質情報 : IDisposable
     {
+        public String 材質名;
+        public String 材質名_英;
+
         // TODO: 対応しているマテリアルが完全ではない
 
         public Vector4 環境色; // モーフ対応
@@ -56,6 +59,8 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
         public static エフェクト用材質情報 作成する( IDrawable drawable, MMDFileParser.PMXModelParser.材質 material )
         {
             var info = new エフェクト用材質情報() {
+                材質名 = material.材質名,
+                材質名_英 = material.材質名_英,
                 環境色 = new Vector4( material.環境色, 1f ),
                 拡散色 = material.拡散色,
                 エッジ色 = material.エッジ色,

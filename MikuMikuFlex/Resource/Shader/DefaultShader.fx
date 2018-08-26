@@ -416,10 +416,9 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 	// テクスチャサンプリング
 
 	if( use_texture )
-	{
-		Color *= Texture.Sample( mySampler, IN.Tex );
-	}
-
+    {
+        Color *= Texture.Sample(mySampler, IN.Tex);
+    }
 
 	// スフィアマップサンプリング
 
@@ -451,9 +450,9 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
     }
 	else
 	{
-        float3 MaterialToon = 1.0.xxx * shading;
+        float3 MaterialToon = 1.0f.xxx * shading;
         Color.rgb *= MaterialToon;
-	}
+    }
     
     
     // 色に反射光を加算
@@ -464,7 +463,7 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 	// 色に環境校を加算
 
 	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMDのAmbientの係数がわからん・・・
-	Color.rgb += AmbientColor.rgb * 0.05;
+	Color.rgb += AmbientColor.rgb * 0.005;
 
 	return Color;
 }

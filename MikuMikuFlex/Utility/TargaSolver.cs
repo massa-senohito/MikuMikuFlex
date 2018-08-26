@@ -11,25 +11,32 @@ namespace MikuMikuFlex.Utility
 	/// </summary>
 	public static class TargaSolver
 	{
-		public static Stream LoadTargaImage( string filePath )
+		public static Stream LoadTargaImage( string filePath, ImageFormat rootFormat= null )
 		{
 			try
 			{
                 using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
                 using( var br = new BinaryReader( fs ) )
                 {
-                    var tga = new TgaLib.TgaImage( br );
-                    var bmp = tga.GetBitmap();
+                    Bitmap tgaFile = null;
 
-                    var pngStream = new MemoryStream();
+                    if( rootFormat == null )
+                        rootFormat = ImageFormat.Png;
 
-                    var pngEncoder = new PngBitmapEncoder();
-                    pngEncoder.Frames.Add( BitmapFrame.Create( bmp ) );
-                    pngEncoder.Save( pngStream );
+                    try
+                    {
+                        tgaFile = Paloma.TargaImage.LoadTargaImage( filePath );
+                    }
+                    catch
+                    {
+                        //tga以外の形式のとき
+                        return File.OpenRead( filePath );
+                    }
 
-                    pngStream.Seek( 0, SeekOrigin.Begin );
-
-                    return pngStream;
+                    MemoryStream ms = new MemoryStream();
+                    tgaFile.Save( ms, rootFormat );
+                    ms.Seek( 0, SeekOrigin.Begin );
+                    return ms;
                 }
             }
 			catch( Exception )
