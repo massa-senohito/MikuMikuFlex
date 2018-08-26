@@ -179,6 +179,9 @@ namespace MikuMikuFlex.モデル.PMX
             {
                 var ipmxSubset = サブセットリスト[ i ];
 
+                if( !ipmxSubset.エフェクト用材質情報.エッジが有効である )
+                    continue;
+
                 var effect = EffectManager.既定のエフェクト;
                 string effectName = EffectManager.サブセットに割り当てられているエフェクト名を取得する( i );
                 if( !string.IsNullOrEmpty( effectName ) )
