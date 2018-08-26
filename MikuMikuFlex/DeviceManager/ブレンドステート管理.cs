@@ -7,38 +7,38 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.DeviceManager
 {
-	public class ブレンドステート管理 : IDisposable
-	{
-		public enum BlendStates
-		{
-			Disable,
-			Alignment,
-			Add,
-			ReverseSubtruct,
-			Subtruct,
-			Multiply
-		}
+    public class ブレンドステート管理 : IDisposable
+    {
+        public enum BlendStates
+        {
+            Disable,
+            Alignment,
+            Add,
+            ReverseSubtruct,
+            Subtruct,
+            Multiply
+        }
 
-		public ブレンドステート管理( RenderContext context )
-		{
+        public ブレンドステート管理( RenderContext context )
+        {
             context.Disposables.Add( this );
 
-			ブレンドステートを生成する( context.DeviceManager.D3DDevice );
-		}
+            ブレンドステートを生成する( context.DeviceManager.D3DDevice );
+        }
 
-		public void ブレンドステートを設定する( DeviceContext deviceContext, BlendStates state )
-		{
-		    deviceContext.OutputMerger.BlendState = _ブレンドステートマップ[ state ];
-		}
+        public void ブレンドステートを設定する( DeviceContext deviceContext, BlendStates state )
+        {
+            deviceContext.OutputMerger.BlendState = _ブレンドステートマップ[ state ];
+        }
 
-		public void Dispose()
-		{
-			foreach( var blendingState in _ブレンドステートマップ )
-			{
-				if( blendingState.Value != null && !blendingState.Value.IsDisposed )
+        public void Dispose()
+        {
+            foreach( var blendingState in _ブレンドステートマップ )
+            {
+                if( blendingState.Value != null && !blendingState.Value.IsDisposed )
                     blendingState.Value.Dispose();
-			}
-		}
+            }
+        }
 
 
         protected virtual void ブレンドステートを生成する( Device device )
@@ -48,20 +48,7 @@ namespace MikuMikuFlex.DeviceManager
                 IndependentBlendEnable = true
             };
 
-            defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
-                IsBlendEnabled = true,
-                RenderTargetWriteMask = ColorWriteMaskFlags.All,
-                // RGB = Rs + Gs + Bs
-                SourceBlend = BlendOption.One,
-                DestinationBlend = BlendOption.Zero,
-                BlendOperation = BlendOperation.Add,
-                // A = As
-                SourceAlphaBlend = BlendOption.One,
-                DestinationAlphaBlend = BlendOption.Zero,
-                AlphaBlendOperation = BlendOperation.Add,
-            };
-            var disableState = new BlendState( device, defaultDesc );
-            _ブレンドステートマップ.Add( BlendStates.Disable, disableState );
+            _ブレンドステートマップ.Add( BlendStates.Disable, null );
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,

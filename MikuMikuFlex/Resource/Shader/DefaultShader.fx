@@ -98,6 +98,9 @@ float Script : STANDARDSGLOBAL <
 // ƒOƒ[ƒoƒ‹•Ï” ///////////////////////////////////////////
 
 
+float4 EdgeColor : EDGECOLOR; // ƒGƒbƒW‚ÌF 
+float EdgeWidth : EDGEWIDTH; // ƒGƒbƒW‚Ì•
+
 float4x4 matWVP       : WORLDVIEWPROJECTION < string Object="Camera"; >;
 float4x4 matWV        : WORLDVIEW < string Object = "Camera"; >;
 float4x4 WorldMatrix  : WORLD;
@@ -110,9 +113,6 @@ float3	 CameraPosition		: POSITION < string Object = "Camera"; > ;	// ƒJƒƒ‰ˆÊ’u
 Texture2D Texture : MATERIALTEXTURE;			// ƒTƒ“ƒvƒŠƒ“ƒO—pƒeƒNƒXƒ`ƒƒ
 Texture2D SphereTexture : MATERIALSPHEREMAP;	// ƒTƒ“ƒvƒŠƒ“ƒO—pƒXƒtƒBƒAƒ}ƒbƒvƒeƒNƒXƒ`ƒƒ
 Texture2D Toon : MATERIALTOONTEXTURE;			// ƒTƒ“ƒvƒŠƒ“ƒO—pƒgƒD[ƒ“ƒeƒNƒXƒ`ƒƒ
-
-float4 EdgeColor : EDGECOLOR;	// ƒGƒbƒW‚ÌF
-float  EdgeWidth : EDGEWIDTH;	// ƒGƒbƒW‚Ì•
 
 
 // ƒOƒ[ƒoƒ‹•Ï”G“Áêƒpƒ‰ƒ[ƒ^
@@ -133,7 +133,6 @@ cbuffer BasicMaterialConstant   // cbuffer ‚É‚ÍƒZƒ}ƒ“ƒeƒBƒbƒN‚ğ•t‚¯‚ç‚ê‚È‚¢‚Ì‚Å
 	float4 SpecularColor:packoffset(c2);
 	float SpecularPower:packoffset(c3);
 }
-
 
 // ƒTƒ“ƒvƒ‰[ƒXƒe[ƒg; ƒeƒNƒXƒ`ƒƒAƒXƒtƒBƒAƒ}ƒbƒvAƒgƒD[ƒ“ƒeƒNƒXƒ`ƒƒ‚Å‹¤’Ê
 
@@ -252,7 +251,7 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
     float L0 = length(input.Sdef_R0 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // qƒ{[ƒ“‚©‚çR0‚Ü‚Å‚Ì‹——£
     float L1 = length(input.Sdef_R1 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // qƒ{[ƒ“‚©‚çR1‚Ü‚Å‚Ì‹——£
 
-    if( abs(L0-L1) < 0.0001f)
+    if (abs(L0 - L1) < 0.0001f)
     {
         w0 = 0.5f;
     }
@@ -266,7 +265,7 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
     float4x4 modelPoseR = BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
     float4x4 modelPoseC = modelPoseL + modelPoseR;
 
-    float4 Cpos = mul(input.Sdef_C, modelPoseC);   // BDEF2‚ÅŒvZ‚³‚ê‚½“_C‚ÌˆÊ’u
+    float4 Cpos = mul(input.Sdef_C, modelPoseC); // BDEF2‚ÅŒvZ‚³‚ê‚½“_C‚ÌˆÊ’u
     float4 Ppos = mul(input.Position, modelPoseC); // BDEF2‚ÅŒvZ‚³‚ê‚½’¸“_‚ÌˆÊ’u
 
     float4 qp = q_slerp(
@@ -279,9 +278,9 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
     float4 R1pos = mul(float4(input.Sdef_R1, 1.0f), (modelPoseR + (modelPoseC * -input.BoneWeight[1])));
     Cpos += (R0pos * w0) + (R1pos * w1); // –c‚ç‚İ‚·‚¬–h~
 
-    Ppos -= Cpos;           // ’¸“_‚ğ“_C‚ª’†S‚É‚È‚é‚æ‚¤ˆÚ“®‚µ‚Ä
-    Ppos = mul(Ppos, qpm);  // ‰ñ“]‚µ‚Ä
-    Ppos += Cpos;           // Œ³‚ÌˆÊ’u‚Ö
+    Ppos -= Cpos; // ’¸“_‚ğ“_C‚ª’†S‚É‚È‚é‚æ‚¤ˆÚ“®‚µ‚Ä
+    Ppos = mul(Ppos, qpm); // ‰ñ“]‚µ‚Ä
+    Ppos += Cpos; // Œ³‚ÌˆÊ’u‚Ö
 
     position = Ppos;
     normal = normalize(mul(float4(input.Normal, 0), qpm)).xyz;
@@ -308,8 +307,8 @@ void QDEF(CS_INPUT input, out float4 position, out float3 normal)
 [numthreads(64,1,1)]
 void CS_Skinning( uint3 id : SV_DispatchThreadID )
 {
-    uint csIndex = id.x;    // ’¸“_”Ô†i0`’¸“_”-1j
-    uint vsIndex = csIndex * VS_INPUT_SIZE;    // o—ÍˆÊ’u[byte’PˆÊi•K‚¸4‚Ì”{”‚Å‚ ‚é‚±‚Æj]
+    uint csIndex = id.x; // ’¸“_”Ô†i0`’¸“_”-1j
+    uint vsIndex = csIndex * VS_INPUT_SIZE; // o—ÍˆÊ’u[byte’PˆÊi•K‚¸4‚Ì”{”‚Å‚ ‚é‚±‚Æj]
 
     CS_INPUT input = CSBuffer[csIndex];
 
@@ -369,35 +368,35 @@ VS_OUTPUT VS_Object(VS_INPUT input)
     VS_OUTPUT Out = (VS_OUTPUT) 0;
 
 	// ˆÊ’uiƒ[ƒ‹ƒhƒrƒ…[Ë‰e•ÏŠ·j
-	Out.Position = mul(input.Position, matWVP);
+    Out.Position = mul(input.Position, matWVP);
 
 	// ƒJƒƒ‰‚Æ‚Ì‘Š‘ÎˆÊ’u
     Out.Eye = (ViewPointPosition - mul(input.Position, WorldMatrix)).xyz;
 
 	// ’¸“_–@ü
-	Out.Normal = normalize(mul(input.Normal, (float3x3)WorldMatrix));
+    Out.Normal = normalize(mul(input.Normal, (float3x3) WorldMatrix));
 
 	// ƒfƒBƒtƒ…[ƒYFŒvZ
-	Out.Color.rgb = DiffuseColor.rgb;
-	Out.Color.a = DiffuseColor.a;
-	Out.Color = saturate(Out.Color);	// 0`1 ‚ÉŠÛ‚ß‚é
+    Out.Color.rgb = DiffuseColor.rgb;
+    Out.Color.a = DiffuseColor.a;
+    Out.Color = saturate(Out.Color); // 0`1 ‚ÉŠÛ‚ß‚é
 
-	Out.Tex = input.Tex;
+    Out.Tex = input.Tex;
 
-	if (use_spheremap)
-	{
+    if (use_spheremap)
+    {
 		// ƒXƒtƒBƒAƒ}ƒbƒvƒeƒNƒXƒ`ƒƒÀ•W
         float2 NormalWV = mul(float4(Out.Normal, 0), ViewMatrix).xy;
-		Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
-		Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
-	}
+        Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
+        Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
+    }
     else
     {
         Out.SpTex.x = 0.0f;
         Out.SpTex.y = 0.0f;
     }
 
-	return Out;
+    return Out;
 }
 
 
@@ -407,49 +406,49 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 {
     // ”½ËFŒvZ
 	
-	float3 LightDirection = -normalize( mul( LightPointPosition, matWV ) ).xyz;
+    float3 LightDirection = -normalize(mul(LightPointPosition, matWV)).xyz;
     float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), matWV).xyz);
-    float3 Specular = pow( max( 0.00001, dot( HalfVector, normalize( IN.Normal ) ) ), SpecularPower ) * SpecularColor.rgb;
-	float4 Color = IN.Color;
+    float3 Specular = pow(max(0.00001, dot(HalfVector, normalize(IN.Normal))), SpecularPower) * SpecularColor.rgb;
+    float4 Color = IN.Color;
 
 
 	// ƒeƒNƒXƒ`ƒƒƒTƒ“ƒvƒŠƒ“ƒO
 
-	if( use_texture )
+    if (use_texture)
     {
         Color *= Texture.Sample(mySampler, IN.Tex);
     }
 
 	// ƒXƒtƒBƒAƒ}ƒbƒvƒTƒ“ƒvƒŠƒ“ƒO
 
-	if ( use_spheremap )
-	{
-		if( spadd )
-		{
-			Color.rgb += SphereTexture.Sample(mySampler, IN.SpTex).rgb;	// ‰ÁZ
-		}
-		else
-		{
-			Color.rgb *= SphereTexture.Sample(mySampler, IN.SpTex).rgb;	// æZ
-		}
+    if (use_spheremap)
+    {
+        if (spadd)
+        {
+            Color.rgb += SphereTexture.Sample(mySampler, IN.SpTex).rgb; // ‰ÁZ
+        }
+        else
+        {
+            Color.rgb *= SphereTexture.Sample(mySampler, IN.SpTex).rgb; // æZ
+        }
     }
 
 	
 	// ƒVƒF[ƒfƒBƒ“ƒO
 
     float LightNormal = dot(IN.Normal, -mul(float4(LightDirection, 0), matWV).xyz);
-	float shading = saturate( LightNormal );	// 0`1 ‚ÉŠÛ‚ß‚é
+    float shading = saturate(LightNormal); // 0`1 ‚ÉŠÛ‚ß‚é
     
 	
 	// ƒgƒD[ƒ“ƒeƒNƒXƒ`ƒƒƒTƒ“ƒvƒŠƒ“ƒO
 	
-	if ( use_toontexturemap )
-	{
-        float3 MaterialToon = Toon.Sample( mySampler, float2( 0, shading ) ).rgb;
+    if (use_toontexturemap)
+    {
+        float3 MaterialToon = Toon.Sample(mySampler, float2(0, shading)).rgb;
         Color.rgb *= MaterialToon;
     }
-	else
-	{
+    else
+    {
         float3 MaterialToon = 1.0f.xxx * shading;
         Color.rgb *= MaterialToon;
     }
@@ -463,9 +462,9 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 	// F‚ÉŠÂ‹«Z‚ğ‰ÁZ
 
 	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMD‚ÌAmbient‚ÌŒW”‚ª‚í‚©‚ç‚ñEEE
-	Color.rgb += AmbientColor.rgb * 0.005;
+    Color.rgb += AmbientColor.rgb * 0.005;
 
-	return Color;
+    return Color;
 }
 
 
@@ -490,40 +489,33 @@ VS_OUTPUT VS_Edge(VS_INPUT IN)
 {
     VS_OUTPUT Out = (VS_OUTPUT) 0;
 
-	Out.Normal = normalize(mul(IN.Normal, (float3x3)WorldMatrix));	// ’¸“_–@ü
+    Out.Normal = normalize(mul(IN.Normal, (float3x3) WorldMatrix)); // ’¸“_–@ü
 
 	// ˆÊ’uiƒ[ƒJƒ‹À•Wj‚ğA–@ü•ûŒü‚É–c‚ç‚Ü‚¹‚Ä‚©‚çAƒ[ƒ‹ƒhƒrƒ…[Ë‰e•ÏŠ·‚·‚éB
-	float4 position = IN.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(IN.Position.xyz, CameraPosition) * 0.0005;
-	Out.Position = mul(position, matWVP);
+    float4 position = IN.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(IN.Position.xyz, CameraPosition) * 0.0005;
+    Out.Position = mul(position, matWVP);
 
     Out.Eye = (ViewPointPosition - mul(IN.Position, WorldMatrix)).xyz; // ƒJƒƒ‰‚Æ‚Ì‘Š‘ÎˆÊ’u
-	Out.Tex = IN.Tex;	// ƒeƒNƒXƒ`ƒƒ
+    Out.Tex = IN.Tex; // ƒeƒNƒXƒ`ƒƒ
 
-	return Out;
+    return Out;
 }
 
 
 // ƒsƒNƒZƒ‹ƒVƒF[ƒ_
 
-float4 PS_Edge( VS_OUTPUT IN ) : SV_Target
+float4 PS_Edge( VS_OUTPUT IN ) : SV_TARGET
 {
-	return EdgeColor;
+    return EdgeColor;
 }
 
 
 // ƒeƒNƒjƒbƒN‚ÆƒpƒX
 
-BlendState NoBlend
-{
-    BlendEnable[0] = False;
-};
 technique11 DefaultEdge < string MMDPass = "edge"; >
 {
     pass DefaultPass
     {
-        SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF); //AlphaBlendEnable = FALSE;
-		//AlphaTestEnable = FALSE;	--> D3D10 ˆÈ~‚Í”p~
-
         SetVertexShader(CompileShader(vs_5_0, VS_Edge()));
         SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
     }

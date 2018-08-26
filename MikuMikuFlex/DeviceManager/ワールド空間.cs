@@ -160,7 +160,7 @@ namespace MikuMikuFlex.DeviceManager
             // (1) エッジ
             foreach( var エッジ描画リソース in EdgeDrawableリスト )
             {
-                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Disable );
 
                 if( エッジ描画リソース.表示中 )
                     エッジ描画リソース.エッジを描画する();

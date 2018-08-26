@@ -201,19 +201,19 @@ namespace MikuMikuFlex.エフェクト
             int valCount = d3dEffect.Description.GlobalVariableCount;
             for( int i = 0; i < valCount; i++ )
             {
-                string セマンティクス = Regex.Replace( d3dEffect.GetVariableByIndex( i ).Description.Semantic ?? "", "[0-9]", "" ).ToUpper();
+                EffectVariable variable = d3dEffect.GetVariableByIndex( i );
 
-                string semanticIndexStr = Regex.Replace( d3dEffect.GetVariableByIndex( i ).Description.Semantic ?? "", "[^0-9]", "" );
+                string セマンティクス = Regex.Replace( variable.Description.Semantic ?? "", "[0-9]", "" ).ToUpper();
+                string semanticIndexStr = Regex.Replace( variable.Description.Semantic ?? "", "[^0-9]", "" );
                 int セマンティクス番号 = string.IsNullOrEmpty( semanticIndexStr ) ? 0 : int.Parse( semanticIndexStr );
 
-                string 型名 = d3dEffect.GetVariableByIndex( i ).TypeInfo.Description.TypeName.ToLower();
+                string 型名 = variable.TypeInfo.Description.TypeName.ToLower();
 
                 if( 変数登録マスタリスト.ContainsKey( セマンティクス ) )
                 {
                     // (A) 通常はセマンティクスに応じて登録する。
 
                     変数管理.変数管理 subs = 変数登録マスタリスト[ セマンティクス ];
-                    EffectVariable variable = d3dEffect.GetVariableByIndex( i );
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {
@@ -229,7 +229,6 @@ namespace MikuMikuFlex.エフェクト
                     // (B) テクスチャのみ例外で、変数型に応じて登録する。
 
                     変数管理.変数管理 subs = new テクスチャ変数();
-                    EffectVariable variable = d3dEffect.GetVariableByIndex( i );
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     モデルごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
                 }
@@ -237,11 +236,11 @@ namespace MikuMikuFlex.エフェクト
                 {
                     // (C) 特殊変数は変数名に応じて登録する。
 
-                    string name = d3dEffect.GetVariableByIndex( i ).Description.Name.ToLower();
+                    string name = variable.Description.Name.ToLower();
 
                     if( 特殊パラメータ変数登録マスタリスト.ContainsKey( name ) )
                     {
-                        材質ごとに更新する特殊エフェクト変数のマップ.Add( d3dEffect.GetVariableByIndex( i ), 特殊パラメータ変数登録マスタリスト[ name ] );
+                        材質ごとに更新する特殊エフェクト変数のマップ.Add( variable, 特殊パラメータ変数登録マスタリスト[ name ] );
                     }
                 }
             }
@@ -251,12 +250,12 @@ namespace MikuMikuFlex.エフェクト
             valCount = d3dEffect.Description.ConstantBufferCount;
             for( int i = 0; i < valCount; i++ )
             {
-                string name = d3dEffect.GetConstantBufferByIndex( i ).Description.Name.ToUpper();
+                EffectConstantBuffer variable = d3dEffect.GetConstantBufferByIndex( i );
+                string name = variable.Description.Name.ToUpper();
 
                 if( 変数登録マスタリスト.ContainsKey( name ) )
                 {
                     変数管理.変数管理 subs = 変数登録マスタリスト[ name ]; //定数バッファにはセマンティクスが付けられないため、変数名で代用
-                    EffectConstantBuffer variable = d3dEffect.GetConstantBufferByIndex( i );
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {

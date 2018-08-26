@@ -70,23 +70,6 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
 
         protected abstract 変数管理 材質変数登録インスタンスを生成して返す( ターゲット種別 target, bool isVector3 );
 
-        protected void エフェクトにベクトルを設定する( Vector3 vector3, Effect d3dEffect, int index )
-        {
-            d3dEffect.GetVariableByIndex( index ).AsVector().Set( vector3 );
-        }
-
-        protected void エフェクトにベクトルを設定する( Vector4 vector4, Effect d3dEffect, int index, bool Vector3である )
-        {
-            if( Vector3である )
-            {
-                d3dEffect.GetVariableByIndex( index ).AsVector().Set( new Vector3( vector4.X, vector4.Y, vector4.Z ) );
-            }
-            else
-            {
-                d3dEffect.GetVariableByIndex( index ).AsVector().Set( vector4 );
-            }
-        }
-
         protected void エフェクト変数にベクトルを設定する( Vector4 vector4, EffectVariable d3dEffectVariable, bool Vector3である )
         {
             if( Vector3である )
