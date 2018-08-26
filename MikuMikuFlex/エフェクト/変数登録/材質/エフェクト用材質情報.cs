@@ -77,7 +77,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
                 加算差分 = new エフェクト用材質情報(),
             };
 
-            var initialInfo = new エフェクト用材質情報() {
+            info.初期値 = new エフェクト用材質情報() {
                 環境色 = new Vector4( material.環境色, 1f ),
                 拡散色 = material.拡散色,
                 エッジ色 = material.エッジ色,
@@ -89,7 +89,6 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
                 エッジ幅 = material.エッジサイズ,
             };
 
-            info.初期値 = initialInfo;
             info._リセットする();
 
             return info;
@@ -154,7 +153,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
             乗算差分.拡散色 = new Vector4( 1f );
             乗算差分.反射色 = new Vector4( 1f );
             乗算差分.反射係数 = 1f;
-            乗算差分.エッジ色 = new Vector4( 0f );
+            乗算差分.エッジ色 = new Vector4( 1f, 1f, 1f, 1f );
             乗算差分.エッジ幅 = 1f;
 
             加算差分.環境色 = new Vector4( 0f );
@@ -162,7 +161,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
             加算差分.反射色 = new Vector4( 0f );
             加算差分.反射係数 = 0f;
             加算差分.エッジ色 = new Vector4( 0f );
-            加算差分.エッジ幅 = 1f;
+            加算差分.エッジ幅 = 0f;
         }
     }
 }
