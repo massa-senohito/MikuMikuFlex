@@ -156,9 +156,12 @@ namespace MikuMikuFlex.DeviceManager
 
         public void 登録されているすべての描画の必要があるものを描画する()
         {
+
             // (1) エッジ
             foreach( var エッジ描画リソース in EdgeDrawableリスト )
             {
+                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+
                 if( エッジ描画リソース.表示中 )
                     エッジ描画リソース.エッジを描画する();
             }
@@ -166,14 +169,16 @@ namespace MikuMikuFlex.DeviceManager
             // (2) 描画グループ
             foreach( var 描画対象グループ in _DrawableGroupリスト )
             {
-                描画対象グループ.描画する();
-
                 RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+
+                描画対象グループ.描画する();
             }
 
             // (3) 地面影
             foreach( var 地面影描画リソース in GroundShadowDrawableリスト )
             {
+                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+
                 if( 地面影描画リソース.表示中 )
                     地面影描画リソース.地面影を描画する();
             }

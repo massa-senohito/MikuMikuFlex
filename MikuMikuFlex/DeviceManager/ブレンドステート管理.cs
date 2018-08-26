@@ -50,78 +50,87 @@ namespace MikuMikuFlex.DeviceManager
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.Add,
-                AlphaBlendOperation = BlendOperation.Add,
-                DestinationBlend = BlendOption.Zero,
-                DestinationAlphaBlend = BlendOption.Zero,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                // RGB = Rs + Gs + Bs
                 SourceBlend = BlendOption.One,
+                DestinationBlend = BlendOption.Zero,
+                BlendOperation = BlendOperation.Add,
+                // A = As
                 SourceAlphaBlend = BlendOption.One,
+                DestinationAlphaBlend = BlendOption.Zero,
+                AlphaBlendOperation = BlendOperation.Add,
             };
             var disableState = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.Disable, disableState );
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.Add,
-                AlphaBlendOperation = BlendOperation.Add,
-                DestinationBlend = BlendOption.InverseDestinationAlpha,
-                DestinationAlphaBlend = BlendOption.InverseDestinationAlpha,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                // RGB = (Rs,Gs,Bs)×As + (Rd,Gd,Bd)×(1-As)
                 SourceBlend = BlendOption.SourceAlpha,
-                SourceAlphaBlend = BlendOption.SourceAlpha
+                DestinationBlend = BlendOption.InverseSourceAlpha,
+                AlphaBlendOperation = BlendOperation.Add,
+                // A = As
+                SourceAlphaBlend = BlendOption.One,
+                DestinationAlphaBlend = BlendOption.Zero,
+                BlendOperation = BlendOperation.Add,
             };
             var alignment = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.Alignment, alignment );
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.Add,
-                AlphaBlendOperation = BlendOperation.Add,
-                DestinationBlend = BlendOption.One,
-                DestinationAlphaBlend = BlendOption.One,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                // RGB = (Rs,Gs,Bs)×As + (Rd,Gd,Bd)
                 SourceBlend = BlendOption.SourceAlpha,
-                SourceAlphaBlend = BlendOption.SourceAlpha
+                DestinationBlend = BlendOption.One,
+                BlendOperation = BlendOperation.Add,
+                // A = As
+                SourceAlphaBlend = BlendOption.One,
+                DestinationAlphaBlend = BlendOption.Zero,
+                AlphaBlendOperation = BlendOperation.Add,
             };
             var add = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.Add, add );
 
+            // ここまで修正完了。
+            // TODO: 以下の設定が正しいか確認する。
+
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.ReverseSubtract,
-                AlphaBlendOperation = BlendOperation.ReverseSubtract,
-                DestinationBlend = BlendOption.One,
-                DestinationAlphaBlend = BlendOption.One,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 SourceBlend = BlendOption.SourceAlpha,
-                SourceAlphaBlend = BlendOption.SourceAlpha
+                DestinationBlend = BlendOption.One,
+                BlendOperation = BlendOperation.Add,
+                SourceAlphaBlend = BlendOption.One,
+                DestinationAlphaBlend = BlendOption.One,
+                AlphaBlendOperation = BlendOperation.ReverseSubtract,
             };
             var rsubtract = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.ReverseSubtruct, rsubtract );
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.Subtract,
-                AlphaBlendOperation = BlendOperation.Subtract,
-                DestinationBlend = BlendOption.One,
-                DestinationAlphaBlend = BlendOption.One,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 SourceBlend = BlendOption.SourceAlpha,
-                SourceAlphaBlend = BlendOption.SourceAlpha
+                DestinationBlend = BlendOption.One,
+                BlendOperation = BlendOperation.Subtract,
+                SourceAlphaBlend = BlendOption.SourceAlpha,
+                DestinationAlphaBlend = BlendOption.One,
+                AlphaBlendOperation = BlendOperation.Subtract,
             };
             var subtruct = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.Subtruct, subtruct );
 
             defaultDesc.RenderTarget[ 0 ] = new RenderTargetBlendDescription() {
                 IsBlendEnabled = true,
-                BlendOperation = BlendOperation.Add,
-                AlphaBlendOperation = BlendOperation.Add,
-                DestinationBlend = BlendOption.SourceColor,
-                DestinationAlphaBlend = BlendOption.SourceAlpha,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 SourceBlend = BlendOption.Zero,
-                SourceAlphaBlend = BlendOption.Zero
+                DestinationBlend = BlendOption.SourceColor,
+                BlendOperation = BlendOperation.Add,
+                SourceAlphaBlend = BlendOption.Zero,
+                DestinationAlphaBlend = BlendOption.SourceAlpha,
+                AlphaBlendOperation = BlendOperation.Add,
             };
             var multiply = new BlendState( device, defaultDesc );
             _ブレンドステートマップ.Add( BlendStates.Multiply, multiply );
