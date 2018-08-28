@@ -23,7 +23,8 @@ namespace MikuMikuFlex.モデル.PMX
 
                 if( File.Exists( path ) )
                 {
-                    _シェーダーリソースビューのリスト.Add( MMFShaderResourceView.FromFile( RenderContext.Instance.DeviceManager.D3DDevice, path ) );
+                    _シェーダーリソースビューのリスト.Add( MMFShaderResourceView.FromFile( RenderContext.Instance.DeviceManager.D3DDevice, path, out Texture2D texture ) );
+                    _シェーダーリソースのリスト.Add( texture );
                 }
                 else
                 {
@@ -40,7 +41,8 @@ namespace MikuMikuFlex.モデル.PMX
 				if( stream == null )
                     return 0;
 
-				_シェーダーリソースビューのリスト.Add( MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream ) );
+				_シェーダーリソースビューのリスト.Add( MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D texture ) );
+                _シェーダーリソースのリスト.Add( texture );
 
                 return _シェーダーリソースビューのリスト.Count - 1;
 			}
@@ -52,10 +54,16 @@ namespace MikuMikuFlex.モデル.PMX
 				shaderResourceView.Dispose();
 
             _シェーダーリソースビューのリスト.Clear();
-		}
+
+            foreach( var resource in _シェーダーリソースのリスト )
+                resource.Dispose();
+
+            _シェーダーリソースのリスト.Clear();
+        }
 
 
-        private readonly List<ShaderResourceView> _シェーダーリソースビューのリスト = new List<ShaderResourceView>();
+        private List<ShaderResourceView> _シェーダーリソースビューのリスト = new List<ShaderResourceView>();
+        private List<Texture2D> _シェーダーリソースのリスト = new List<Texture2D>();
 
         private サブリソースローダー _サブリソースローダー;
     }

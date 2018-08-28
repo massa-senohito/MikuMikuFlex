@@ -143,6 +143,10 @@ namespace MikuMikuFlex.モデル.PMX
                 kvp.Value?.Dispose();
             _テクスチャキャッシュ.Clear();
 
+            foreach( KeyValuePair<string, Texture2D> kvp in _テクスチャリソースキャッシュ )
+                kvp.Value?.Dispose();
+            _テクスチャリソースキャッシュ.Clear();
+
             foreach( PMXサブセット subset in サブセットリスト )
                 subset.Dispose();
 
@@ -219,9 +223,10 @@ namespace MikuMikuFlex.モデル.PMX
         private トゥーンテクスチャ管理 _トゥーンテクスチャ管理;
 
         private Dictionary<string, ShaderResourceView> _テクスチャキャッシュ = new Dictionary<string, ShaderResourceView>();
+        private Dictionary<string, Texture2D> _テクスチャリソースキャッシュ = new Dictionary<string, Texture2D>();
 
 
-		private ShaderResourceView _サブリソースを検索して返す( string name )
+        private ShaderResourceView _サブリソースを検索して返す( string name )
 		{
             if( _テクスチャキャッシュ.ContainsKey( name ) )
                 return _テクスチャキャッシュ[ name ];
@@ -231,9 +236,11 @@ namespace MikuMikuFlex.モデル.PMX
                 var texture = (ShaderResourceView) null;
 
                 if( stream != null )
-                    texture = MikuMikuFlex.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
-
-                _テクスチャキャッシュ.Add( name, texture );
+                {
+                    texture = MikuMikuFlex.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D textureResource );
+                    _テクスチャキャッシュ.Add( name, texture );
+                    _テクスチャリソースキャッシュ.Add( name, textureResource );
+                }
 
                 return texture;
 			}
