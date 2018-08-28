@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using MikuMikuFlex;
 using MikuMikuFlex.コントロール.Forms;
 using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.行列.CameraMotion;
 
 namespace _02_SimpleRenderPMX
 {
@@ -34,6 +35,12 @@ namespace _02_SimpleRenderPMX
 				//WorldSpaceは、このフォームの描画する3D空間を示している。ここにモデルなど(IDrawableを実装している)ものを渡すと、描画してくれる。
 				//WorldSpaceは、ScreenContext.WorldSpaceと常に等しい。ウィンドウごとに必要な3DCG描画に必要な情報はScreenContextに保管されている。
 			}
+
+            // マウスで操作できるカメラモーションを読み込んで、画面（のカメラ）に適用。
+
+            this.ScreenContext.カメラモーション = new マウスカメラモーション( this, this );
+
+            // ウィンドウが後ろに隠れることがあるので、念のため。
 
             Activate();
 		}
