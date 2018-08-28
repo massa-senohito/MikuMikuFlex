@@ -118,6 +118,9 @@
     <Reference Include="TargaImage">
       <HintPath>.\TargaImage.dll</HintPath>
     </Reference>
+    <Reference Include="TgaLib">
+      <HintPath>.\TgaLib.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +395,9 @@
     <Content Include="Resource\Shader\debugDot.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="TgaLib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TargaImage.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
