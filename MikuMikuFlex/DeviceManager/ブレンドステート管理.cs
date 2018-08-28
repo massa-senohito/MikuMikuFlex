@@ -44,7 +44,7 @@ namespace MikuMikuFlex.DeviceManager
         protected virtual void ブレンドステートを生成する( Device device )
         {
             var defaultDesc = new BlendStateDescription() {
-                AlphaToCoverageEnable = true,
+                AlphaToCoverageEnable = false,
                 IndependentBlendEnable = true
             };
 

@@ -4,6 +4,7 @@ using System.Linq;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーション;
 using MikuMikuFlex.スプライト;
+using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.DeviceManager
 {
@@ -156,23 +157,23 @@ namespace MikuMikuFlex.DeviceManager
 
         public void 登録されているすべての描画の必要があるものを描画する()
         {
-
-            // (1) エッジ
-            foreach( var エッジ描画リソース in EdgeDrawableリスト )
-            {
-                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Disable );
-
-                if( エッジ描画リソース.表示中 )
-                    エッジ描画リソース.エッジを描画する();
-            }
-
-            // (2) 描画グループ
+            // (1) 描画グループ
             foreach( var 描画対象グループ in _DrawableGroupリスト )
             {
                 RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
 
                 描画対象グループ.描画する();
             }
+
+            // (2) エッジ
+            foreach( var エッジ描画リソース in EdgeDrawableリスト )
+            {
+                RenderContext.Instance.ブレンドステート管理?.ブレンドステートを設定する( RenderContext.Instance.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+
+                if( エッジ描画リソース.表示中 )
+                    エッジ描画リソース.エッジを描画する();
+            }
+
 
             // (3) 地面影
             foreach( var 地面影描画リソース in GroundShadowDrawableリスト )
