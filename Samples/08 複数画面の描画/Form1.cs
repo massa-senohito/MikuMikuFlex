@@ -31,14 +31,6 @@ namespace _08_MultiScreenRendering
 			if( MessageBox.Show( "共通のワールド空間を利用しますか?", "", MessageBoxButtons.YesNo ) == DialogResult.Yes )
 			{
 				childForm.ScreenContext.ワールド空間 = ScreenContext.ワールド空間;//childSpaceのワールド空間をこのForm1のワールド空間と同一のものにする。
-
-				//この場合はRenderContextを指定しないで初期化されたフォームであるこのForm1のWorldSpaceは標準で更新対象になるため
-				//UpdateReqireWorldsに追加する必要はない。
-				//こうした場合、二つのスクリーンは同じワールド空間を表示する。
-			}
-			else
-			{
-				RenderContext.Instance.ScreenContextリスト.Add( childForm.ScreenContext );//標準のワールド空間以外は更新するよう指定する必要がある。
 			}
 			ControllerForm controller = new ControllerForm( this, childForm );
 			controller.Show();

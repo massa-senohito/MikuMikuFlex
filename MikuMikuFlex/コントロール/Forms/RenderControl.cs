@@ -40,7 +40,6 @@ namespace MikuMikuFlex.コントロール.Forms
 			{
                 RenderContext.インスタンスを生成する();
 				ScreenContext = RenderContext.Instance.Initialize( this );
-				RenderContext.Instance.ScreenContextリスト.Add( ScreenContext );
 			}
 			else
 			{

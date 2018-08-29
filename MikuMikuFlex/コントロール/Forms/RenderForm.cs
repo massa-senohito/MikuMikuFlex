@@ -75,7 +75,6 @@ namespace MikuMikuFlex.コントロール.Forms
                 // コンストラクタで RenderContext が指定されなかった場合は作成する
                 RenderContext.インスタンスを生成する();
 				ScreenContext = RenderContext.Instance.Initialize( this );
-                RenderContext.Instance.ScreenContextリスト.Add( ScreenContext );
 			}
 			else
 			{

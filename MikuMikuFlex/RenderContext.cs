@@ -83,8 +83,6 @@ namespace MikuMikuFlex
 
         // 描画先プロパティ
 
-        public List<ScreenContext> ScreenContextリスト = new List<ScreenContext>();
-
         /// <summary>
         ///     描画先のリソース一式。
         ///     レンダーターゲット、深度ステンシル、行列、カメラ、ビューポート、スワップチェーンなど。
