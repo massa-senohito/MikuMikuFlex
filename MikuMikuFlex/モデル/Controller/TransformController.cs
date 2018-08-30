@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.モデル.Controller.ControllerComponent;
 using MikuMikuFlex.モデル.Shape;
 using SharpDX;
@@ -203,7 +203,7 @@ namespace MikuMikuFlex.モデル.Controller
 		}
 
 
-        private List<IHitTestable> _controllers = new List<IHitTestable>();
+        private List<HitTestable> _controllers = new List<HitTestable>();
 
         private RotateRingController _xRotater;
 

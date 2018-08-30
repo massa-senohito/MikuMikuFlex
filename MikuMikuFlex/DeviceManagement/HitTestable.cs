@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
-	public interface IHitTestable : IDrawable
+	public interface HitTestable : IDrawable
 	{
 		void RenderHitTestBuffer( float col );
 

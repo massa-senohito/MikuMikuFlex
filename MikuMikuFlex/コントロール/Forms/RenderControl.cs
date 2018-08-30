@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.DXGI;

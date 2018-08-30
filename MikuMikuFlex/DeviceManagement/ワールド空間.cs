@@ -6,7 +6,7 @@ using MikuMikuFlex.モーション;
 using MikuMikuFlex.スプライト;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
 	public class ワールド空間 : IDisposable
 	{

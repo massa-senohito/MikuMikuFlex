@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using MikuMikuFlex.エフェクト;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
 	/// <summary>
 	///     IDeviceManager の基礎クラス。
 	/// </summary>
-	public class DeviceManager基本実装 : IDeviceManager
+	public class DeviceManager基本実装 : DeviceManager
 	{
 		// IDeviceManagerの実装
 

@@ -6,9 +6,9 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Resource = SharpDX.Direct3D11.Resource;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
-	public class ScreenContext : ITargetContext
+	public class ScreenContext : TargetContext
 	{
 		public ScreenContext( Control owner, 行列管理 manager )
             : base()

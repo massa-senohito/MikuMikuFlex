@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
 	public class DrawableGroup : IComparable<DrawableGroup>, IDisposable
 	{

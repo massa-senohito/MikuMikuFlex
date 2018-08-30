@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.ライト;
 using MikuMikuFlex.行列;
 using MikuMikuFlex.モデル;
@@ -31,7 +31,7 @@ namespace MikuMikuFlex
             Instance = new RenderContext();
             Instance.Initialize();
         }
-        public static void インスタンスを生成する( IDeviceManager deviceManager )
+        public static void インスタンスを生成する( DeviceManager deviceManager )
         {
             Instance = new RenderContext();
             Instance.Initialize( deviceManager );
@@ -50,7 +50,7 @@ namespace MikuMikuFlex
 
         // プロパティ
 
-        public IDeviceManager DeviceManager { get; private set; }
+        public DeviceManager DeviceManager { get; private set; }
 
         /// <summary>
         ///     一定時間ごとに <see cref="ワールド座標をすべて更新する"/> を呼び出すタイマ。
@@ -87,7 +87,7 @@ namespace MikuMikuFlex
         ///     描画先のリソース一式。
         ///     レンダーターゲット、深度ステンシル、行列、カメラ、ビューポート、スワップチェーンなど。
         /// </summary>
-		public ITargetContext 描画ターゲットコンテキスト  { get; private set; }
+		public TargetContext 描画ターゲットコンテキスト  { get; private set; }
 
         public RenderTargetView[] レンダーターゲット配列 = new RenderTargetView[ 8 ];
 
@@ -131,11 +131,11 @@ namespace MikuMikuFlex
             this.Timer = new モーションタイマ();
 
             this.ブレンドステート管理 = new ブレンドステート管理( this );
-            this.ブレンドステート管理.ブレンドステートを設定する( this.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
+            this.ブレンドステート管理.ブレンドステートを設定する( (SharpDX.Direct3D11.DeviceContext)this.DeviceManager.D3DDeviceContext, ブレンドステート管理.BlendStates.Alignment );
 
         }
 
-        public void Initialize( IDeviceManager deviceManager )
+        public void Initialize( DeviceManager deviceManager )
         {
             this.DeviceManager = deviceManager;
             this.Initialize();
@@ -199,7 +199,7 @@ namespace MikuMikuFlex
 			this.更新通知( this, new EventArgs() );
 		}
 
-		public void 描画対象にする( ITargetContext context )
+		public void 描画対象にする( TargetContext context )
 		{
 			this.描画ターゲットコンテキスト = context;
 			context.ビューポートを設定する();

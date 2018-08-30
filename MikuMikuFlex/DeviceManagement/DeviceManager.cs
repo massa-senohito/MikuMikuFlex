@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
-	public interface IDeviceManager : IDisposable
+	public interface DeviceManager : IDisposable
 	{
 		/// <summary>
 		///		D3D11 デバイス。

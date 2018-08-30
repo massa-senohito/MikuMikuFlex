@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.エフェクト.Includer;
 using MikuMikuFlex.エフェクト.変数管理;
 using MikuMikuFlex.エフェクト.変数管理.定数;
@@ -55,7 +55,7 @@ namespace MikuMikuFlex.エフェクト
 
         /// <summary>
         ///     現在の MMF で利用可能なすべてのエフェクト変数登録インスタンスのリスト。
-        ///     [Key: 変数等労苦のセマンティクス名、Value: 変数登録]
+        ///     [Key: 変数管理セマンティクス名、Value: 変数登録]
         /// </summary>
         public static Dictionary<string, 変数管理.変数管理> 変数登録マスタリスト { get; private set; }
 
@@ -326,7 +326,7 @@ namespace MikuMikuFlex.エフェクト
             }
         }
 
-        public static void 初期化する( IDeviceManager deviceManager )
+        public static void 初期化する( DeviceManagement.DeviceManager deviceManager )
         {
             変数登録マスタリスト = new Dictionary<string, 変数管理.変数管理>();
             foreach( var variable in new List<変数管理.変数管理> {
@@ -495,14 +495,14 @@ namespace MikuMikuFlex.エフェクト
             if( null == loader )
                 loader = new サブリソースローダー( Path.GetDirectoryName( ファイルパス ) );
 
-            var d3dEffect = CGHelper.EffectFx5を作成する( ファイルパス, RenderContext.Instance.DeviceManager.D3DDevice );
+            var d3dEffect = CGHelper.EffectFx5を作成する( ファイルパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
 
             return new エフェクト( ファイルパス, d3dEffect, 使用対象モデル, loader );
         }
 
         internal static エフェクト リソースをエフェクトとして読み込む( string リソースパス, IDrawable 使用対象モデル, サブリソースローダー loader )
         {
-            var d3dEffect = CGHelper.EffectFx5を作成するFromResource( リソースパス, RenderContext.Instance.DeviceManager.D3DDevice );
+            var d3dEffect = CGHelper.EffectFx5を作成するFromResource( リソースパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
 
             return new エフェクト( リソースパス, d3dEffect, 使用対象モデル, loader );
         }

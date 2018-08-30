@@ -2,13 +2,13 @@
 using MikuMikuFlex.行列;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
     /// <summary>
     ///     描画先のリソース一式。
     ///     レンダーターゲット、深度ステンシル、行列、カメラ、ビューポート、スワップチェーンなど。
     /// </summary>
-    public interface ITargetContext : IDisposable
+    public interface TargetContext : IDisposable
 	{
 		RenderTargetView D3Dレンダーターゲットビュー { get; }
 

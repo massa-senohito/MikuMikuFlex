@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
-using MikuMikuFlex.DeviceManager;
+using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -8,7 +8,7 @@ using SharpDX.DXGI;
 
 namespace MikuMikuFlex.モデル.Shape
 {
-	public abstract class シェイプ : IDrawable, IHitTestable
+	public abstract class シェイプ : IDrawable, HitTestable
 	{
         public bool 表示中 { get; set; }
 

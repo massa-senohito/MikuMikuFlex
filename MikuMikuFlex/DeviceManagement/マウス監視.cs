@@ -2,7 +2,7 @@
 using MikuMikuFlex.モーション;
 using SharpDX;
 
-namespace MikuMikuFlex.DeviceManager
+namespace MikuMikuFlex.DeviceManagement
 {
 	/// <summary>
 	/// 主にマウスなどのパネル上の動きを監視するクラス
