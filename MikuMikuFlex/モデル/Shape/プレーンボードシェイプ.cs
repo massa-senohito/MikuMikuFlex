@@ -40,7 +40,7 @@ namespace MikuMikuFlex.モデル.Shape
 
 			表示中 = true;
 
-			スプライトの描画に利用するエフェクト = CGHelper.EffectFx5を作成するFromResource( "MMF.Resource.Shader.SpriteShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
+			スプライトの描画に利用するエフェクト = CGHelper.EffectFx5を作成するFromResource( "MikuMikuFlex.Resource.Shader.SpriteShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
 
 			VertexInputLayout = new InputLayout(
                 RenderContext.Instance.DeviceManager.D3DDevice,

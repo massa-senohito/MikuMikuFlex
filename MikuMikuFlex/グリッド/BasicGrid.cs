@@ -173,7 +173,7 @@ namespace MikuMikuFlex.グリッド
 		private void MakeGridVectors()
 		{
 			List<Vector3> gridVector = new List<Vector3>();
-			effect = CGHelper.EffectFx5を作成するFromResource( @"MMF.Resource.Shader.GridShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
+			effect = CGHelper.EffectFx5を作成するFromResource( @"MikuMikuFlex.Resource.Shader.GridShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
 			for( int i = 0; i <= GridCount; i++ )
 			{
 				if( i != GridCount / 2 )

@@ -33,7 +33,7 @@ namespace MikuMikuFlex.エフェクト
 
         public const string エフェクトに定義するMMF定数 = "MMF";
 
-        public const string 既定のシェーダのリソースパス = "MMF.Resource.Shader.DefaultShader.fx";
+        public const string 既定のシェーダのリソースパス = "MikuMikuFlex.Resource.Shader.DefaultShader.fx";
 
         public static string アプリケーションの定数
         {

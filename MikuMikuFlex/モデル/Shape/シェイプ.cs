@@ -37,7 +37,7 @@ namespace MikuMikuFlex.モデル.Shape
 		{
             // シェイプシェーダーを作成する。
 
-            _D3DEffect = CGHelper.EffectFx5を作成するFromResource( @"MMF.Resource.Shader.ShapeShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
+            _D3DEffect = CGHelper.EffectFx5を作成するFromResource( @"MikuMikuFlex.Resource.Shader.ShapeShader.fx", RenderContext.Instance.DeviceManager.D3DDevice );
 
 
             // 頂点リストを作成し、それをもとに頂点バッファを作成する。
