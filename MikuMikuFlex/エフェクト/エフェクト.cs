@@ -500,7 +500,8 @@ namespace MikuMikuFlex.エフェクト
 
         public void エフェクトを適用しつつサブセットを描画する( サブセット ipmxSubset, MMDPass種別 passType, Action<サブセット> drawAction )
         {
-            if( ipmxSubset.エフェクト用材質情報.拡散色.W == 0 )
+            if( ipmxSubset.エフェクト用材質情報.拡散色.W == 0 ||
+                !( this.ScriptClass.HasFlag( ScriptClass.Object ) ) )
                 return;
 
             // 両面描画かどうかに応じてカリングの値を切り替える
@@ -547,9 +548,23 @@ namespace MikuMikuFlex.エフェクト
         #region " ScriptClass.Scene 用メンバ "
         //----------------
 
-        public void エフェクトを適用しつつシーンを描画する()
+        public void エフェクトを適用しつつシーンを描画する( SharpDX.DXGI.SwapChain swapCain )
         {
+            if( !( this.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
+                return;
+
+            // シーンごとに更新するエフェクト変数を更新する。
+
+            var argument = new 変数更新時引数( swapCain );
+
+            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> kvp in this.シーンごとに更新するエフェクト変数のマップ )
+                kvp.Value.変数を更新する( kvp.Key, argument );
+
+
+
+            
             // TODO: エフェクトを適用しつつシーンを描画する
+
         }
 
         //----------------
