@@ -7,43 +7,38 @@ namespace MikuMikuFlex.エフェクト
 {
     public class エフェクト管理 : IDisposable
     {
-        /// <summary>
-        ///     [key: エフェクト名, value: エフェクト]
-        /// </summary>
-        public Dictionary<string, エフェクト> エフェクトマスタリスト { get; protected set; }
-
         public エフェクト 既定のエフェクト { get; protected set; }
 
         /// <summary>
-        ///     サブセットに適用されるエフェクトの対応表。
-        ///     このマップにサブセットIDが存在しない場合は、既定のエフェクトを使うことを意味する。
-        ///     [key: サブセットID, value: エフェクト名]
+        ///     管理するすべてのエフェクトのリスト。
+        ///     [key: エフェクトID（一意の文字列）, value: エフェクト]
         /// </summary>
-        protected Dictionary<int, string> サブセットIDtoエフェクト名マップ;
+        public IReadOnlyDictionary<string, エフェクト> エフェクトマスタリスト
+            => this._エフェクトマスタリスト;
 
 
         public エフェクト管理()
         {
-            エフェクトマスタリスト = new Dictionary<string, エフェクト>();
             既定のエフェクト = null;
-            サブセットIDtoエフェクト名マップ = new Dictionary<int, string>();
+            _エフェクトマスタリスト = new Dictionary<string, エフェクト>();
+            _サブセットIDtoエフェクトマップ = new Dictionary<int, エフェクト>();
         }
 
         public void Dispose()
         {
-            サブセットIDtoエフェクト名マップ.Clear();
+            _サブセットIDtoエフェクトマップ.Clear();
 
-            foreach( KeyValuePair<string, エフェクト> kvp in エフェクトマスタリスト )
+            foreach( KeyValuePair<string, エフェクト> kvp in _エフェクトマスタリスト )
                 kvp.Value.Dispose();
 
-            エフェクトマスタリスト.Clear();
+            _エフェクトマスタリスト.Clear();
 
             既定のエフェクト = null;
         }
 
-        public void エフェクトをマスタリストに登録する( string name, エフェクト effect, bool これを既定のエフェクトに指定する = false )
+        public void エフェクトをマスタリストに登録する( string エフェクトID, エフェクト effect, bool これを既定のエフェクトに指定する = false )
         {
-            エフェクトマスタリスト.Add( name, effect );
+            _エフェクトマスタリスト.Add( エフェクトID, effect );
 
             Debug.WriteLine( $"エフェクトを追加しました。[{effect.ファイル名}]" );
 
@@ -51,31 +46,29 @@ namespace MikuMikuFlex.エフェクト
                 既定のエフェクト = effect;
         }
 
-        public void サブセットにエフェクトを割り当てる( int サブセットID, string エフェクト名 )
+        public void サブセットにエフェクトを割り当てる( int サブセットID, エフェクト effect )
         {
             // すでにマップに登録してあれば削除する。
-            if( サブセットIDtoエフェクト名マップ.ContainsKey( サブセットID ) )
-                サブセットIDtoエフェクト名マップ.Remove( サブセットID );
+            if( _サブセットIDtoエフェクトマップ.ContainsKey( サブセットID ) )
+                _サブセットIDtoエフェクトマップ.Remove( サブセットID );
 
             // マップに登録する。
-            サブセットIDtoエフェクト名マップ.Add( サブセットID, エフェクト名 );
+            _サブセットIDtoエフェクトマップ.Add( サブセットID, effect );
         }
 
-        public エフェクト 名前からエフェクトを取得する( string エフェクト名 )
+        public エフェクト サブセットのエフェクトを取得する( int サブセットID )
         {
-            if( string.IsNullOrEmpty( エフェクト名 ) )
-                return null;
-
-            return ( エフェクトマスタリスト.ContainsKey( エフェクト名 ) ) ?
-                エフェクトマスタリスト[ エフェクト名 ] :
-                null;   // なかったら null 。
+            return ( this._サブセットIDtoエフェクトマップ.TryGetValue( サブセットID, out var effect ) ) ? effect : this.既定のエフェクト;
         }
 
-        public string サブセットに割り当てられているエフェクト名を取得する( int サブセットID )
-        {
-            return ( サブセットIDtoエフェクト名マップ.ContainsKey( サブセットID ) ) ?
-                サブセットIDtoエフェクト名マップ[ サブセットID ] :
-                null;   // 存在しないなら null。
-        }
+
+        private Dictionary<string, エフェクト> _エフェクトマスタリスト;
+
+        /// <summary>
+        ///     サブセットに適用されるエフェクトの対応表。
+        ///     このマップにサブセットIDが存在しない場合は、既定のエフェクトを使うことを意味する。
+        ///     [key: サブセットID, value: エフェクト]
+        /// </summary>
+        private Dictionary<int, エフェクト> _サブセットIDtoエフェクトマップ;
     }
 }

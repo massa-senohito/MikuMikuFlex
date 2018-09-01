@@ -159,12 +159,7 @@ namespace MikuMikuFlex.モデル.PMX
             {
                 var ipmxSubset = サブセットリスト[ i ];
 
-                var effect = EffectManager.既定のエフェクト;
-                string effectName = EffectManager.サブセットに割り当てられているエフェクト名を取得する( i );
-                if( !string.IsNullOrEmpty( effectName ) )
-                {
-                    effect = EffectManager.名前からエフェクトを取得する( effectName ) ?? EffectManager.既定のエフェクト;
-                }
+                var effect = EffectManager.サブセットのエフェクトを取得する( i );
 
                 effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
 
@@ -186,12 +181,7 @@ namespace MikuMikuFlex.モデル.PMX
                 if( !( ipmxSubset.エフェクト用材質情報.エッジが有効である ) )
                     continue;
 
-                var effect = EffectManager.既定のエフェクト;
-                string effectName = EffectManager.サブセットに割り当てられているエフェクト名を取得する( i );
-                if( !string.IsNullOrEmpty( effectName ) )
-                {
-                    effect = EffectManager.名前からエフェクトを取得する( effectName ) ?? EffectManager.既定のエフェクト;
-                }
+                var effect = EffectManager.サブセットのエフェクトを取得する( i );
 
                 effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
 
