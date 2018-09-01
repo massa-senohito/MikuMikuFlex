@@ -153,7 +153,7 @@ namespace MikuMikuFlex.モデル.PMX
             サブセットリスト.Clear();
         }
 
-        public void すべてを描画する( オブジェクト用エフェクト管理 EffectManager )
+        public void オブジェクトを描画する( オブジェクト用エフェクト管理 EffectManager )
         {
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {

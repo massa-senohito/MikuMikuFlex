@@ -19,7 +19,7 @@ namespace MikuMikuFlex.モデル
         /// </summary>
         void 初期化する( トゥーンテクスチャ管理 ToonManager, サブリソースローダー subresourceManager );
 
-        void すべてを描画する( オブジェクト用エフェクト管理 EffectManager );
+        void オブジェクトを描画する( オブジェクト用エフェクト管理 EffectManager );
 
         void エッジを描画する( オブジェクト用エフェクト管理 EffectManager );
 

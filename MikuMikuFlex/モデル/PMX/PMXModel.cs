@@ -27,7 +27,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 namespace MikuMikuFlex.モデル.PMX
 {
-	public class PMXModel : ISubsetDivided, IMovable, IEdgeDrawable, IGroundShadowDrawable
+	public class PMXModel : ISubsetDivided, IMovable, IDrawable
 	{
 		public サブリソースローダー サブリソースローダー { get; private set; }
 
@@ -199,35 +199,9 @@ namespace MikuMikuFlex.モデル.PMX
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.すべてを描画する( サブセット用エフェクト管理 );
-        }
-
-
-        // IEdgeDrawable の実装
-
-        public void エッジを描画する()
-        {
-            foreach( var effect in サブセット用エフェクト管理.エフェクトマスタリスト.Values )
-            {
-                effect.モデルごとに更新するエフェクト変数を更新する();
-                スキニング.エフェクトを適用する( effect.D3DEffect );
-            }
-
-            var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-            IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
-            IA.InputLayout = バッファ管理.D3D頂点レイアウト;
-            IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
-
+            サブセット管理.オブジェクトを描画する( サブセット用エフェクト管理 );
             サブセット管理.エッジを描画する( サブセット用エフェクト管理 );
-        }
-
-
-        // IGroundShadowDrawable の実装
-
-        public void 地面影を描画する()
-        {
-            // TODO: 地面影描画を実装する
+            サブセット管理.地面影を描画する( サブセット用エフェクト管理 );
         }
 
 

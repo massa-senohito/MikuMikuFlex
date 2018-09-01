@@ -547,11 +547,6 @@ namespace MikuMikuFlex.エフェクト
         #region " ScriptClass.Scene 用メンバ "
         //----------------
 
-        public void シーンごとに更新するエフェクト変数を更新する()
-        {
-            // TODO: シーンごとに更新するエフェクト変数を更新する
-        }
-
         public void エフェクトを適用しつつシーンを描画する()
         {
             // TODO: エフェクトを適用しつつシーンを描画する
