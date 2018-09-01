@@ -22,6 +22,9 @@ namespace MikuMikuFlex.エフェクト
 
         public void サブセットにエフェクトを割り当てる( int サブセットID, エフェクト effect )
         {
+            if( !( effect.ScriptClass.HasFlag( ScriptClass.Object ) ) )
+                throw new InvalidOperationException( "Objectフラグを持たないエフェクトはサブセットに登録できません。" );
+
             // すでにマップに登録してあれば削除する。
             if( _サブセットIDtoエフェクトマップ.ContainsKey( サブセットID ) )
                 _サブセットIDtoエフェクトマップ.Remove( サブセットID );

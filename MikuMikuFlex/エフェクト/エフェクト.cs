@@ -556,7 +556,7 @@ namespace MikuMikuFlex.エフェクト
                         break;
 
                     case "sceneorobject":
-                        ScriptClass = ScriptClass.SceneOrObject;
+                        ScriptClass = ScriptClass.Object | ScriptClass.Scene;
                         break;
 
                     default:

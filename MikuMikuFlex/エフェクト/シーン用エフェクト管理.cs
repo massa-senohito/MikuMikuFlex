@@ -26,6 +26,9 @@ namespace MikuMikuFlex.エフェクト
 
         public void シーン用エフェクトを割り当てる( エフェクト effect )
         {
+            if( !( effect.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
+                throw new InvalidOperationException( "Sceneフラグを持たないエフェクトはシーン用として登録できません。" );
+
             // すでにリストに登録してあれば削除する。
             if( _シーン用エフェクトリスト.Contains( effect ) )
                 _シーン用エフェクトリスト.Remove( effect );

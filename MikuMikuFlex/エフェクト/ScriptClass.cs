@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace MikuMikuFlex.エフェクト
 {
+    [Flags]
     public enum ScriptClass
     {
-        Object,
-        Scene,
-        SceneOrObject,
+        Object = 0x01,
+        Scene = 0x02,
     }
 }
