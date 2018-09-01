@@ -25,18 +25,6 @@ namespace MikuMikuFlex.DeviceManagement
             private set;
         } = new List<動的テクスチャ>();
 
-        public List<IGroundShadowDrawable> GroundShadowDrawableリスト
-        {
-            get;
-            private set;
-        } = new List<IGroundShadowDrawable>();
-
-        public List<IEdgeDrawable> EdgeDrawableリスト
-        {
-            get;
-            private set;
-        } = new List<IEdgeDrawable>();
-
         public bool IsDisposed { get; private set; }
 
 
@@ -93,12 +81,6 @@ namespace MikuMikuFlex.DeviceManagement
 
             if( drawable is IMovable )
 				Movableリスト.Add( (IMovable) drawable );
-
-			if( drawable is IEdgeDrawable )
-				EdgeDrawableリスト.Add( (IEdgeDrawable) drawable );
-
-			if( drawable is IGroundShadowDrawable )
-				GroundShadowDrawableリスト.Add( (IGroundShadowDrawable) drawable );
 		}
 
 		public void Drawableを削除する( IDrawable drawable )

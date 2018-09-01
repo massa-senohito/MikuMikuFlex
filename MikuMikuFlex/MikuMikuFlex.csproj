@@ -250,8 +250,6 @@
     <Compile Include="エフェクト\変数管理\ワールド情報\DIRECTION変数.cs" />
     <Compile Include="エフェクト\変数管理\ワールド情報\POSITION変数.cs" />
     <Compile Include="エフェクト\変数管理\ワールド情報\ワールド情報変数.cs" />
-    <Compile Include="モデル\IEdgeDrawable.cs" />
-    <Compile Include="モデル\IGroundShadowDrawable.cs" />
     <Compile Include="モデル\Shape\プレーンボードシェイプ.cs" />
     <Compile Include="モデル\Other\DebugDotManager.cs" />
     <Compile Include="モデル\PMX\PMXサブセット管理.cs" />
