@@ -572,6 +572,10 @@ namespace MikuMikuFlex.エフェクト
             if( !( this.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
                 return;
 
+            // カリング設定
+
+            RenderContext.Instance.DeviceManager.D3DDeviceContext.Rasterizer.State = RenderContext.Instance.片面描画の際のラスタライザステート;
+
             // 使用するtechniqueを検索する。
 
             テクニック technique =
