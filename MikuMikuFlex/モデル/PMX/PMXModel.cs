@@ -42,7 +42,7 @@ namespace MikuMikuFlex.モデル.PMX
 
 		public モーフ管理 モーフ管理 { get; private set; }
 
-		public エフェクト管理 エフェクト管理 { get; private set; }
+		public サブセット用エフェクト管理 サブセット用エフェクト管理 { get; private set; }
 
 		public トゥーンテクスチャ管理 トゥーン管理 { get; private set; }
 
@@ -86,12 +86,12 @@ namespace MikuMikuFlex.モデル.PMX
 
                 サブセット管理.初期化する( トゥーン管理, サブリソースローダー );
 
-                エフェクト管理 = エフェクト管理を初期化して返す();    // サブセット管理より後。
+                サブセット用エフェクト管理 = エフェクト管理を初期化して返す();    // サブセット管理より後。
 
 
                 // 定数バッファ
 
-                _ZPlotPass = エフェクト管理.既定のエフェクト.D3DEffect.GetTechniqueByIndex( 1 ).GetPassByIndex( 0 );
+                _ZPlotPass = サブセット用エフェクト管理.既定のエフェクト.D3DEffect.GetTechniqueByIndex( 1 ).GetPassByIndex( 0 );
                 バッファ管理を初期化する();
 
                 
@@ -135,14 +135,14 @@ namespace MikuMikuFlex.モデル.PMX
 
             var effect = エフェクト.エフェクト.ファイルをエフェクトとして読み込む( filePath, this, loader );
 
-            エフェクト管理.エフェクトをマスタリストに登録する( filePath, effect, 既定にする );
+            サブセット用エフェクト管理.エフェクトをマスタリストに登録する( filePath, effect, 既定にする );
         }
 
 
         public virtual void Dispose()
         {
-            エフェクト管理?.Dispose();
-            エフェクト管理 = null;
+            サブセット用エフェクト管理?.Dispose();
+            サブセット用エフェクト管理 = null;
 
             バッファ管理?.Dispose();
             バッファ管理 = null;
@@ -177,7 +177,7 @@ namespace MikuMikuFlex.モデル.PMX
 
             スキニング.更新する();
 
-            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
+            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, サブセット用エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
 
             // モーフの更新結果をエフェクト用材質情報に反映
             foreach( var pmxSubset in サブセット管理.サブセットリスト )
@@ -188,7 +188,7 @@ namespace MikuMikuFlex.モデル.PMX
         {
             var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
 
-            foreach( var effect in エフェクト管理.エフェクトマスタリスト.Values )
+            foreach( var effect in サブセット用エフェクト管理.エフェクトマスタリスト.Values )
             {
                 effect.モデルごとに更新するエフェクト変数を更新する();
                 スキニング.エフェクトを適用する( effect.D3DEffect );
@@ -199,7 +199,7 @@ namespace MikuMikuFlex.モデル.PMX
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.すべてを描画する( エフェクト管理 );
+            サブセット管理.すべてを描画する( サブセット用エフェクト管理 );
         }
 
 
@@ -207,7 +207,7 @@ namespace MikuMikuFlex.モデル.PMX
 
         public void エッジを描画する()
         {
-            foreach( var effect in エフェクト管理.エフェクトマスタリスト.Values )
+            foreach( var effect in サブセット用エフェクト管理.エフェクトマスタリスト.Values )
             {
                 effect.モデルごとに更新するエフェクト変数を更新する();
                 スキニング.エフェクトを適用する( effect.D3DEffect );
@@ -219,7 +219,7 @@ namespace MikuMikuFlex.モデル.PMX
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.エッジを描画する( エフェクト管理 );
+            サブセット管理.エッジを描画する( サブセット用エフェクト管理 );
         }
 
 
@@ -257,9 +257,9 @@ namespace MikuMikuFlex.モデル.PMX
             return mm;
 		}
 
-		protected virtual エフェクト管理 エフェクト管理を初期化して返す()
+		protected virtual サブセット用エフェクト管理 エフェクト管理を初期化して返す()
 		{
-            var effectManager = new エフェクト管理();
+            var effectManager = new サブセット用エフェクト管理();
 
             var defaultEffect = エフェクト.エフェクト.リソースをエフェクトとして読み込む( エフェクト.エフェクト.既定のシェーダのリソースパス, this, this.サブリソースローダー );
 
@@ -275,7 +275,7 @@ namespace MikuMikuFlex.モデル.PMX
 		protected virtual void バッファ管理を初期化する()
 		{
 			バッファ管理 = new PMXバッファ管理();
-			バッファ管理.初期化する( モデル, エフェクト管理.既定のエフェクト.D3DEffect );
+			バッファ管理.初期化する( モデル, サブセット用エフェクト管理.既定のエフェクト.D3DEffect );
 		}
 
 
