@@ -153,7 +153,7 @@ namespace MikuMikuFlex.モデル.PMX
             サブセットリスト.Clear();
         }
 
-        public void すべてを描画する( サブセット用エフェクト管理 EffectManager )
+        public void すべてを描画する( オブジェクト用エフェクト管理 EffectManager )
         {
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {
@@ -172,7 +172,7 @@ namespace MikuMikuFlex.モデル.PMX
             }
         }
 
-        public void エッジを描画する( サブセット用エフェクト管理 EffectManager )
+        public void エッジを描画する( オブジェクト用エフェクト管理 EffectManager )
 		{
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {
@@ -194,7 +194,7 @@ namespace MikuMikuFlex.モデル.PMX
             }
         }
 
-        public void 地面影を描画する( サブセット用エフェクト管理 EffectManager )
+        public void 地面影を描画する( オブジェクト用エフェクト管理 EffectManager )
         {
 			// TODO 地面陰の実装
 

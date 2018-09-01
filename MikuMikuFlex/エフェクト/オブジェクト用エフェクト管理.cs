@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace MikuMikuFlex.エフェクト
 {
-    public class サブセット用エフェクト管理 : エフェクト管理, IDisposable
+    public class オブジェクト用エフェクト管理 : エフェクト管理, IDisposable
     {
-        public サブセット用エフェクト管理()
+        public オブジェクト用エフェクト管理()
             : base()
         {
             _サブセットIDtoエフェクトマップ = new Dictionary<int, エフェクト>();

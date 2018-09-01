@@ -42,7 +42,7 @@ namespace MikuMikuFlex.モデル.PMX
 
 		public モーフ管理 モーフ管理 { get; private set; }
 
-		public サブセット用エフェクト管理 サブセット用エフェクト管理 { get; private set; }
+		public オブジェクト用エフェクト管理 サブセット用エフェクト管理 { get; private set; }
 
 		public トゥーンテクスチャ管理 トゥーン管理 { get; private set; }
 
@@ -257,9 +257,9 @@ namespace MikuMikuFlex.モデル.PMX
             return mm;
 		}
 
-		protected virtual サブセット用エフェクト管理 エフェクト管理を初期化して返す()
+		protected virtual オブジェクト用エフェクト管理 エフェクト管理を初期化して返す()
 		{
-            var effectManager = new サブセット用エフェクト管理();
+            var effectManager = new オブジェクト用エフェクト管理();
 
             var defaultEffect = エフェクト.エフェクト.リソースをエフェクトとして読み込む( エフェクト.エフェクト.既定のシェーダのリソースパス, this, this.サブリソースローダー );
 
