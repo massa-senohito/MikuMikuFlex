@@ -15,7 +15,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
 
         public override 変数管理 変数登録インスタンスを生成して返す( EffectVariable variable, エフェクト effect, int semanticIndex )
         {
-            var subscriber = new RENDERCOLORTARGET変数();
+            var subscriber = new CURRENTSCENE変数();
 
             // この時点ではまだ Texture2D は作成しない。
 

@@ -61,14 +61,17 @@ namespace MikuMikuFlex.エフェクト.Script
             _ScriptCodeを解析する( effect, technique, pass );
         }
 
-        public void 実行する( Action<サブセット> drawAction, サブセット ipmxSubset )
+        public void 実行する<T>( Action<T> drawAction, T ipmxSubset )
         {
+            if( null == ( ipmxSubset as サブセット ) )
+                return;
+
             for(
                 現在実行中のファンクションのインデックス = 0; 
                 現在実行中のファンクションのインデックス < 実行するファンクションのリスト.Count; 
                 実行するファンクションのリスト[ 現在実行中のファンクションのインデックス ].次のファンクションへ遷移する( this ) )
             {
-                実行するファンクションのリスト[ 現在実行中のファンクションのインデックス ].実行する( ipmxSubset, drawAction );
+                実行するファンクションのリスト[ 現在実行中のファンクションのインデックス ].実行する( (サブセット) ipmxSubset, drawAction as Action<サブセット> );
             }
         }
 

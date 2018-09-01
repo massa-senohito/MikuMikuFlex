@@ -46,18 +46,18 @@ namespace MikuMikuFlex.エフェクト
             ScriptRuntime = new ScriptRuntime( Command, effect, null, this );
 		}
 
-		public void 適用して描画する( Action<サブセット> drawAction, サブセット ipmxSubset )
+		public void 適用して描画する<T>( Action<T> drawAction, T drawArgument )
 		{
 			if( string.IsNullOrWhiteSpace( ScriptRuntime.ScriptCode ) )
 			{
                 // このパスに Script が存在しない場合は、そのまま描画する。
 				D3DPass.Apply( RenderContext.Instance.DeviceManager.D3DDeviceContext );
-				drawAction?.Invoke( ipmxSubset );
+				drawAction?.Invoke( drawArgument );
 			}
 			else
 			{
                 // このパスに Script が存在する場合は、処理をスクリプトランタイムに任せる。
-                ScriptRuntime.実行する( drawAction, ipmxSubset );
+                ScriptRuntime.実行する( drawAction, drawArgument );
 			}
 		}
 	}

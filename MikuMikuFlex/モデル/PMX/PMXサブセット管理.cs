@@ -153,7 +153,7 @@ namespace MikuMikuFlex.モデル.PMX
             サブセットリスト.Clear();
         }
 
-        public void オブジェクトを描画する( オブジェクト用エフェクト管理 EffectManager )
+        public void 描画する( オブジェクト用エフェクト管理 EffectManager )
         {
             for( int i = 0; i < サブセットリスト.Count; i++ )
             {
@@ -163,47 +163,32 @@ namespace MikuMikuFlex.モデル.PMX
 
                 effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
 
+                // オブジェクト
                 effect.エフェクトを適用しつつサブセットを描画する( 
                     サブセットリスト[ i ],
                     MMDPass種別.オブジェクト本体,
                     ( subset ) => {
                         subset.描画する( RenderContext.Instance.DeviceManager.D3DDeviceContext );
                     } );
+
+                // エッジ
+                if( ipmxSubset.エフェクト用材質情報.エッジが有効である )
+                {
+                    effect.エフェクトを適用しつつサブセットを描画する(
+                        サブセットリスト[ i ],
+                        MMDPass種別.エッジ,
+                        ( subset ) => {
+                            subset.描画する( RenderContext.Instance.DeviceManager.D3DDeviceContext );
+                        } );
+                }
+
+                // 地面影
+                if( ipmxSubset.エフェクト用材質情報.地面影が有効である )
+                {
+                    // TODO 地面陰の実装
+                }
             }
         }
-
-        public void エッジを描画する( オブジェクト用エフェクト管理 EffectManager )
-		{
-            for( int i = 0; i < サブセットリスト.Count; i++ )
-            {
-                var ipmxSubset = サブセットリスト[ i ];
-
-                if( !( ipmxSubset.エフェクト用材質情報.エッジが有効である ) )
-                    continue;
-
-                var effect = EffectManager.サブセットのエフェクトを取得する( i );
-
-                effect.材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( サブセットリスト[ i ].エフェクト用材質情報 );
-
-                effect.エフェクトを適用しつつサブセットを描画する(
-                    サブセットリスト[ i ],
-                    MMDPass種別.エッジ,
-                    ( subset ) => {
-                        subset.描画する( RenderContext.Instance.DeviceManager.D3DDeviceContext );
-                    } );
-            }
-        }
-
-        public void 地面影を描画する( オブジェクト用エフェクト管理 EffectManager )
-        {
-			// TODO 地面陰の実装
-
-			//foreach (PMXSubset variable in from subset in Subsets where subset.MaterialInfo.isGroundShadowEnable select subset)
-			//{
-			//    UpdateConstantByMaterial(variable);
-			//    MMEEffect.ApplyEffectPass(variable, MMEEffectPassType.Shadow, (subset) => subset.Draw(device));
-			//}
-		}
 
 
         private readonly PMXモデル _モデル;

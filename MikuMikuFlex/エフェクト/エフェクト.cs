@@ -246,11 +246,11 @@ namespace MikuMikuFlex.エフェクト
                     変数管理.変数管理 subs = new テクスチャ変数();
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
 
-                    switch( subs )
+                    switch( セマンティクス )
                     {
-                        case RENDERCOLORTARGET変数 rct:
-                        case RENDERDEPTHSTENCILTARGET変数 rdst:
-                        //TODO: case ANIMATEDTEXTURE変数 at:
+                        case "CURRENTSCENE":
+                            subs = new CURRENTSCENE変数();
+                            subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                             シーンごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
                             break;
 
@@ -417,8 +417,10 @@ namespace MikuMikuFlex.エフェクト
                 new FULLMATERIALCONSTANT変数(),
                 //コントロールオブジェクト
                 new CONTROLOBJECT変数(),
-                new RENDERCOLORTARGET変数(),
-                new RENDERDEPTHSTENCILTARGET変数(),
+                // テクスチャ …… は型で判別するので、このリストに加えないこと。
+                //new CURRENTSCENE変数(),
+                //new RENDERCOLORTARGET変数(),
+                //new RENDERDEPTHSTENCILTARGET変数(),
             } )
             {
                 変数管理マスタリスト.Add( variable.セマンティクス, variable );
@@ -475,6 +477,9 @@ namespace MikuMikuFlex.エフェクト
 
         public void モデルごとに更新するエフェクト変数を更新する()
         {
+            if( !( this.ScriptClass.HasFlag( ScriptClass.Object ) ) )
+                return;
+
             var argument = new 変数更新時引数( _利用対象のモデル );
 
             foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> subscriberBase in this.モデルごとに更新するエフェクト変数のマップ )
@@ -485,6 +490,9 @@ namespace MikuMikuFlex.エフェクト
 
         public void 材質ごとに更新するエフェクト変数と特殊エフェクト変数を更新する( エフェクト用材質情報 info )
         {
+            if( !( this.ScriptClass.HasFlag( ScriptClass.Object ) ) )
+                return;
+
             var argument = new 変数更新時引数( info, _利用対象のモデル );
 
             foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> item in this.材質ごとに更新するエフェクト変数のマップ )
@@ -538,7 +546,7 @@ namespace MikuMikuFlex.エフェクト
             if( null != technique )
             {
                 // 最初の１つだけ有効（複数はないはずだが）
-                technique.パスの適用とサブセットの描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
+                technique.パスの適用と描画をパスの数だけ繰り返す( drawAction, ipmxSubset );
             }
         }
 
@@ -548,23 +556,41 @@ namespace MikuMikuFlex.エフェクト
         #region " ScriptClass.Scene 用メンバ "
         //----------------
 
-        public void エフェクトを適用しつつシーンを描画する( SharpDX.DXGI.SwapChain swapCain )
+        public void シーンごとに更新するエフェクト変数を更新する( SharpDX.DXGI.SwapChain swapChain )
         {
             if( !( this.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
                 return;
 
-            // シーンごとに更新するエフェクト変数を更新する。
-
-            var argument = new 変数更新時引数( swapCain );
+            var argument = new 変数更新時引数( swapChain );
 
             foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> kvp in this.シーンごとに更新するエフェクト変数のマップ )
                 kvp.Value.変数を更新する( kvp.Key, argument );
+        }
 
+        public void エフェクトを適用しつつシーンを描画する()
+        {
+            if( !( this.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
+                return;
 
+            // 使用するtechniqueを検索する。
 
-            
-            // TODO: エフェクトを適用しつつシーンを描画する
+            テクニック technique =
+                ( from teq in テクニックリスト
+                  where
+                    teq.テクニックを適用する描画対象 == MMDPass種別.シーン
+                  select teq ).FirstOrDefault();
 
+            if( null != technique )
+            {
+                // 最初の１つだけ有効（複数はないはずだが）
+                technique.パスの適用と描画をパスの数だけ繰り返す<int>( ( dummy ) => {
+
+                    // 頂点バッファとインデックスバッファを使わずに 4 つの頂点の描画を指示する。
+                    // 頂点シェーダーでは、頂点番号（0～3）を SV_VertexID で受け取ることができる。
+                    RenderContext.Instance.DeviceManager.D3DDeviceContext.Draw( 4, 0 );
+
+                }, 0 );
+            }
         }
 
         //----------------

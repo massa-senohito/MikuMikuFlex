@@ -138,6 +138,10 @@ namespace MikuMikuFlex.エフェクト
                         テクニックを適用する描画対象 = MMDPass種別.スキニング;
                         break;
 
+                    case "scene":
+                        テクニックを適用する描画対象 = MMDPass種別.シーン;
+                        break;
+
                     default:
                         throw new InvalidOperationException( "予期しない識別子" );
                 }
@@ -191,18 +195,18 @@ namespace MikuMikuFlex.エフェクト
             D3DEffectTechnique = null;
         }
 
-		public void パスの適用とサブセットの描画をパスの数だけ繰り返す( Action<サブセット> drawAction, サブセット ipmxSubset )
+		public void パスの適用と描画をパスの数だけ繰り返す<T>( Action<T> drawAction, T drawTarget )
 		{
 			if( string.IsNullOrWhiteSpace( ScriptRuntime.ScriptCode ) )
 			{
                 // このテクニックに Script が存在しないならパスで描画する
                 foreach( パス pass in パスリスト.Values )
-                    pass.適用して描画する( drawAction, ipmxSubset );
+                    pass.適用して描画する( drawAction, drawTarget );
 			}
 			else
 			{
                 // このテクニックに Script が存在する場合は、処理をスクリプトランタイムに任せる
-                ScriptRuntime.実行する( drawAction, ipmxSubset );
+                ScriptRuntime.実行する( drawAction, drawTarget );
 			}
 		}
 

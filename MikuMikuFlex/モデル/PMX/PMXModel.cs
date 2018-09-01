@@ -199,9 +199,7 @@ namespace MikuMikuFlex.モデル.PMX
             IA.InputLayout = バッファ管理.D3D頂点レイアウト;
             IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 
-            サブセット管理.オブジェクトを描画する( サブセット用エフェクト管理 );
-            サブセット管理.エッジを描画する( サブセット用エフェクト管理 );
-            サブセット管理.地面影を描画する( サブセット用エフェクト管理 );
+            サブセット管理.描画する( サブセット用エフェクト管理 );
         }
 
 

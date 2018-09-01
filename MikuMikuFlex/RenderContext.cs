@@ -238,18 +238,16 @@ namespace MikuMikuFlex
 
 		private 行列管理 _行列を初期化する()
 		{
-			var カメラ = new カメラ(
-				カメラの初期位置: new Vector3( 0, 20, -40 ),
-				カメラの初期注視点: new Vector3( 0, 3, 0 ),
-				カメラの初期上方向ベクトル: new Vector3( 0, 1, 0 ) );
+            var 行列管理 = new 行列管理( 
+                new ワールド行列(),
+                new カメラ(
+                    カメラの初期位置: new Vector3( 0f, 20f, -40f ),
+                    カメラの初期注視点: new Vector3( 0f, 3f, 0f ),
+                    カメラの初期上方向ベクトル: new Vector3( 0f, 1f, 0f ) ),
+                new 射影()
+                    .射影行列を初期化する( (float) Math.PI / 4f, 1.618f, 1, 2000 ) );
 
-			var 射影行列 = new 射影();
-			射影行列.射影行列を初期化する( (float) Math.PI / 4f, 1.618f, 1, 2000 );
-
-			var 行列管理 = new 行列管理( new ワールド行列(), カメラ, 射影行列 );
-
-			this.照明行列管理 = new 照明行列管理( 行列管理 );
-
+            this.照明行列管理 = new 照明行列管理( 行列管理 );
 			return 行列管理;
 		}
 

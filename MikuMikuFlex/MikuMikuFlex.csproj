@@ -137,6 +137,7 @@
     <Compile Include="DeviceManagement\HitTestable.cs" />
     <Compile Include="モデル\CS_INPUT.cs" />
     <Compile Include="モデル\VS_INPUT.cs" />
+    <Compile Include="モデル\シーンモデル.cs" />
     <Compile Include="行列\CameraMotion\マウスカメラモーション.cs" />
     <Compile Include="行列\CameraMotion\ボーン追従カメラモーション.cs" />
     <Compile Include="行列\CameraMotion\VMDカメラモーション.cs" />
@@ -418,6 +419,9 @@
     <EmbeddedResource Include="Resource\Shader\DefaultShader.fx" />
     <EmbeddedResource Include="Resource\Shader\SpriteShader.fx" />
     <EmbeddedResource Include="Resource\Shader\ShapeShader.fx" />
+    <None Include="Resource\Shader\SampleSceneShader.fx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Resource\Shader\Xshader.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -61,13 +61,15 @@ namespace MikuMikuFlex.行列
         public event EventHandler<射影変更EventArgs> 射影が変更された;
 
 
-        public void 射影行列を初期化する( float 初期視野角, float 初期アスペクト比, float 初期ZNear, float 初期ZFar )
+        public 射影 射影行列を初期化する( float 初期視野角, float 初期アスペクト比, float 初期ZNear, float 初期ZFar )
 		{
 			_視野角 = 初期視野角;
 			_アスペクト比 = 初期アスペクト比;
 			_ZNear = 初期ZNear;
 			_ZFar = 初期ZFar;
 			_射影行列を更新する();
+
+            return this;
 		}
 
 
