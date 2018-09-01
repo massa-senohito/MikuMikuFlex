@@ -54,16 +54,16 @@ namespace MikuMikuFlex.エフェクト
         }
 
         /// <summary>
-        ///     現在の MMF で利用可能なすべてのエフェクト変数登録インスタンスのリスト。
-        ///     [Key: 変数管理セマンティクス名、Value: 変数登録]
+        ///     現在の MMF で利用可能なすべてのエフェクト変数管理インスタンスのリスト。
+        ///     [Key: 変数管理セマンティクス名、Value: 変数管理]
         /// </summary>
-        public static Dictionary<string, 変数管理.変数管理> 変数登録マスタリスト { get; private set; }
+        public static Dictionary<string, 変数管理.変数管理> 変数管理マスタリスト { get; private set; }
 
         /// <summary>
-        ///     現在の MMF で利用可能なすべての特殊パラメータ変数登録インスタンスのリスト。
-        ///     [Key: 変数名、Value: 変数登録]
+        ///     現在の MMF で利用可能なすべての特殊パラメータ変数管理インスタンスのリスト。
+        ///     [Key: 変数名、Value: 変数管理]
         /// </summary>
-        public static Dictionary<string, 特殊パラメータ変数> 特殊パラメータ変数登録マスタリスト { get; private set; }
+        public static Dictionary<string, 特殊パラメータ変数> 特殊パラメータ変数管理マスタリスト { get; private set; }
 
         /// <summary>
         ///     全エフェクトで共有するマクロのリスト。
@@ -144,17 +144,31 @@ namespace MikuMikuFlex.エフェクト
         /// </summary>
         public string STANDARDSGLOBALScript { get; private set; }
 
+        public サブリソースローダー テクスチャなどのパスの解決に利用するローダー { get; private set; }
+
+        #region " ScriptClass.Object 用メンバ "
+        //----------------
+
         public Dictionary<EffectVariable, 変数管理.変数管理> モデルごとに更新するエフェクト変数のマップ { get; private set; }
 
         public Dictionary<EffectVariable, 変数管理.変数管理> 材質ごとに更新するエフェクト変数のマップ { get; private set; }
 
         public Dictionary<EffectVariable, 特殊パラメータ変数> 材質ごとに更新する特殊エフェクト変数のマップ { get; private set; }
 
+        //----------------
+        #endregion
+
+        #region " ScriptClass.Scene 用メンバ "
+        //----------------
+
+        public Dictionary<EffectVariable, 変数管理.変数管理> シーンごとに更新するエフェクト変数のマップ { get; private set; }
+
         public Dictionary<string, RenderTargetView> レンダーターゲットビューのマップ { get; private set; }
 
         public Dictionary<string, DepthStencilView> 深度ステンシルビューのマップ { get; private set; }
 
-        public サブリソースローダー テクスチャなどのパスの解決に利用するローダー { get; private set; }
+        //----------------
+        #endregion
 
 
         /// <summary>
@@ -192,6 +206,7 @@ namespace MikuMikuFlex.エフェクト
             材質ごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
             モデルごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
             材質ごとに更新する特殊エフェクト変数のマップ = new Dictionary<EffectVariable, 特殊パラメータ変数>();
+            シーンごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
             テクニックリスト = new List<テクニック>();
             レンダーターゲットビューのマップ = new Dictionary<string, RenderTargetView>();
             深度ステンシルビューのマップ = new Dictionary<string, DepthStencilView>();
@@ -209,11 +224,11 @@ namespace MikuMikuFlex.エフェクト
 
                 string 型名 = variable.TypeInfo.Description.TypeName.ToLower();
 
-                if( 変数登録マスタリスト.ContainsKey( セマンティクス ) )
+                if( 変数管理マスタリスト.ContainsKey( セマンティクス ) )
                 {
                     // (A) 通常はセマンティクスに応じて登録する。
 
-                    変数管理.変数管理 subs = 変数登録マスタリスト[ セマンティクス ];
+                    変数管理.変数管理 subs = 変数管理マスタリスト[ セマンティクス ];
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {
@@ -230,7 +245,19 @@ namespace MikuMikuFlex.エフェクト
 
                     変数管理.変数管理 subs = new テクスチャ変数();
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
-                    モデルごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
+
+                    switch( subs )
+                    {
+                        case RENDERCOLORTARGET変数 rct:
+                        case RENDERDEPTHSTENCILTARGET変数 rdst:
+                        //TODO: case ANIMATEDTEXTURE変数 at:
+                            シーンごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
+                            break;
+
+                        default:
+                            モデルごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
+                            break;
+                    }
                 }
                 else
                 {
@@ -238,9 +265,9 @@ namespace MikuMikuFlex.エフェクト
 
                     string name = variable.Description.Name.ToLower();
 
-                    if( 特殊パラメータ変数登録マスタリスト.ContainsKey( name ) )
+                    if( 特殊パラメータ変数管理マスタリスト.ContainsKey( name ) )
                     {
-                        材質ごとに更新する特殊エフェクト変数のマップ.Add( variable, 特殊パラメータ変数登録マスタリスト[ name ] );
+                        材質ごとに更新する特殊エフェクト変数のマップ.Add( variable, 特殊パラメータ変数管理マスタリスト[ name ] );
                     }
                 }
             }
@@ -253,9 +280,9 @@ namespace MikuMikuFlex.エフェクト
                 EffectConstantBuffer variable = d3dEffect.GetConstantBufferByIndex( i );
                 string name = variable.Description.Name.ToUpper();
 
-                if( 変数登録マスタリスト.ContainsKey( name ) )
+                if( 変数管理マスタリスト.ContainsKey( name ) )
                 {
-                    変数管理.変数管理 subs = 変数登録マスタリスト[ name ]; //定数バッファにはセマンティクスが付けられないため、変数名で代用
+                    変数管理.変数管理 subs = 変数管理マスタリスト[ name ]; //定数バッファにはセマンティクスが付けられないため、変数名で代用
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {
@@ -324,11 +351,14 @@ namespace MikuMikuFlex.エフェクト
                 }
                 kvp.Key.Dispose();
             }
+
+            レンダーターゲットビューのマップ.Clear(); // Dispose は変数管理側で行われる
+            深度ステンシルビューのマップ.Clear();     //
         }
 
-        public static void 初期化する( DeviceManagement.DeviceManager deviceManager )
+        public static void 初期化する( DeviceManager deviceManager )
         {
-            変数登録マスタリスト = new Dictionary<string, 変数管理.変数管理>();
+            変数管理マスタリスト = new Dictionary<string, 変数管理.変数管理>();
             foreach( var variable in new List<変数管理.変数管理> {
                 new WORLD変数(),
                 new PROJECTION変数(),
@@ -391,10 +421,10 @@ namespace MikuMikuFlex.エフェクト
                 new RENDERDEPTHSTENCILTARGET変数(),
             } )
             {
-                変数登録マスタリスト.Add( variable.セマンティクス, variable );
+                変数管理マスタリスト.Add( variable.セマンティクス, variable );
             }
 
-            特殊パラメータ変数登録マスタリスト = new Dictionary<string, 特殊パラメータ変数>();
+            特殊パラメータ変数管理マスタリスト = new Dictionary<string, 特殊パラメータ変数>();
             foreach( var variable in new List<特殊パラメータ変数> {
                 new opadd変数(),
                 new parthf変数(),
@@ -407,7 +437,7 @@ namespace MikuMikuFlex.エフェクト
                 new VertexCount変数()
             } )
             {
-                特殊パラメータ変数登録マスタリスト.Add( variable.変数名, variable );
+                特殊パラメータ変数管理マスタリスト.Add( variable.変数名, variable );
             }
 
             マクロリスト = new List<ShaderMacro>() {
@@ -421,6 +451,27 @@ namespace MikuMikuFlex.エフェクト
 
             Include = new BasicEffectIncluder();
         }
+
+        public static エフェクト ファイルをエフェクトとして読み込む( string ファイルパス, IDrawable 使用対象モデル, サブリソースローダー loader = null )
+        {
+            if( null == loader )
+                loader = new サブリソースローダー( Path.GetDirectoryName( ファイルパス ) );
+
+            var d3dEffect = CGHelper.EffectFx5を作成する( ファイルパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
+
+            return new エフェクト( ファイルパス, d3dEffect, 使用対象モデル, loader );
+        }
+
+        public static エフェクト リソースをエフェクトとして読み込む( string リソースパス, IDrawable 使用対象モデル, サブリソースローダー loader )
+        {
+            var d3dEffect = CGHelper.EffectFx5を作成するFromResource( リソースパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
+
+            return new エフェクト( リソースパス, d3dEffect, 使用対象モデル, loader );
+        }
+
+
+        #region " ScriptClass.Object 用メンバ "
+        //----------------
 
         public void モデルごとに更新するエフェクト変数を更新する()
         {
@@ -447,7 +498,7 @@ namespace MikuMikuFlex.エフェクト
             }
         }
 
-        public void エフェクトパスを割り当てつつサブセットを描画する( サブセット ipmxSubset, MMDPass種別 passType, Action<サブセット> drawAction )
+        public void エフェクトを適用しつつサブセットを描画する( サブセット ipmxSubset, MMDPass種別 passType, Action<サブセット> drawAction )
         {
             if( ipmxSubset.エフェクト用材質情報.拡散色.W == 0 )
                 return;
@@ -490,22 +541,24 @@ namespace MikuMikuFlex.エフェクト
             }
         }
 
-        public static エフェクト ファイルをエフェクトとして読み込む( string ファイルパス, IDrawable 使用対象モデル, サブリソースローダー loader = null )
+        //----------------
+        #endregion
+
+        #region " ScriptClass.Scene 用メンバ "
+        //----------------
+
+        public void シーンごとに更新するエフェクト変数を更新する()
         {
-            if( null == loader )
-                loader = new サブリソースローダー( Path.GetDirectoryName( ファイルパス ) );
-
-            var d3dEffect = CGHelper.EffectFx5を作成する( ファイルパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
-
-            return new エフェクト( ファイルパス, d3dEffect, 使用対象モデル, loader );
+            // TODO: シーンごとに更新するエフェクト変数を更新する
         }
 
-        internal static エフェクト リソースをエフェクトとして読み込む( string リソースパス, IDrawable 使用対象モデル, サブリソースローダー loader )
+        public void エフェクトを適用しつつシーンを描画する()
         {
-            var d3dEffect = CGHelper.EffectFx5を作成するFromResource( リソースパス, (Device) RenderContext.Instance.DeviceManager.D3DDevice );
-
-            return new エフェクト( リソースパス, d3dEffect, 使用対象モデル, loader );
+            // TODO: エフェクトを適用しつつシーンを描画する
         }
+
+        //----------------
+        #endregion
 
 
         private readonly IDrawable _利用対象のモデル;
