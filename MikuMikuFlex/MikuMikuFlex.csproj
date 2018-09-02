@@ -115,9 +115,6 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TargaImage">
-      <HintPath>.\TargaImage.dll</HintPath>
-    </Reference>
     <Reference Include="TgaLib">
       <HintPath>.\TgaLib.dll</HintPath>
     </Reference>
@@ -400,9 +397,6 @@
     <None Include="TgaLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TargaImage.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="sharpdx_direct3d11_1_effects_x64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -465,6 +459,7 @@
       <Name>MMDFilePaser</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.2.4.3\build\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.4.3\build\Baseclass.Contrib.Nuget.Output.targets')" />
