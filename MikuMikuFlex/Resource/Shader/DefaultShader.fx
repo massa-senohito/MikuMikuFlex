@@ -101,18 +101,20 @@ float Script : STANDARDSGLOBAL <
 float4 EdgeColor : EDGECOLOR; // エッジの色 
 float EdgeWidth : EDGEWIDTH; // エッジの幅
 
-float4x4 matWVP       : WORLDVIEWPROJECTION < string Object="Camera"; >;
-float4x4 matWV        : WORLDVIEW < string Object = "Camera"; >;
-float4x4 WorldMatrix  : WORLD;
-float4x4 ViewMatrix   : VIEW;
-float2   viewportSize : VIEWPORTPIXELSIZE;
-float4   ViewPointPosition : POSITION < string object="camera"; >;	// カメラ位置（float4）
+float4x4 matWVP         : WORLDVIEWPROJECTION < string Object="Camera"; >;
+float4x4 matWV          : WORLDVIEW < string Object = "Camera"; >;
+float4x4 WorldMatrix    : WORLD;
+float4x4 ViewMatrix     : VIEW;
+float4x4 ViewProjMatrix : VIEWPROKECTION;
+
+float2   viewportSize       : VIEWPORTPIXELSIZE;
+float4   ViewPointPosition  : POSITION < string object="camera"; >;	// カメラ位置（float4）
 float4   LightPointPosition : POSITION < string object="light"; >;	// 光源位置
 float3	 CameraPosition		: POSITION < string Object = "Camera"; > ;	// カメラ位置（float3）
 
-Texture2D Texture : MATERIALTEXTURE;			// サンプリング用テクスチャ
+Texture2D Texture       : MATERIALTEXTURE;		// サンプリング用テクスチャ
 Texture2D SphereTexture : MATERIALSPHEREMAP;	// サンプリング用スフィアマップテクスチャ
-Texture2D Toon : MATERIALTOONTEXTURE;			// サンプリング用トゥーンテクスチャ
+Texture2D Toon          : MATERIALTOONTEXTURE;  // サンプリング用トゥーンテクスチャ
 
 
 // グローバル変数；特殊パラメータ
@@ -363,18 +365,24 @@ technique11 DefaultSkinning < string MMDPass = "skinning"; >
 
 // 頂点シェーダ
 
-VS_OUTPUT VS_Object(VS_INPUT input)
+VS_OUTPUT VS_Object(VS_INPUT input, uniform bool bEdge)
 {
     VS_OUTPUT Out = (VS_OUTPUT) 0;
 
 	// 位置（ワールドビュー射影変換）
-    Out.Position = mul(input.Position, matWVP);
-
-	// カメラとの相対位置
-    Out.Eye = (ViewPointPosition - mul(input.Position, WorldMatrix)).xyz;
+    float4 position = input.Position;
+    if( bEdge )
+    {
+        // エッジなら法線方向に膨らませる。
+        position = input.Position + float4(input.Normal, 0) * EdgeWidth * input.EdgeWeight * distance(input.Position.xyz, CameraPosition) * 0.0005;
+    }
+    Out.Position = mul(position, matWVP);
 
 	// 頂点法線
     Out.Normal = normalize(mul(input.Normal, (float3x3) WorldMatrix));
+
+	// カメラとの相対位置
+    Out.Eye = (ViewPointPosition - mul(input.Position, WorldMatrix)).xyz;
 
 	// ディフューズ色計算
     Out.Color.rgb = DiffuseColor.rgb;
@@ -474,32 +482,13 @@ technique11 DefaultObject < string MMDPass = "object"; >
 {
     pass DefaultPass
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Object()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Object(false)));
         SetPixelShader(CompileShader(ps_5_0, PS_Object()));
     }
 }
 
 
 // エッジ描画 ////////////////////////////////////////////////
-
-
-// 頂点シェーダ
-
-VS_OUTPUT VS_Edge(VS_INPUT IN)
-{
-    VS_OUTPUT Out = (VS_OUTPUT) 0;
-
-    Out.Normal = normalize(mul(IN.Normal, (float3x3) WorldMatrix)); // 頂点法線
-
-	// 位置（ローカル座標）を、法線方向に膨らませてから、ワールドビュー射影変換する。
-    float4 position = IN.Position + float4(Out.Normal, 0) * EdgeWidth * IN.EdgeWeight * distance(IN.Position.xyz, CameraPosition) * 0.0005;
-    Out.Position = mul(position, matWVP);
-
-    Out.Eye = (ViewPointPosition - mul(IN.Position, WorldMatrix)).xyz; // カメラとの相対位置
-    Out.Tex = IN.Tex; // テクスチャ
-
-    return Out;
-}
 
 
 // ピクセルシェーダ
@@ -516,7 +505,7 @@ technique11 DefaultEdge < string MMDPass = "edge"; >
 {
     pass DefaultPass
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Edge()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Object(true)));
         SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
     }
 }
