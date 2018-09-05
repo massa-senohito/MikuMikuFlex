@@ -421,6 +421,8 @@ namespace MikuMikuFlex.エフェクト
                 //new CURRENTSCENE変数(),
                 //new RENDERCOLORTARGET変数(),
                 //new RENDERDEPTHSTENCILTARGET変数(),
+                // テッセレーション
+                new TESSFACTOR変数(),
             } )
             {
                 変数管理マスタリスト.Add( variable.セマンティクス, variable );

@@ -559,28 +559,42 @@ namespace MikuMikuFlex.モデル.PMX
                 case 変形方式.BDEF1:
                     {
                         var v = (BDEF1) 頂点データ.ボーンウェイト;
-                        layout.BoneIndex1 = (uint) v.boneReferenceIndex;
-                        layout.BoneWeight1 = 1.0f;
+                        layout.BoneIndex1 = (uint) ( ( v.boneReferenceIndex < 0 ) ? 0 : v.boneReferenceIndex );
+                        layout.BoneIndex2 = 0;
+                        layout.BoneIndex3 = 0;
+                        layout.BoneIndex4 = 0;
+                        layout.BoneWeight1 = ( v.boneReferenceIndex < 0 ) ? 0.0f : 1.0f;
+                        layout.BoneWeight2 = 0.0f;
+                        layout.BoneWeight3 = 0.0f;
+                        layout.BoneWeight4 = 0.0f;
                     }
                     break;
 
                 case 変形方式.BDEF2:
                     {
                         var v = (BDEF2) 頂点データ.ボーンウェイト;
-                        layout.BoneIndex1 = (uint) v.Bone1ReferenceIndex;
-                        layout.BoneIndex2 = (uint) v.Bone2ReferenceIndex;
-                        layout.BoneWeight1 = v.Bone1Weight;
-                        layout.BoneWeight2 = 1f - v.Bone1Weight;
+                        layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
+                        layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
+                        layout.BoneIndex3 = 0;
+                        layout.BoneIndex4 = 0;
+                        layout.BoneWeight1 = ( v.Bone1ReferenceIndex < 0 ) ? 0.0f : v.Bone1Weight;
+                        layout.BoneWeight2 = ( v.Bone2ReferenceIndex < 0 ) ? 0.0f : v.Bone2Weight;
+                        layout.BoneWeight3 = 0.0f;
+                        layout.BoneWeight4 = 0.0f;
                     }
                     break;
 
                 case 変形方式.SDEF:
                     {
                         var v = (SDEF) 頂点データ.ボーンウェイト;
-                        layout.BoneIndex1 = (uint) v.Bone1ReferenceIndex;
-                        layout.BoneIndex2 = (uint) v.Bone2ReferenceIndex;
-                        layout.BoneWeight1 = v.Bone1Weight;
-                        layout.BoneWeight2 = 1f - v.Bone1Weight;
+                        layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
+                        layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
+                        layout.BoneIndex3 = 0;
+                        layout.BoneIndex4 = 0;
+                        layout.BoneWeight1 = ( v.Bone1ReferenceIndex < 0 ) ? 0.0f : v.Bone1Weight;
+                        layout.BoneWeight2 = ( v.Bone2ReferenceIndex < 0 ) ? 0.0f : v.Bone2Weight;
+                        layout.BoneWeight3 = 0.0f;
+                        layout.BoneWeight4 = 0.0f;
                         layout.Sdef_C = new Vector4( v.SDEF_C, 1f );
                         layout.SdefR0 = v.SDEF_R0;
                         layout.SdefR1 = v.SDEF_R1;
@@ -592,14 +606,14 @@ namespace MikuMikuFlex.モデル.PMX
                     {
                         var v = (BDEF4) 頂点データ.ボーンウェイト;
                         float sumWeight = v.Weights.X + v.Weights.X + v.Weights.Z + v.Weights.W;
-                        layout.BoneIndex1 = (uint) v.Bone1ReferenceIndex;
-                        layout.BoneIndex2 = (uint) v.Bone2ReferenceIndex;
-                        layout.BoneIndex3 = (uint) v.Bone3ReferenceIndex;
-                        layout.BoneIndex4 = (uint) v.Bone4ReferenceIndex;
-                        layout.BoneWeight1 = v.Weights.X / sumWeight;
-                        layout.BoneWeight2 = v.Weights.Y / sumWeight;
-                        layout.BoneWeight3 = v.Weights.Z / sumWeight;
-                        layout.BoneWeight4 = v.Weights.W / sumWeight;
+                        layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
+                        layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
+                        layout.BoneIndex3 = (uint) ( ( v.Bone3ReferenceIndex < 0 ) ? 0 : v.Bone3ReferenceIndex );
+                        layout.BoneIndex4 = (uint) ( ( v.Bone4ReferenceIndex < 0 ) ? 0 : v.Bone4ReferenceIndex );
+                        layout.BoneWeight1 = ( v.Bone1ReferenceIndex < 0 ) ? 0.0f : v.Weights.X / sumWeight;
+                        layout.BoneWeight2 = ( v.Bone2ReferenceIndex < 0 ) ? 0.0f : v.Weights.Y / sumWeight;
+                        layout.BoneWeight3 = ( v.Bone3ReferenceIndex < 0 ) ? 0.0f : v.Weights.Z / sumWeight;
+                        layout.BoneWeight4 = ( v.Bone4ReferenceIndex < 0 ) ? 0.0f : v.Weights.W / sumWeight;
                     }
                     break;
             }

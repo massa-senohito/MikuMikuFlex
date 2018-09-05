@@ -105,7 +105,7 @@ float4x4 matWVP         : WORLDVIEWPROJECTION < string Object="Camera"; >;
 float4x4 matWV          : WORLDVIEW < string Object = "Camera"; >;
 float4x4 WorldMatrix    : WORLD;
 float4x4 ViewMatrix     : VIEW;
-float4x4 ViewProjMatrix : VIEWPROKECTION;
+float4x4 ViewProjMatrix : VIEWPROJECTION;
 
 float2   viewportSize       : VIEWPORTPIXELSIZE;
 float4   ViewPointPosition  : POSITION < string object="camera"; >;	// カメラ位置（float4）
@@ -238,7 +238,7 @@ void BDEF(CS_INPUT input, out float4 position, out float3 normal)
         BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
 
     position = mul(input.Position, bt);
-    normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
+    normal = normalize(mul(input.Normal, (float3x3) bt));
 }
 
 void SDEF(CS_INPUT input, out float4 position, out float3 normal)
@@ -350,6 +350,7 @@ void CS_Skinning( uint3 id : SV_DispatchThreadID )
     VSBuffer.Store(vsIndex + 104, asuint(input.Index));
 }
 
+
 // テクニックとパス
 
 technique11 DefaultSkinning < string MMDPass = "skinning"; >
@@ -360,6 +361,8 @@ technique11 DefaultSkinning < string MMDPass = "skinning"; >
     }
 }
 
+
+
 // オブジェクト描画 ///////////////////////////////////////////
 
 
@@ -369,17 +372,17 @@ VS_OUTPUT VS_Object(VS_INPUT input, uniform bool bEdge)
 {
     VS_OUTPUT Out = (VS_OUTPUT) 0;
 
+	// 頂点法線
+    Out.Normal = normalize(mul(input.Normal, (float3x3) WorldMatrix));
+
 	// 位置（ワールドビュー射影変換）
     float4 position = input.Position;
     if( bEdge )
     {
         // エッジなら法線方向に膨らませる。
-        position = input.Position + float4(input.Normal, 0) * EdgeWidth * input.EdgeWeight * distance(input.Position.xyz, CameraPosition) * 0.0005;
+        position = input.Position + float4(Out.Normal, 0) * EdgeWidth * input.EdgeWeight * distance(input.Position.xyz, CameraPosition) * 0.0005;
     }
-    Out.Position = mul(position, matWVP);
-
-	// 頂点法線
-    Out.Normal = normalize(mul(input.Normal, (float3x3) WorldMatrix));
+    Out.Position = mul(position, WorldMatrix);  // ワールド変換
 
 	// カメラとの相対位置
     Out.Eye = (ViewPointPosition - mul(input.Position, WorldMatrix)).xyz;
@@ -403,6 +406,136 @@ VS_OUTPUT VS_Object(VS_INPUT input, uniform bool bEdge)
         Out.SpTex.x = 0.0f;
         Out.SpTex.y = 0.0f;
     }
+
+    return Out;
+}
+
+
+// ハルシェーダ
+
+float TessFactor : TESSFACTOR; // テッセレーション係数
+
+struct CONSTANT_HS_OUT
+{
+    float Edges[3] : SV_TessFactor; // パッチのエッジのテッセレーション係数
+    float Inside : SV_InsideTessFactor; // パッチ内部のテッセレーション係数
+    float3 B210 : POSITION3;
+    float3 B120 : POSITION4;
+    float3 B021 : POSITION5;
+    float3 B012 : POSITION6;
+    float3 B102 : POSITION7;
+    float3 B201 : POSITION8;
+    float3 B111 : CENTER;
+    float3 N110 : NORMAL3;
+    float3 N011 : NORMAL4;
+    float3 N101 : NORMAL5;
+};
+
+CONSTANT_HS_OUT ConstantsHS_Object(InputPatch<VS_OUTPUT, 3> ip, uint PatchID : SV_PrimitiveID)
+{
+    CONSTANT_HS_OUT Out;
+
+    // 定数バッファの値をそのまま渡す
+    Out.Edges[0] = Out.Edges[1] = Out.Edges[2] = TessFactor; // パッチのエッジのテッセレーション係数
+    Out.Inside = (Out.Edges[0] + Out.Edges[1] + Out.Edges[2]) / 3.0f; // パッチ内部のテッセレーション係数
+
+    // コントロール ポイントを追加
+
+    float3 B003 = ip[2].Position.xyz;
+    float3 B030 = ip[1].Position.xyz;
+    float3 B300 = ip[0].Position.xyz;
+    float3 N002 = ip[2].Normal;
+    float3 N020 = ip[1].Normal;
+    float3 N200 = ip[0].Normal;
+
+    Out.B210 = ((2.0f * B003) + B030 - (dot((B030 - B003), N002) * N002)) / 3.0f;
+    Out.B120 = ((2.0f * B030) + B003 - (dot((B003 - B030), N020) * N020)) / 3.0f;
+    Out.B021 = ((2.0f * B030) + B300 - (dot((B300 - B030), N020) * N020)) / 3.0f;
+    Out.B012 = ((2.0f * B300) + B030 - (dot((B030 - B300), N200) * N200)) / 3.0f;
+    Out.B102 = ((2.0f * B300) + B003 - (dot((B003 - B300), N200) * N200)) / 3.0f;
+    Out.B201 = ((2.0f * B003) + B300 - (dot((B300 - B003), N002) * N002)) / 3.0f;
+    float3 E = (Out.B210 + Out.B120 + Out.B021 + Out.B012 + Out.B102 + Out.B201) / 6.0f;
+    float3 V = (B003 + B030 + B300) / 3.0f;
+    Out.B111 = E + ((E - V) / 2.0f);
+
+    float V12 = 2.0f * dot(B030 - B003, N002 + N020) / dot(B030 - B003, B030 - B003);
+    Out.N110 = normalize(N002 + N020 - V12 * (B030 - B003));
+    float V23 = 2.0f * dot(B300 - B030, N020 + N200) / dot(B300 - B030, B300 - B030);
+    Out.N011 = normalize(N020 + N200 - V23 * (B300 - B030));
+    float V31 = 2.0f * dot(B003 - B300, N200 + N002) / dot(B003 - B300, B003 - B300);
+    Out.N101 = normalize(N200 + N002 - V31 * (B003 - B300));
+
+    return Out;
+}
+
+[domain("tri")]
+[partitioning("integer")]
+[outputtopology("triangle_ccw")]
+[outputcontrolpoints(3)]
+[patchconstantfunc("ConstantsHS_Object")]
+VS_OUTPUT HS_Object(InputPatch<VS_OUTPUT, 3> In, uint i : SV_OutputControlPointID, uint PatchID : SV_PrimitiveID)
+{
+    VS_OUTPUT output = (VS_OUTPUT) 0;
+
+    output.Position = In[i].Position;
+    output.Normal = In[i].Normal;
+    output.Tex = In[i].Tex;
+    output.Eye = In[i].Eye;
+    output.SpTex = In[i].SpTex;
+    output.Color = In[i].Color;
+
+    return output;
+}
+
+
+// ドメインシェーダ
+
+[domain("tri")]
+VS_OUTPUT DS_Object(CONSTANT_HS_OUT In, float3 uvw : SV_DomainLocation, const OutputPatch<VS_OUTPUT, 3> patch)
+{
+    VS_OUTPUT Out = (VS_OUTPUT) 0;
+
+    float U = uvw.x;
+    float V = uvw.y;
+    float W = uvw.z;
+    float UU = U * U;
+    float VV = V * V;
+    float WW = W * W;
+    float UUU = UU * U;
+    float VVV = VV * V;
+    float WWW = WW * W;
+
+    // 頂点座標
+    float3 Position = patch[2].Position.xyz * WWW +
+                      patch[1].Position.xyz * UUU +
+                      patch[0].Position.xyz * VVV +
+                      In.B210 * WW * 3 * U +
+                      In.B120 * W * UU * 3 +
+                      In.B201 * WW * 3 * V +
+                      In.B021 * UU * 3 * V +
+                      In.B102 * W * VV * 3 +
+                      In.B012 * U * VV * 3 +
+                      In.B111 * 6.0f * W * U * V;
+    Out.Position = mul(float4(Position, 1), ViewProjMatrix); //ビュー射影変換
+
+    // カメラとの相対位置
+    Out.Eye = ViewPointPosition.xyz - Position;
+
+    // 法線ベクトル
+    float3 Normal = patch[2].Normal * WW +
+                    patch[1].Normal * UU +
+                    patch[0].Normal * VV +
+                    In.N110 * W * U +
+                    In.N011 * U * V +
+                    In.N101 * W * V;
+    Out.Normal = normalize(Normal);
+
+    // テクスチャ座標
+    Out.Tex = patch[2].Tex * W + patch[1].Tex * U + patch[0].Tex * V;
+  
+    // その他
+    Out.SpTex = patch[2].SpTex * W + patch[1].SpTex * U + patch[0].SpTex * V;
+    Out.Color = patch[2].Color * W + patch[1].Color * U + patch[0].Color * V;
 
     return Out;
 }
@@ -483,6 +616,8 @@ technique11 DefaultObject < string MMDPass = "object"; >
     pass DefaultPass
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Object(false)));
+        SetHullShader(CompileShader(hs_5_0, HS_Object()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Object()));
         SetPixelShader(CompileShader(ps_5_0, PS_Object()));
     }
 }
@@ -506,6 +641,8 @@ technique11 DefaultEdge < string MMDPass = "edge"; >
     pass DefaultPass
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Object(true)));
+        SetHullShader(CompileShader(hs_5_0, HS_Object()));
+        SetDomainShader(CompileShader(ds_5_0, DS_Object()));
         SetPixelShader(CompileShader(ps_5_0, PS_Edge()));
     }
 }
