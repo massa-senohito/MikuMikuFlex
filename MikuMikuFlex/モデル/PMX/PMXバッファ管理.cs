@@ -605,7 +605,13 @@ namespace MikuMikuFlex.モデル.PMX
                 case 変形方式.QDEF:
                     {
                         var v = (BDEF4) 頂点データ.ボーンウェイト;
-                        float sumWeight = v.Weights.X + v.Weights.X + v.Weights.Z + v.Weights.W;
+                        float sumWeight = v.Weights.X + v.Weights.Y + v.Weights.Z + v.Weights.W;
+                        if( !( 0.99999f < sumWeight && sumWeight < 1.00001f ) && v.Weights.W == 0f )
+                        {
+                            // sumWeight ≒ 1.0 かつ W ＝ 0 なら、W にあまり全部を足す。
+                            v.Weights.W = 1.0f - v.Weights.X - v.Weights.Y - v.Weights.Z;
+                            sumWeight = 1.0f;
+                        }
                         layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
                         layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
                         layout.BoneIndex3 = (uint) ( ( v.Bone3ReferenceIndex < 0 ) ? 0 : v.Bone3ReferenceIndex );
