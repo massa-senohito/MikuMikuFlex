@@ -39,6 +39,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
         public float エッジ幅;  // モーフ対応
         public bool エッジが有効である;
         public bool 地面影が有効である;
+        public float テッセレーション係数;
 
         /// <summary>
         ///     材質モーフ用
@@ -75,6 +76,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.材質
                 Line描画を使用する = material.描画フラグ.HasFlag( 描画フラグ.Line描画 ),
                 乗算差分 = new エフェクト用材質情報(),
                 加算差分 = new エフェクト用材質情報(),
+                テッセレーション係数 = 1.0f,
             };
 
             info.初期値 = new エフェクト用材質情報() {
