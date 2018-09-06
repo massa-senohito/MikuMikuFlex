@@ -17,11 +17,6 @@ namespace MikuMikuFlex.DeviceManagement
 		public SharpDX.Direct3D11.Device D3DDevice { get; private set; }
 
 		/// <summary>
-		///		D3D10 デバイス。D2D,DW用。
-		/// </summary>
-		public SharpDX.Direct3D10.Device D3DDevice10 { get; private set; }
-
-		/// <summary>
 		///		D3D デバイスの機能レベル。
 		/// </summary>
 		public SharpDX.Direct3D.FeatureLevel DeviceFeatureLevel { get; private set; }
@@ -43,10 +38,6 @@ namespace MikuMikuFlex.DeviceManagement
 		///		アダプタを保有する DXGI ファクトリ。
 		/// </summary>
 		public SharpDX.DXGI.Factory2 DXGIFactory { get; set; }
-
-        public SharpDX.Direct2D1.Factory2 D2DFactory { get; private set; }
-
-        public SharpDX.DirectWrite.Factory DWFactory { get; private set; }
 
 
         /// <summary>
@@ -115,25 +106,6 @@ namespace MikuMikuFlex.DeviceManagement
 
 			this.D3DDeviceContext = D3DDevice.ImmediateContext; // 注: COM参照カウンタが増える。
 
-			#region " D3D10 デバイスを作成する。（機能レベルは 9.3）"
-			//----------------
-#if VSG_DEBUG
-#else
-			// 機能レベル 9.3 の DX10 デバイスを作成する。
-			this.D3DDevice10 = new SharpDX.Direct3D10.Device1(
-				Adapter,
-				//DriverType.Hardware,	--> SharpDX では、Adapter か DriverType のいずれかしか指定できない。
-				dx10flag_for2DDraw,
-				SharpDX.Direct3D10.FeatureLevel.Level_9_3 );
-#endif
-            //----------------
-            #endregion
-
-            this.DWFactory = new SharpDX.DirectWrite.Factory( SharpDX.DirectWrite.FactoryType.Isolated );
-
-            this.D2DFactory = new SharpDX.Direct2D1.Factory2( SharpDX.Direct2D1.FactoryType.MultiThreaded, SharpDX.Direct2D1.DebugLevel.Information );
-
-            // エフェクトマネージャを初期化する。
             エフェクト.エフェクト.初期化する( this );
 		}
 
@@ -147,15 +119,9 @@ namespace MikuMikuFlex.DeviceManagement
 
 			if( D3DDevice != null && !D3DDevice.IsDisposed ) D3DDevice.Dispose();
 
-			if( D3DDevice10 != null && !D3DDevice10.IsDisposed ) D3DDevice10.Dispose();
-
 			if( Adapter != null && !Adapter.IsDisposed ) Adapter.Dispose();
 
 			if( DXGIFactory != null && !DXGIFactory.IsDisposed ) DXGIFactory.Dispose();
-
-            if( DWFactory != null && !DWFactory.IsDisposed ) DWFactory.Dispose();
-
-            if( D2DFactory != null && !D2DFactory.IsDisposed ) D2DFactory.Dispose();
         }
 
         [Conditional( "DEBUG" )]	// DEBUG 時のみ実行する。

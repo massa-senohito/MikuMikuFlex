@@ -10,11 +10,6 @@ namespace MikuMikuFlex.DeviceManagement
 		SharpDX.Direct3D11.Device D3DDevice { get; }
 
 		/// <summary>
-		///		D3D10 デバイス。D2D,DW用。
-		/// </summary>
-		SharpDX.Direct3D10.Device D3DDevice10 { get; }
-
-		/// <summary>
 		///		D3D デバイスの機能レベル。
 		/// </summary>
 		SharpDX.Direct3D.FeatureLevel DeviceFeatureLevel { get; }
@@ -36,12 +31,6 @@ namespace MikuMikuFlex.DeviceManagement
 		///		アダプタを保有する DXGI ファクトリ。
 		/// </summary>
 		SharpDX.DXGI.Factory2 DXGIFactory { get; set; }
-
-
-
-        SharpDX.Direct2D1.Factory2 D2DFactory { get; }
-
-        SharpDX.DirectWrite.Factory DWFactory { get; }
 
 
         /// <summary>
