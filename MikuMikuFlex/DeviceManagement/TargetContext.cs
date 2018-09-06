@@ -1,6 +1,7 @@
 ﻿using System;
 using MikuMikuFlex.行列;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 
 namespace MikuMikuFlex.DeviceManagement
 {
@@ -14,7 +15,9 @@ namespace MikuMikuFlex.DeviceManagement
 
 		DepthStencilView 深度ステンシルビュー { get; }
 
-		行列管理 行列管理 { get; set; }
+        SwapChain SwapChain { get; }
+
+        行列管理 行列管理 { get; set; }
 
 		カメラモーション カメラモーション { get; set; }
 
@@ -32,6 +35,7 @@ namespace MikuMikuFlex.DeviceManagement
 		///     bool transpにあたる値
 		/// </summary>
 		bool IsEnabledTransparent { get; }
+
 
 		void ビューポートを設定する();
 	}

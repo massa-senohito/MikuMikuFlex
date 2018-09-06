@@ -46,9 +46,6 @@ namespace MikuMikuFlex.DeviceManagement
 
 		public Control BindedControl { get; private set; }
 
-		/// <summary>
-		///     カメラモーションの挙動を設定するプロパティ
-		/// </summary>
 		public カメラモーション カメラモーション { get; set; }
 
 		/// <summary>
