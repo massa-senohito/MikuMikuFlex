@@ -34,9 +34,17 @@ namespace _09_Render3DCGToUserControl
 			renderControl1.Render();
 		}
 
-		#region ②-D ボタンに応じて処理をする。今までのサンプルとそこまで内容は変わらない
+        protected override void OnClosed( EventArgs e )
+        {
+            model?.Dispose();
+            model = null;
 
-		private void loadMotion_Click( object sender, EventArgs e )
+            base.OnClosed( e );
+        }
+
+        #region ②-D ボタンに応じて処理をする。今までのサンプルとそこまで内容は変わらない
+
+        private void loadMotion_Click( object sender, EventArgs e )
 		{
 			if( model == null ) return;
 

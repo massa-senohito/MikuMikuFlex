@@ -27,11 +27,11 @@ namespace _02_SimpleRenderPMX
 				// ダイアログの返値がOKの場合、モデルの読み込み処理をする
 
 				// (1) モデルを読み込む
-				PMXModel model = PMXModel物理変形付き.ファイルから読み込む( ofd.FileName );
+				this._Model = PMXModel物理変形付き.ファイルから読み込む( ofd.FileName );
 
 
 				// (2) ワールド空間にモデルを追加する
-				ScreenContext.ワールド空間.Drawableを追加する( model );
+				ScreenContext.ワールド空間.Drawableを追加する( this._Model );
 				//WorldSpaceは、このフォームの描画する3D空間を示している。ここにモデルなど(IDrawableを実装している)ものを渡すと、描画してくれる。
 				//WorldSpaceは、ScreenContext.WorldSpaceと常に等しい。ウィンドウごとに必要な3DCG描画に必要な情報はScreenContextに保管されている。
 			}
@@ -44,5 +44,15 @@ namespace _02_SimpleRenderPMX
 
             Activate();
 		}
-	}
+
+        protected override void OnClosed( EventArgs e )
+        {
+            this._Model?.Dispose();
+            this._Model = null;
+
+            base.OnClosed( e );
+        }
+
+        private PMXModel _Model;
+    }
 }

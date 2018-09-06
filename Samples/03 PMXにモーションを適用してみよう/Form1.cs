@@ -28,7 +28,7 @@ namespace _03_ApplyVMDToPMX
 			ofd.Filter = "pmxモデルファイル(*.pmx)|*.pmx";
             if( ofd.ShowDialog() == DialogResult.OK )
             {
-                PMXModel model = PMXModel物理変形付き.ファイルから読み込む( ofd.FileName );
+                this._Model = PMXModel物理変形付き.ファイルから読み込む( ofd.FileName );
 
                 // モーションファイルの読み込み用ダイアログの設置
                 var ofd2 = new OpenFileDialog();
@@ -38,14 +38,14 @@ namespace _03_ApplyVMDToPMX
                     // ダイアログの返値がいずれもOKの場合、モデルの読み込み処理をする
 
                     //①モーションファイルを読み込む
-                    モーション motion = model.モーション管理.ファイルからモーションを生成し追加する( ofd2.FileName, true );
+                    モーション motion = this._Model.モーション管理.ファイルからモーションを生成し追加する( ofd2.FileName, true );
                     //適用したい対象のモデルのモーションマネージャに対して追加します。
                     //IMotionProvider AddMotionFromFile(string ファイル名,bool すべての親ボーンを無視するかどうか);
                     //第二引数は歩きモーションなどで、移動自体はプログラムで指定したいとき、すべての親ボーンのモーションを無視することで、
                     //モーションでモデル全体が動いてしまうのを防ぎます。
 
                     //②モーションファイルをモデルに対して適用する。
-                    model.モーション管理.モーションを適用する( motion, 0, モーション再生終了後の挙動.Replay );
+                    this._Model.モーション管理.モーションを適用する( motion, 0, モーション再生終了後の挙動.Replay );
                     //第二引数は、再生を始めるフレーム番号、第三引数は再生後にリプレイするかどうか。
                     //リプレイせず放置する場合はActionAfterMotion.Nothingを指定する
 
@@ -55,11 +55,21 @@ namespace _03_ApplyVMDToPMX
                     //(2) 現在何フレーム目なの?
                     //model.MotionManager.CurrentFrameによって取得できます。
                 }
-                ScreenContext.ワールド空間.Drawableを追加する( model );
 
+                this.ScreenContext.ワールド空間.Drawableを追加する( this._Model );
             }
 
             Activate();
         }
-	}
+
+        protected override void OnClosed( EventArgs e )
+        {
+            this._Model?.Dispose();
+            this._Model = null;
+
+            base.OnClosed( e );
+        }
+
+        private PMXModel _Model;
+    }
 }

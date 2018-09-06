@@ -35,20 +35,20 @@ namespace ニコニ立体ちゃんサンプル
             
             // ニコニ立体ちゃんのモデルを読み込んで、画面内のワールド空間に追加。
 
-            PMXModel model = PMXModel物理変形付き.ファイルから読み込む( $@"{sampleFolder}\Alicia\MMD\Alicia_solid.pmx" );
-            this.ScreenContext.ワールド空間.Drawableを追加する( model );
+            this._Model = PMXModel物理変形付き.ファイルから読み込む( $@"{sampleFolder}\Alicia\MMD\Alicia_solid.pmx" );
+            this.ScreenContext.ワールド空間.Drawableを追加する( this._Model );
 
 
             // ニコニ立体ステージのモデルを読み込んで、画面内のワールド空間に追加。
 
-            PMXModel stage = PMXModel物理変形付き.ファイルから読み込む( $@"{sampleFolder}\nicosolid_stage\nicosolid_stage.pmx" );
-            this.ScreenContext.ワールド空間.Drawableを追加する( stage );
+            this._Stage = PMXModel物理変形付き.ファイルから読み込む( $@"{sampleFolder}\nicosolid_stage\nicosolid_stage.pmx" );
+            this.ScreenContext.ワールド空間.Drawableを追加する( this._Stage );
 
             
             // モーションを読み込んで、ニコニ立体ちゃんモデルに適用。
 
-            モーション motion = model.モーション管理.ファイルからモーションを生成し追加する( $@"{sampleFolder}\Alicia\MMD Motion\2分ループステップ1.vmd", true );
-            model.モーション管理.モーションを適用する( motion, 0, モーション再生終了後の挙動.Replay );
+            モーション motion = this._Model.モーション管理.ファイルからモーションを生成し追加する( $@"{sampleFolder}\Alicia\MMD Motion\2分ループステップ1.vmd", true );
+            this._Model.モーション管理.モーションを適用する( motion, 0, モーション再生終了後の挙動.Replay );
 
             
             // マウスで操作できるカメラモーションを読み込んで、画面（のカメラ）に適用。
@@ -60,5 +60,20 @@ namespace ニコニ立体ちゃんサンプル
 
             Activate();
         }
+
+        protected override void OnClosed( EventArgs e )
+        {
+            this._Stage?.Dispose();
+            this._Stage = null;
+
+            this._Model?.Dispose();
+            this._Model = null;
+
+            base.OnClosed( e );
+        }
+
+        private PMXModel _Model;
+
+        private PMXModel _Stage;
     }
 }

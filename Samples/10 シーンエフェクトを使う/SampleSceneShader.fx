@@ -91,6 +91,8 @@ technique11 DefaultScene < string MMDPass = "scene"; >
     pass DefaultPass
     {
         SetVertexShader(CompileShader(vs_5_0, VS_Scene()));
+        SetHullShader(NULL);    // 既定のシェーダーが使われないよう、明示的に NULL を設定。
+        SetDomainShader(NULL);  // 同上。
         SetPixelShader(CompileShader(ps_5_0, PS_Scene()));
     }
 }
