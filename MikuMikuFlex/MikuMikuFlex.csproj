@@ -124,7 +124,7 @@
     <Compile Include="エフェクト\シーン用エフェクト管理.cs" />
     <Compile Include="エフェクト\オブジェクト用エフェクト管理.cs" />
     <Compile Include="エフェクト\変数管理\材質\TESSFACTOR変数.cs" />
-    <Compile Include="エフェクト\変数管理\テクスチャ\CURRENTSCENE変数.cs" />
+    <Compile Include="エフェクト\変数管理\テクスチャ\CURRENTSCENECOLOR変数.cs" />
     <Compile Include="エフェクト\変数管理\特殊パラメータ\use_selfshadow変数.cs" />
     <Compile Include="Utility\DualQuaternion.cs" />
     <Compile Include="ボーン\モーフ変形.cs" />

@@ -7,7 +7,7 @@
 
 
 float Script : STANDARDSGLOBAL <
-	string ScriptClass="sceneorobject"; // 行列関連のセマンティクスは Object、CURRENTSCENEセマンティクスは Scene
+	string ScriptClass="sceneorobject"; // 行列関連のセマンティクスは Object、CURRENTSCENE*セマンティクスは Scene
 	string Script="";
 > = 0.8;
 
@@ -15,7 +15,7 @@ float Script : STANDARDSGLOBAL <
 // グローバル変数 ///////////////////////////////////////////
 
 float2   viewportSize  : VIEWPORTPIXELSIZE;
-Texture2D SceneTexture : CURRENTSCENE;          // シーン用テクスチャ
+Texture2D SceneTexture : CURRENTSCENECOLOR;          // シーン用テクスチャ
 
 SamplerState SceneSampler
 {
@@ -73,7 +73,7 @@ SCENE_VS_OUTPUT VS_Scene( uint vID : SV_VertexID )
 
 float4 PS_Scene( SCENE_VS_OUTPUT input ) : SV_Target
 {
-    // CURRENTSCENE セマンティクスが付与された Texture2D 変数には、
+    // CURRENTSCENECOLOR セマンティクスが付与された Texture2D 変数には、
     // 現在までの描画内容（バックバッファのコピー）が格納されている。
 
     float4 texCol = SceneTexture.Sample(SceneSampler, input.Tex);

@@ -248,8 +248,8 @@ namespace MikuMikuFlex.エフェクト
 
                     switch( セマンティクス )
                     {
-                        case "CURRENTSCENE":
-                            subs = new CURRENTSCENE変数();
+                        case "CURRENTSCENECOLOR":
+                            subs = new CURRENTSCENECOLOR変数();
                             subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                             シーンごとに更新するエフェクト変数のマップ.Add( variable, subs.変数登録インスタンスを生成して返す( variable, this, セマンティクス番号 ) );
                             break;
@@ -418,7 +418,7 @@ namespace MikuMikuFlex.エフェクト
                 //コントロールオブジェクト
                 new CONTROLOBJECT変数(),
                 // テクスチャ …… は型で判別するので、このリストに加えないこと。
-                //new CURRENTSCENE変数(),
+                //new CURRENTSCENECOLOR変数(),
                 //new RENDERCOLORTARGET変数(),
                 //new RENDERDEPTHSTENCILTARGET変数(),
                 // テッセレーション
