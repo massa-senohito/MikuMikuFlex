@@ -111,7 +111,7 @@ namespace MikuMikuFlex.ボーン
                     // ここでは、
                     //  (A) X → Y → Z の順
                     //  (B) Y → Z → X の順
-                    //  (C) Z → Z → Y の順
+                    //  (C) Z → X → Y の順
                     // の３通りを調べて、ジンバルロックが発生しない最初の分解値を採用する。
 
                     if( CGHelper.クォータニオンをXYZ回転に分解する( ikLink.IKリンクボーン.回転, out X軸回転角, out Y軸回転角, out Z軸回転角 ) )    // ジンバルロックが発生しなければ true

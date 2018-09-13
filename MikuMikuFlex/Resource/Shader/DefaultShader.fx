@@ -99,7 +99,7 @@ float Script : STANDARDSGLOBAL <
 
 
 float4 EdgeColor : EDGECOLOR; // エッジの色 
-float EdgeWidth : EDGEWIDTH; // エッジの幅
+float  EdgeWidth : EDGEWIDTH; // エッジの幅
 
 float4x4 matWVP         : WORLDVIEWPROJECTION < string Object="Camera"; >;
 float4x4 matWV          : WORLDVIEW < string Object = "Camera"; >;
@@ -290,7 +290,7 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
 
 void QDEF(CS_INPUT input, out float4 position, out float3 normal)
 {
-    // TODO: QDEF の実装に変更する。
+    // TODO: QDEF の実装に変更する。（以下はBDEF4と同じ。）
 
     float4x4 bt =
         BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
@@ -375,7 +375,7 @@ VS_OUTPUT VS_Object(VS_INPUT input, uniform bool bEdge)
 	// 頂点法線
     Out.Normal = normalize(mul(input.Normal, (float3x3) WorldMatrix));
 
-	// 位置（ワールドビュー射影変換）
+	// 位置
     float4 position = input.Position;
     if( bEdge )
     {
@@ -412,6 +412,8 @@ VS_OUTPUT VS_Object(VS_INPUT input, uniform bool bEdge)
 
 
 // ハルシェーダ
+//   参考1：Curved PN Triangles  http://alex.vlachos.com/graphics/CurvedPNTriangles.pdf
+//   参考2：SimpleBezier11 サンプル(MSDN) https://msdn.microsoft.com/ja-jp/library/ee416574(v=vs.85).aspx
 
 float TessFactor : TESSFACTOR; // テッセレーション係数
 
@@ -515,7 +517,7 @@ VS_OUTPUT DS_Object(CONSTANT_HS_OUT In, float3 uvw : SV_DomainLocation, const Ou
                       In.B021 * UU * 3 * V +
                       In.B102 * W * VV * 3 +
                       In.B012 * U * VV * 3 +
-                      In.B111 * 6.0f * W * U * V;
+                      In.B111 * 6 * W * U * V;
     Out.Position = mul(float4(Position, 1), ViewProjMatrix); //ビュー射影変換
 
     // カメラとの相対位置
