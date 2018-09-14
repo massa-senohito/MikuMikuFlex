@@ -42,6 +42,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
                     backBuffer.Description.Height != _Texture2D.Description.Height ||
                     backBuffer.Description.Format != _Texture2D.Description.Format )
                 {
+                    変数.AsShaderResource().SetResource( null );
                     _ShaderResourceView?.Dispose();
                     _Texture2D?.Dispose();
 

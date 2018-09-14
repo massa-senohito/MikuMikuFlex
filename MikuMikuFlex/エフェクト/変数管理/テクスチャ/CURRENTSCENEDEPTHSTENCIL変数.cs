@@ -38,6 +38,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
                     depthStencilBuffer.Description.Height != _Texture2D.Description.Height ||
                     depthStencilBuffer.Description.Format != _Texture2D.Description.Format )
                 {
+                    変数.AsShaderResource().SetResource( null );
                     _ShaderResourceView?.Dispose();
                     _Texture2D?.Dispose();
 
@@ -47,9 +48,9 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
                         RenderContext.Instance.DeviceManager.D3DDevice,
                         new Texture2DDescription {
                             ArraySize = 1,
-                            BindFlags = BindFlags.ShaderResource,
+                            BindFlags = BindFlags.DepthStencil | BindFlags.ShaderResource,
                             CpuAccessFlags = CpuAccessFlags.None,   // CPUからアクセス不要
-                            Format = depthStencilBuffer.Description.Format,
+                            Format = SharpDX.DXGI.Format.R32_Typeless,
                             Width = depthStencilBuffer.Description.Width,
                             Height = depthStencilBuffer.Description.Height,
                             MipLevels = 1,
@@ -64,7 +65,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
                         RenderContext.Instance.DeviceManager.D3DDevice,
                         _Texture2D,
                         new ShaderResourceViewDescription {
-                            Format = _Texture2D.Description.Format,
+                            Format = SharpDX.DXGI.Format.R32_Float,
                             Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D,
                             Texture2D = new ShaderResourceViewDescription.Texture2DResource {
                                 MipLevels = 1,
