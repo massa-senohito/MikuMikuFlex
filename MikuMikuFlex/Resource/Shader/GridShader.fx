@@ -47,12 +47,16 @@ technique10 DefaultTechnique
 	pass NormalGrid
 	{
 		SetVertexShader(CompileShader(vs_4_0,VS_Grid()));
+        SetHullShader(NULL);
+        SetDomainShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0,PS_Grid()));
 	}
 
 	pass AxisGrid
 	{
 		SetVertexShader(CompileShader(vs_4_0,VS_Axis_Grid()));
+        SetHullShader(NULL);
+        SetDomainShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0,PS_Axis_Grid()));
 	}
 }
