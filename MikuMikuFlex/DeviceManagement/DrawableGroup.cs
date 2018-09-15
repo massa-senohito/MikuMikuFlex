@@ -9,25 +9,27 @@ namespace MikuMikuFlex.DeviceManagement
 {
 	public class DrawableGroup : IComparable<DrawableGroup>, IDisposable
 	{
-        public DrawableGroup( int priorty, string groupName )
-		{
-			this._優先度 = priorty;
-			this.グループ名 = groupName;
-		}
-
         public string グループ名 { get; }
 
+        public List<IDrawable> Drawableリスト = new List<IDrawable>();
+
+
+        public DrawableGroup( int priorty, string groupName )
+        {
+            this._優先度 = priorty;
+            this.グループ名 = groupName;
+        }
 
         public void Drawableを追加する( IDrawable drawable )
 		{
-			_drawables.Add( drawable );
+			Drawableリスト.Add( drawable );
 		}
 
 		public bool Drawableを削除する( IDrawable drawable )
 		{
-			if( _drawables.Contains( drawable ) )
+			if( Drawableリスト.Contains( drawable ) )
 			{
-				_drawables.Remove( drawable );
+				Drawableリスト.Remove( drawable );
 				return true;
 			}
 			return false;
@@ -35,7 +37,7 @@ namespace MikuMikuFlex.DeviceManagement
 
         public void 更新する()
         {
-            foreach( var drawable in _drawables )
+            foreach( var drawable in Drawableリスト )
             {
                 drawable.更新する();
             }
@@ -45,7 +47,7 @@ namespace MikuMikuFlex.DeviceManagement
 		{
 			this.PreDraw();
 
-            foreach( var drawable in _drawables )
+            foreach( var drawable in Drawableリスト )
 			{
 				if( drawable.表示中 )
                     drawable.描画する();
@@ -66,7 +68,7 @@ namespace MikuMikuFlex.DeviceManagement
 
 		public IDrawable Drawableを取得する( string ファイル名 )
 		{
-			return _drawables.FirstOrDefault( drawable => drawable.ファイル名.Equals( ファイル名 ) );
+			return Drawableリスト.FirstOrDefault( drawable => drawable.ファイル名.Equals( ファイル名 ) );
 		}
 
 		public int CompareTo( DrawableGroup other )
@@ -76,17 +78,15 @@ namespace MikuMikuFlex.DeviceManagement
 
 		public void Dispose()
 		{
-			foreach( var drawable in _drawables )
+			foreach( var drawable in Drawableリスト )
 			{
 				drawable.Dispose();
 			}
 
-            _drawables.Clear();
+            Drawableリスト.Clear();
 		}
 
 
         protected int _優先度;
-
-        private List<IDrawable> _drawables = new List<IDrawable>();
     }
 }
