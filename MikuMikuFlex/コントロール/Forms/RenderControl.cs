@@ -105,10 +105,19 @@ namespace MikuMikuFlex.コントロール.Forms
 		protected override void Dispose( bool disposing )
 		{
 			base.Dispose( disposing );
-			if( RenderContext.Instance != null ) RenderContext.Instance.Dispose();
-			RenderContext.Instance.ControltoScreenContextマップ.Remove( this );
-			ScreenContext.Dispose();
-			if( RenderContext.Instance.ControltoScreenContextマップ.Count == 0 ) RenderContext.Instance.Dispose();
+
+            if( RenderContext.Instance != null )
+            {
+                RenderContext.Instance.ControltoScreenContextマップ.Remove( this );
+            }
+
+            ScreenContext?.Dispose();
+
+            if( RenderContext.Instance != null &&
+                RenderContext.Instance.ControltoScreenContextマップ.Count == 0 )
+            {
+                RenderContext.Instance.Dispose();
+            }
 		}
 	}
 }
