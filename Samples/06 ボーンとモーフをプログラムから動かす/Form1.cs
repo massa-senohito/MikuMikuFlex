@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MikuMikuFlex;
-using MikuMikuFlex.コントロール.Forms;
 using MikuMikuFlex.モデル.PMX;
 
 namespace _06_MoveBoneAndMorphFromCode

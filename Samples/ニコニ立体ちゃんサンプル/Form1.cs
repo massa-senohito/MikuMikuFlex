@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MikuMikuFlex.コントロール.Forms;
+using MikuMikuFlex;
 using MikuMikuFlex.モデル.PMX;
 using MikuMikuFlex.モーション;
 using MikuMikuFlex.行列.CameraMotion;

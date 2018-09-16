@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using SharpDX;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.コントロール.Forms
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     レンダリング対象のフォームのベースになるクラス

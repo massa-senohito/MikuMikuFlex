@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using MikuMikuFlex;
 using SharpDX.Windows;
-using RenderForm = MikuMikuFlex.コントロール.Forms.RenderForm;
 
 namespace MikuMikuFlex
 {

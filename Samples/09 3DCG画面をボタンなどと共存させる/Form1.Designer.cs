@@ -1,4 +1,4 @@
-﻿using MikuMikuFlex.コントロール.Forms;
+﻿using MikuMikuFlex;
 
 namespace _09_Render3DCGToUserControl
 {

@@ -127,7 +127,7 @@
     <Compile Include="エフェクト\変数管理\材質\TESSFACTOR変数.cs" />
     <Compile Include="エフェクト\変数管理\テクスチャ\CURRENTSCENECOLOR変数.cs" />
     <Compile Include="エフェクト\変数管理\特殊パラメータ\use_selfshadow変数.cs" />
-    <Compile Include="Utility\DualQuaternion.cs" />
+    <Compile Include="ユーティリティ\DualQuaternion.cs" />
     <Compile Include="ボーン\モーフ変形.cs" />
     <Compile Include="ボーン\親付与によるFK変形更新.cs" />
     <Compile Include="ボーン\ボーン.cs" />
@@ -256,7 +256,7 @@
     <Compile Include="モデル\PMX\PMXサブセット管理.cs" />
     <Compile Include="モデル\サブリソースローダー.cs" />
     <Compile Include="モデル\Transformer基本実装.cs" />
-    <Compile Include="グリッド\TargetCross.cs" />
+    <Compile Include="ユーティリティ\グリッド\TargetCross.cs" />
     <Compile Include="モデル\サブセット管理.cs" />
     <Compile Include="モデル\バッファ管理.cs" />
     <Compile Include="モーフ\ボーンモーフ.cs" />
@@ -267,37 +267,37 @@
     <Compile Include="モーフ\PMXモーフ管理.cs" />
     <Compile Include="モーフ\UVモーフ.cs" />
     <Compile Include="モーフ\頂点モーフ.cs" />
-    <Compile Include="スプライト\動的テクスチャ.cs" />
-    <Compile Include="Utility\拡張メソッド.cs" />
-    <Compile Include="Utility\MMFShaderResourceView.cs" />
-    <Compile Include="スプライト\スプライトの頂点レイアウト.cs" />
+    <Compile Include="ユーティリティ\スプライト\動的テクスチャ.cs" />
+    <Compile Include="ユーティリティ\拡張メソッド.cs" />
+    <Compile Include="ユーティリティ\MMFShaderResourceView.cs" />
+    <Compile Include="ユーティリティ\スプライト\スプライトの頂点レイアウト.cs" />
     <Compile Include="モデル\Other\DebugDotInputLayout.cs" />
     <Compile Include="ボーン\ボーン変形.cs" />
     <Compile Include="ボーン\手動によるFK変形更新.cs" />
-    <Compile Include="Utility\変形階層リスト.cs" />
-    <Compile Include="Utility\インデックスバッファBuilder.cs" />
-    <Compile Include="Utility\MMFTexture3D.cs" />
-    <Compile Include="Utility\MMFTexture2D.cs" />
-    <Compile Include="Utility\TargaSolver.cs" />
+    <Compile Include="ユーティリティ\変形階層リスト.cs" />
+    <Compile Include="ユーティリティ\インデックスバッファBuilder.cs" />
+    <Compile Include="ユーティリティ\MMFTexture3D.cs" />
+    <Compile Include="ユーティリティ\MMFTexture2D.cs" />
+    <Compile Include="ユーティリティ\TargaSolver.cs" />
     <Compile Include="モーション\モーフモーション.cs" />
     <Compile Include="物理演算\Bullet管理.cs" />
     <Compile Include="物理演算\PMX物理変形管理.cs" />
-    <Compile Include="RenderContext.cs" />
+    <Compile Include="基盤\RenderContext.cs" />
     <Compile Include="ボーン\変形更新.cs" />
     <Compile Include="ボーン\変形階層の物理前後指定種別.cs" />
     <Compile Include="ボーン\PMXスケルトン物理変形付き.cs" />
-    <Compile Include="Utility\FPSCounter.cs" />
+    <Compile Include="ユーティリティ\FPSCounter.cs" />
     <Compile Include="モデル\トゥーンテクスチャ管理.cs" />
     <Compile Include="モデル\PMX\PMXバッファ管理.cs" />
     <Compile Include="行列\カメラ.cs" />
     <Compile Include="行列\カメラ変更EventArgs.cs" />
     <Compile Include="行列\カメラ変数種別.cs" />
-    <Compile Include="Utility\CGHelper.cs" />
+    <Compile Include="ユーティリティ\CGHelper.cs" />
     <Compile Include="モデル\PMX\PMXサブセット.cs" />
     <Compile Include="エフェクト\MMELoader.cs" />
-    <Compile Include="グリッド\AxisGridLayout.cs" />
-    <Compile Include="グリッド\BasicGrid.cs" />
-    <Compile Include="グリッド\MeasureGridLayout.cs" />
+    <Compile Include="ユーティリティ\グリッド\AxisGridLayout.cs" />
+    <Compile Include="ユーティリティ\グリッド\BasicGrid.cs" />
+    <Compile Include="ユーティリティ\グリッド\MeasureGridLayout.cs" />
     <Compile Include="DeviceManagement\DeviceManager.cs" />
     <Compile Include="モデル\IDrawable.cs" />
     <Compile Include="モデル\モデル状態.cs" />
@@ -354,7 +354,7 @@
     <Compile Include="モーション\MMDモーション.cs" />
     <Compile Include="モーション\モーションタイマ.cs" />
     <Compile Include="DeviceManagement\DeviceManager既定値.cs" />
-    <Compile Include="コントロール\Forms\RenderControl.cs">
+    <Compile Include="基盤\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ボーン\PMXボーン.cs" />
@@ -367,17 +367,17 @@
     <Compile Include="行列\ワールド行列.cs" />
     <Compile Include="行列\ワールド行列変数種別.cs" />
     <Compile Include="行列\ワールド行列変更EventArgs.cs" />
-    <Compile Include="MessagePump.cs" />
+    <Compile Include="基盤\MessagePump.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="コントロール\Forms\RenderForm.cs">
+    <Compile Include="基盤\RenderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="コントロール\Forms\RenderForm.Designer.cs">
+    <Compile Include="基盤\RenderForm.Designer.cs">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
