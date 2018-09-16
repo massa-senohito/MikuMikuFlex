@@ -14,7 +14,7 @@ namespace MikuMikuFlex
 	/// <remarks>
 	///		以前は D3DX ライブラリで同等の機能が提供されていたが、現在は D3DX は廃止されている。
 	/// </remarks>
-	static class MMFTexture3D
+	public static class MMFTexture3D
 	{
 		static public Texture3D FromStream( Device device, Stream stream )
 		{

@@ -10,7 +10,7 @@ namespace MikuMikuFlex
 	/// <summary>
 	///		TGA ファイルから PNG ストリームを生成するヘルパメソッドを提供する。
 	/// </summary>
-	public static class TargaSolver
+	internal static class TargaSolver
 	{
 		public static Stream LoadTargaImage( string filePath, ImageFormat rootFormat= null )
 		{

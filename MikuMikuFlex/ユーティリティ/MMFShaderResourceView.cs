@@ -10,7 +10,7 @@ namespace MikuMikuFlex
 	/// <summary>
 	///		シェーダーリソースビューを作成するためのヘルパメソッドを提供する。
 	/// </summary>
-	static class MMFShaderResourceView
+	public static class MMFShaderResourceView
 	{
 		static public ShaderResourceView FromStream( Device device, Stream stream, out Texture2D texture )
 		{
