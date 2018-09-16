@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト変数管理
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     opadd (bool型)
