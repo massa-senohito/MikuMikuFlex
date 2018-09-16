@@ -4,14 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     use_subtexture (bool型)
     ///     サブテクスチャ使用フラグ。
     ///     PMXモデルのサブテクスチャを使用する場合にtrue。
     /// </summary>
-    public class use_subtexture変数 : 特殊パラメータ変数
+    internal class use_subtexture変数 : 特殊パラメータ変数
     {
         public override string 変数名 => "use_subtexture";
 

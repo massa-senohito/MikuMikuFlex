@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using MikuMikuFlex.エフェクト;
 
 namespace MikuMikuFlex
 {
@@ -102,7 +101,7 @@ namespace MikuMikuFlex
 
 			this.D3DDeviceContext = D3DDevice.ImmediateContext; // 注: COM参照カウンタが増える。
 
-            エフェクト.エフェクト.初期化する( this );
+            エフェクト.初期化する( this );
 		}
 
 		/// <summary>

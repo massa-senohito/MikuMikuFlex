@@ -3,23 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MikuMikuFlex.エフェクト.変数管理;
-using MikuMikuFlex.エフェクト.変数管理.定数;
-using MikuMikuFlex.エフェクト.変数管理.コントロール;
-using MikuMikuFlex.エフェクト.変数管理.材質;
-using MikuMikuFlex.エフェクト.変数管理.行列;
-using MikuMikuFlex.エフェクト.変数管理.マウス;
-using MikuMikuFlex.エフェクト.変数管理.特殊パラメータ;
-using MikuMikuFlex.エフェクト.変数管理.スクリーン情報;
-using MikuMikuFlex.エフェクト.変数管理.テクスチャ;
-using MikuMikuFlex.エフェクト.変数管理.時間;
-using MikuMikuFlex.エフェクト.変数管理.ワールド情報;
-using MikuMikuFlex.モデル;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
+using MikuMikuFlex.エフェクト変数管理;
+using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     MMEのエフェクトを管理するクラス
@@ -54,13 +44,13 @@ namespace MikuMikuFlex.エフェクト
         ///     現在の MMF で利用可能なすべてのエフェクト変数管理インスタンスのリスト。
         ///     [Key: 変数管理セマンティクス名、Value: 変数管理]
         /// </summary>
-        public static Dictionary<string, 変数管理.変数管理> 変数管理マスタリスト { get; private set; }
+        public static Dictionary<string, 変数管理> 変数管理マスタリスト { get; private set; }
 
         /// <summary>
         ///     現在の MMF で利用可能なすべての特殊パラメータ変数管理インスタンスのリスト。
         ///     [Key: 変数名、Value: 変数管理]
         /// </summary>
-        public static Dictionary<string, 特殊パラメータ変数> 特殊パラメータ変数管理マスタリスト { get; private set; }
+        internal static Dictionary<string, 特殊パラメータ変数> 特殊パラメータ変数管理マスタリスト { get; private set; }
 
         /// <summary>
         ///     全エフェクトで共有するマクロのリスト。
@@ -143,29 +133,17 @@ namespace MikuMikuFlex.エフェクト
 
         public サブリソースローダー テクスチャなどのパスの解決に利用するローダー { get; private set; }
 
-        #region " ScriptClass.Object 用メンバ "
-        //----------------
+        public Dictionary<EffectVariable, 変数管理> モデルごとに更新するエフェクト変数のマップ { get; private set; }
 
-        public Dictionary<EffectVariable, 変数管理.変数管理> モデルごとに更新するエフェクト変数のマップ { get; private set; }
+        public Dictionary<EffectVariable, 変数管理> 材質ごとに更新するエフェクト変数のマップ { get; private set; }
 
-        public Dictionary<EffectVariable, 変数管理.変数管理> 材質ごとに更新するエフェクト変数のマップ { get; private set; }
+        internal Dictionary<EffectVariable, 特殊パラメータ変数> 材質ごとに更新する特殊エフェクト変数のマップ { get; private set; }
 
-        public Dictionary<EffectVariable, 特殊パラメータ変数> 材質ごとに更新する特殊エフェクト変数のマップ { get; private set; }
-
-        //----------------
-        #endregion
-
-        #region " ScriptClass.Scene 用メンバ "
-        //----------------
-
-        public Dictionary<EffectVariable, 変数管理.変数管理> シーンごとに更新するエフェクト変数のマップ { get; private set; }
+        public Dictionary<EffectVariable, 変数管理> シーンごとに更新するエフェクト変数のマップ { get; private set; }
 
         public Dictionary<string, RenderTargetView> レンダーターゲットビューのマップ { get; private set; }
 
         public Dictionary<string, DepthStencilView> 深度ステンシルビューのマップ { get; private set; }
-
-        //----------------
-        #endregion
 
 
         /// <summary>
@@ -200,10 +178,10 @@ namespace MikuMikuFlex.エフェクト
                 }
             }
 
-            材質ごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
-            モデルごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
+            材質ごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理>();
+            モデルごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理>();
             材質ごとに更新する特殊エフェクト変数のマップ = new Dictionary<EffectVariable, 特殊パラメータ変数>();
-            シーンごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理.変数管理>();
+            シーンごとに更新するエフェクト変数のマップ = new Dictionary<EffectVariable, 変数管理>();
             テクニックリスト = new List<テクニック>();
             レンダーターゲットビューのマップ = new Dictionary<string, RenderTargetView>();
             深度ステンシルビューのマップ = new Dictionary<string, DepthStencilView>();
@@ -225,7 +203,7 @@ namespace MikuMikuFlex.エフェクト
                 {
                     // (A) 通常はセマンティクスに応じて登録する。
 
-                    変数管理.変数管理 subs = 変数管理マスタリスト[ セマンティクス ];
+                    変数管理 subs = 変数管理マスタリスト[ セマンティクス ];
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {
@@ -240,7 +218,7 @@ namespace MikuMikuFlex.エフェクト
                 {
                     // (B) テクスチャのみ例外で、変数型に応じて登録する。
 
-                    変数管理.変数管理 subs = new テクスチャ変数();
+                    変数管理 subs = new テクスチャ変数();
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
 
                     switch( セマンティクス )
@@ -285,7 +263,7 @@ namespace MikuMikuFlex.エフェクト
 
                 if( 変数管理マスタリスト.ContainsKey( name ) )
                 {
-                    変数管理.変数管理 subs = 変数管理マスタリスト[ name ]; //定数バッファにはセマンティクスが付けられないため、変数名で代用
+                    変数管理 subs = 変数管理マスタリスト[ name ]; //定数バッファにはセマンティクスが付けられないため、変数名で代用
                     subs.指定されたエフェクト変数の型名が正しいか確認し不正なら例外を発出する( variable );
                     if( subs.更新タイミング == 更新タイミング.材質ごと )
                     {
@@ -336,7 +314,7 @@ namespace MikuMikuFlex.エフェクト
                 }
                 kvp.Key.Dispose();
             }
-            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> kvp in 材質ごとに更新するエフェクト変数のマップ )
+            foreach( KeyValuePair<EffectVariable, 変数管理> kvp in 材質ごとに更新するエフェクト変数のマップ )
             {
                 if( kvp.Value is IDisposable )
                 {
@@ -345,7 +323,7 @@ namespace MikuMikuFlex.エフェクト
                 }
                 kvp.Key.Dispose();
             }
-            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> kvp in this.モデルごとに更新するエフェクト変数のマップ )
+            foreach( KeyValuePair<EffectVariable, 変数管理> kvp in this.モデルごとに更新するエフェクト変数のマップ )
             {
                 if( kvp.Value is IDisposable )
                 {
@@ -361,8 +339,8 @@ namespace MikuMikuFlex.エフェクト
 
         public static void 初期化する( DeviceManager deviceManager )
         {
-            変数管理マスタリスト = new Dictionary<string, 変数管理.変数管理>();
-            foreach( var variable in new List<変数管理.変数管理> {
+            変数管理マスタリスト = new Dictionary<string, 変数管理>();
+            foreach( var variable in new List<変数管理> {
                 new WORLD変数(),
                 new PROJECTION変数(),
                 new VIEW変数(),
@@ -476,10 +454,6 @@ namespace MikuMikuFlex.エフェクト
             return new エフェクト( リソースパス, d3dEffect, 使用対象モデル, loader );
         }
 
-
-        #region " ScriptClass.Object 用メンバ "
-        //----------------
-
         public void モデルごとに更新するエフェクト変数を更新する()
         {
             if( !( this.ScriptClass.HasFlag( ScriptClass.Object ) ) )
@@ -487,7 +461,7 @@ namespace MikuMikuFlex.エフェクト
 
             var argument = new 変数更新時引数( _利用対象のモデル );
 
-            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> subscriberBase in this.モデルごとに更新するエフェクト変数のマップ )
+            foreach( KeyValuePair<EffectVariable, 変数管理> subscriberBase in this.モデルごとに更新するエフェクト変数のマップ )
             {
                 subscriberBase.Value.変数を更新する( subscriberBase.Key, argument );
             }
@@ -500,7 +474,7 @@ namespace MikuMikuFlex.エフェクト
 
             var argument = new 変数更新時引数( info, _利用対象のモデル );
 
-            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> item in this.材質ごとに更新するエフェクト変数のマップ )
+            foreach( KeyValuePair<EffectVariable, 変数管理> item in this.材質ごとに更新するエフェクト変数のマップ )
             {
                 item.Value.変数を更新する( item.Key, argument );
             }
@@ -555,12 +529,6 @@ namespace MikuMikuFlex.エフェクト
             }
         }
 
-        //----------------
-        #endregion
-
-        #region " ScriptClass.Scene 用メンバ "
-        //----------------
-
         public void シーンごとに更新するエフェクト変数を更新する( SharpDX.DXGI.SwapChain swapChain )
         {
             if( !( this.ScriptClass.HasFlag( ScriptClass.Scene ) ) )
@@ -568,7 +536,7 @@ namespace MikuMikuFlex.エフェクト
 
             var argument = new 変数更新時引数( swapChain );
 
-            foreach( KeyValuePair<EffectVariable, 変数管理.変数管理> kvp in this.シーンごとに更新するエフェクト変数のマップ )
+            foreach( KeyValuePair<EffectVariable, 変数管理> kvp in this.シーンごとに更新するエフェクト変数のマップ )
                 kvp.Value.変数を更新する( kvp.Key, argument );
         }
 
@@ -601,9 +569,6 @@ namespace MikuMikuFlex.エフェクト
                 }, 0 );
             }
         }
-
-        //----------------
-        #endregion
 
 
         private readonly IDrawable _利用対象のモデル;

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using MMDFileParser.MotionParser;
-using MikuMikuFlex.エフェクト;
 using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.D3DCompiler;

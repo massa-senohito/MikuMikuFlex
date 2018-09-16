@@ -1,7 +1,7 @@
 ﻿using MikuMikuFlex.モーション;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.時間
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	internal sealed class ELAPSEDTIME変数 : 時間変数
 	{

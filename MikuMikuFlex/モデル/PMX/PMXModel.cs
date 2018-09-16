@@ -17,7 +17,6 @@ using System.Diagnostics;
 using System.IO;
 using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.ボーン;
-using MikuMikuFlex.エフェクト;
 using MikuMikuFlex.モーフ;
 using MikuMikuFlex.モーション;
 using SharpDX;
@@ -133,7 +132,7 @@ namespace MikuMikuFlex.モデル.PMX
                     loader = サブリソースローダー;
             }
 
-            var effect = エフェクト.エフェクト.ファイルをエフェクトとして読み込む( filePath, this, loader );
+            var effect = エフェクト.ファイルをエフェクトとして読み込む( filePath, this, loader );
 
             サブセット用エフェクト管理.エフェクトをマスタリストに登録する( filePath, effect, 既定にする );
         }
@@ -234,9 +233,9 @@ namespace MikuMikuFlex.モデル.PMX
 		{
             var effectManager = new オブジェクト用エフェクト管理();
 
-            var defaultEffect = エフェクト.エフェクト.リソースをエフェクトとして読み込む( エフェクト.エフェクト.既定のシェーダのリソースパス, this, this.サブリソースローダー );
+            var defaultEffect = エフェクト.リソースをエフェクトとして読み込む( エフェクト.既定のシェーダのリソースパス, this, this.サブリソースローダー );
 
-            effectManager.エフェクトをマスタリストに登録する( エフェクト.エフェクト.既定のシェーダのリソースパス, defaultEffect, これを既定のエフェクトに指定する: true );
+            effectManager.エフェクトをマスタリストに登録する( エフェクト.既定のシェーダのリソースパス, defaultEffect, これを既定のエフェクトに指定する: true );
 
             return effectManager;
 		}

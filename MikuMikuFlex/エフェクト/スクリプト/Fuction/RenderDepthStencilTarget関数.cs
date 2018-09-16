@@ -2,7 +2,7 @@
 using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.スクリプト
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <summary>
     ///     　　深度ステンシルサーフェイス（いわゆるZバッファ）を <see cref="RenderContext"/> に設定する。

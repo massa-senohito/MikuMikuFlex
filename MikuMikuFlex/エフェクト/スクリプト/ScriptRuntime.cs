@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト.スクリプト
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <remarks>
     ///     string Script の構文: ファンクション[;ファンクション]*;

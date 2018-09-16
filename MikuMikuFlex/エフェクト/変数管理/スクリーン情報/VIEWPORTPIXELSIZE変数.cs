@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.スクリーン情報
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	public class VIEWPORTPIXELSIZE変数 : 変数管理
 	{

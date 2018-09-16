@@ -1,4 +1,4 @@
-﻿namespace MikuMikuFlex.エフェクト
+﻿namespace MikuMikuFlex
 {
 	/// <summary>
 	///     MME用の拡張bool

@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.行列
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	internal sealed class VIEWINVERSE変数 : 行列変数
 	{

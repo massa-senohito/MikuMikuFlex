@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.エフェクト;
 using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.モデル.PMX

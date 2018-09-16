@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
-using MikuMikuFlex.エフェクト.変数管理.材質;
-using MikuMikuFlex.モデル;
+using MikuMikuFlex.エフェクト変数管理;
 using MikuMikuFlex.モデル.PMX;
 using MikuMikuFlex.モーション;
 using SharpDX;

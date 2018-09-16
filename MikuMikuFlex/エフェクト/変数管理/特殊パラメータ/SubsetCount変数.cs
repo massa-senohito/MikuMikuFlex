@@ -1,12 +1,12 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     SubsetCount (int型)
     ///     オブジェクトのサブセット数。
     /// </summary>
-	public class SubsetCount変数 : 特殊パラメータ変数
+	internal class SubsetCount変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "SubsetCount";
 

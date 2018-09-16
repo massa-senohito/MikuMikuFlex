@@ -1,12 +1,12 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     use_selfshadow (bool型)
     ///     セルフ影使用フラグ。
     /// </summary>
-	public class use_selfshadow変数 : 特殊パラメータ変数
+	internal class use_selfshadow変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "use_selfshadow";
 

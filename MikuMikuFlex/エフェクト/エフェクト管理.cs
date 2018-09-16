@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MikuMikuFlex.エフェクト
+namespace MikuMikuFlex
 {
     public abstract class エフェクト管理 : IDisposable
     {

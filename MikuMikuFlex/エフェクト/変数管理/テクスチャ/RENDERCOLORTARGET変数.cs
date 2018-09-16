@@ -3,7 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	internal class RENDERCOLORTARGET変数 : 変数管理, IDisposable
 	{

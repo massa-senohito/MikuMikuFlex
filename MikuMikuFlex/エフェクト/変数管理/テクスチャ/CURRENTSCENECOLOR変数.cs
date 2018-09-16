@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
+namespace MikuMikuFlex.エフェクト変数管理
 {
     internal class CURRENTSCENECOLOR変数 : 変数管理, IDisposable
     {

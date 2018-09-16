@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.エフェクト.スクリプト;
+using MikuMikuFlex.エフェクトスクリプト;
 using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     MME形式のシェーダーのテクニックを管理するクラス

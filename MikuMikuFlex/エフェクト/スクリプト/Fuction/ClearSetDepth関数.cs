@@ -2,7 +2,7 @@
 using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.スクリプト
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <summary>
     ///     <see cref="RenderContext"/> のクリア深度を設定する関数。

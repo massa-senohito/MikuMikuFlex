@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct3D11;
-using MikuMikuFlex.エフェクト;
 
 namespace MikuMikuFlex.モデル
 {
@@ -57,7 +56,7 @@ namespace MikuMikuFlex.モデル
             if( Path.IsPathRooted( エフェクトファイルパス ) )
                 loader = new サブリソースローダー( Path.GetDirectoryName( エフェクトファイルパス ) );
 
-            var effect = エフェクト.エフェクト.ファイルをエフェクトとして読み込む( エフェクトファイルパス, this, loader );
+            var effect = エフェクト.ファイルをエフェクトとして読み込む( エフェクトファイルパス, this, loader );
 
             this.シーン用エフェクト管理.エフェクトをマスタリストに登録する( エフェクトファイルパス, effect, これを既定のエフェクトに指定する: true );    // 常に最後のやつが既定
         }

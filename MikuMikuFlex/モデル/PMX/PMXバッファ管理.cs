@@ -2,7 +2,6 @@
 using System.Linq;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
-using MikuMikuFlex.エフェクト;
 using SharpDX;
 
 namespace MikuMikuFlex.モデル.PMX
@@ -231,7 +230,7 @@ namespace MikuMikuFlex.モデル.PMX
             this.入力頂点リスト = null;
         }
 
-        public void D3Dスキニングバッファを更新する( MikuMikuFlex.ボーン.スキニング skelton, エフェクト.エフェクト effect )
+        public void D3Dスキニングバッファを更新する( MikuMikuFlex.ボーン.スキニング skelton, エフェクト effect )
         {
             if( !( D3Dスキニングバッファをリセットする ) )
                 return;

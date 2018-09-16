@@ -1,6 +1,6 @@
 ﻿using System;
-using MikuMikuFlex.エフェクト.変数管理.材質;
 using SharpDX.Direct3D11;
+using MikuMikuFlex.エフェクト変数管理;
 
 namespace MikuMikuFlex.モデル
 {

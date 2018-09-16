@@ -302,7 +302,7 @@
     <Compile Include="モデル\IDrawable.cs" />
     <Compile Include="モデル\モデル状態.cs" />
     <Compile Include="ライト\シャドウマップ.cs" />
-    <Compile Include="エフェクト\ライト\平行光源管理.cs" />
+    <Compile Include="エフェクト\平行光源管理.cs" />
     <Compile Include="行列\行列管理.cs" />
     <Compile Include="モデル\PMX\PMXModel.cs" />
     <Compile Include="エフェクト\EffectParseHelper.cs" />

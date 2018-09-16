@@ -5,7 +5,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Resource = SharpDX.Direct3D11.Resource;
 
-namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	internal class テクスチャ変数 : 変数管理, IDisposable
 	{
