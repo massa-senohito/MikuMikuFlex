@@ -1,7 +1,7 @@
 ﻿using System;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.スクリプト
 {
     /// <summary>
     ///     指定された名前のパスを実行する。

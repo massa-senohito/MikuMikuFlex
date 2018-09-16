@@ -2,7 +2,7 @@
 using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.スクリプト
 {
     internal class LoopGetIndex関数 : 関数
     {

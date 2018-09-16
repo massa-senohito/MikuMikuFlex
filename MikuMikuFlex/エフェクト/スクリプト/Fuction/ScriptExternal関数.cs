@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクト.スクリプト
 {
     internal class ScriptExternal関数 : 関数
     {

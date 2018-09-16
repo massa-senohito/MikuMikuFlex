@@ -282,7 +282,7 @@
     <Compile Include="モーション\モーフモーション.cs" />
     <Compile Include="物理演算\Bullet管理.cs" />
     <Compile Include="物理演算\PMX物理変形管理.cs" />
-    <Compile Include="基盤\RenderContext.cs" />
+    <Compile Include="アプリ基盤\RenderContext.cs" />
     <Compile Include="ボーン\変形更新.cs" />
     <Compile Include="ボーン\変形階層の物理前後指定種別.cs" />
     <Compile Include="ボーン\PMXスケルトン物理変形付き.cs" />
@@ -354,7 +354,7 @@
     <Compile Include="モーション\MMDモーション.cs" />
     <Compile Include="モーション\モーションタイマ.cs" />
     <Compile Include="DeviceManagement\DeviceManager既定値.cs" />
-    <Compile Include="基盤\RenderControl.cs">
+    <Compile Include="アプリ基盤\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ボーン\PMXボーン.cs" />
@@ -367,17 +367,17 @@
     <Compile Include="行列\ワールド行列.cs" />
     <Compile Include="行列\ワールド行列変数種別.cs" />
     <Compile Include="行列\ワールド行列変更EventArgs.cs" />
-    <Compile Include="基盤\MessagePump.cs" />
+    <Compile Include="アプリ基盤\MessagePump.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="基盤\RenderForm.cs">
+    <Compile Include="アプリ基盤\RenderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="基盤\RenderForm.Designer.cs">
+    <Compile Include="アプリ基盤\RenderForm.Designer.cs">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
