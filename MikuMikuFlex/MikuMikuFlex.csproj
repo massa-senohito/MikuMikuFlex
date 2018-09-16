@@ -131,9 +131,9 @@
     <Compile Include="ボーン\モーフ変形.cs" />
     <Compile Include="ボーン\親付与によるFK変形更新.cs" />
     <Compile Include="ボーン\ボーン.cs" />
-    <Compile Include="DeviceManagement\ブレンドステート管理.cs" />
-    <Compile Include="DeviceManagement\DrawableGroup.cs" />
-    <Compile Include="DeviceManagement\HitTestable.cs" />
+    <Compile Include="デバイス管理\ブレンドステート管理.cs" />
+    <Compile Include="デバイス管理\DrawableGroup.cs" />
+    <Compile Include="デバイス管理\HitTestable.cs" />
     <Compile Include="モデル\CS_INPUT.cs" />
     <Compile Include="モデル\VS_INPUT.cs" />
     <Compile Include="モデル\シーンモデル.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="モーション\VMDカメラモーション.cs" />
     <Compile Include="モーション\カメラモーション.cs" />
     <Compile Include="モーション\サイドカメラモーション.cs" />
-    <Compile Include="DeviceManagement\TargetContext.cs" />
+    <Compile Include="デバイス管理\TargetContext.cs" />
     <Compile Include="エフェクト\ScriptClass.cs" />
     <Compile Include="エフェクト\ScriptOrder.cs" />
     <Compile Include="エフェクト\スクリプト\関数.cs" />
@@ -198,9 +198,9 @@
     </Compile>
     <Compile Include="モーション\ボーンモーションforVME.cs" />
     <Compile Include="モデル\サブセット.cs" />
-    <Compile Include="DeviceManagement\マウス監視.cs" />
-    <Compile Include="DeviceManagement\ScreenContext.cs" />
-    <Compile Include="DeviceManagement\ワールド空間.cs" />
+    <Compile Include="デバイス管理\マウス監視.cs" />
+    <Compile Include="デバイス管理\ScreenContext.cs" />
+    <Compile Include="デバイス管理\ワールド空間.cs" />
     <Compile Include="ライト\照明行列管理.cs" />
     <Compile Include="エフェクト\Includer\BasicEffectIncluder.cs" />
     <Compile Include="エフェクト\Includer\IncludeDirectory.cs" />
@@ -298,7 +298,7 @@
     <Compile Include="ユーティリティ\グリッド\AxisGridLayout.cs" />
     <Compile Include="ユーティリティ\グリッド\BasicGrid.cs" />
     <Compile Include="ユーティリティ\グリッド\MeasureGridLayout.cs" />
-    <Compile Include="DeviceManagement\DeviceManager.cs" />
+    <Compile Include="デバイス管理\DeviceManager.cs" />
     <Compile Include="モデル\IDrawable.cs" />
     <Compile Include="モデル\モデル状態.cs" />
     <Compile Include="ライト\シャドウマップ.cs" />
@@ -353,7 +353,7 @@
     <Compile Include="モーション\IMovable.cs" />
     <Compile Include="モーション\MMDモーション.cs" />
     <Compile Include="モーション\モーションタイマ.cs" />
-    <Compile Include="DeviceManagement\DeviceManager既定値.cs" />
+    <Compile Include="デバイス管理\DeviceManager既定値.cs" />
     <Compile Include="アプリ基盤\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
