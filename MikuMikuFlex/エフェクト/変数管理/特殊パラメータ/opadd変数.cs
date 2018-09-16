@@ -1,13 +1,13 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     opadd (bool型)
     ///     加算合成フラグ。
     ///     オブジェクトの描画が加算合成モードに設定されている場合にtrue。
     /// </summary>
-	public class opadd変数 : 特殊パラメータ変数
+	internal class opadd変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "opadd";
 

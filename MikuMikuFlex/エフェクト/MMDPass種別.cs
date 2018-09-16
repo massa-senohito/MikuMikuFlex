@@ -1,4 +1,4 @@
-﻿namespace MikuMikuFlex.エフェクト
+﻿namespace MikuMikuFlex
 {
     /// <summary>
     ///     MMEのパスのタイプ。

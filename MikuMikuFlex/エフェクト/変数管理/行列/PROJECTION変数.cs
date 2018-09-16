@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.行列
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     　頂点の射影変換行列。

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーフ;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
 	public class 手動によるFK変形更新 : 変形更新
 	{

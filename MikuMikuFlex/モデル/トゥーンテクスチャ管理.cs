@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	public interface トゥーンテクスチャ管理 : IDisposable
 	{

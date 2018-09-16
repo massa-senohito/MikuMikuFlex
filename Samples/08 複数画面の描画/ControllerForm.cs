@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex;
 
 namespace _08_MultiScreenRendering
 {

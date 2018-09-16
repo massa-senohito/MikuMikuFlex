@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
-namespace MikuMikuFlex.エフェクト
+namespace MikuMikuFlex
 {
     public class シーン用エフェクト管理 : エフェクト管理, IDisposable
     {

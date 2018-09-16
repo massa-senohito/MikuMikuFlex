@@ -1,14 +1,13 @@
 ﻿using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.物理演算;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
 	internal class PMXスケルトン物理変形付き : PMXスケルトン
 	{
 		public PMXスケルトン物理変形付き( PMXモデル model ) 
             : base( model )
 		{
-			_物理変形管理 = new PMX物理変形管理( ボーン配列, model.剛体リスト, model.ジョイントリスト );
+			_物理変形管理 = new PMX物理変形更新( ボーン配列, model.剛体リスト, model.ジョイントリスト );
 
 			変形更新リスト.Add( _物理変形管理 );
 		}
@@ -20,6 +19,6 @@ namespace MikuMikuFlex.ボーン
         }
 
 
-        private PMX物理変形管理 _物理変形管理;
+        private PMX物理変形更新 _物理変形管理;
     }
 }

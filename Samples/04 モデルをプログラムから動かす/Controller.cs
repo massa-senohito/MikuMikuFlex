@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using MikuMikuFlex.モデル.PMX;
 using SharpDX;
+using MikuMikuFlex;
 
 namespace _04_TransformModelFormCode
 {

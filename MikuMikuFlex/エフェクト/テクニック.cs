@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.エフェクト.Script;
-using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
+using MikuMikuFlex.エフェクトスクリプト;
 
-namespace MikuMikuFlex.エフェクト
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     MME形式のシェーダーのテクニックを管理するクラス
@@ -81,7 +80,7 @@ namespace MikuMikuFlex.エフェクト
         /// <summary>
         ///     スクリプトランタイム。
         /// </summary>
-		public ScriptRuntime ScriptRuntime { get; private set; }
+		internal ScriptRuntime ScriptRuntime { get; private set; }
 
 
         /// <summary>

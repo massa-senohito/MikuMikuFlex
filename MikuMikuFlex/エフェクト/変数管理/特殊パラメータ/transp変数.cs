@@ -1,13 +1,13 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     transp (bool型)
     ///     半透明フラグ（trueで半透明化）。
     ///     MME の [表示(V)]-[半透明化] に対応。
     /// </summary>
-	public class transp変数 : 特殊パラメータ変数
+	internal class transp変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "transp";
 

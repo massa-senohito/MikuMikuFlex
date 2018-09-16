@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MikuMikuFlex.ボーン;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーフ;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.コントロール
+namespace MikuMikuFlex.エフェクト変数管理
 {
     internal sealed class CONTROLOBJECT変数 : 変数管理
     {

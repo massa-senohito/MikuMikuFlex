@@ -1,7 +1,5 @@
-﻿using MikuMikuFlex.エフェクト.変数管理.材質;
-using MikuMikuFlex.モデル;
-
-namespace MikuMikuFlex.エフェクト.変数管理
+﻿
+namespace MikuMikuFlex.エフェクト変数管理
 {
     public class 変数更新時引数
     {

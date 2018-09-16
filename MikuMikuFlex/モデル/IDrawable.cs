@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     描画可能リソース
@@ -25,7 +25,7 @@ namespace MikuMikuFlex.モデル
         /// </summary>
         モデル状態 モデル状態 { get; }
 
-
+        
         void 描画する();
 
         void 更新する();

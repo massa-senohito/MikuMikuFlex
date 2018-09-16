@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.モーフ;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
-	class 親付与によるFK変形更新 : 変形更新
+	public class 親付与によるFK変形更新 : 変形更新
 	{
 		public 親付与によるFK変形更新( PMXボーン[] bones )
 		{

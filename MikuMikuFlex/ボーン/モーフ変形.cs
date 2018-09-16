@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
     public class モーフ変形
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
+using MikuMikuFlex;
 
 namespace _09_Render3DCGToUserControl
 {

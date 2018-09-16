@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.ボーン;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.モーフ;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     モーション管理クラス

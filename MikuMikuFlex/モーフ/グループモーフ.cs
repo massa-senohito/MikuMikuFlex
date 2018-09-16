@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
 	public class グループモーフ : モーフ
 	{

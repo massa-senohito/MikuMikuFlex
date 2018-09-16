@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     parthf (bool型)

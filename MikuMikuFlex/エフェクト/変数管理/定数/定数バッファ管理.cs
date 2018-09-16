@@ -3,7 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace MikuMikuFlex.エフェクト.変数管理.定数
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     定数バッファを対象とする変数管理。

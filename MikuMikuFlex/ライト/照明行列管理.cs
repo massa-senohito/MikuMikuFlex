@@ -1,7 +1,6 @@
-﻿using MikuMikuFlex.行列;
-using SharpDX;
+﻿using SharpDX;
 
-namespace MikuMikuFlex.ライト
+namespace MikuMikuFlex
 {
 	public class 照明行列管理
 	{

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MikuMikuFlex.Utility;
-using OpenMMDFormat;
+using MMDFileParser.OpenMMDFormat;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// ひとつのモーフのモーションの集合(VME版)

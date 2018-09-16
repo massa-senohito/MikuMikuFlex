@@ -2,17 +2,14 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.エフェクト;
 using SharpDX.Direct3D11;
+using MMDFileParser.PMXModelParser;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex.モデル
 {
-	internal class PMXサブセット管理 : サブセット管理
+	public class PMXサブセット管理 : サブセット管理
 	{
 		public List<サブセット> サブセットリスト { get; private set; }
-
-        public int サブセットリストの要素数 => サブセットリスト.Count;
 
         public IDrawable Drawable { get; set; }
 
@@ -212,7 +209,7 @@ namespace MikuMikuFlex.モデル.PMX
 
                 if( stream != null )
                 {
-                    texture = MikuMikuFlex.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D textureResource );
+                    texture = MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D textureResource );
                     _テクスチャキャッシュ.Add( name, texture );
                     _テクスチャリソースキャッシュ.Add( name, textureResource );
                 }

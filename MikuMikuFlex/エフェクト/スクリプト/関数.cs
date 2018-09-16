@@ -1,7 +1,6 @@
 ﻿using System;
-using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト.Script
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <summary>
     ///     string Script の中に記されるファンクションの基底クラス。

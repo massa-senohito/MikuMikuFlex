@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     カメラの設定が変更された時のイベントアーギュメント

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpDX;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
-using MikuMikuFlex.ボーン;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
-using SharpDX;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     外部には非公開。

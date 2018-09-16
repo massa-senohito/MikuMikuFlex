@@ -1,8 +1,6 @@
 ﻿using System;
-using MikuMikuFlex.ボーン;
-using MikuMikuFlex.モーフ;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	public interface モーション
 	{

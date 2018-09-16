@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 // 自動実装コード VmeProto の追加要素
 
-namespace OpenMMDFormat
+namespace MMDFileParser.OpenMMDFormat
 {
     /// <summary>
     ///     BoneFrameクラスに IFrameData インターフェースを追加実装

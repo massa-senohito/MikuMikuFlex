@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SharpDX;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
-using MikuMikuFlex.Utility;
-using MikuMikuFlex.エフェクト;
-using SharpDX;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex.モデル
 {
     public class PMXバッファ管理 : バッファ管理
     {
@@ -232,12 +230,12 @@ namespace MikuMikuFlex.モデル.PMX
             this.入力頂点リスト = null;
         }
 
-        public void D3Dスキニングバッファを更新する( MikuMikuFlex.ボーン.スキニング skelton, エフェクト.エフェクト effect )
+        public void D3Dスキニングバッファを更新する( スキニング skelton, エフェクト effect )
         {
             if( !( D3Dスキニングバッファをリセットする ) )
                 return;
 
-            var skinning = ( skelton as MikuMikuFlex.ボーン.PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
+            var skinning = ( skelton as PMXスケルトン ) ?? throw new System.NotSupportedException( "PMXバッファ管理クラスでは、スキニングとして PMXスケルトン クラスを指定してください。" );
             var d3dContext = RenderContext.Instance.DeviceManager.D3DDeviceContext;
 
 

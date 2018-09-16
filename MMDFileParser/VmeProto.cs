@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Generated from: vme.proto
-namespace OpenMMDFormat
+namespace MMDFileParser.OpenMMDFormat
 {
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"vec2")]
   public partial class vec2 : global::ProtoBuf.IExtensible

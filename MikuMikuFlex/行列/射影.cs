@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     一般的なプロジェクション行列の管理クラス

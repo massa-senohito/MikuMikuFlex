@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.ボーン;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     スキニングに <see cref="PMXスケルトン物理変形付き"/> を使う PMXModel

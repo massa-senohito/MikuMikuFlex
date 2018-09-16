@@ -1,5 +1,5 @@
 ﻿
-namespace MikuMikuFlex.エフェクト.変数管理.コントロール
+namespace MikuMikuFlex.エフェクト変数管理
 {
     /// <summary>
     ///     コントロールオブジェクトの取得対象

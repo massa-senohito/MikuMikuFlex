@@ -1,5 +1,5 @@
 ﻿
-namespace MikuMikuFlex.エフェクト.変数管理
+namespace MikuMikuFlex.エフェクト変数管理
 {
 	/// <summary>
 	///     変数が何ごとに更新されるか

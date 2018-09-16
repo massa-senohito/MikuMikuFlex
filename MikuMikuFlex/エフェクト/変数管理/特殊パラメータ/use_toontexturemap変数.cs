@@ -1,12 +1,12 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     use_toontexturemap (bool型)
     ///     トゥーンテクスチャレンダリング使用フラグ。
     /// </summary>
-	public class use_toontexturemap変数 : 特殊パラメータ変数
+	internal class use_toontexturemap変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "use_toontexturemap";
 

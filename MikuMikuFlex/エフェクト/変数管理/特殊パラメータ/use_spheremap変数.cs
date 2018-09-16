@@ -1,6 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///     use_spheremap (bool型)
@@ -8,7 +8,7 @@ namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
     ///     描画中のマテリアルがスフィアマップを使用する場合にtrue。
     ///     なお、PMXモデルのサブテクスチャを使用する場合もtrueとなる。
     /// </summary>
-	public class use_spheremap変数 : 特殊パラメータ変数
+	internal class use_spheremap変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "use_spheremap";
 

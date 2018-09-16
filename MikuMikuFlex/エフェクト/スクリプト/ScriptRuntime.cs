@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.エフェクト.Script.Function;
-using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.エフェクト.Script
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <remarks>
     ///     string Script の構文: ファンクション[;ファンクション]*;
     ///     ファンクションの構文: ファンクション名[連番]=値
     /// </remarks>
-    public class ScriptRuntime
+    internal class ScriptRuntime
     {
         /// <summary>
         ///     string Script の内容。

@@ -1,8 +1,6 @@
 ﻿using System;
-using MikuMikuFlex.モデル;
-using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.エフェクト.Script.Function
+namespace MikuMikuFlex.エフェクトスクリプト
 {
     /// <summary>
     ///     指定されたターゲットにサブセットの描画を行う。

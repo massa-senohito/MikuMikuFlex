@@ -1,7 +1,6 @@
-﻿using MikuMikuFlex.モデル;
-using SharpDX;
+﻿using SharpDX;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
 	public class 行列管理
 	{

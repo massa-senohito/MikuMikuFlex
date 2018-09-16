@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.エフェクト;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     レンダリングの方法を引き受けるインターフェース
 	/// </summary>
 	public interface サブセット管理 : IDisposable
 	{
-        int サブセットリストの要素数 { get; }
-
         List<サブセット> サブセットリスト { get; }
 
         

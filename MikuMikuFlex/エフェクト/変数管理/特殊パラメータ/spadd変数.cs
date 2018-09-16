@@ -1,13 +1,13 @@
-﻿using MMDFileParser.PMXModelParser;
-using SharpDX.Direct3D11;
+﻿using SharpDX.Direct3D11;
+using MMDFileParser.PMXModelParser;
 
-namespace MikuMikuFlex.エフェクト.変数管理.特殊パラメータ
+namespace MikuMikuFlex.エフェクト変数管理.特殊パラメータ
 {
     /// <summary>
     ///  spadd (bool型)
     ///  スフィアマップ加算合成フラグ（trueで加算合成）。
     /// </summary>
-	public class spadd変数 : 特殊パラメータ変数
+	internal class spadd変数 : 特殊パラメータ変数
 	{
 		public override string 変数名 => "spadd";
 
