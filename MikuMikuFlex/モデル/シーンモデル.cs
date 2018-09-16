@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct3D11;
-using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.エフェクト;
 
 namespace MikuMikuFlex.モデル

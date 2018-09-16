@@ -6,7 +6,7 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Resource = SharpDX.Direct3D11.Resource;
 
-namespace MikuMikuFlex.DeviceManagement
+namespace MikuMikuFlex
 {
 	public class ScreenContext : TargetContext
 	{

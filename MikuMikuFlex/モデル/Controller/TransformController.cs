@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.モデル.Controller.ControllerComponent;
 using MikuMikuFlex.モデル.Shape;
 using SharpDX;

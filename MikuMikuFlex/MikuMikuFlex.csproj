@@ -353,7 +353,7 @@
     <Compile Include="モーション\IMovable.cs" />
     <Compile Include="モーション\MMDモーション.cs" />
     <Compile Include="モーション\モーションタイマ.cs" />
-    <Compile Include="DeviceManagement\DeviceManager基本実装.cs" />
+    <Compile Include="DeviceManagement\DeviceManager既定値.cs" />
     <Compile Include="コントロール\Forms\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

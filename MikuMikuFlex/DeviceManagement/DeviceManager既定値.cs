@@ -2,15 +2,13 @@
 using System.Diagnostics;
 using MikuMikuFlex.エフェクト;
 
-namespace MikuMikuFlex.DeviceManagement
+namespace MikuMikuFlex
 {
 	/// <summary>
-	///     IDeviceManager の基礎クラス。
+	///     <see cref="DeviceManager"/> の基本実装。
 	/// </summary>
-	public class DeviceManager基本実装 : DeviceManager
+	public class DeviceManager既定値 : DeviceManager
 	{
-		// IDeviceManagerの実装
-
 		/// <summary>
 		///		D3D11 デバイス。
 		/// </summary>
@@ -50,8 +48,6 @@ namespace MikuMikuFlex.DeviceManagement
 				dx11flag: SharpDX.Direct3D11.DeviceCreationFlags.None,
 				dx10flag_for2DDraw: SharpDX.Direct3D10.DeviceCreationFlags.BgraSupport );
 		}
-
-		// 以下、追加分
 
 		/// <summary>
 		///     初期化する。
@@ -123,6 +119,7 @@ namespace MikuMikuFlex.DeviceManagement
 
 			if( DXGIFactory != null && !DXGIFactory.IsDisposed ) DXGIFactory.Dispose();
         }
+
 
         [Conditional( "DEBUG" )]	// DEBUG 時のみ実行する。
 		private void _ApplyDebugFlags( ref SharpDX.Direct3D11.DeviceCreationFlags dx11flag, ref SharpDX.Direct3D10.DeviceCreationFlags dx10flag_for2DDraw )

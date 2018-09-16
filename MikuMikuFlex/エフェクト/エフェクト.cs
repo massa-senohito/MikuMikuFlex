@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.エフェクト.Includer;
 using MikuMikuFlex.エフェクト.変数管理;
 using MikuMikuFlex.エフェクト.変数管理.定数;

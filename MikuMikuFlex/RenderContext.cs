@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.ライト;
 using MikuMikuFlex.行列;
 using MikuMikuFlex.モデル;
@@ -260,7 +259,7 @@ namespace MikuMikuFlex
 			{
 				this._DeviceManagerの破棄をこのインスタンスで行う = true;	// 自分が生成したので自分で破棄することを覚えておく。
 
-				this.DeviceManager = new DeviceManager基本実装();
+				this.DeviceManager = new DeviceManager既定値();
 				this.DeviceManager.Load();
 			}
 

@@ -3,7 +3,7 @@ using MikuMikuFlex.行列;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.DeviceManagement
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     描画先のリソース一式。

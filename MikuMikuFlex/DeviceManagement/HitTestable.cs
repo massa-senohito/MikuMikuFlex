@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.DeviceManagement
+namespace MikuMikuFlex
 {
 	public interface HitTestable : IDrawable
 	{

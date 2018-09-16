@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MikuMikuFlex.DeviceManagement;
 using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.DXGI;
@@ -40,7 +39,7 @@ namespace MikuMikuFlex.コントロール.Forms
 		///     デバイスの作成をカスタマイズしたい場合
 		/// </summary>
 		/// <param name="deviceManager"></param>
-		public RenderForm( DeviceManagement.DeviceManager deviceManager )
+		public RenderForm( DeviceManager deviceManager )
             : this()
 		{
             RenderContext.インスタンスを生成する( deviceManager );
