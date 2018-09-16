@@ -1,5 +1,4 @@
-﻿using MikuMikuFlex.モデル;
-
+﻿
 namespace MikuMikuFlex
 {
 	public interface 変形更新

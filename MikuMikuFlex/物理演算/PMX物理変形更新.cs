@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using SharpDX;
 using BulletSharp;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.JointParam;
-using MikuMikuFlex.モデル;
-using SharpDX;
+using MikuMikuFlex.物理演算;
 using IDisposable = System.IDisposable;
 
-namespace MikuMikuFlex.物理演算
+namespace MikuMikuFlex
 {
-	public class PMX物理変形管理 : 変形更新, IDisposable
+	public class PMX物理変形更新 : 変形更新, IDisposable
 	{
-        public PMX物理変形管理( PMXボーン[] ボーン配列, List<剛体> 剛体リスト, List<ジョイント> ジョイントリスト )
+        public PMX物理変形更新( PMXボーン[] ボーン配列, List<剛体> 剛体リスト, List<ジョイント> ジョイントリスト )
         {
             _ボーン配列 = ボーン配列;
 

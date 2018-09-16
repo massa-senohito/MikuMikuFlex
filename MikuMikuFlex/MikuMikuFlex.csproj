@@ -281,7 +281,7 @@
     <Compile Include="ユーティリティ\TargaSolver.cs" />
     <Compile Include="モーション\モーフモーション.cs" />
     <Compile Include="物理演算\Bullet管理.cs" />
-    <Compile Include="物理演算\PMX物理変形管理.cs" />
+    <Compile Include="物理演算\PMX物理変形更新.cs" />
     <Compile Include="アプリ基盤\RenderContext.cs" />
     <Compile Include="ボーン\変形更新.cs" />
     <Compile Include="ボーン\変形階層の物理前後指定種別.cs" />
