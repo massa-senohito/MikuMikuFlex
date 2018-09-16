@@ -8,8 +8,6 @@ namespace MikuMikuFlex
 	/// </summary>
 	public interface サブセット管理 : IDisposable
 	{
-        int サブセットリストの要素数 { get; }
-
         List<サブセット> サブセットリスト { get; }
 
         

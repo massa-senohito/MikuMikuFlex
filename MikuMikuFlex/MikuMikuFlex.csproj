@@ -169,7 +169,6 @@
     <Compile Include="モデル\コントローラ\TransformChangedEventArgs.cs" />
     <Compile Include="モデル\コントローラ\TransformController.cs" />
     <Compile Include="モデル\コントローラ\TransformType.cs" />
-    <Compile Include="モデル\ISubsetDivided.cs" />
     <Compile Include="モデル\シェイプ\四角錐シェイプ.cs" />
     <Compile Include="モデル\シェイプ\キューブシェイプ.cs" />
     <Compile Include="モデル\シェイプ\オーバーレイ四角錘シェイプ.cs" />
@@ -252,7 +251,7 @@
     <Compile Include="エフェクト\変数管理\ワールド情報\POSITION変数.cs" />
     <Compile Include="エフェクト\変数管理\ワールド情報\ワールド情報変数.cs" />
     <Compile Include="モデル\シェイプ\プレーンボードシェイプ.cs" />
-    <Compile Include="モデル\Other\DebugDotManager.cs" />
+    <Compile Include="モデル\その他\DebugDotManager.cs" />
     <Compile Include="モデル\PMX\PMXサブセット管理.cs" />
     <Compile Include="モデル\サブリソースローダー.cs" />
     <Compile Include="モデル\Transformer基本実装.cs" />
@@ -271,7 +270,7 @@
     <Compile Include="ユーティリティ\拡張メソッド.cs" />
     <Compile Include="ユーティリティ\MMFShaderResourceView.cs" />
     <Compile Include="ユーティリティ\スプライト\スプライトの頂点レイアウト.cs" />
-    <Compile Include="モデル\Other\DebugDotInputLayout.cs" />
+    <Compile Include="モデル\その他\DebugDotInputLayout.cs" />
     <Compile Include="ボーン\ボーン変形.cs" />
     <Compile Include="ボーン\手動によるFK変形更新.cs" />
     <Compile Include="ユーティリティ\変形階層リスト.cs" />

@@ -10,24 +10,82 @@ using Device = SharpDX.Direct3D11.Device;
 
 namespace MikuMikuFlex
 {
-	public class PMXModel : ISubsetDivided, IMovable, IDrawable
+	public class PMXModel : IMovable, IDrawable
 	{
-		public サブリソースローダー サブリソースローダー { get; private set; }
+        // IMovable の実装 /////////////////////////////////////////////
+
+        public モーション管理 モーション管理 { get; private set; }
+
+        public スキニング スキニング { get; protected set; }
+
+
+        // IDrawable の実装 /////////////////////////////////////////////
+
+        public bool 表示中 { get; set; }
+
+        public string ファイル名 { get; set; }
+
+        public int 頂点数 => バッファ管理.入力頂点リスト.Length;
+
+        public Vector4 セルフシャドウ色 { get; set; }
+
+        public Vector4 地面影色 { get; set; }
+
+        public モデル状態 モデル状態 { get; private set; }
+
+        public void 更新する()
+        {
+            モーフ管理.更新する();
+
+            スキニング.更新する();
+
+            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, サブセット用エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
+
+            // モーフの更新結果をエフェクト用材質情報に反映
+            foreach( var pmxSubset in サブセット管理.サブセットリスト )
+                pmxSubset.エフェクト用材質情報.更新する();
+        }
+
+        public virtual void 描画する()
+        {
+            var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
+
+            foreach( var effect in サブセット用エフェクト管理.エフェクトマスタリスト.Values )
+            {
+                effect.モデルごとに更新するエフェクト変数を更新する();
+                スキニング.エフェクトを適用する( effect.D3DEffect );
+            }
+
+            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
+            IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
+            IA.InputLayout = バッファ管理.D3D頂点レイアウト;
+            //IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
+            IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
+
+            サブセット管理.描画する( サブセット用エフェクト管理 );
+        }
+
+
+        // その他 //////////////////////////////////////////////////////
+
+        public int サブセット数 => サブセット管理.サブセットリスト.Count;
+
+        public サブリソースローダー サブリソースローダー { get; private set; }
 
         /// <summary>
         ///     PMXファイルから生成されたPMXモデル
         /// </summary>
 		public PMXモデル モデル { get; private set; }
 
-		public バッファ管理 バッファ管理 { get; private set; }
+		public PMXバッファ管理 バッファ管理 { get; private set; }
 
-		public サブセット管理 サブセット管理 { get; private set; }
+		public PMXサブセット管理 サブセット管理 { get; private set; }
 
-		public モーフ管理 モーフ管理 { get; private set; }
+		public PMXモーフ管理 モーフ管理 { get; private set; }
 
-		public オブジェクト用エフェクト管理 サブセット用エフェクト管理 { get; private set; }
+        public PMXトゥーンテクスチャ管理 トゥーン管理 { get; private set; }
 
-		public トゥーンテクスチャ管理 トゥーン管理 { get; private set; }
+        public オブジェクト用エフェクト管理 サブセット用エフェクト管理 { get; private set; }
 
 
         /// <summary>
@@ -137,61 +195,6 @@ namespace MikuMikuFlex
             サブセット管理 = null;
         }
 
-
-        // IDrawable の実装
-
-        public bool 表示中 { get; set; }
-
-		public string ファイル名 { get; set; }
-
-        public int サブセット数 => サブセット管理.サブセットリストの要素数;
-
-        public int 頂点数 => バッファ管理.入力頂点リスト.Length;
-
-        public Vector4 セルフシャドウ色 { get; set; }
-
-        public Vector4 地面影色 { get; set; }
-
-        public モデル状態 モデル状態 { get; private set; }
-
-        public void 更新する()
-        {
-            モーフ管理.更新する();
-
-            スキニング.更新する();
-
-            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, サブセット用エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
-
-            // モーフの更新結果をエフェクト用材質情報に反映
-            foreach( var pmxSubset in サブセット管理.サブセットリスト )
-                pmxSubset.エフェクト用材質情報.更新する();
-        }
-
-        public virtual void 描画する()
-        {
-            var IA = RenderContext.Instance.DeviceManager.D3DDevice.ImmediateContext.InputAssembler;
-
-            foreach( var effect in サブセット用エフェクト管理.エフェクトマスタリスト.Values )
-            {
-                effect.モデルごとに更新するエフェクト変数を更新する();
-                スキニング.エフェクトを適用する( effect.D3DEffect );
-            }
-
-            IA.SetVertexBuffers( 0, new VertexBufferBinding( バッファ管理.D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-            IA.SetIndexBuffer( バッファ管理.D3Dインデックスバッファ, Format.R32_UInt, 0 );
-            IA.InputLayout = バッファ管理.D3D頂点レイアウト;
-            //IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
-            IA.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
-
-            サブセット管理.描画する( サブセット用エフェクト管理 );
-        }
-
-
-        // IMovable の実装
-
-        public モーション管理 モーション管理 { get; private set; }
-
-        public スキニング スキニング { get; protected set; }
 
 
 

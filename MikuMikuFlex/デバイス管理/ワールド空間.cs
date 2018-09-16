@@ -22,8 +22,6 @@ namespace MikuMikuFlex
             private set;
         } = new List<動的テクスチャ>();
 
-        public bool IsDisposed { get; private set; }
-
 
         public ワールド空間()
 		{
@@ -42,31 +40,23 @@ namespace MikuMikuFlex
             {
                 dynamicTexture?.Dispose();
             }
-
-            IsDisposed = true;
         }
 
         public void DrawableGroupを追加する( DrawableGroup group )
 		{
-			_DrawableGroupリスト.Add( group );
-            _DrawableGroupリスト.Sort();
+            if( !( _DrawableGroupリスト.Contains( group ) ) )
+            {
+                _DrawableGroupリスト.Add( group );
+                _DrawableGroupリスト.Sort();
+            }
         }
 
 		public void DrawableGroupを削除する( string key )
 		{
-			DrawableGroup removeTarget = null;
+            var 削除するグループ = _DrawableGroupリスト.FirstOrDefault( ( g ) => ( g.グループ名 == key ) );
 
-			foreach( var drawableGroup in _DrawableGroupリスト )
-			{
-				if( drawableGroup.グループ名.Equals( key ) )
-				{
-					removeTarget = drawableGroup;
-					break;
-				}
-			}
-
-            if( removeTarget != null )
-    			_DrawableGroupリスト.Remove( removeTarget );
+            if( null != 削除するグループ )
+    			_DrawableGroupリスト.Remove( 削除するグループ );
 		}
 
         public void Drawableを追加する( IDrawable drawable, String groupName = "Default" )
@@ -92,7 +82,6 @@ namespace MikuMikuFlex
 					}
 				}
 			}
-
 		}
 
 		public IDrawable Drawableを取得する( string fileName )

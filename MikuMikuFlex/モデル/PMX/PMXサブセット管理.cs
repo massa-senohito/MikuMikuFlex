@@ -11,8 +11,6 @@ namespace MikuMikuFlex.モデル
 	{
 		public List<サブセット> サブセットリスト { get; private set; }
 
-        public int サブセットリストの要素数 => サブセットリスト.Count;
-
         public IDrawable Drawable { get; set; }
 
 

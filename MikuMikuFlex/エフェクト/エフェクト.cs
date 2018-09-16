@@ -288,7 +288,7 @@ namespace MikuMikuFlex
                 }
             }
 
-            int subsetCount = model is ISubsetDivided ? ( (ISubsetDivided) model ).サブセット数 : 1;
+            int subsetCount = model.サブセット数;
             foreach( EffectTechnique d3dTech in D3Dテクニックリスト )
             {
                 テクニックリスト.Add( new テクニック( this, d3dTech, subsetCount ) );
