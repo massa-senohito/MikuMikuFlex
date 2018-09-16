@@ -2,7 +2,6 @@
 using System.IO;
 using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 

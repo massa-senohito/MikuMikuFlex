@@ -2,7 +2,6 @@
 using System.Linq;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
-using MikuMikuFlex.Utility;
 using MikuMikuFlex.エフェクト;
 using SharpDX;
 

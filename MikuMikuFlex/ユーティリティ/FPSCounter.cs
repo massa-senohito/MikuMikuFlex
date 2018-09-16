@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Timers;
 
-namespace MikuMikuFlex.Utility
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     FPSカウンタ。

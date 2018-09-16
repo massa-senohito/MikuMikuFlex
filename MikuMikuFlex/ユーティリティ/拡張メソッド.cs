@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MikuMikuFlex.Utility
+namespace MikuMikuFlex
 {
 	public static class 拡張メソッド
 	{

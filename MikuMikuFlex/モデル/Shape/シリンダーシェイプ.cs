@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
 namespace MikuMikuFlex.ƒ‚ƒfƒ‹.Shape

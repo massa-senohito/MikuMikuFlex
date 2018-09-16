@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;

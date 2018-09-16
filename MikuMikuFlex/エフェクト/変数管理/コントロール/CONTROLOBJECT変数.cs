@@ -5,7 +5,6 @@ using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 using MikuMikuFlex.モーフ;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 

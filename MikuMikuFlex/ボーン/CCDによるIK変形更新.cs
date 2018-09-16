@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
 namespace MikuMikuFlex.ボーン

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
 namespace MikuMikuFlex.行列.CameraMotion

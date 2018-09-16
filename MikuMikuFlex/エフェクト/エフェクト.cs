@@ -16,7 +16,6 @@ using MikuMikuFlex.エフェクト.変数管理.テクスチャ;
 using MikuMikuFlex.エフェクト.変数管理.時間;
 using MikuMikuFlex.エフェクト.変数管理.ワールド情報;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.Utility;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;

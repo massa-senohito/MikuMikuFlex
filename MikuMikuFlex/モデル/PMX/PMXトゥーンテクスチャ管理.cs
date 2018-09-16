@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MikuMikuFlex.Utility;
 using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.モデル.PMX

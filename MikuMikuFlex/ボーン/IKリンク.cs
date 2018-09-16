@@ -1,5 +1,4 @@
 ﻿using System;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
 namespace MikuMikuFlex.ボーン

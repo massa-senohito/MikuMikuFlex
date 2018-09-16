@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MikuMikuFlex.Utility;
 
 namespace MikuMikuFlex.モーション
 {

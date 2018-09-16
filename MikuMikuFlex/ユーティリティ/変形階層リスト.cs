@@ -6,7 +6,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MikuMikuFlex.Utility
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///		階層構造順に要素を取得できる List 型。

@@ -212,7 +212,7 @@ namespace MikuMikuFlex.モデル.PMX
 
                 if( stream != null )
                 {
-                    texture = MikuMikuFlex.Utility.MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D textureResource );
+                    texture = MMFShaderResourceView.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream, out Texture2D textureResource );
                     _テクスチャキャッシュ.Add( name, texture );
                     _テクスチャリソースキャッシュ.Add( name, textureResource );
                 }

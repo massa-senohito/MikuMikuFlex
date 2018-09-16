@@ -71,13 +71,13 @@ namespace MikuMikuFlex.エフェクト.変数管理.テクスチャ
 					case "texture2d":
 						stream = effect.テクスチャなどのパスの解決に利用するローダー.リソースのストリームを返す( resourceName );
 						if( stream != null )
-							subscriber._resourceTexture = Utility.MMFTexture2D.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
+							subscriber._resourceTexture = MMFTexture2D.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
 						break;
 
 					case "texture3d":
 						stream = effect.テクスチャなどのパスの解決に利用するローダー.リソースのストリームを返す( resourceName );
 						if( stream != null )
-							subscriber._resourceTexture = Utility.MMFTexture3D.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
+							subscriber._resourceTexture = MMFTexture3D.FromStream( RenderContext.Instance.DeviceManager.D3DDevice, stream );
 						break;
 
 					case "texturecube":

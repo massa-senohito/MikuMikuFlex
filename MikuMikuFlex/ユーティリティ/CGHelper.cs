@@ -11,7 +11,7 @@ using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace MikuMikuFlex.Utility
+namespace MikuMikuFlex
 {
 	public static class CGHelper
 	{

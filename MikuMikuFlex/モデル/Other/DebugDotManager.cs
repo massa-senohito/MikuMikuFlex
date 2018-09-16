@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MikuMikuFlex.Utility;
 using SharpDX;
 using SharpDX.DXGI;
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MMDFileParser.MotionParser;
 using MikuMikuFlex.ボーン;
-using MikuMikuFlex.Utility;
 using SharpDX;
 
 namespace MikuMikuFlex.モーション

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using MikuMikuFlex.Utility;
 
 namespace MikuMikuFlex.モデル
 {
