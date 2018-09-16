@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using MikuMikuFlex;
 using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
 
 namespace _05_HowToUpdateCamera
 {

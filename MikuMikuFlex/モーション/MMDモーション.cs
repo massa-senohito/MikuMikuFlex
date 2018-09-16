@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MMDFileParser.MotionParser;
-using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// モーションを管理するクラス

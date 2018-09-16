@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
 
 namespace MikuMikuFlex.モーフ
 {

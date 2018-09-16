@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using MikuMikuFlex.ライト;
 using MikuMikuFlex.行列;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.モーション;
 using SharpDX;
 using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;

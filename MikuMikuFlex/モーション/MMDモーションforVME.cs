@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 using OpenMMDFormat;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// VME用モーションプロバイダ

@@ -2,7 +2,7 @@
 using System.Linq;
 using MMDFileParser.MotionParser;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	public class モーフモーション
 	{

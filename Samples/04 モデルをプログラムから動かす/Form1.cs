@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MikuMikuFlex;
 using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
 
 namespace _04_TransformModelFormCode
 {

@@ -6,7 +6,7 @@ using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     モーション管理クラス

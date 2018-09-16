@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MikuMikuFlex.モーション;
 
 namespace MikuMikuFlex.モーフ
 {

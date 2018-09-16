@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using MikuMikuFlex.モーション;
 using SharpDX;
 
 namespace MikuMikuFlex

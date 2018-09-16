@@ -1,26 +1,11 @@
-﻿// ***********************************************************************
-// Assembly         : MikuMikuFlex
-// Author           : Lime
-// Created          : 01-17-2014
-//
-// Last Modified By : Lime
-// Last Modified On : 02-02-2014
-// ***********************************************************************
-// <copyright file="MMDModel.cs" company="MMF Development Team">
-//     Copyright (c) MMF Development Team. All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
-using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.モーフ;
-using MikuMikuFlex.モーション;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using MikuMikuFlex.モーフ;
+using MMDFileParser.PMXModelParser;
 using Device = SharpDX.Direct3D11.Device;
 
 namespace MikuMikuFlex.モデル.PMX

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenMMDFormat;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// ひとつのモーフのモーションの集合(VME版)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenMMDFormat;
 
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// VMEモーションデータを使ってボーンを更新するクラス

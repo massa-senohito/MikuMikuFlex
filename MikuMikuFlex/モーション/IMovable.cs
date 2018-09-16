@@ -1,5 +1,5 @@
 ﻿
-namespace MikuMikuFlex.モーション
+namespace MikuMikuFlex
 {
 	public interface IMovable
 	{

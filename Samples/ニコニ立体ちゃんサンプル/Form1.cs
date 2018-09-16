@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MikuMikuFlex;
 using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーション;
 using MikuMikuFlex.行列.CameraMotion;
 
 namespace ニコニ立体ちゃんサンプル
