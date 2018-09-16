@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using MMDFileParser.MotionParser;
-using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using MMDFileParser.MotionParser;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace MikuMikuFlex

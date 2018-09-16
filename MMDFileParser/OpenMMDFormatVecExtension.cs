@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace OpenMMDFormat
+namespace MMDFileParser.OpenMMDFormat
 {
     public static class OpenMMDFormatVecExtension
     {

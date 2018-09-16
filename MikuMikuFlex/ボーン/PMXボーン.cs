@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MMDFileParser.PMXModelParser;
 using SharpDX;
 
 namespace MikuMikuFlex

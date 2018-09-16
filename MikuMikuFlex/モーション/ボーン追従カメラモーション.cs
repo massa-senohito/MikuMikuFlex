@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using MikuMikuFlex.モデル;
 using SharpDX;
 
 namespace MikuMikuFlex

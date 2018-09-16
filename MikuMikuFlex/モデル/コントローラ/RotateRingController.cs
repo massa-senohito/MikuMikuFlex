@@ -5,8 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.モデル.シェイプ;
 using SharpDX;
+using MikuMikuFlex.モデル.シェイプ;
 
 namespace MikuMikuFlex.モデル.コントローラ
 {

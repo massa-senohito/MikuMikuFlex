@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MMDFileParser.MotionParser;
 using SharpDX;
+using MMDFileParser.MotionParser;
 
 namespace MikuMikuFlex
 {

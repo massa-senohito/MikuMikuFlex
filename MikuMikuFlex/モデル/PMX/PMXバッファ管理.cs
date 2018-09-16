@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SharpDX;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
-using SharpDX;
 
 namespace MikuMikuFlex.モデル
 {

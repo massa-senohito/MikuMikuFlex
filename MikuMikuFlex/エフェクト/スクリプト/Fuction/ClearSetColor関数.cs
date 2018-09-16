@@ -1,5 +1,4 @@
 ﻿using System;
-using MikuMikuFlex.モデル;
 using SharpDX;
 using SharpDX.Direct3D11;
 

@@ -1,5 +1,4 @@
-﻿using MikuMikuFlex.モデル;
-using SharpDX;
+﻿using SharpDX;
 
 namespace MikuMikuFlex
 {

@@ -1,5 +1,4 @@
 ﻿using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.物理演算;
 
 namespace MikuMikuFlex
 {

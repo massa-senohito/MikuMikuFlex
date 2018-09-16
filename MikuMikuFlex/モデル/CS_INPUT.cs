@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using SharpDX;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 namespace MikuMikuFlex
 {

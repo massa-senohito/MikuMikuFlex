@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MMDFileParser.PMXModelParser;
 using SharpDX.Direct3D11;
+using MMDFileParser.PMXModelParser;
 
 namespace MikuMikuFlex.モデル
 {

@@ -6,7 +6,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX;
 using SharpDX.D3DCompiler;
 using Application = System.Windows.Forms.Application;
 

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using MikuMikuFlex.エフェクトスクリプト;
-using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
+using MikuMikuFlex.エフェクトスクリプト;
 
 namespace MikuMikuFlex
 {

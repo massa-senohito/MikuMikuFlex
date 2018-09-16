@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
+﻿
 namespace MMDFileParser.PMXModelParser
 {
     public enum モーフ種類

@@ -1,7 +1,7 @@
 ﻿using System;
+using SharpDX.Direct3D11;
 using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.エフェクト変数管理;
-using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.モデル
 {

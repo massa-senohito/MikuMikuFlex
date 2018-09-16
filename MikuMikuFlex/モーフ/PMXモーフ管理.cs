@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.モデル;
 
 namespace MikuMikuFlex
 {

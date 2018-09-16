@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using MikuMikuFlex;
 using SharpDX.Windows;
 
 namespace MikuMikuFlex

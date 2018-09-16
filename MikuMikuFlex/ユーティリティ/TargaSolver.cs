@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MikuMikuFlex

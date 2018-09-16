@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex

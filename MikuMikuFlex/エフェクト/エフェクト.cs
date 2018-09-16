@@ -8,7 +8,6 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using MikuMikuFlex.エフェクト変数管理;
 using MikuMikuFlex.エフェクト変数管理.特殊パラメータ;
-using MikuMikuFlex.モデル;
 
 namespace MikuMikuFlex
 {
