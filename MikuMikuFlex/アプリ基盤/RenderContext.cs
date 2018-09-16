@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MikuMikuFlex.ライト;
 using MikuMikuFlex.行列;
 using MikuMikuFlex.モデル;
 using SharpDX;
