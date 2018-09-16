@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.モデル.Controller.ControllerComponent;
-using MikuMikuFlex.モデル.Shape;
+using MikuMikuFlex.モデル.シェイプ;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Controller
+namespace MikuMikuFlex.モデル.コントローラ
 {
 	public class TransformController : IDrawable, ILockableController
 	{

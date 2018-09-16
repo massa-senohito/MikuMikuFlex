@@ -6,8 +6,9 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using MMDFileParser.PMXModelParser;
 using Device = SharpDX.Direct3D11.Device;
+using MikuMikuFlex.モデル;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex
 {
 	public class PMXModel : ISubsetDivided, IMovable, IDrawable
 	{

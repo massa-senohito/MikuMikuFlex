@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MikuMikuFlex.行列;
-using MikuMikuFlex.モデル.Shape.Overlay;
+using MikuMikuFlex.モデル.シェイプ;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.コントローラ
 {
-	class RotateRingController : OverlaySilinderShape
+	class RotateRingController : オーバーレイシリンダーシェイプ
 	{
         public class RotationChangedEventArgs : EventArgs
         {

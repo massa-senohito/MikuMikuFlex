@@ -6,7 +6,7 @@ using System.Linq;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     レンダーターゲットと同じサイズの四角形を描画する。

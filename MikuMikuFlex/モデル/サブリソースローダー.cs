@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     標準的なリソース読み込みの実装。

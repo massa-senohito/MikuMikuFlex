@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     レンダリングの方法を引き受けるインターフェース

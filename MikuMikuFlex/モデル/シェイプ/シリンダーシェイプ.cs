@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Shape
+namespace MikuMikuFlex.モデル.シェイプ
 {
 	public class シリンダーシェイプ : シェイプ
 	{

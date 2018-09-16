@@ -2,7 +2,6 @@
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
 using MikuMikuFlex.エフェクト変数管理;
-using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
 namespace MikuMikuFlex

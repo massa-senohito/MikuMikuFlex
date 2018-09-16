@@ -6,15 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Shape.Overlay
+namespace MikuMikuFlex.モデル.シェイプ
 {
-	public class OverlayCubeShape : キューブシェイプ
+	public class オーバーレイキューブシェイプ : キューブシェイプ
 	{
 		private Vector4 baseColor;
 
 		private Vector4 overlayColor;
 
-		public OverlayCubeShape( Vector4 color, Vector4 overlayColor )
+		public オーバーレイキューブシェイプ( Vector4 color, Vector4 overlayColor )
             : base( color )
 		{
 			this.baseColor = color;

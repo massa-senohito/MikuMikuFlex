@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     描画可能リソース

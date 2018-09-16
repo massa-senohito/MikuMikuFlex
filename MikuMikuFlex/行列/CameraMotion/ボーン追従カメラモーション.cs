@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using MikuMikuFlex.モデル.PMX;
+using MikuMikuFlex.モデル;
 using SharpDX;
 
 namespace MikuMikuFlex.行列.CameraMotion

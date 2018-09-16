@@ -1,6 +1,6 @@
 using System;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	public interface バッファ管理 : IDisposable
 	{

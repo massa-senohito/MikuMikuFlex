@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex.モデル
 {
-	internal class PMXトゥーンテクスチャ管理 : トゥーンテクスチャ管理
+	public class PMXトゥーンテクスチャ管理 : トゥーンテクスチャ管理
 	{
 		public ShaderResourceView[] このアバターのトゥーンの配列
 			=> _シェーダーリソースビューのリスト.ToArray();

@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	public interface モデル状態
 	{

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.モデル.Shape;
+using MikuMikuFlex.モデル.シェイプ;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.コントローラ
 {
 	class CenterCrossLine : IDrawable
 	{

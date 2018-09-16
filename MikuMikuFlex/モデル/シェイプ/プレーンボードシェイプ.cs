@@ -4,7 +4,7 @@ using MikuMikuFlex.スプライト;
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.モデル.Shape
+namespace MikuMikuFlex.モデル.シェイプ
 {
     /// <summary>
     ///     長方形または正方形のシェイプ。

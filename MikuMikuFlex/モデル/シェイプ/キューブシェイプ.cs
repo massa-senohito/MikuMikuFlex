@@ -7,7 +7,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.モデル.Shape
+namespace MikuMikuFlex.モデル.シェイプ
 {
 	public class キューブシェイプ : シェイプ
 	{

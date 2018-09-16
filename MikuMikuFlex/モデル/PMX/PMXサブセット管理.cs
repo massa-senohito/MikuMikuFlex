@@ -5,9 +5,9 @@ using System.Linq;
 using MMDFileParser.PMXModelParser;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex.モデル
 {
-	internal class PMXサブセット管理 : サブセット管理
+	public class PMXサブセット管理 : サブセット管理
 	{
 		public List<サブセット> サブセットリスト { get; private set; }
 

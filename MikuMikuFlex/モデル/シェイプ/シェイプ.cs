@@ -4,7 +4,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.モデル.Shape
+namespace MikuMikuFlex.モデル.シェイプ
 {
 	public abstract class シェイプ : IDrawable, HitTestable
 	{

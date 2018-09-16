@@ -4,7 +4,7 @@ using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.BoneWeight;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.PMX
+namespace MikuMikuFlex.モデル
 {
     public class PMXバッファ管理 : バッファ管理
     {

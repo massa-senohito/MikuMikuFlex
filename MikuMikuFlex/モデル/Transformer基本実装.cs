@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace MikuMikuFlex.モデル
+namespace MikuMikuFlex
 {
 	public class Transformer基本実装 : モデル状態
 	{

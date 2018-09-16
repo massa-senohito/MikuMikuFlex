@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MikuMikuFlex;
-using MikuMikuFlex.モデル.PMX;
 
 namespace _03_ApplyVMDToPMX
 {

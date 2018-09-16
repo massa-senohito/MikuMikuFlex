@@ -1,5 +1,4 @@
-﻿using MikuMikuFlex.モデル.PMX;
-using SharpDX.Direct3D11;
+﻿using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex.エフェクト変数管理
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpDX;
-using MikuMikuFlex.モデル.PMX;
 
 namespace MikuMikuFlex
 {

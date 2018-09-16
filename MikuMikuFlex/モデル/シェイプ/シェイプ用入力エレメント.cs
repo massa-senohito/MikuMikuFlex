@@ -8,7 +8,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
-namespace MikuMikuFlex.モデル.Shape
+namespace MikuMikuFlex.モデル.シェイプ
 {
 	public struct シェイプ用入力エレメント
 	{

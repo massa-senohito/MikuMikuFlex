@@ -4,12 +4,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.モデル.Shape.Overlay;
+using MikuMikuFlex.モデル.シェイプ;
 using SharpDX;
 
-namespace MikuMikuFlex.モデル.Controller.ControllerComponent
+namespace MikuMikuFlex.モデル.コントローラ
 {
-	class ScalingCubeController : OverlayCubeShape
+	class ScalingCubeController : オーバーレイキューブシェイプ
 	{
 		public event EventHandler<ScalingChangedEventArgs> OnScalingChanged = delegate { };
 
