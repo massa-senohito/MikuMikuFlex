@@ -4,7 +4,6 @@ using System.IO;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using MikuMikuFlex.モーフ;
 using MMDFileParser.PMXModelParser;
 using Device = SharpDX.Direct3D11.Device;
 

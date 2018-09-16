@@ -6,7 +6,7 @@ using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     外部には非公開。

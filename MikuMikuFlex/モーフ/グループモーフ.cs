@@ -5,7 +5,7 @@ using MMDFileParser.PMXModelParser.MorphOffset;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
 	public class グループモーフ : モーフ
 	{

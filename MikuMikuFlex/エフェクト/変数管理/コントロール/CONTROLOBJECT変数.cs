@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
-using MikuMikuFlex.モーフ;
 using SharpDX;
 using SharpDX.Direct3D11;
 

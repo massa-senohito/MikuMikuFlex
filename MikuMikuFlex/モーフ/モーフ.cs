@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
 	public interface モーフ
 	{

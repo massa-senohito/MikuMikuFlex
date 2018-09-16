@@ -4,7 +4,7 @@ using MMDFileParser.PMXModelParser;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
 	/// <summary>
 	/// PMX標準のモーフを管理するクラス

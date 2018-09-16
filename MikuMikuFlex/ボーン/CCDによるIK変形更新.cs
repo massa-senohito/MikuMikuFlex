@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.モーフ;
 using SharpDX;
 
 namespace MikuMikuFlex

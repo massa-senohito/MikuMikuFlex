@@ -6,7 +6,7 @@ using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
 	public class 頂点モーフ : モーフ
 	{

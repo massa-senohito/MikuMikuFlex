@@ -4,7 +4,6 @@ using BulletSharp;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.JointParam;
 using MikuMikuFlex.モデル;
-using MikuMikuFlex.モーフ;
 using SharpDX;
 using IDisposable = System.IDisposable;
 

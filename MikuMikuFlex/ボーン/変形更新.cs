@@ -1,5 +1,4 @@
 ﻿using MikuMikuFlex.モデル;
-using MikuMikuFlex.モーフ;
 
 namespace MikuMikuFlex
 {

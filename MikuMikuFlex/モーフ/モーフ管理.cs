@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MikuMikuFlex.モーフ
+namespace MikuMikuFlex
 {
     public interface モーフ管理 : モーフ
     {
