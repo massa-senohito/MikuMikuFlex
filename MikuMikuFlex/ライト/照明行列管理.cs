@@ -1,5 +1,4 @@
-﻿using MikuMikuFlex.行列;
-using SharpDX;
+﻿using SharpDX;
 
 namespace MikuMikuFlex
 {

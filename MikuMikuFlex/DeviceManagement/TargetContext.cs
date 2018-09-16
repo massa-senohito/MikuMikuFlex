@@ -1,5 +1,4 @@
 ﻿using System;
-using MikuMikuFlex.行列;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 

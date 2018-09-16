@@ -1,6 +1,4 @@
 ﻿using System;
-using MikuMikuFlex.行列;
-using MikuMikuFlex.モデル;
 using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex

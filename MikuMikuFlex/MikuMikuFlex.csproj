@@ -137,11 +137,11 @@
     <Compile Include="モデル\CS_INPUT.cs" />
     <Compile Include="モデル\VS_INPUT.cs" />
     <Compile Include="モデル\シーンモデル.cs" />
-    <Compile Include="行列\CameraMotion\マウスカメラモーション.cs" />
-    <Compile Include="行列\CameraMotion\ボーン追従カメラモーション.cs" />
-    <Compile Include="行列\CameraMotion\VMDカメラモーション.cs" />
-    <Compile Include="行列\カメラモーション.cs" />
-    <Compile Include="行列\CameraMotion\サイドカメラモーション.cs" />
+    <Compile Include="モーション\マウスカメラモーション.cs" />
+    <Compile Include="モーション\ボーン追従カメラモーション.cs" />
+    <Compile Include="モーション\VMDカメラモーション.cs" />
+    <Compile Include="モーション\カメラモーション.cs" />
+    <Compile Include="モーション\サイドカメラモーション.cs" />
     <Compile Include="DeviceManagement\TargetContext.cs" />
     <Compile Include="エフェクト\ScriptClass.cs" />
     <Compile Include="エフェクト\ScriptOrder.cs" />

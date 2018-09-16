@@ -2,7 +2,7 @@
 using MikuMikuFlex.モデル;
 using SharpDX;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     一般的なワールド行列の管理クラス

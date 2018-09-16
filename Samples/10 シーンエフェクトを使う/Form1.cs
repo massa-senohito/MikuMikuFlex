@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MikuMikuFlex;
-using MikuMikuFlex.モデル;
-using MikuMikuFlex.行列.CameraMotion;
 
 namespace _10_シーンエフェクトを使う
 {

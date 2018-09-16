@@ -5,7 +5,7 @@ using System.Linq;
 using MMDFileParser.MotionParser;
 using SharpDX;
 
-namespace MikuMikuFlex.行列.CameraMotion
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     VMDファイルを用いて動かすカメラ用のモーションを管理するクラス

@@ -3,7 +3,7 @@ using System.Linq;
 using MikuMikuFlex.モデル;
 using SharpDX;
 
-namespace MikuMikuFlex.行列.CameraMotion
+namespace MikuMikuFlex
 {
 	public class ボーン追従カメラモーション : カメラモーション
 	{

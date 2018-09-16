@@ -1,6 +1,5 @@
-﻿using MikuMikuFlex.行列;
-
-namespace MikuMikuFlex.行列
+﻿
+namespace MikuMikuFlex
 {
 	public interface カメラモーション
 	{

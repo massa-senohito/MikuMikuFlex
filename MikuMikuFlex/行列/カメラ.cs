@@ -2,7 +2,7 @@
 using SharpDX;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     標準的なカメラ管理クラス

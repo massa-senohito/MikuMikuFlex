@@ -1,4 +1,4 @@
-﻿namespace MikuMikuFlex.行列
+﻿namespace MikuMikuFlex
 {
 	public enum ワールド行列変数種別
 	{

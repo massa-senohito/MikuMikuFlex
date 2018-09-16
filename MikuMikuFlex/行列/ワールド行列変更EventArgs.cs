@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MikuMikuFlex.行列
+namespace MikuMikuFlex
 {
 	public class ワールド行列変更EventArgs : EventArgs
 	{

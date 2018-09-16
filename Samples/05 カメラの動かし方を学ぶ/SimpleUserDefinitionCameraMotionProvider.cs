@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MikuMikuFlex.行列;
 using SharpDX;
+using MikuMikuFlex;
 
 namespace _05_HowToUpdateCamera
 {

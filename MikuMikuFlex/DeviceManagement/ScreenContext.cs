@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using MikuMikuFlex.行列;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;

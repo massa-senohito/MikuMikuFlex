@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MikuMikuFlex.行列;
-using MikuMikuFlex.モデル;
 using SharpDX;
-using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex

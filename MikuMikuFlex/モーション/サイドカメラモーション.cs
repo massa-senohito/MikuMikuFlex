@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace MikuMikuFlex.行列.CameraMotion
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     サイドカメラは、指定された追従先カメラの注視点から指定された量だけ回転した場所に配置されるカメラを表す。

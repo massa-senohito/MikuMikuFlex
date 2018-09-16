@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using SharpDX;
 
-namespace MikuMikuFlex.行列.CameraMotion
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     マウスでカメラを移動できる。
