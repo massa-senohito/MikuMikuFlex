@@ -21,6 +21,6 @@ namespace MikuMikuFlex.モデル
 
         void 初期化する( object model, SharpDX.Direct3D11.Effect d3dEffect );
 
-        void D3Dスキニングバッファを更新する( MikuMikuFlex.ボーン.スキニング skelton, エフェクト effect );
+        void D3Dスキニングバッファを更新する( スキニング skelton, エフェクト effect );
     }
 }

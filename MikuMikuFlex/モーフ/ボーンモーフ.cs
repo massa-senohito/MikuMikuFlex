@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.MorphOffset;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 using MikuMikuFlex.モーション;

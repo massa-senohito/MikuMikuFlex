@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using MikuMikuFlex.モーフ;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
-	class 親付与によるFK変形更新 : 変形更新
+	public class 親付与によるFK変形更新 : 変形更新
 	{
 		public 親付与によるFK変形更新( PMXボーン[] bones )
 		{

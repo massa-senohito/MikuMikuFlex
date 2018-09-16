@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
 	public class ボーン変形
 	{

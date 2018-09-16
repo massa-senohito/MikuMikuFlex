@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル.PMX;
 using SharpDX;
 

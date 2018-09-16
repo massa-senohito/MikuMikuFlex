@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.ボーン;
 
 namespace MikuMikuFlex.モデル.PMX
 {

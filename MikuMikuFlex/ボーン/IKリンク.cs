@@ -1,7 +1,7 @@
 ﻿using System;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
 	public class IKリンク
 	{

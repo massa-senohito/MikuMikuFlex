@@ -5,12 +5,12 @@ using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
     /// <summary>
     ///     CCDIKでIKボーンを更新するクラス
     /// </summary>
-    public class CCDによるIK変形更新 : 変形更新
+    internal class CCDによるIK変形更新 : 変形更新
     {
         public CCDによるIK変形更新( WeakReference<List<PMXボーン>> wrefIKbones )
         {

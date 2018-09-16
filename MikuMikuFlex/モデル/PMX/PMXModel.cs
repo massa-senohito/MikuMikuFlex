@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using MMDFileParser.PMXModelParser;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モーフ;
 using MikuMikuFlex.モーション;
 using SharpDX;

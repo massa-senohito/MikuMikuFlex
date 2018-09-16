@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モデル.PMX;
 using MikuMikuFlex.モーフ;

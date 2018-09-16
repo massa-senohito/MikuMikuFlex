@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MMDFileParser.MotionParser;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 

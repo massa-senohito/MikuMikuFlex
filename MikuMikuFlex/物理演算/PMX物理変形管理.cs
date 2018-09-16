@@ -3,7 +3,6 @@ using System.Diagnostics;
 using BulletSharp;
 using MMDFileParser.PMXModelParser;
 using MMDFileParser.PMXModelParser.JointParam;
-using MikuMikuFlex.ボーン;
 using MikuMikuFlex.モデル;
 using MikuMikuFlex.モーフ;
 using SharpDX;

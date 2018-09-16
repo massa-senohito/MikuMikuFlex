@@ -1,5 +1,4 @@
-﻿using MikuMikuFlex.ボーン;
-
+﻿
 namespace MikuMikuFlex.モーション
 {
 	public interface IMovable

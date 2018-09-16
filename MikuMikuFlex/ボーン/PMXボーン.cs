@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MMDFileParser.PMXModelParser;
 using SharpDX;
 
-namespace MikuMikuFlex.ボーン
+namespace MikuMikuFlex
 {
 	/// <summary>
 	///     PMX用のボーン実装
