@@ -9,12 +9,15 @@ namespace MMDFileParser.MotionParser
 {
     public class モーフフレーム : IFrameData
     {
+		/// <summary>
+		///		"まばたき" など
+		/// </summary>
         public String モーフ名;
 
         public uint フレーム番号 { get; private set; }
 
         /// <summary>
-        ///     スライダーの値
+        ///     スライダーの値(0～1)
         /// </summary>
         public float モーフ値;
 

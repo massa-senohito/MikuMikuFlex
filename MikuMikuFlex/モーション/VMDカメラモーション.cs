@@ -21,10 +21,10 @@ namespace MikuMikuFlex
 		///     コンストラクタ
 		///     モーションを再生する際は、インスタンス作成の後Startメソッドを呼ぶこと
 		/// </summary>
-		/// <param name="カメラモーション">VMDファイルのデータ</param>
-		public VMDカメラモーション( MMDFileParser.MotionParser.モーション カメラモーション )
+		/// <param name="VMDモーション">VMDファイルのデータ</param>
+		public VMDカメラモーション( MMDFileParser.MotionParser.モーション VMDモーション )
 		{
-            _カメラフレームリスト = カメラモーション.カメラフレームリスト;
+            _カメラフレームリスト = VMDモーション.カメラフレームリスト;
 			_カメラフレームリスト.Sort( new カメラフレーム() );
 
             _stopWatch = new Stopwatch();
@@ -122,12 +122,12 @@ namespace MikuMikuFlex
 
         private void _フレームを更新する( カメラフレーム cameraFrame1, カメラフレーム cameraFrame2, カメラ camera, 射影 projection, float 進行度合い0to1 )
         {
-            float ProgX = cameraFrame1.ベジェ曲線[ 0 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
-            float ProgY = cameraFrame1.ベジェ曲線[ 1 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
-            float ProgZ = cameraFrame1.ベジェ曲線[ 2 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
-            float ProgR = cameraFrame1.ベジェ曲線[ 3 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
-            float ProgL = cameraFrame1.ベジェ曲線[ 4 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
-            float ProgP = cameraFrame1.ベジェ曲線[ 5 ].進行度合いに対応する移行度合いを返す( 進行度合い0to1 );
+            float ProgX = cameraFrame1.ベジェ曲線[ 0 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
+            float ProgY = cameraFrame1.ベジェ曲線[ 1 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
+            float ProgZ = cameraFrame1.ベジェ曲線[ 2 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
+            float ProgR = cameraFrame1.ベジェ曲線[ 3 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
+            float ProgL = cameraFrame1.ベジェ曲線[ 4 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
+            float ProgP = cameraFrame1.ベジェ曲線[ 5 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
 
             // 注視点
 

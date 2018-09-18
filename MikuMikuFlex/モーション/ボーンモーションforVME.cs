@@ -89,7 +89,7 @@ namespace MikuMikuFlex
 			var curve = new MMDFileParser.MotionParser.ベジェ曲線();
 			curve.v1 = v1.ToSharpDX() / 127;
 			curve.v2 = v2.ToSharpDX() / 127;
-			return curve.進行度合いに対応する移行度合いを返す( s );
+			return curve.横位置Pxに対応する縦位置Pyを返す( s );
 		}
 
 	}

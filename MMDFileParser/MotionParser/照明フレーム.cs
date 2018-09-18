@@ -10,17 +10,17 @@ namespace MMDFileParser.MotionParser
     /// <summary>
     ///     光源が不可視の平行光線。環境光。
     /// </summary>
-    /// <remarks>
-    ///     位置は、その場所から原点に向かう方向に光が射すことを意味する。
-    ///     環境光なので、その位置に光源があるわけではない。
-    /// </remarks>
     public class 照明フレーム
     {
         public uint フレーム番号;
 
         public Vector3 色;
 
-        public Vector3 位置;
+		/// <summary>
+		///		位置は、その場所から原点に向かう方向に光が射すことを意味する。
+		///     環境光なので、その位置に光源があるわけではない。
+		/// </summary>
+		public Vector3 位置;
 
         /// <summary>
         ///     指定されたストリームから読み込む。

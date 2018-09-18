@@ -19,14 +19,17 @@ namespace MMDFileParser.MotionParser
 
         public 照明フレームリスト 照明フレームリスト;
 
-        // Todo: セルフ影には未対応
-        //public セルフ影リスト セルフ影リスト;
+		// Todo: セルフ影には未対応
+		//public セルフ影リスト セルフ影リスト;
+
+		// TODO: モデル表示・IK on/off には未対応
+		//public モデル表示_IKリスト モデル表示_IKリスト;
 
 
-        /// <summary>
-        ///     指定されたストリームから読み込む。
-        /// </summary>
-        public static モーション 読み込む( Stream fs )
+		/// <summary>
+		///     指定されたストリームから読み込む。
+		/// </summary>
+		public static モーション 読み込む( Stream fs )
         {
             var motion = new モーション();
 

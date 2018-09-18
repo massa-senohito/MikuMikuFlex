@@ -81,7 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CGHelper.cs" />
     <Compile Include="IFrameData.cs" />
     <Compile Include="FrameManager.cs" />
     <Compile Include="MotionParser\ベジェ曲線.cs" />
