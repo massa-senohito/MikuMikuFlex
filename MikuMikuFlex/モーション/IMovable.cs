@@ -12,5 +12,7 @@ namespace MikuMikuFlex
 		/// 動かす対象のモーションマネージャ
 		/// </summary>
 		モーション管理 モーション管理 { get; }
-	}
+
+        void 更新する();
+    }
 }

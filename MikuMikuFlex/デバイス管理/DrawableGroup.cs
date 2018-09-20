@@ -56,14 +56,6 @@ namespace MikuMikuFlex
             return Drawableリスト.FirstOrDefault( drawable => drawable.ファイル名.Equals( ファイル名 ) );
         }
 
-        public void 更新する()
-        {
-            foreach( var drawable in Drawableリスト )
-            {
-                drawable.更新する();
-            }
-        }
-
         public void 描画する()
 		{
 			this.OnPreDraw();

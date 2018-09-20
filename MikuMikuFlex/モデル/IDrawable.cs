@@ -27,7 +27,5 @@ namespace MikuMikuFlex
 
         
         void 描画する();
-
-        void 更新する();
     }
 }

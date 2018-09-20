@@ -187,7 +187,7 @@ namespace MikuMikuFlex
 		public void ワールド座標をすべて更新する( ScreenContext screen )
         {
             screen.ワールド空間.すべてのDynamicTextureを更新する();
-            screen.ワールド空間.すべてのDrawableGroupを更新する();
+            screen.ワールド空間.すべてのMovableを更新する();
 
 			// 自身も更新。
 			this.更新通知( this, new EventArgs() );

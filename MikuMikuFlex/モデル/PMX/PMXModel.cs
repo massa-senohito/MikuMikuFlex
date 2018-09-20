@@ -18,6 +18,19 @@ namespace MikuMikuFlex
 
         public スキニング スキニング { get; protected set; }
 
+        public void 更新する()
+        {
+            モーフ管理.更新する();
+
+            スキニング.更新する();
+
+            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, サブセット用エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
+
+            // モーフの更新結果をエフェクト用材質情報に反映
+            foreach( var pmxSubset in サブセット管理.サブセットリスト )
+                pmxSubset.エフェクト用材質情報.更新する();
+        }
+
 
         // IDrawable の実装 /////////////////////////////////////////////
 
@@ -32,19 +45,6 @@ namespace MikuMikuFlex
         public Vector4 地面影色 { get; set; }
 
         public モデル状態 モデル状態 { get; private set; }
-
-        public void 更新する()
-        {
-            モーフ管理.更新する();
-
-            スキニング.更新する();
-
-            バッファ管理?.D3Dスキニングバッファを更新する( スキニング, サブセット用エフェクト管理.既定のエフェクト );   // TODO: これここでええん？ 描画する() の中やなくて？
-
-            // モーフの更新結果をエフェクト用材質情報に反映
-            foreach( var pmxSubset in サブセット管理.サブセットリスト )
-                pmxSubset.エフェクト用材質情報.更新する();
-        }
 
         public virtual void 描画する()
         {

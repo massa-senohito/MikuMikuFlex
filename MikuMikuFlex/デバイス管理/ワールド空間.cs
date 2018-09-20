@@ -115,11 +115,11 @@ namespace MikuMikuFlex
 			}
 		}
 
-        public void すべてのDrawableGroupを更新する()
+        public void すべてのMovableを更新する()
         {
-            foreach( var drawableGroup in this.DrawableGroupリスト )
+            foreach( var movable in this.Movableリスト )
             {
-                drawableGroup.更新する();
+                movable.更新する();
             }
         }
 
