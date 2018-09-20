@@ -26,7 +26,6 @@ namespace MikuMikuFlex
         /// <summary>
         ///     フレームごとにスキニングのデータを更新するために呼び出します。
         /// </summary>
-        /// <param name="morphManager"></param>
         void 更新する();
 
 		void ボーンのすべての変形をリセットする();

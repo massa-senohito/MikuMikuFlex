@@ -9,9 +9,27 @@ namespace MikuMikuFlex
 	/// </summary>
 	public class PMXボーン : ボーン
 	{
-		public int ボーンインデックス;
+        // ボーンインターフェースの実装
 
-		public string ボーン名;
+        public string ボーン名 { get; set; }
+
+        public Vector3 移動 { get; set; }
+
+        public Quaternion 回転
+        {
+            get { return _回転行列; }
+            set
+            {
+                _回転行列 = value;
+                _回転行列.Normalize();
+            }
+        }
+
+        public Matrix モデルポーズ行列 { get; private set; }
+
+        // その他
+
+        public int ボーンインデックス;
 
 		public List<PMXボーン> 子ボーンリスト = new List<PMXボーン>();
 
@@ -25,19 +43,7 @@ namespace MikuMikuFlex
 
 		public Vector3 ローカル位置;
 
-		public Vector3 移動 { get; set; }
-
 		public bool ローカル軸あり;
-
-        public Quaternion 回転
-        {
-            get { return _回転行列; }
-            set
-            {
-                _回転行列 = value;
-                _回転行列.Normalize();
-            }
-        }
 
         public int 変形階層 { get; private set; }
 
@@ -53,8 +59,6 @@ namespace MikuMikuFlex
             => Vector3.TransformNormal( DefaultLocalZ, Matrix.RotationQuaternion( 回転 ) );
 
         public Matrix ローカルポーズ行列 { get; set; }
-
-        public Matrix モデルポーズ行列 { get; private set; }
 
 
         public PMXボーン( List<MMDFileParser.PMXModelParser.ボーン> bones, int index, int layer, スキニング skinning )
