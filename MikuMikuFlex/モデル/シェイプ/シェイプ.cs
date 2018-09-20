@@ -28,7 +28,7 @@ namespace MikuMikuFlex.モデル.シェイプ
 			_color = 色;
             表示中 = true;
 			サブセット数 = 1;
-			モデル状態 = new Transformer基本実装();
+			モデル状態 = new モデル状態既定実装();
 		}
 
 		public void 初期化する()

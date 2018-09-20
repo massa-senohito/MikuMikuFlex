@@ -219,11 +219,6 @@ namespace MikuMikuFlex
 			return context;
 		}
 
-		public Texture2D Texture2Dを作成する( Texture2DDescription desc )
-		{
-			return new Texture2D( DeviceManager.D3DDevice, desc );
-		}
-
 
 		internal List<IDisposable> Disposables = new List<IDisposable>();
 
@@ -254,7 +249,7 @@ namespace MikuMikuFlex
 			{
 				this._DeviceManagerの破棄をこのインスタンスで行う = true;	// 自分が生成したので自分で破棄することを覚えておく。
 
-				this.DeviceManager = new DeviceManager既定値();
+				this.DeviceManager = new DeviceManager既定実装();
 				this.DeviceManager.Load();
 			}
 

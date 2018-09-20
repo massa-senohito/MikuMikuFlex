@@ -85,7 +85,7 @@ namespace MikuMikuFlex.モデル.シェイプ
                 D3D頂点バッファ = new SharpDX.Direct3D11.Buffer( RenderContext.Instance.DeviceManager.D3DDevice, ds, bufDesc );
 			}
 
-			モデル状態 = new Transformer基本実装();
+			モデル状態 = new モデル状態既定実装();
 			モデル状態.倍率 = new Vector3( 0.2f );     // さいしょっから 0.2 倍？
 		}
 

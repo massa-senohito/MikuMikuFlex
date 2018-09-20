@@ -254,7 +254,7 @@
     <Compile Include="モデル\その他\DebugDotManager.cs" />
     <Compile Include="モデル\PMX\PMXサブセット管理.cs" />
     <Compile Include="モデル\サブリソースローダー.cs" />
-    <Compile Include="モデル\Transformer基本実装.cs" />
+    <Compile Include="モデル\モデル状態既定実装.cs" />
     <Compile Include="ユーティリティ\グリッド\TargetCross.cs" />
     <Compile Include="モデル\サブセット管理.cs" />
     <Compile Include="モデル\バッファ管理.cs" />
@@ -352,7 +352,7 @@
     <Compile Include="モーション\IMovable.cs" />
     <Compile Include="モーション\MMDモーション.cs" />
     <Compile Include="モーション\モーションタイマ.cs" />
-    <Compile Include="デバイス管理\DeviceManager既定値.cs" />
+    <Compile Include="デバイス管理\DeviceManager既定実装.cs" />
     <Compile Include="アプリ基盤\RenderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

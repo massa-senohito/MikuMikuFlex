@@ -73,7 +73,7 @@ namespace MikuMikuFlex.グリッド
 		/// </summary>
 		public BasicGrid()
 		{
-			モデル状態 = new Transformer基本実装();
+			モデル状態 = new モデル状態既定実装();
 			表示中 = true;
 			ファイル名 = "@MMF.CG.Model.Grid.BasicGrid@";
 		}

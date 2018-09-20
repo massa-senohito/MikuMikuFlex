@@ -66,7 +66,7 @@ namespace MikuMikuFlex.モデル.コントローラ
 			TransformScalingSensibility = 1.0f;
 			TransformTranslationSensibility = 1.0f;
 
-            モデル状態 = new Transformer基本実装();
+            モデル状態 = new モデル状態既定実装();
 
 
             // 回転コントロール

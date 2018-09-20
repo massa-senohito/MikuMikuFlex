@@ -49,7 +49,7 @@ namespace MikuMikuFlex
             this.表示中 = true;
             this.ファイル名 = 名前;
             this.シーン用エフェクト管理 = new シーン用エフェクト管理();
-            this.モデル状態 = new Transformer基本実装();
+            this.モデル状態 = new モデル状態既定実装();
             this._このシーンを利用するScreenContext = new WeakReference<ScreenContext>( このシーンを使うScreenContext );
 
             if( Path.IsPathRooted( エフェクトファイルパス ) )

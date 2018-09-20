@@ -6,7 +6,7 @@ namespace MikuMikuFlex
 	/// <summary>
 	///     <see cref="DeviceManager"/> の基本実装。
 	/// </summary>
-	public class DeviceManager既定値 : DeviceManager
+	public class DeviceManager既定実装 : DeviceManager
 	{
 		/// <summary>
 		///		D3D11 デバイス。

@@ -2,7 +2,7 @@
 
 namespace MikuMikuFlex
 {
-	public class Transformer基本実装 : モデル状態
+	public class モデル状態既定実装 : モデル状態
 	{
 		public Vector3 位置
 		{
@@ -83,7 +83,7 @@ namespace MikuMikuFlex
         public Matrix ローカル変換行列 { get; private set; }
 
 
-        public Transformer基本実装( Vector3 上方向の初期値, Vector3 前方向の初期値 )
+        public モデル状態既定実装( Vector3 上方向の初期値, Vector3 前方向の初期値 )
         {
             this.上方向の初期値 = 上方向の初期値;
             this.前方向の初期値 = 前方向の初期値;
@@ -91,7 +91,7 @@ namespace MikuMikuFlex
             初期状態に戻す();
         }
 
-        public Transformer基本実装()
+        public モデル状態既定実装()
             : this( 上方向の初期値: new Vector3( 0, 1, 0 ), 前方向の初期値: new Vector3( 0, 0, -1 ) )
         {
         }

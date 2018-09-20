@@ -29,7 +29,7 @@ namespace MikuMikuFlex.グリッド
 
         public TargetCross()
 		{
-			モデル状態 = new Transformer基本実装();
+			モデル状態 = new モデル状態既定実装();
 		}
 
         public void 初期化する()

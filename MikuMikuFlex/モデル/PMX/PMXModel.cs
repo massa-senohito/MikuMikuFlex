@@ -96,7 +96,7 @@ namespace MikuMikuFlex
         {
             モデル = modeldata;
             サブリソースローダー = subResourceLoader;
-            モデル状態 = new Transformer基本実装();
+            モデル状態 = new モデル状態既定実装();
             サブセット管理 = new PMXサブセット管理( this, modeldata );
             トゥーン管理 = new PMXトゥーンテクスチャ管理();
             セルフシャドウ色 = new Vector4( 0, 0, 0, 1 );
