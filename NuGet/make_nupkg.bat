@@ -6,7 +6,8 @@ echo また、NuGetパッケージの属性（バージョンなど）が変わったら、
 echo MikuMikuFlex/MikuMikuFlex.nuspec を修正すること。
 echo ------------------------------------------------------------
 
-nuget pack ..\MikuMikuFlex\MikuMikuFlex.csproj -IncludeReferencedProjects -properties Configuration=Release;Platform=x86 -OutputDirectory nuget_packages
+rem nuget pack ..\MikuMikuFlex\MikuMikuFlex.csproj -IncludeReferencedProjects -properties Configuration=Release;Platform=x86 -OutputDirectory nuget_packages
+nuget pack ..\MikuMikuFlex\MikuMikuFlex.nuspec -OutputDirectory nuget_packages
 
 echo ------------------------------------------------------------
 echo 注意：
