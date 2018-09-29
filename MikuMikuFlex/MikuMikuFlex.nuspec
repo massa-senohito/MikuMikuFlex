@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MikuMikuFlex</id>
-    <version>2.0.0-alpha4</version>
+    <version>2.0.0-alpha5</version>
     <authors>FROM/Kenji Yamazaki</authors>
     <owners>FROM</owners>
     <licenseUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/master/LICENSE</licenseUrl>
@@ -17,20 +17,9 @@ This package supports .NET Framework 4.7.1+ and the x86 architecture.
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
     <releaseNotes>
-[New] テッセレーションを実装。具体的には、テッセレーション係数を表すセマンティック TESSFACTOR を追加。
-[New] CURRENTSCENEDEPTHSTENCIL セマンティックを実装。
-[Fix] BDEF4の計算の不具合を修正。
-[Fix] BasicGrid が表示されない不具合を修正。
-[Fix] RenderControl.Dispose で例外が発生する不具合を修正。
-[Update] CURRENTSCENEセマンティックを CURRENTSCENECOLOR に改名。
-[Update] usingの数を減らせるよう、名前空間を再構成。
-[Update] protobuf-net パッケージを 2.3.12 から 2.4.0 へ更新。
-[Update] DefaultShader.fx を更新。オブジェクト描画とエッジ描画とで頂点シェーダのコードを共有するようにした。
-[Update] DeviceManager から不要なメンバを削除。
-[Update] TargetContext に SwapChain を追加。
-[Update] ボーン.ボーン名を追加。
-[Update] IDrawable.更新する() を廃止し、IMovable.更新する() を新設。
-</releaseNotes>
+[Update] ビルド構成に AnyCPU を追加し、x86 を削除。
+[Update] BulletSharp を 1.11.0（AnyCPUが32bitになるバージョン）に巻き戻し。
+    </releaseNotes>
   </metadata>
   <files>
     <file src="..\NuGet\install.ps1" target="tools\Install.ps1"/>
@@ -41,6 +30,6 @@ This package supports .NET Framework 4.7.1+ and the x86 architecture.
     いずれこのような手順が不要になるよう改善されることを願いたい。
     -->
     <file src="sharpdx_direct3d11_1_effects_x86.dll" target="content"/>
-    <!--<file src="sharpdx_direct3d11_1_effects_x64.dll" target="content"/>-->
+    <file src="sharpdx_direct3d11_1_effects_x64.dll" target="content"/>
   </files>
 </package>
