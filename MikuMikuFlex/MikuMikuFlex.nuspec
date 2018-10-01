@@ -17,6 +17,9 @@ This package supports .NET Framework 4.7.1+ and the x86 architecture.
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
     <releaseNotes>
+[New] PDB ファイルをパッケージに同梱。
+[Fix] ScreenContext クラスを名指ししていた個所を、そのインターフェースである TargetContext に修正。
+[Fix] ライブラリ外でDepthStencilStateが変更されると描画がおかしくなる不具合を修正。
     </releaseNotes>
   </metadata>
   <files>
