@@ -184,10 +184,10 @@ namespace MikuMikuFlex
 			this.DeviceManager.D3DDeviceContext.ClearDepthStencilView( this.描画ターゲットコンテキスト.深度ステンシルビュー, DepthStencilClearFlags.Depth, 1, 0 );
 		}
 
-		public void ワールド座標をすべて更新する( ScreenContext screen )
+		public void ワールド座標をすべて更新する( TargetContext target )
         {
-            screen.ワールド空間.すべてのDynamicTextureを更新する();
-            screen.ワールド空間.すべてのMovableを更新する();
+            target.ワールド空間.すべてのDynamicTextureを更新する();
+            target.ワールド空間.すべてのMovableを更新する();
 
 			// 自身も更新。
 			this.更新通知( this, new EventArgs() );
