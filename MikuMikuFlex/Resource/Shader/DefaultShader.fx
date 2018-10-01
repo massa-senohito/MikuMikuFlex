@@ -617,6 +617,7 @@ technique11 DefaultObject < string MMDPass = "object"; >
 {
     pass DefaultPass
     {
+        SetDepthStencilState(NULL, 0);
         SetVertexShader(CompileShader(vs_5_0, VS_Object(false)));
         SetHullShader(CompileShader(hs_5_0, HS_Object()));
         SetDomainShader(CompileShader(ds_5_0, DS_Object()));
@@ -642,6 +643,7 @@ technique11 DefaultEdge < string MMDPass = "edge"; >
 {
     pass DefaultPass
     {
+        SetDepthStencilState(NULL, 0);
         SetVertexShader(CompileShader(vs_5_0, VS_Object(true)));
         SetHullShader(CompileShader(hs_5_0, HS_Object()));
         SetDomainShader(CompileShader(ds_5_0, DS_Object()));
