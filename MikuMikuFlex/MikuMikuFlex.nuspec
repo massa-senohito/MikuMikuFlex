@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MikuMikuFlex</id>
-    <version>2.0.0-alpha9</version>
+    <version>2.0.0-alpha10</version>
     <authors>FROM/Kenji Yamazaki</authors>
     <owners>FROM</owners>
     <licenseUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/master/LICENSE</licenseUrl>
@@ -17,7 +17,7 @@ This package supports .NET Framework 4.7.1+ and the x86 architecture.
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
     <releaseNotes>
-[Fix] カメラモーションが正常に再生されない不具合を修正。
+      [Fix] DefaultShader.fx のコンパイルでnull参照例外が発生する不具合を修正。
     </releaseNotes>
   </metadata>
   <files>
