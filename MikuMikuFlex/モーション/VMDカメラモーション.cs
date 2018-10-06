@@ -129,21 +129,12 @@ namespace MikuMikuFlex
             float ProgL = cameraFrame1.ベジェ曲線[ 4 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
             float ProgP = cameraFrame1.ベジェ曲線[ 5 ].横位置Pxに対応する縦位置Pyを返す( 進行度合い0to1 );
 
-            // 注視点
+            // カメラ（ビュー）
 
-            camera.カメラの注視点 = CGHelper.ComplementTranslate(
-                cameraFrame1, 
-                cameraFrame2,
-                new Vector3( ProgX, ProgY, ProgZ ) );
-
-
-            // 位置
-
-            Quaternion rotation = CGHelper.ComplementRotateQuaternion( cameraFrame1, cameraFrame2, ProgR );
-            float length = CGHelper.Lerp( cameraFrame1.距離, cameraFrame2.距離, ProgL );
-            Vector3 Position2target = Vector3.TransformCoordinate( new Vector3( 0, 0, 1 ), Matrix.RotationQuaternion( rotation ) );
-            camera.カメラの位置 = camera.カメラの注視点 + length * Position2target;
-
+            camera.移動する(
+                注視点からの距離: CGHelper.Lerp( cameraFrame1.距離, cameraFrame2.距離, ProgL ),
+                注視点の位置: CGHelper.ComplementTranslate( cameraFrame1, cameraFrame2, new Vector3( ProgX, ProgY, ProgZ ) ),
+                回転: CGHelper.ComplementRotateQuaternion( cameraFrame1, cameraFrame2, ProgR ) );
 
             // 射影
 

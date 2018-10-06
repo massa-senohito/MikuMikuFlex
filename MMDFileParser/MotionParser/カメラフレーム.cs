@@ -24,7 +24,7 @@ namespace MMDFileParser.MotionParser
         public Vector3 位置;
 
 		/// <summary>
-		///		カメラの回転量
+		///		カメラの回転量[ラジアン]
 		///		X, Y, Z 軸回転。
 		/// </summary>
         public Vector3 回転;
@@ -92,7 +92,9 @@ namespace MMDFileParser.MotionParser
             frame.距離 = ParserHelper.get_Float( fs );
             frame.位置 = ParserHelper.get_Float3( fs );
             frame.回転 = ParserHelper.get_Float3( fs );
-            frame.回転.X = -frame.回転.X;   // カメラのX軸回転は正負が逆であるため、ここで符号を反転しておく。
+            frame.回転.X = -frame.回転.X;   // カメラの回転量は正負が逆であるため、ここで符号を反転しておく。
+            frame.回転.Y = -frame.回転.Y;
+            frame.回転.Z = -frame.回転.Z;
 
             frame.補間データ = new byte[ 6 ][];
             for( int i = 0; i < 6; i++ )

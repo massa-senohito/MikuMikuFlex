@@ -267,7 +267,7 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
     float4x4 modelPoseR = BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
     float4x4 modelPoseC = modelPoseL + modelPoseR;
 
-    float4 Cpos = mul(input.Sdef_C, modelPoseC); // BDEF2で計算された点Cの位置
+    float4 Cpos = mul(input.Sdef_C, modelPoseC);   // BDEF2で計算された点Cの位置
     float4 Ppos = mul(input.Position, modelPoseC); // BDEF2で計算された頂点の位置
 
     float4 qp = q_slerp(
@@ -278,11 +278,11 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
 
     float4 R0pos = mul(float4(input.Sdef_R0, 1.0f), (modelPoseL + (modelPoseC * -input.BoneWeight[0])));
     float4 R1pos = mul(float4(input.Sdef_R1, 1.0f), (modelPoseR + (modelPoseC * -input.BoneWeight[1])));
-    Cpos += (R0pos * w0) + (R1pos * w1); // 膨らみすぎ防止
+    Cpos += (R0pos * w0) + (R1pos * w1); // 膨らみすぎ防止？
 
-    Ppos -= Cpos; // 頂点を点Cが中心になるよう移動して
+    Ppos -= Cpos;          // 頂点を点Cが中心になるよう移動して
     Ppos = mul(Ppos, qpm); // 回転して
-    Ppos += Cpos; // 元の位置へ
+    Ppos += Cpos;          // 元の位置へ
 
     position = Ppos;
     normal = normalize(mul(float4(input.Normal, 0), qpm)).xyz;
@@ -290,7 +290,7 @@ void SDEF(CS_INPUT input, out float4 position, out float3 normal)
 
 void QDEF(CS_INPUT input, out float4 position, out float3 normal)
 {
-    // TODO: QDEF の実装に変更する。（以下はBDEF4と同じ。）
+    // TODO: QDEF の実装に変更する。（いまはBDEF4と同じ）
 
     float4x4 bt =
         BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
@@ -602,7 +602,7 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
     Color.rgb += Specular;
 
 	
-	// 色に環境校を加算
+	// 色に環境光を加算
 
 	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMDのAmbientの係数がわからん・・・
     Color.rgb += AmbientColor.rgb * 0.005;
@@ -623,7 +623,7 @@ technique11 DefaultObject < string MMDPass = "object"; >
         SetDomainShader(CompileShader(ds_5_0, DS_Object()));
         SetPixelShader(CompileShader(ps_5_0, PS_Object()));
     }
-}
+}q
 
 
 // エッジ描画 ////////////////////////////////////////////////
