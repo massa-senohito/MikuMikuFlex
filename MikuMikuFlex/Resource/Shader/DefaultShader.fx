@@ -623,7 +623,7 @@ technique11 DefaultObject < string MMDPass = "object"; >
         SetDomainShader(CompileShader(ds_5_0, DS_Object()));
         SetPixelShader(CompileShader(ps_5_0, PS_Object()));
     }
-}q
+}
 
 
 // ƒGƒbƒW•`‰æ ////////////////////////////////////////////////
