@@ -8,6 +8,8 @@ namespace MikuMikuFlex
 	{
 		public string モーフ名 { get; private set; }
 
+        public uint 最後のフレーム番号
+            => _frameManager.最後のフレーム番号を返す();
 
         public モーフモーション( string モーフ名 )
 		{

@@ -55,14 +55,15 @@ namespace MikuMikuFlex
 			foreach( var boneMotion in _ボーンモーションのリスト )
 			{
 				boneMotion.ボーンフレームリストをソートする();
-				このモーションにおける最終フレーム = Math.Max( (int) boneMotion.ボーンフレームリストの最後のフレーム番号, このモーションにおける最終フレーム );
+				このモーションにおける最終フレーム = Math.Max( (int) boneMotion.最後のフレーム番号, このモーションにおける最終フレーム );
 			}
 			foreach( var morphMotion in _モーフモーションのリスト )
 			{
 				morphMotion.モーフフレームデータリストをソートする();
-			}
+                このモーションにおける最終フレーム = Math.Max( (int) morphMotion.最後のフレーム番号, このモーションにおける最終フレーム );
+            }
 
-			アタッチ済み = true;
+            アタッチ済み = true;
 		}
 
 		public void モーションを1フレーム進める( int fps, float elapsedTime, モーフ管理 morphManager )

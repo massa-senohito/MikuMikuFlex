@@ -14,7 +14,7 @@ namespace MikuMikuFlex
         public String ボーン名
             => _ボーン.ボーン名;
 
-        public uint ボーンフレームリストの最後のフレーム番号
+        public uint 最後のフレーム番号
             => _frameManager.最後のフレーム番号を返す();
 
 
