@@ -68,12 +68,18 @@ namespace MikuMikuFlex
 
 			ボーンモーフデータ data = MorphList[ モーフ名 ];
 
-			foreach( ボーンモーフオフセット boneMorphOffset in data.BoneMorphs )
-			{
-				var rot = new Quaternion( boneMorphOffset.回転量.X, boneMorphOffset.回転量.Y, boneMorphOffset.回転量.Z, boneMorphOffset.回転量.W );
-				_skinningProvider.ボーン配列[ boneMorphOffset.ボーンインデックス ].回転 *= rot;
-				_skinningProvider.ボーン配列[ boneMorphOffset.ボーンインデックス ].移動 += boneMorphOffset.移動量;
-			}
+            foreach( ボーンモーフオフセット boneMorphOffset in data.BoneMorphs )
+            {
+                var bone = _skinningProvider.ボーン配列[ boneMorphOffset.ボーンインデックス ];
+                
+                bone.回転 *= new Quaternion( 
+                    boneMorphOffset.回転量.X * 進捗率,
+                    boneMorphOffset.回転量.Y * 進捗率,
+                    boneMorphOffset.回転量.Z * 進捗率, 
+                    boneMorphOffset.回転量.W * 進捗率 );
+
+                bone.移動 += boneMorphOffset.移動量 * 進捗率;
+            }
 
 			return true;
 		}
