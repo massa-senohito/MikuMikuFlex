@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MikuMikuFlex</id>
-    <version>2.0.11</version>
+    <version>2.1.0</version>
     <authors>FROM/Kenji Yamazaki</authors>
     <owners>FROM</owners>
     <licenseUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/master/LICENSE</licenseUrl>
@@ -11,19 +11,19 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
 MikuMikuDance drawing library for .NET.
-This package supports .NET Framework 4.7.1+ and the x86 architecture.
+This package supports .NET Framework 4.7.1+ and the x64 architecture only.
     </description>
-    <copyright>Copyright 2018 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
+    <copyright>Copyright 2018 2019 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
     <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
     <language>ja-JP</language>
     <releaseNotes>
-      [Fix] ボーンモーションが終わるとモーフモーションまで終わってしまう不具合を修正。
-      [Fix] ボーンモーフのモーフ値が常に 1 になっていた不具合を修正。
+[Update] 2.1.0 移行からは、x86 を廃止し、x64 のみのサポートを行う。
+[Fix] サンプルの実行時に DllNotFoundException が発生することがある不具合を修正。
     </releaseNotes>
   </metadata>
   <files>
-    <file src="bin\Release\MikuMikuFlex.pdb" target="lib/net471"/>
-    <file src="bin\Release\MMDFileParser.pdb" target="lib/net471"/>
+    <file src="bin\x64\Release\MikuMikuFlex.pdb" target="lib/net471"/>
+    <file src="bin\x64\Release\MMDFileParser.pdb" target="lib/net471"/>
     <file src="..\NuGet\install.ps1" target="tools\Install.ps1"/>
     <file src="TgaLib.dll" target="lib\net471"/>
     <!-- 
