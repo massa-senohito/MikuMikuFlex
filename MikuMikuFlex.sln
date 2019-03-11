@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "10 シーンエフェクト
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuFlex2.1", "MikuMikuFlex2.1\MikuMikuFlex2.1.csproj", "{A04F1A52-5EFD-402A-A207-B239EA15DF55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuFlex3", "MikuMikuFlex3\MikuMikuFlex3.csproj", "{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -89,6 +91,10 @@ Global
 		{A04F1A52-5EFD-402A-A207-B239EA15DF55}.Debug|x64.Build.0 = Debug|x64
 		{A04F1A52-5EFD-402A-A207-B239EA15DF55}.Release|x64.ActiveCfg = Release|x64
 		{A04F1A52-5EFD-402A-A207-B239EA15DF55}.Release|x64.Build.0 = Release|x64
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|x64.ActiveCfg = Debug|x64
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|x64.Build.0 = Debug|x64
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|x64.ActiveCfg = Release|x64
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
