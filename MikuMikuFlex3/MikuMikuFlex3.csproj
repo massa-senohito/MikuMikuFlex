@@ -7,7 +7,7 @@
     <ProjectGuid>{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MikuMikuFlex</RootNamespace>
+    <RootNamespace>MikuMikuFlex3</RootNamespace>
     <AssemblyName>MikuMikuFlex</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -33,8 +33,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,8 +50,81 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="MMFControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MMFForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\ばね付き6DOFジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\ジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\スライダージョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\ヒンジジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\基本6DOFジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイントパラメータ\錐回転ジョイントパラメータ.cs" />
+    <Compile Include="PMX\ジョイント.cs" />
+    <Compile Include="PMX\ジョイントリスト.cs" />
+    <Compile Include="PMX\ジョイント種別.cs" />
+    <Compile Include="PMX\ボーンの接続先表示方法.cs" />
+    <Compile Include="PMX\ボーンウェイト\BDEF1.cs" />
+    <Compile Include="PMX\ボーンウェイト\BDEF2.cs" />
+    <Compile Include="PMX\ボーンウェイト\BDEF4.cs" />
+    <Compile Include="PMX\ボーンウェイト\QDEF.cs" />
+    <Compile Include="PMX\ボーンウェイト\SDEF.cs" />
+    <Compile Include="PMX\ボーンウェイト\ボーンウェイト.cs" />
+    <Compile Include="PMX\ボーンウェイト\ボーンウェイト種別.cs" />
+    <Compile Include="PMX\モーフオフセット\UVモーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\インパルスモーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\グループモーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\フリップモーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\ボーンモーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\モーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\材質モーフオフセット.cs" />
+    <Compile Include="PMX\モーフオフセット\頂点モーフオフセット.cs" />
+    <Compile Include="ParserHelper.cs" />
+    <Compile Include="PMX\スフィアモード.cs" />
+    <Compile Include="PMX\テクスチャリスト.cs" />
+    <Compile Include="PMX\ボーン.cs" />
+    <Compile Include="PMX\ボーンリスト.cs" />
+    <Compile Include="PMX\モデル.cs" />
+    <Compile Include="PMX\ヘッダ.cs" />
+    <Compile Include="PMX\モデル情報.cs" />
+    <Compile Include="PMX\モーフ.cs" />
+    <Compile Include="PMX\モーフリスト.cs" />
+    <Compile Include="PMX\モーフ種別.cs" />
+    <Compile Include="PMX\ローカル付与対象.cs" />
+    <Compile Include="PMX\剛体.cs" />
+    <Compile Include="PMX\剛体の物理演算.cs" />
+    <Compile Include="PMX\剛体リスト.cs" />
+    <Compile Include="PMX\剛体形状.cs" />
+    <Compile Include="PMX\描画フラグ.cs" />
+    <Compile Include="PMX\材質.cs" />
+    <Compile Include="PMX\材質リスト.cs" />
+    <Compile Include="PMX\枠内要素.cs" />
+    <Compile Include="PMX\表示枠.cs" />
+    <Compile Include="PMX\表示枠リスト.cs" />
+    <Compile Include="PMX\面.cs" />
+    <Compile Include="PMX\面リスト.cs" />
+    <Compile Include="PMX\頂点.cs" />
+    <Compile Include="PMX\頂点リスト.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VMD\IFrameData.cs" />
+    <Compile Include="VMD\カメラフレーム.cs" />
+    <Compile Include="VMD\カメラフレームリスト.cs" />
+    <Compile Include="VMD\ヘッダ.cs" />
+    <Compile Include="VMD\ベジェ曲線.cs" />
+    <Compile Include="VMD\ボーンフレーム.cs" />
+    <Compile Include="VMD\ボーンフレームリスト.cs" />
+    <Compile Include="VMD\モーション.cs" />
+    <Compile Include="VMD\モーフフレーム.cs" />
+    <Compile Include="VMD\モーフフレームリスト.cs" />
+    <Compile Include="VMD\照明フレーム.cs" />
+    <Compile Include="VMD\照明フレームリスト.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
