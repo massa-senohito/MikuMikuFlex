@@ -187,12 +187,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MikuMikuFlex\MikuMikuFlex.csproj">
-      <Project>{a04f1a52-5efd-402a-a207-b239ea15df55}</Project>
-      <Name>MikuMikuFlex</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="サンプルデータ\Alicia\MMD\Alicia_body.tga">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -271,6 +265,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MikuMikuFlex2.1\MikuMikuFlex2.1.csproj">
+      <Project>{a04f1a52-5efd-402a-a207-b239ea15df55}</Project>
+      <Name>MikuMikuFlex2.1</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />

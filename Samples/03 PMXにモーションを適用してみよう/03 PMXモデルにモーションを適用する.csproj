@@ -128,9 +128,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MikuMikuFlex\MikuMikuFlex.csproj">
+    <ProjectReference Include="..\..\MikuMikuFlex2.1\MikuMikuFlex2.1.csproj">
       <Project>{a04f1a52-5efd-402a-a207-b239ea15df55}</Project>
-      <Name>MikuMikuFlex</Name>
+      <Name>MikuMikuFlex2.1</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
