@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -33,14 +35,38 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Desktop, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Desktop.4.2.0\lib\net45\SharpDX.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.Effects.4.2.0\lib\net45\SharpDX.Direct3D11.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,81 +76,89 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MMFControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MMFForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\ばね付き6DOFジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\ジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\スライダージョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\ヒンジジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\基本6DOFジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイントパラメータ\錐回転ジョイントパラメータ.cs" />
-    <Compile Include="PMX\ジョイント.cs" />
-    <Compile Include="PMX\ジョイントリスト.cs" />
-    <Compile Include="PMX\ジョイント種別.cs" />
-    <Compile Include="PMX\ボーンの接続先表示方法.cs" />
-    <Compile Include="PMX\ボーンウェイト\BDEF1.cs" />
-    <Compile Include="PMX\ボーンウェイト\BDEF2.cs" />
-    <Compile Include="PMX\ボーンウェイト\BDEF4.cs" />
-    <Compile Include="PMX\ボーンウェイト\QDEF.cs" />
-    <Compile Include="PMX\ボーンウェイト\SDEF.cs" />
-    <Compile Include="PMX\ボーンウェイト\ボーンウェイト.cs" />
-    <Compile Include="PMX\ボーンウェイト\ボーンウェイト種別.cs" />
-    <Compile Include="PMX\モーフオフセット\UVモーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\インパルスモーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\グループモーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\フリップモーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\ボーンモーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\モーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\材質モーフオフセット.cs" />
-    <Compile Include="PMX\モーフオフセット\頂点モーフオフセット.cs" />
+    <Compile Include="CS_INPUT.cs" />
+    <Compile Include="Format\PMX\ジョイント.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ばね付き6DOFジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\スライダージョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ヒンジジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\基本6DOFジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\錐回転ジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントリスト.cs" />
+    <Compile Include="Format\PMX\ジョイント種別.cs" />
+    <Compile Include="Format\PMX\スフィアモード.cs" />
+    <Compile Include="Format\PMX\テクスチャリスト.cs" />
+    <Compile Include="Format\PMX\ヘッダ.cs" />
+    <Compile Include="Format\PMX\ボーン.cs" />
+    <Compile Include="Format\PMX\ボーンの接続先表示方法.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF1.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF2.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF4.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\QDEF.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\SDEF.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\ボーンウェイト.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\ボーンウェイト種別.cs" />
+    <Compile Include="Format\PMX\ボーンリスト.cs" />
+    <Compile Include="Format\PMX\モデル.cs" />
+    <Compile Include="Format\PMX\モデル情報.cs" />
+    <Compile Include="Format\PMX\モーフ.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\UVモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\インパルスモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\グループモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\フリップモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\ボーンモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\材質モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\頂点モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフリスト.cs" />
+    <Compile Include="Format\PMX\モーフ種別.cs" />
+    <Compile Include="Format\PMX\ローカル付与対象.cs" />
+    <Compile Include="Format\PMX\剛体.cs" />
+    <Compile Include="Format\PMX\剛体の物理演算.cs" />
+    <Compile Include="Format\PMX\剛体リスト.cs" />
+    <Compile Include="Format\PMX\剛体形状.cs" />
+    <Compile Include="Format\PMX\描画フラグ.cs" />
+    <Compile Include="Format\PMX\材質.cs" />
+    <Compile Include="Format\PMX\材質リスト.cs" />
+    <Compile Include="Format\PMX\枠内要素.cs" />
+    <Compile Include="Format\PMX\表示枠.cs" />
+    <Compile Include="Format\PMX\表示枠リスト.cs" />
+    <Compile Include="Format\PMX\面.cs" />
+    <Compile Include="Format\PMX\面リスト.cs" />
+    <Compile Include="Format\PMX\頂点.cs" />
+    <Compile Include="Format\PMX\頂点リスト.cs" />
     <Compile Include="ParserHelper.cs" />
-    <Compile Include="PMX\スフィアモード.cs" />
-    <Compile Include="PMX\テクスチャリスト.cs" />
-    <Compile Include="PMX\ボーン.cs" />
-    <Compile Include="PMX\ボーンリスト.cs" />
-    <Compile Include="PMX\モデル.cs" />
-    <Compile Include="PMX\ヘッダ.cs" />
-    <Compile Include="PMX\モデル情報.cs" />
-    <Compile Include="PMX\モーフ.cs" />
-    <Compile Include="PMX\モーフリスト.cs" />
-    <Compile Include="PMX\モーフ種別.cs" />
-    <Compile Include="PMX\ローカル付与対象.cs" />
-    <Compile Include="PMX\剛体.cs" />
-    <Compile Include="PMX\剛体の物理演算.cs" />
-    <Compile Include="PMX\剛体リスト.cs" />
-    <Compile Include="PMX\剛体形状.cs" />
-    <Compile Include="PMX\描画フラグ.cs" />
-    <Compile Include="PMX\材質.cs" />
-    <Compile Include="PMX\材質リスト.cs" />
-    <Compile Include="PMX\枠内要素.cs" />
-    <Compile Include="PMX\表示枠.cs" />
-    <Compile Include="PMX\表示枠リスト.cs" />
-    <Compile Include="PMX\面.cs" />
-    <Compile Include="PMX\面リスト.cs" />
-    <Compile Include="PMX\頂点.cs" />
-    <Compile Include="PMX\頂点リスト.cs" />
+    <Compile Include="PMXモデル.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VMD\IFrameData.cs" />
-    <Compile Include="VMD\カメラフレーム.cs" />
-    <Compile Include="VMD\カメラフレームリスト.cs" />
-    <Compile Include="VMD\ヘッダ.cs" />
-    <Compile Include="VMD\ベジェ曲線.cs" />
-    <Compile Include="VMD\ボーンフレーム.cs" />
-    <Compile Include="VMD\ボーンフレームリスト.cs" />
-    <Compile Include="VMD\モーション.cs" />
-    <Compile Include="VMD\モーフフレーム.cs" />
-    <Compile Include="VMD\モーフフレームリスト.cs" />
-    <Compile Include="VMD\照明フレーム.cs" />
-    <Compile Include="VMD\照明フレームリスト.cs" />
+    <Compile Include="Format\VMD\IFrameData.cs" />
+    <Compile Include="Format\VMD\カメラフレーム.cs" />
+    <Compile Include="Format\VMD\カメラフレームリスト.cs" />
+    <Compile Include="Format\VMD\ヘッダ.cs" />
+    <Compile Include="Format\VMD\ベジェ曲線.cs" />
+    <Compile Include="Format\VMD\ボーンフレーム.cs" />
+    <Compile Include="Format\VMD\ボーンフレームリスト.cs" />
+    <Compile Include="Format\VMD\モーフフレーム.cs" />
+    <Compile Include="Format\VMD\モーフフレームリスト.cs" />
+    <Compile Include="Format\VMD\照明フレーム.cs" />
+    <Compile Include="Format\VMD\照明フレームリスト.cs" />
+    <Compile Include="VS_INPUT.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultShader.cso" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
+  </Target>
 </Project>
