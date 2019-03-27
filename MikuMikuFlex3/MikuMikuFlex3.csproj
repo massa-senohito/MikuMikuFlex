@@ -165,6 +165,14 @@
     <EmbeddedResource Include="Resources\Shaders\DefaultShader.cso" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Shaders\DefaultSkinningComputeShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultDomainShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultGeometryShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultHullShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultPixelShaderForEdge.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultPixelShaderForObject.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultVertexShaderForEdge.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultVertexShaderForObject.cso" />
     <None Include="sharpdx_direct3d11_1_effects_x64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
