@@ -110,7 +110,7 @@ float4x4 ViewProjMatrix : VIEWPROJECTION;
 float2   viewportSize       : VIEWPORTPIXELSIZE;
 float4   ViewPointPosition  : POSITION < string object="camera"; >;	// カメラ位置（float4）
 float4   LightPointPosition : POSITION < string object="light"; >;	// 光源位置
-float3	 CameraPosition		: POSITION < string Object = "Camera"; > ;	// カメラ位置（float3）
+float3	 CameraPosition		: POSITION < string object = "camera"; > ;	// カメラ位置（float3）
 
 Texture2D Texture       : MATERIALTEXTURE;		// サンプリング用テクスチャ
 Texture2D SphereTexture : MATERIALSPHEREMAP;	// サンプリング用スフィアマップテクスチャ
@@ -579,9 +579,10 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
 	
 	// シェーディング
 
-    float LightNormal = dot(IN.Normal, -mul(float4(LightDirection, 0), matWV).xyz);
+    //float LightNormal = dot(IN.Normal, -mul(float4(LightDirection, 0), matWV).xyz);
+    float LightNormal = dot(IN.Normal, -LightDirection.xyz);
     float shading = saturate(LightNormal); // 0～1 に丸める
-    
+
 	
 	// トゥーンテクスチャサンプリング
 	
@@ -592,7 +593,8 @@ float4 PS_Object( VS_OUTPUT IN ) : SV_TARGET
     }
     else
     {
-        float3 MaterialToon = 1.0f.xxx * shading;
+        //float3 MaterialToon = 1.0f.xxx * shading;
+        float3 MaterialToon = 1.0f.xxx * (0.85f + shading * 0.15f); // shading:0→1 のとき、MaerialToon: 0.85→1.0
         Color.rgb *= MaterialToon;
     }
     
