@@ -198,22 +198,9 @@ namespace MikuMikuFlex3
             #region " 行列を初期化する "
             //----------------
             {
-                this._カメラ位置 = new Vector3( 0f, 0f, -45f );
-
                 this._光源位置 = new Vector3( -0.5f, 1.0f, -0.5f );
 
                 this._ワールド変換行列 = Matrix.Identity;
-
-                this._ビュー行列 = Matrix.LookAtLH(
-                    this._カメラ位置,
-                    new Vector3( 0f, 10f, 0f ),     // 注視点
-                    new Vector3( 0f, 1f, 0f ) );    // 上方向
-
-                this._射影行列 = Matrix.PerspectiveFovLH(
-                    MathUtil.Pi * 30f / 180f,   // 視野角[rad]
-                    1.618f,                     // アスペクト比
-                    1f,                         // 近面Z
-                    200f );                     // 遠面Z
             }
             //----------------
             #endregion
@@ -510,7 +497,7 @@ namespace MikuMikuFlex3
         /// </summary>
         /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( SharpDX.Direct3D11.DeviceContext d3ddc, ViewportF viewport )
+        public void 描画する( SharpDX.Direct3D11.DeviceContext d3ddc, カメラ camera, ViewportF viewport )
         {
             #region " スキニングを行う。"
             //----------------
@@ -598,11 +585,11 @@ namespace MikuMikuFlex3
                             break;
 
                         case "WORLDVIEWPROJECTION":
-                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * this._ビュー行列 * this._射影行列 );
+                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
                             break;
 
                         case "WORLDVIEW":
-                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * this._ビュー行列 );
+                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * camera.ビュー行列を取得する() );
                             break;
 
                         case "WORLD":
@@ -610,11 +597,11 @@ namespace MikuMikuFlex3
                             break;
 
                         case "VIEW":
-                            変数.AsMatrix().SetMatrix( this._ビュー行列 );
+                            変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() );
                             break;
 
                         case "VIEWPROJECTION":
-                            変数.AsMatrix().SetMatrix( this._ビュー行列 * this._射影行列 );
+                            変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
                             break;
 
                         case "VIEWPORTPIXELSIZE":
@@ -628,11 +615,11 @@ namespace MikuMikuFlex3
                                     switch( 変数.TypeInfo.Description.TypeName )
                                     {
                                         case "float4":
-                                            変数.AsVector().Set( new Vector4( this._カメラ位置, 0f ) );
+                                            変数.AsVector().Set( new Vector4( camera.位置, 0f ) );
                                             break;
 
                                         case "float3":
-                                            変数.AsVector().Set( this._カメラ位置 );
+                                            変数.AsVector().Set( camera.位置 );
                                             break;
                                     }
                                     break;
@@ -853,15 +840,9 @@ namespace MikuMikuFlex3
         private DataStream _D3DBoneQuaternionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
-        private Vector3 _カメラ位置;
-
         private Vector3 _光源位置;
 
         private Matrix _ワールド変換行列;
-
-        private Matrix _ビュー行列;
-
-        private Matrix _射影行列;
 
         private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
 

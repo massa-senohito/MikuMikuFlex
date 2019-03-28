@@ -18,6 +18,8 @@ namespace SimpleSample
         {
             this._Parent = parent;
 
+            #region " D3DDevice, DXGISwapChain を生成する。"
+            //----------------
             SharpDX.Direct3D11.Device.CreateWithSwapChain(
                 SharpDX.Direct3D.DriverType.Hardware,
                 SharpDX.Direct3D11.DeviceCreationFlags.BgraSupport,
@@ -39,7 +41,11 @@ namespace SimpleSample
                 },
                 out this._D3D11Device,
                 out this._DXGISwapChain );
+            //----------------
+            #endregion
 
+            #region " 既定のRenderTargetView, 既定のDepthStencilView を作成する。"
+            //----------------
             using( var backbufferTexture2D = this._DXGISwapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>( 0 ) )
             {
                 this._既定のD3D11RenderTargetView = new SharpDX.Direct3D11.RenderTargetView( this._D3D11Device, backbufferTexture2D );
@@ -73,6 +79,8 @@ namespace SimpleSample
 
                 this._既定のD3D11DepthStencilState = null;
             }
+            //----------------
+            #endregion
 
             #region " ビューポートを作成する。"
             //----------------
@@ -89,7 +97,8 @@ namespace SimpleSample
             //----------------
             #endregion
 
-            // ブレンドステート通常版を生成する。
+            #region " ブレンドステート通常版を生成する。"
+            //----------------
             {
                 var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
                     AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
@@ -111,18 +120,35 @@ namespace SimpleSample
                 // ブレンドステートを作成する。
                 this._BlendState通常合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, blendStateNorm );
             }
+            //----------------
+            #endregion
+
+
+            // ステージ単位のパイプライン設定。
 
             this._D3D11Device.ImmediateContext.OutputMerger.SetTargets( this._既定のD3D11DepthStencilView, this._既定のD3D11RenderTargetView );
             this._D3D11Device.ImmediateContext.OutputMerger.SetBlendState( this._BlendState通常合成, new Color4( 0f, 0f, 0f, 0f ), -1 );
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
 
 
+            // モデルその他を生成。
+
             this._PMXモデル = new PMXモデル( this._D3D11Device, pmxファイルパス );
+
+            this._カメラ = new カメラ(
+                初期位置: new Vector3( 0f, 0f, -45f ),
+                初期注視点: new Vector3( 0f, 10f, 0f ),
+                初期上方向: new Vector3( 0f, 1f, 0f ) );
         }
 
         public void Dispose()
         {
+            // モデルを解放する。
+
             this._PMXモデル?.Dispose();
+
+
+            // D3D関連リソースを解放する。
 
             this._BlendState通常合成?.Dispose();
             this._既定のD3D11DepthStencilState?.Dispose();
@@ -137,11 +163,19 @@ namespace SimpleSample
         {
             while( !this.終了指示通知.IsSet )
             {
+                // モデル単位のパイプライン設定。
+
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, Color4.Black );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
+
+                // モデルの進行描画。
+
                 this._PMXモデル.進行する();
-                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._D3DViewport );
+                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._カメラ, this._D3DViewport );
+
+
+                // 画面の表示。
 
                 this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
             }
@@ -154,6 +188,8 @@ namespace SimpleSample
         private PMXモデル _PMXモデル;
 
         private Control _Parent;
+
+        private カメラ _カメラ;
 
         private SharpDX.Direct3D11.Device _D3D11Device;
 
