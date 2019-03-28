@@ -17,6 +17,13 @@ namespace MikuMikuFlex3
         // 生成と終了
 
 
+        /// <summary>
+        ///     ファイルからPMXモデルを読み込む。
+        /// </summary>
+        /// <remarks>
+        ///     PMXファイルで使用されるテクスチャ等のリソースファイルは、
+        ///     PMXファイルと同じフォルダを基準として検索される。
+        /// </remarks>
         public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス )
         {
             using( var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
@@ -31,7 +38,14 @@ namespace MikuMikuFlex3
             }
         }
 
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を持つ型, string リソース名 )
+        /// <summary>
+        ///     埋め込みリソースからPMXモデルを読み込む。
+        /// </summary>
+        /// <remarks>
+        ///     PMXリソースで使用されるテクスチャ等のリソースは、
+        ///     PMXリソースと同じ名前空間を基準として検索される。
+        /// </remarks>
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名 )
         {
             var assembly = Assembly.GetExecutingAssembly();
             var path = $"{this.GetType().Namespace}.{リソース名}";
@@ -44,7 +58,7 @@ namespace MikuMikuFlex3
                     // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
                     var rpath = resource.Replace( Path.DirectorySeparatorChar, '.' ).Replace( Path.AltDirectorySeparatorChar, '.' );    // '.' 区切りに変換
 
-                    return assembly.GetManifestResourceStream( 名前空間を持つ型, rpath );
+                    return assembly.GetManifestResourceStream( 名前空間を示す型, rpath );
 
                 } );
             }
@@ -138,7 +152,7 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " エフェクトを生成する "
+            #region " エフェクトを生成する。"
             //----------------
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -343,7 +357,7 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " 共有テクスチャを読み込む "
+            #region " 共有テクスチャを読み込む。"
             //----------------
             {
                 this._共有テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ 11 ];
@@ -388,7 +402,7 @@ namespace MikuMikuFlex3
             }
             //----------------
             #endregion
-            #region " 個別テクスチャを読み込む "
+            #region " 個別テクスチャを読み込む。"
             //----------------
             {
                 this._個別テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
@@ -425,14 +439,14 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " ボーン用バッファを作成する "
+            #region " ボーン用バッファを作成する。"
             //----------------
             this._ボーンのモデルポーズ配列 = new Matrix[ this._PMXFモデル.ボーンリスト.Count ];
             this._ボーンのローカル位置配列 = new Vector3[ this._PMXFモデル.ボーンリスト.Count ];
             this._ボーンの回転配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
             //----------------
             #endregion
-            #region " ボーン用定数バッファを作成する "
+            #region " ボーン用定数バッファを作成する。"
             //----------------
             {
                 this._D3DBoneTransデータストリーム = new DataStream( this._入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
@@ -467,6 +481,7 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
         }
+
 
 
         // 進行と描画
@@ -545,23 +560,26 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
+            #region " モデル単位のD3Dパイプラインを構築する。"
+            //----------------
+            {
+                d3ddc.InputAssembler.SetVertexBuffers( 0, new SharpDX.Direct3D11.VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
+                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, SharpDX.DXGI.Format.R32_UInt, 0 );
+                d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
+                d3ddc.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
+
+                d3ddc.Rasterizer.SetViewport( viewport );
+            }
+            //----------------
+            #endregion
+
+
             // すべての材質を描画する。
+
             for( int i = 0; i < this._PMXFモデル.材質リスト.Count; i++ )
             {
-                var 材質 = this._PMXFモデル.材質リスト[ i ];
+                var PMXF材質 = this._PMXFモデル.材質リスト[ i ];
 
-                #region " D3Dパイプラインを構築する。"
-                //----------------
-                {
-                    d3ddc.InputAssembler.SetVertexBuffers( 0, new SharpDX.Direct3D11.VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-                    d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, SharpDX.DXGI.Format.R32_UInt, 0 );
-                    d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
-                    d3ddc.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
-
-                    d3ddc.Rasterizer.SetViewport( viewport );
-                }
-                //----------------
-                #endregion
 
                 #region " エフェクト変数を設定する。"
                 //----------------
@@ -572,11 +590,11 @@ namespace MikuMikuFlex3
                     switch( 変数.Description.Semantic?.ToUpper() )
                     {
                         case "EDGECOLOR":
-                            変数.AsVector().Set( 材質.エッジ色 );
+                            変数.AsVector().Set( PMXF材質.エッジ色 );
                             break;
 
                         case "EDGEWIDTH":
-                            変数.AsScalar().Set( 材質.エッジサイズ );
+                            変数.AsScalar().Set( PMXF材質.エッジサイズ );
                             break;
 
                         case "WORLDVIEWPROJECTION":
@@ -626,27 +644,27 @@ namespace MikuMikuFlex3
                             break;
 
                         case "MATERIALTEXTURE":
-                            if( -1 != 材質.通常テクスチャの参照インデックス )
+                            if( -1 != PMXF材質.通常テクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.通常テクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALSPHEREMAP":
-                            if( -1 != 材質.スフィアテクスチャの参照インデックス )
+                            if( -1 != PMXF材質.スフィアテクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.スフィアテクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALTOONTEXTURE":
-                            if( 1 == 材質.共有Toonフラグ )
+                            if( 1 == PMXF材質.共有Toonフラグ )
                             {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
-                            else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
+                            else if( -1 != PMXF材質.共有Toonのテクスチャ参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
                             else
                             {
@@ -662,39 +680,39 @@ namespace MikuMikuFlex3
                             switch( 変数.Description.Name.ToLower() )
                             {
                                 case "use_spheremap":
-                                    変数.AsScalar().Set( 材質.スフィアテクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( PMXF材質.スフィアテクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "spadd":
-                                    変数.AsScalar().Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                                    変数.AsScalar().Set( PMXF材質.スフィアモード == PMXFormat.スフィアモード.加算 );
                                     break;
 
                                 case "use_texture":
-                                    変数.AsScalar().Set( 材質.通常テクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( PMXF材質.通常テクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "use_toontexturemap":
-                                    変数.AsScalar().Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
+                                    変数.AsScalar().Set( PMXF材質.共有Toonのテクスチャ参照インデックス != -1 );
                                     break;
 
                                 case "use_selfshadow":
-                                    変数.AsScalar().Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                                    変数.AsScalar().Set( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
                                     break;
 
                                 case "ambientcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.環境色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( PMXF材質.環境色, 1f ) );
                                     break;
 
                                 case "diffusecolor":
-                                    変数.AsVector().Set( 材質.拡散色 );
+                                    変数.AsVector().Set( PMXF材質.拡散色 );
                                     break;
 
                                 case "specularcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.反射色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( PMXF材質.反射色, 1f ) );
                                     break;
 
                                 case "specularpower":
-                                    変数.AsScalar().Set( 材質.反射強度 );
+                                    変数.AsScalar().Set( PMXF材質.反射強度 );
                                     break;
                             }
                             break;
@@ -714,16 +732,16 @@ namespace MikuMikuFlex3
                 {
                     d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
                 }
-                else if( !材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
+                else if( !PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
                 {
-                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステート;
                 }
                 else
                 {
-                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステート;
@@ -731,26 +749,41 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
+                this._エフェクトを適用しつつ材質を描画する( d3ddc, PMXF材質, Pass種別, ( mat ) => {
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
 
 
                 // エッジ描画
 
-
                 Pass種別 = MMDPass種別.エッジ;
 
                 d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
 
-                this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
+                this._エフェクトを適用しつつ材質を描画する( d3ddc, PMXF材質, Pass種別, ( mat ) => {
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
+            }
+        }
 
+        private void _エフェクトを適用しつつ材質を描画する( SharpDX.Direct3D11.DeviceContext d3ddc, PMXFormat.材質 ipmxSubset, MMDPass種別 passType, Action<PMXFormat.材質> drawAction )
+        {
+            if( ipmxSubset.拡散色.W == 0 )
+                return;
 
-                // セルフ影描画
+            // 使用するtechniqueを検索する
 
+            テクニック technique =
+                ( from teq in _D3Dテクニックリスト
+                  where
+                    //teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
+                    teq.テクニックを適用する描画対象 == passType
+                  select teq ).FirstOrDefault();
 
+            if( null != technique )
+            {
+                // 最初の１つだけ有効（複数はないはずだが）
+                technique.パスの適用と描画をパスの数だけ繰り返す( d3ddc, drawAction, ipmxSubset );
             }
         }
 
@@ -945,27 +978,6 @@ namespace MikuMikuFlex3
             }
 
             頂点レイアウトリスト.Add( ( layout ) );
-        }
-
-        private void _エフェクトを適用しつつ材質を描画する( SharpDX.Direct3D11.DeviceContext d3ddc, PMXFormat.材質 ipmxSubset, MMDPass種別 passType, Action<PMXFormat.材質> drawAction )
-        {
-            if( ipmxSubset.拡散色.W == 0 )
-                return;
-
-            // 使用するtechniqueを検索する
-
-            テクニック technique =
-                ( from teq in _D3Dテクニックリスト
-                  where
-                    //teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
-                    teq.テクニックを適用する描画対象 == passType
-                  select teq ).FirstOrDefault();
-
-            if( null != technique )
-            {
-                // 最初の１つだけ有効（複数はないはずだが）
-                technique.パスの適用と描画をパスの数だけ繰り返す( d3ddc, drawAction, ipmxSubset );
-            }
         }
     }
 }

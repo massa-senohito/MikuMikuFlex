@@ -6,8 +6,15 @@ using SharpDX;
 
 namespace MikuMikuFlex3
 {
+    /// <summary>
+    ///     <see cref="PMXFormat.ボーン"/> に動的情報を付与するクラス。
+    /// </summary>
     class PMXボーン
     {
+
+        // 基本情報
+
+
         public PMXFormat.ボーン PMXFボーン { get; protected set; }
 
         public int ボーンインデックス { get; protected set; }
@@ -15,6 +22,11 @@ namespace MikuMikuFlex3
         public PMXボーン 親ボーン { get; protected set; }
 
         public List<PMXボーン> 子ボーンリスト { get; protected set; }
+
+
+
+        // 動的情報（入力）
+
 
         public Vector3 ローカル位置 { get; protected set; }
 
@@ -30,9 +42,18 @@ namespace MikuMikuFlex3
             }
         }
 
+
+
+        // 動的情報（出力）
+
+
         public Matrix モデルポーズ行列 { get; protected set; }
 
         public Matrix ローカルポーズ行列 { get; protected set; }
+
+
+
+        // 生成と終了
 
 
         public PMXボーン( PMXFormat.ボーン bone, int index )
@@ -60,6 +81,11 @@ namespace MikuMikuFlex3
             }
         }
 
+
+
+        // 動的情報の更新と出力
+
+
         public void モデルポーズを更新する()
         {
             this.ローカルポーズ行列 =
@@ -76,6 +102,10 @@ namespace MikuMikuFlex3
             foreach( var 子ボーン in this.子ボーンリスト )
                 子ボーン.モデルポーズを更新する();
         }
+
+
+
+        // private
 
 
         private Quaternion _回転;
