@@ -7,7 +7,7 @@ using SharpDX;
 namespace MikuMikuFlex3
 {
     /// <summary>
-    ///     <see cref="PMXFormat.ボーン"/> に動的情報を付与するクラス。
+    ///     <see cref="PMXFormat.ボーン"/> に追加情報を付与するクラス。
     /// </summary>
     class PMXボーン
     {

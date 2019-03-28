@@ -16,6 +16,13 @@ namespace MikuMikuFlex3
 {
     public class PMXモデル : IDisposable
     {
+        internal CS_INPUT[] 入力頂点リスト { get; private protected set; }
+
+        internal PMXボーン[] PMXボーンリスト { get; private protected set; }
+
+        internal PMX材質[] PMX材質リスト { get; private protected set; }
+
+
 
         // 生成と終了
 
@@ -107,7 +114,13 @@ namespace MikuMikuFlex3
 
             foreach( var tech in this._D3Dテクニックリスト )
                 tech?.Dispose();
+
             this._既定のEffect?.Dispose();
+
+            this.PMX材質リスト = null;
+            this.PMXボーンリスト = null;
+            this.入力頂点リスト = null;
+
             this._PMXFモデル = null;
         }
 
@@ -124,17 +137,13 @@ namespace MikuMikuFlex3
             {
                 int ボーン数 = this._PMXFモデル.ボーンリスト.Count;
 
-                this._PMXボーン配列 = new PMXボーン[ ボーン数 ];
+                this.PMXボーンリスト = new PMXボーン[ ボーン数 ];
 
                 for( int i = 0; i < ボーン数; i++ )
-                {
-                    this._PMXボーン配列[ i ] = new PMXボーン( this._PMXFモデル.ボーンリスト[ i ], i );
-                }
+                    this.PMXボーンリスト[ i ] = new PMXボーン( this._PMXFモデル.ボーンリスト[ i ], i );
 
                 for( int i = 0; i < ボーン数; i++ )
-                {
-                    this._PMXボーン配列[ i ].子ボーンリストを構築する( this._PMXボーン配列 );
-                }
+                    this.PMXボーンリスト[ i ].子ボーンリストを構築する( this.PMXボーンリスト );
             }
             //----------------
             #endregion
@@ -143,14 +152,26 @@ namespace MikuMikuFlex3
             {
                 this._ルートボーンリスト = new List<PMXボーン>();
 
-                for( int i = 0; i < this._PMXボーン配列.Length; i++ )
+                for( int i = 0; i < this.PMXボーンリスト.Length; i++ )
                 {
                     // 親ボーンを持たないのがルートボーン。
-                    if( this._PMXボーン配列[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                    if( this.PMXボーンリスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
                     {
-                        this._ルートボーンリスト.Add( this._PMXボーン配列[ i ] );
+                        this._ルートボーンリスト.Add( this.PMXボーンリスト[ i ] );
                     }
                 }
+            }
+            //----------------
+            #endregion
+            #region " PMX材質リストを作成する。"
+            //----------------
+            {
+                int 材質数 = this._PMXFモデル.材質リスト.Count;
+
+                this.PMX材質リスト = new PMX材質[ 材質数 ];
+
+                for( int i = 0; i < 材質数; i++ )
+                    this.PMX材質リスト[ i ] = new PMX材質( this._PMXFモデル.材質リスト[ i ] );
             }
             //----------------
             #endregion
@@ -198,14 +219,6 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " 行列を初期化する "
-            //----------------
-            {
-                this._ワールド変換行列 = Matrix.Identity;
-            }
-            //----------------
-            #endregion
-
             #region " 入力頂点リストを生成する。"
             //----------------
             {
@@ -216,7 +229,7 @@ namespace MikuMikuFlex3
                     this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
                 }
 
-                this._入力頂点リスト = 頂点リスト.ToArray();
+                this.入力頂点リスト = 頂点リスト.ToArray();
             }
             //----------------
             #endregion
@@ -224,12 +237,12 @@ namespace MikuMikuFlex3
             #region " スキニングバッファを作成する。"
             //----------------
             {
-                this._D3Dスキニングバッファデータストリーム = new DataStream( this._入力頂点リスト.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
+                this._D3Dスキニングバッファデータストリーム = new DataStream( this.入力頂点リスト.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
 
                 this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = CS_INPUT.SizeInBytes * this._入力頂点リスト.Length,
+                        SizeInBytes = CS_INPUT.SizeInBytes * this.入力頂点リスト.Length,
                         Usage = ResourceUsage.Default,
                         BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
                         CpuAccessFlags = CpuAccessFlags.None,
@@ -245,7 +258,7 @@ namespace MikuMikuFlex3
                         Dimension = ShaderResourceViewDimension.ExtendedBuffer,
                         BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
                             FirstElement = 0,
-                            ElementCount = this._入力頂点リスト.Length,
+                            ElementCount = this.入力頂点リスト.Length,
                         },
                     } );
             }
@@ -257,7 +270,7 @@ namespace MikuMikuFlex3
                 this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = VS_INPUT.SizeInBytes * this._入力頂点リスト.Length,
+                        SizeInBytes = VS_INPUT.SizeInBytes * this.入力頂点リスト.Length,
                         Usage = ResourceUsage.Default,
                         BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
                         CpuAccessFlags = CpuAccessFlags.None,
@@ -272,7 +285,7 @@ namespace MikuMikuFlex3
                         Dimension = UnorderedAccessViewDimension.Buffer,
                         Buffer = new UnorderedAccessViewDescription.BufferResource {
                             FirstElement = 0,
-                            ElementCount = VS_INPUT.SizeInBytes * this._入力頂点リスト.Length / 4,
+                            ElementCount = VS_INPUT.SizeInBytes * this.入力頂点リスト.Length / 4,
                             Flags = UnorderedAccessViewBufferFlags.Raw,
                         },
                     } );
@@ -437,32 +450,32 @@ namespace MikuMikuFlex3
             #region " ボーン用定数バッファを作成する。"
             //----------------
             {
-                this._D3DBoneTransデータストリーム = new DataStream( this._入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
+                this._D3DBoneTransデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
 
                 this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = _入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes,
+                        SizeInBytes = 入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
 
-                this._D3DBoneLocalPositionデータストリーム = new DataStream( this._入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
+                this._D3DBoneLocalPositionデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
 
                 this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = _入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
+                        SizeInBytes = 入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
 
-                this._D3DBoneQuaternionデータストリーム = new DataStream( this._入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
+                this._D3DBoneQuaternionデータストリーム = new DataStream( this.入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
 
                 this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = _入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes,
+                        SizeInBytes = 入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
             }
@@ -480,15 +493,20 @@ namespace MikuMikuFlex3
         /// </summary>
         public void 進行する()
         {
+            // (1) 各PMXボーンの「ローカル位置」「移動」「回転」を設定する。
+
+
+            // (2) 各PMXボーンの「モデルポーズ行列」「ローカルポーズ行列」を確定する。
             foreach( var root in this._ルートボーンリスト )
                 root.モデルポーズを更新する();
 
-            for( int i = 0; i < this._PMXボーン配列.Length; i++ )
+            // (3) 全PMXボーンについて、スキニング用コンピュートシェーダーの入力となる配列にコピーする。
+            for( int i = 0; i < this.PMXボーンリスト.Length; i++ )
             {
-                this._ボーンのモデルポーズ配列[ i ] = this._PMXボーン配列[ i ].モデルポーズ行列;
+                this._ボーンのモデルポーズ配列[ i ] = this.PMXボーンリスト[ i ].モデルポーズ行列;
                 this._ボーンのモデルポーズ配列[ i ].Transpose();  // SharpDX.Matrix は行優先だが HLSL の既定は列優先
-                this._ボーンのローカル位置配列[ i ] = this._PMXボーン配列[ i ].ローカル位置;
-                this._ボーンの回転配列[ i ] = new Vector4( this._PMXボーン配列[ i ].回転.ToArray() );
+                this._ボーンのローカル位置配列[ i ] = this.PMXボーンリスト[ i ].ローカル位置;
+                this._ボーンの回転配列[ i ] = new Vector4( this.PMXボーンリスト[ i ].回転.ToArray() );
             }
 
         }
@@ -498,7 +516,7 @@ namespace MikuMikuFlex3
         /// </summary>
         /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( DeviceContext d3ddc, カメラ camera, 照明 light, ViewportF viewport )
+        public void 描画する( DeviceContext d3ddc, Matrix ワールド変換行列, カメラ camera, 照明 light, ViewportF viewport )
         {
             #region " スキニングを行う。"
             //----------------
@@ -520,7 +538,7 @@ namespace MikuMikuFlex3
                 this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
                 // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
-                this._D3Dスキニングバッファデータストリーム.WriteRange( this._入力頂点リスト );
+                this._D3Dスキニングバッファデータストリーム.WriteRange( this.入力頂点リスト );
                 this._D3Dスキニングバッファデータストリーム.Position = 0;
                 d3ddc.UpdateSubresource( new DataBox( _D3Dスキニングバッファデータストリーム.DataPointer, 0, 0 ), this._D3Dスキニングバッファ, 0 );
 
@@ -539,7 +557,7 @@ namespace MikuMikuFlex3
                     // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
                     d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    d3ddc.Dispatch( ( this._入力頂点リスト.Length / 64 ) + 1, 1, 1 );
+                    d3ddc.Dispatch( ( this.入力頂点リスト.Length / 64 ) + 1, 1, 1 );
                 }
 
                 // UAVを外す（このあと頂点シェーダーが使えるように）
@@ -564,9 +582,9 @@ namespace MikuMikuFlex3
 
             // すべての材質を描画する。
 
-            for( int i = 0; i < this._PMXFモデル.材質リスト.Count; i++ )
+            for( int i = 0; i < this.PMX材質リスト.Length; i++ )
             {
-                var PMXF材質 = this._PMXFモデル.材質リスト[ i ];
+                var 材質 = this.PMX材質リスト[ i ];
 
 
                 #region " エフェクト変数を設定する。"
@@ -578,23 +596,23 @@ namespace MikuMikuFlex3
                     switch( 変数.Description.Semantic?.ToUpper() )
                     {
                         case "EDGECOLOR":
-                            変数.AsVector().Set( PMXF材質.エッジ色 );
+                            変数.AsVector().Set( 材質.PMXF材質.エッジ色 );
                             break;
 
                         case "EDGEWIDTH":
-                            変数.AsScalar().Set( PMXF材質.エッジサイズ );
+                            変数.AsScalar().Set( 材質.PMXF材質.エッジサイズ );
                             break;
 
                         case "WORLDVIEWPROJECTION":
-                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+                            変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
                             break;
 
                         case "WORLDVIEW":
-                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 * camera.ビュー行列を取得する() );
+                            変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
                             break;
 
                         case "WORLD":
-                            変数.AsMatrix().SetMatrix( this._ワールド変換行列 );
+                            変数.AsMatrix().SetMatrix( ワールド変換行列 );
                             break;
 
                         case "VIEW":
@@ -632,27 +650,27 @@ namespace MikuMikuFlex3
                             break;
 
                         case "MATERIALTEXTURE":
-                            if( -1 != PMXF材質.通常テクスチャの参照インデックス )
+                            if( -1 != 材質.PMXF材質.通常テクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.通常テクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.通常テクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALSPHEREMAP":
-                            if( -1 != PMXF材質.スフィアテクスチャの参照インデックス )
+                            if( -1 != 材質.PMXF材質.スフィアテクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.スフィアテクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.スフィアテクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALTOONTEXTURE":
-                            if( 1 == PMXF材質.共有Toonフラグ )
+                            if( 1 == 材質.PMXF材質.共有Toonフラグ )
                             {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
-                            else if( -1 != PMXF材質.共有Toonのテクスチャ参照インデックス )
+                            else if( -1 != 材質.PMXF材質.共有Toonのテクスチャ参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
                             else
                             {
@@ -661,46 +679,46 @@ namespace MikuMikuFlex3
                             break;
 
                         case "TESSFACTOR":
-                            変数.AsScalar().Set( 1.0f );
+                            変数.AsScalar().Set( 材質.テッセレーション係数 );
                             break;
 
                         default:
                             switch( 変数.Description.Name.ToLower() )
                             {
                                 case "use_spheremap":
-                                    変数.AsScalar().Set( PMXF材質.スフィアテクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.PMXF材質.スフィアテクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "spadd":
-                                    変数.AsScalar().Set( PMXF材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                                    変数.AsScalar().Set( 材質.PMXF材質.スフィアモード == PMXFormat.スフィアモード.加算 );
                                     break;
 
                                 case "use_texture":
-                                    変数.AsScalar().Set( PMXF材質.通常テクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.PMXF材質.通常テクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "use_toontexturemap":
-                                    変数.AsScalar().Set( PMXF材質.共有Toonのテクスチャ参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.PMXF材質.共有Toonのテクスチャ参照インデックス != -1 );
                                     break;
 
                                 case "use_selfshadow":
-                                    変数.AsScalar().Set( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                                    変数.AsScalar().Set( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
                                     break;
 
                                 case "ambientcolor":
-                                    変数.AsVector().Set( new Vector4( PMXF材質.環境色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( 材質.PMXF材質.環境色, 1f ) );
                                     break;
 
                                 case "diffusecolor":
-                                    変数.AsVector().Set( PMXF材質.拡散色 );
+                                    変数.AsVector().Set( 材質.PMXF材質.拡散色 );
                                     break;
 
                                 case "specularcolor":
-                                    変数.AsVector().Set( new Vector4( PMXF材質.反射色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( 材質.PMXF材質.反射色, 1f ) );
                                     break;
 
                                 case "specularpower":
-                                    変数.AsScalar().Set( PMXF材質.反射強度 );
+                                    変数.AsScalar().Set( 材質.PMXF材質.反射強度 );
                                     break;
                             }
                             break;
@@ -720,16 +738,16 @@ namespace MikuMikuFlex3
                 {
                     d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
                 }
-                else if( !PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
+                else if( !材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
                 {
-                    if( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステート;
                 }
                 else
                 {
-                    if( PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステート;
@@ -737,8 +755,8 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._エフェクトを適用しつつ材質を描画する( d3ddc, PMXF材質, Pass種別, ( mat ) => {
-                    d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
+                this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
+                    d3ddc.DrawIndexed( mat.PMXF材質.頂点数, mat.PMXF材質.開始インデックス, 0 );
                 } );
 
 
@@ -748,15 +766,15 @@ namespace MikuMikuFlex3
 
                 d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
 
-                this._エフェクトを適用しつつ材質を描画する( d3ddc, PMXF材質, Pass種別, ( mat ) => {
-                    d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
+                this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
+                    d3ddc.DrawIndexed( mat.PMXF材質.頂点数, mat.PMXF材質.開始インデックス, 0 );
                 } );
             }
         }
 
-        private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMXFormat.材質 ipmxSubset, MMDPass種別 passType, Action<PMXFormat.材質> drawAction )
+        private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMX材質 ipmxSubset, MMDPass種別 passType, Action<PMX材質> drawAction )
         {
-            if( ipmxSubset.拡散色.W == 0 )
+            if( ipmxSubset.PMXF材質.拡散色.W == 0 )
                 return;
 
             // 使用するtechniqueを検索する
@@ -782,8 +800,6 @@ namespace MikuMikuFlex3
 
         private PMXFormat.モデル _PMXFモデル;
 
-        private PMXボーン[] _PMXボーン配列;
-
         private (Texture2D tex2d, ShaderResourceView srv)[] _共有テクスチャリスト;
 
         private (Texture2D tex2d, ShaderResourceView srv)[] _個別テクスチャリスト;
@@ -791,8 +807,6 @@ namespace MikuMikuFlex3
         private Effect _既定のEffect;
 
         private List<テクニック> _D3Dテクニックリスト;
-
-        private CS_INPUT[] _入力頂点リスト;
 
         private const int _最大ボーン数 = 768;
 
@@ -840,8 +854,6 @@ namespace MikuMikuFlex3
         }
         private DataStream _D3DBoneQuaternionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
-
-        private Matrix _ワールド変換行列;
 
         private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
 

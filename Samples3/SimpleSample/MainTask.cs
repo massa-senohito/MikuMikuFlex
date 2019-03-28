@@ -173,8 +173,10 @@ namespace SimpleSample
 
                 // モデルの進行描画。
 
+                var world = Matrix.Identity;
+
                 this._PMXモデル.進行する();
-                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._カメラ, this._照明, this._D3DViewport );
+                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
 
 
                 // 画面の表示。
