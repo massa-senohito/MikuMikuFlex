@@ -20,11 +20,11 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal フリップモーフオフセット( FileStream fs, ヘッダ header )
+        internal フリップモーフオフセット( Stream st, ヘッダ header )
         {
             this.モーフ種類 = モーフ種別.フリップ;
-            this.モーフインデックス = ParserHelper.get_Index( fs, header.モーフインデックスサイズ );
-            this.モーフ値 = ParserHelper.get_Float( fs );
+            this.モーフインデックス = ParserHelper.get_Index( st, header.モーフインデックスサイズ );
+            this.モーフ値 = ParserHelper.get_Float( st );
         }
     }
 }

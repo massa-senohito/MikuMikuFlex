@@ -178,39 +178,39 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Toon\toon0.bmp">
+    <EmbeddedResource Include="Resources\Toon\toon0.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon1.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon1.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon10.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon10.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon2.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon2.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon3.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon3.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon4.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon4.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon5.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon5.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon6.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon6.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon7.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon7.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon8.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon8.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Toon\toon9.bmp">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon9.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
     <None Include="TgaLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -26,12 +26,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーンモーフオフセット( FileStream fs, ヘッダ header )
+        internal ボーンモーフオフセット( Stream st, ヘッダ header )
         {
             this.モーフ種類 = モーフ種別.ボーン;
-            this.ボーンインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
-            this.移動量 = ParserHelper.get_Float3( fs );
-            this.回転量 = ParserHelper.get_Float4( fs );
+            this.ボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
+            this.移動量 = ParserHelper.get_Float3( st );
+            this.回転量 = ParserHelper.get_Float4( st );
         }
     }
 }

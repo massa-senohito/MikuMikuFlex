@@ -18,15 +18,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 剛体リスト( Stream fs, ヘッダ header )
+        internal 剛体リスト( Stream st, ヘッダ header )
         {
-            int 剛体数 = ParserHelper.get_Int( fs );
+            int 剛体数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"剛体数: {剛体数}" );
 
             this.Capacity = 剛体数;
 
             for( int i = 0; i < 剛体数; i++ )
-                this.Add( new 剛体( fs, header ) );
+                this.Add( new 剛体( st, header ) );
         }
     }
 }

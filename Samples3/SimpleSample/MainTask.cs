@@ -74,6 +74,21 @@ namespace SimpleSample
                 this._既定のD3D11DepthStencilState = null;
             }
 
+            #region " ビューポートを作成する。"
+            //----------------
+            {
+                this._D3DViewport = new SharpDX.Mathematics.Interop.RawViewportF {
+                    X = 0,
+                    Y = 0,
+                    Width = this._Parent.ClientSize.Width,
+                    Height = this._Parent.ClientSize.Height,
+                    MinDepth = 0.0f,
+                    MaxDepth = 1.0f,
+                };
+            }
+            //----------------
+            #endregion
+
             // ブレンドステート通常版を生成する。
             {
                 var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
@@ -102,7 +117,7 @@ namespace SimpleSample
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
 
 
-            this._PMXモデル = new PMXモデル( this._D3D11Device, parent, pmxファイルパス );
+            this._PMXモデル = new PMXモデル( this._D3D11Device, pmxファイルパス );
         }
 
         public void Dispose()
@@ -126,7 +141,7 @@ namespace SimpleSample
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
                 this._PMXモデル.進行する();
-                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, new SharpDX.Vector2( (float) this._Parent.ClientSize.Width, (float) this._Parent.ClientSize.Height ) );
+                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._D3DViewport );
 
                 this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
             }
@@ -153,5 +168,7 @@ namespace SimpleSample
         private SharpDX.Direct3D11.DepthStencilState _既定のD3D11DepthStencilState;
 
         private SharpDX.Direct3D11.BlendState _BlendState通常合成;
+
+        private SharpDX.Mathematics.Interop.RawViewportF _D3DViewport;
     }
 }

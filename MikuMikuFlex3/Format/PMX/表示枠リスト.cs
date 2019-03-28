@@ -18,15 +18,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 表示枠リスト( Stream fs, ヘッダ header )
+        internal 表示枠リスト( Stream st, ヘッダ header )
         {
-            int 表示枠数 = ParserHelper.get_Int( fs );
+            int 表示枠数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"表示枠数: {表示枠数}" );
 
             this.Capacity = 表示枠数;
 
             for( int i = 0; i < 表示枠数; i++ )
-                this.Add( new 表示枠( fs, header ) );
+                this.Add( new 表示枠( st, header ) );
         }
     }
 }

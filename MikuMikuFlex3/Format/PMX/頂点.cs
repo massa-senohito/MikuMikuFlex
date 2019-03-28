@@ -39,54 +39,54 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 頂点( FileStream fs, ヘッダ header )
+        internal 頂点( Stream st, ヘッダ header )
         {
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.法線 = ParserHelper.get_Float3( fs );
-            this.UV = ParserHelper.get_Float2( fs );
+            this.位置 = ParserHelper.get_Float3( st );
+            this.法線 = ParserHelper.get_Float3( st );
+            this.UV = ParserHelper.get_Float2( st );
             this.追加UV = new Vector4[ header.追加UV数 ];
 
             for( int i = 0; i < header.追加UV数; i++ )
-                this.追加UV[ i ] = ParserHelper.get_Float4( fs );
+                this.追加UV[ i ] = ParserHelper.get_Float4( st );
 
-            switch( (ボーンウェイト種別) ParserHelper.get_Byte( fs ) )
+            switch( (ボーンウェイト種別) ParserHelper.get_Byte( st ) )
             {
                 case ボーンウェイト種別.BDEF1:
                     this.ウェイト変形方式 = ボーンウェイト種別.BDEF1;
                     this.ボーンウェイト = new BDEF1() {
-                        boneReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
+                        boneReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
                     };
                     break;
 
                 case ボーンウェイト種別.BDEF2:
                     this.ウェイト変形方式 = ボーンウェイト種別.BDEF2;
                     this.ボーンウェイト = new BDEF2() {
-                        Bone1ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone2ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone1Weight = ParserHelper.get_Float( fs ),
+                        Bone1ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone2ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone1Weight = ParserHelper.get_Float( st ),
                     };
                     break;
 
                 case ボーンウェイト種別.BDEF4:
                     this.ウェイト変形方式 = ボーンウェイト種別.BDEF4;
                     this.ボーンウェイト = new BDEF4() {
-                        Bone1ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone2ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone3ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone4ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Weights = ParserHelper.get_Float4( fs ),
+                        Bone1ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone2ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone3ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone4ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Weights = ParserHelper.get_Float4( st ),
                     };
                     break;
 
                 case ボーンウェイト種別.SDEF:
                     this.ウェイト変形方式 = ボーンウェイト種別.SDEF;
                     this.ボーンウェイト = new SDEF() {
-                        Bone1ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone2ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone1Weight = ParserHelper.get_Float( fs ),
-                        SDEF_C = ParserHelper.get_Float3( fs ),
-                        SDEF_R0 = ParserHelper.get_Float3( fs ),
-                        SDEF_R1 = ParserHelper.get_Float3( fs ),
+                        Bone1ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone2ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone1Weight = ParserHelper.get_Float( st ),
+                        SDEF_C = ParserHelper.get_Float3( st ),
+                        SDEF_R0 = ParserHelper.get_Float3( st ),
+                        SDEF_R1 = ParserHelper.get_Float3( st ),
                     };
                     break;
 
@@ -95,11 +95,11 @@ namespace MikuMikuFlex3.PMXFormat
                         throw new InvalidDataException( "QDEFはPMX2.1以降でのみサポートされます。" );
                     this.ウェイト変形方式 = ボーンウェイト種別.QDEF;
                     this.ボーンウェイト = new QDEF() {
-                        Bone1ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone2ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone3ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Bone4ReferenceIndex = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ ),
-                        Weights = ParserHelper.get_Float4( fs ),
+                        Bone1ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone2ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone3ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Bone4ReferenceIndex = ParserHelper.get_Index( st, header.ボーンインデックスサイズ ),
+                        Weights = ParserHelper.get_Float4( st ),
                     };
                     break;
 
@@ -107,7 +107,7 @@ namespace MikuMikuFlex3.PMXFormat
                     throw new InvalidDataException();
             }
 
-            this.エッジ倍率 = ParserHelper.get_Float( fs );
+            this.エッジ倍率 = ParserHelper.get_Float( st );
         }
     }
 }

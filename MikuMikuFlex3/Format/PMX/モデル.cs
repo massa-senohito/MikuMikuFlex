@@ -41,23 +41,23 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        public モデル( FileStream fs )
+        public モデル( Stream st )
         {
-            this.ヘッダ = new ヘッダ( fs );
-            this.モデル情報 = new モデル情報( fs, this.ヘッダ );
-            this.頂点リスト = new 頂点リスト( fs, this.ヘッダ );
-            this.面リスト = new 面リスト( fs, this.ヘッダ );
-            this.テクスチャリスト = new テクスチャリスト( fs, this.ヘッダ );
-            this.材質リスト = new 材質リスト( fs, this.ヘッダ );
-            this.ボーンリスト = new ボーンリスト( fs, this.ヘッダ );
-            this.モーフリスト = new モーフリスト( fs, this.ヘッダ );
-            this.表示枠リスト = new 表示枠リスト( fs, this.ヘッダ );
-            this.剛体リスト = new 剛体リスト( fs, this.ヘッダ );
-            this.ジョイントリスト = new ジョイントリスト( fs, this.ヘッダ );
+            this.ヘッダ = new ヘッダ( st );
+            this.モデル情報 = new モデル情報( st, this.ヘッダ );
+            this.頂点リスト = new 頂点リスト( st, this.ヘッダ );
+            this.面リスト = new 面リスト( st, this.ヘッダ );
+            this.テクスチャリスト = new テクスチャリスト( st, this.ヘッダ );
+            this.材質リスト = new 材質リスト( st, this.ヘッダ );
+            this.ボーンリスト = new ボーンリスト( st, this.ヘッダ );
+            this.モーフリスト = new モーフリスト( st, this.ヘッダ );
+            this.表示枠リスト = new 表示枠リスト( st, this.ヘッダ );
+            this.剛体リスト = new 剛体リスト( st, this.ヘッダ );
+            this.ジョイントリスト = new ジョイントリスト( st, this.ヘッダ );
             if( this.ヘッダ.PMXバージョン >= 2.1 )
             {
                 // Todo: SoftBody の読み込みは未対応
-                //this.軟体リスト = 軟体リスト.読み込む( fs, this.ヘッダ );
+                //this.軟体リスト = 軟体リスト.読み込む( st, this.ヘッダ );
             }
         }
     }

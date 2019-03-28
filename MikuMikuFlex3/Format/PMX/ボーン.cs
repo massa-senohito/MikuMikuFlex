@@ -118,15 +118,15 @@ namespace MikuMikuFlex3.PMXFormat
             /// <summary>
             ///     指定されたストリームから読み込む。
             /// </summary>
-            internal IKリンク( FileStream fs, ヘッダ header )
+            internal IKリンク( Stream st, ヘッダ header )
             {
-                this.リンクボーンのボーンインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
-                this.角度制限あり = ParserHelper.get_Byte( fs ) == 1 ? true : false;
+                this.リンクボーンのボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
+                this.角度制限あり = ParserHelper.get_Byte( st ) == 1 ? true : false;
 
                 if( this.角度制限あり )
                 {
-                    this.角度制限の下限rad = ParserHelper.get_Float3( fs );
-                    this.角度制限の上限rad = ParserHelper.get_Float3( fs );
+                    this.角度制限の下限rad = ParserHelper.get_Float3( st );
+                    this.角度制限の上限rad = ParserHelper.get_Float3( st );
                 }
             }
         }
@@ -141,18 +141,18 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーン( FileStream fs, ヘッダ header )
+        internal ボーン( Stream st, ヘッダ header )
         {
             this.IKリンクリスト = new List<IKリンク>();
-            this.ボーン名 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.ボーン名_英 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.親ボーンのインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
-            this.変形階層 = ParserHelper.get_Int( fs );
+            this.ボーン名 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.ボーン名_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.位置 = ParserHelper.get_Float3( st );
+            this.親ボーンのインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
+            this.変形階層 = ParserHelper.get_Int( st );
 
             var flag = new byte[ 2 ];
-            flag[ 0 ] = ParserHelper.get_Byte( fs );
-            flag[ 1 ] = ParserHelper.get_Byte( fs );
+            flag[ 0 ] = ParserHelper.get_Byte( st );
+            flag[ 1 ] = ParserHelper.get_Byte( st );
             Int16 flagnum = BitConverter.ToInt16( flag, 0 );
             this.ボーンの接続先表示方法 = ParserHelper.isFlagEnabled( flagnum, 0x0001 ) ? ボーンの接続先表示方法.ボーンで指定 : ボーンの接続先表示方法.相対座標で指定;
             this.回転可能である = ParserHelper.isFlagEnabled( flagnum, 0x0002 );
@@ -170,39 +170,39 @@ namespace MikuMikuFlex3.PMXFormat
 
             if( this.ボーンの接続先表示方法 == ボーンの接続先表示方法.相対座標で指定 )
             {
-                this.ボーン位置からの相対位置 = ParserHelper.get_Float3( fs );
+                this.ボーン位置からの相対位置 = ParserHelper.get_Float3( st );
             }
             else
             {
-                this.接続先ボーンのボーンインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
+                this.接続先ボーンのボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
             }
 
             if( this.回転付与される || this.移動付与される )
             {
-                this.付与親ボーンインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
-                this.付与率 = ParserHelper.get_Float( fs );
+                this.付与親ボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
+                this.付与率 = ParserHelper.get_Float( st );
             }
 
             if( this.回転軸あり )
-                this.回転軸の方向ベクトル = ParserHelper.get_Float3( fs );
+                this.回転軸の方向ベクトル = ParserHelper.get_Float3( st );
 
             if( this.ローカル軸あり )
             {
-                this.ローカル軸のX軸の方向ベクトル = ParserHelper.get_Float3( fs );
-                this.ローカル軸のZ軸の方向ベクトル = ParserHelper.get_Float3( fs );
+                this.ローカル軸のX軸の方向ベクトル = ParserHelper.get_Float3( st );
+                this.ローカル軸のZ軸の方向ベクトル = ParserHelper.get_Float3( st );
             }
 
             if( this.外部親変形である )
-                this.親Key = ParserHelper.get_Int( fs );
+                this.親Key = ParserHelper.get_Int( st );
 
             if( this.IKボーンである )
             {
-                this.IKターゲットボーンインデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
-                this.IKループ回数 = ParserHelper.get_Int( fs );
-                this.IK単位角rad = ParserHelper.get_Float( fs );
-                int IKリンク数 = ParserHelper.get_Int( fs );
+                this.IKターゲットボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
+                this.IKループ回数 = ParserHelper.get_Int( st );
+                this.IK単位角rad = ParserHelper.get_Float( st );
+                int IKリンク数 = ParserHelper.get_Int( st );
                 for( int i = 0; i < IKリンク数; i++ )
-                    this.IKリンクリスト.Add( new IKリンク( fs, header ) );
+                    this.IKリンクリスト.Add( new IKリンク( st, header ) );
             }
         }
     }

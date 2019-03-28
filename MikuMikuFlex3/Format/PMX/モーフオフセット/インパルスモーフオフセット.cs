@@ -34,13 +34,13 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal インパルスモーフオフセット( FileStream fs, ヘッダ header )
+        internal インパルスモーフオフセット( Stream st, ヘッダ header )
         {
             this.モーフ種類 = モーフ種別.インパルス;
-            this.剛体インデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.ローカルフラグ = ParserHelper.get_Byte( fs );
-            this.移動速度 = ParserHelper.get_Float3( fs );
-            this.回転トルク = ParserHelper.get_Float3( fs );
+            this.剛体インデックス = ParserHelper.get_Index( st, header.剛体インデックスサイズ );
+            this.ローカルフラグ = ParserHelper.get_Byte( st );
+            this.移動速度 = ParserHelper.get_Float3( st );
+            this.回転トルク = ParserHelper.get_Float3( st );
         }
     }
 }

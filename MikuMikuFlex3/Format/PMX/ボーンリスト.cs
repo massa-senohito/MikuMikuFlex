@@ -16,15 +16,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーンリスト( FileStream fs, ヘッダ header )
+        internal ボーンリスト( Stream st, ヘッダ header )
         {
-            int ボーン数 = ParserHelper.get_Int( fs );
+            int ボーン数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"ボーン数: {ボーン数}" );
 
             this.Capacity = ボーン数;
 
             for( int i = 0; i < ボーン数; i++ )
-                this.Add( new ボーン( fs, header ) );
+                this.Add( new ボーン( st, header ) );
         }
     }
 }

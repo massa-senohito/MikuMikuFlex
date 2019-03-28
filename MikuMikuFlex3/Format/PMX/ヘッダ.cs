@@ -63,12 +63,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ヘッダ( FileStream fs )
+        internal ヘッダ( Stream st )
         {
             // マジックナンバー("PMX "の４バイト）の読み取り
 
             var MagicNumberbuf = new byte[ 4 ];
-            fs.Read( MagicNumberbuf, 0, 4 );
+            st.Read( MagicNumberbuf, 0, 4 );
             if( Encoding.Unicode.GetString( MagicNumberbuf, 0, 4 ) != "PMX " &&
                 Encoding.UTF8.GetString( MagicNumberbuf, 0, 4 ) != "PMX " )
             {
@@ -77,18 +77,18 @@ namespace MikuMikuFlex3.PMXFormat
 
             // バージョン情報の読み取り
 
-            this.PMXバージョン = ParserHelper.get_Float( fs );
+            this.PMXバージョン = ParserHelper.get_Float( st );
 
             // 後のデータ列のバイト列
 
-            if( ParserHelper.get_Byte( fs ) != 8 )
+            if( ParserHelper.get_Byte( st ) != 8 )
                 throw new NotImplementedException();  // PMX2.0 は 8 で固定
 
             byte[] descriptionbuf = new byte[ 8 ];
 
             // 詳細のデータ（８バイト固定）
 
-            fs.Read( descriptionbuf, 0, 8 );
+            st.Read( descriptionbuf, 0, 8 );
             this.エンコード方式 = ( 1 == descriptionbuf[ 0 ] ) ? Encoding.UTF8 : Encoding.Unicode;   // Unicode==UTF16LE
             this.追加UV数 = descriptionbuf[ 1 ];
             this.頂点インデックスサイズ = descriptionbuf[ 2 ];

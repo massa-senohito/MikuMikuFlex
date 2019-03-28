@@ -94,7 +94,7 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 材質( FileStream fs, ヘッダ header, int index )
+        internal 材質( Stream fs, ヘッダ header, int index )
         {
             this.開始インデックス = index;
             this.材質名 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );

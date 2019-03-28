@@ -16,9 +16,9 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 材質リスト( FileStream fs, ヘッダ header )
+        internal 材質リスト( Stream st, ヘッダ header )
         {
-            int 材質数 = ParserHelper.get_Int( fs );
+            int 材質数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"材質数: {材質数}" );
 
             this.Capacity = 材質数;
@@ -26,7 +26,7 @@ namespace MikuMikuFlex3.PMXFormat
             int 開始index = 0;
             for( int i = 0; i < 材質数; i++ )
             {
-                var mat = new 材質( fs, header, 開始index );
+                var mat = new 材質( st, header, 開始index );
                 this.Add( mat );
                 開始index += mat.頂点数;
 

@@ -18,15 +18,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 頂点リスト( FileStream fs, ヘッダ header )
+        internal 頂点リスト( Stream st, ヘッダ header )
         {
-            int 頂点数 = ParserHelper.get_Int( fs );
+            int 頂点数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"頂点数: {頂点数}" );
 
             this.Capacity = 頂点数;
 
             for( int i = 0; i < 頂点数; i++ )
-                this.Add( new 頂点( fs, header ) );
+                this.Add( new 頂点( st, header ) );
 #if DEBUG
             int[] 出現数 = new int[ 5 ];
             for( int i = 0; i < 頂点数; i++ )

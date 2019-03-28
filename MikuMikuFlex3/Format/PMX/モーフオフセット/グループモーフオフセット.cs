@@ -26,11 +26,11 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal グループモーフオフセット( FileStream fs, ヘッダ header )
+        internal グループモーフオフセット( Stream st, ヘッダ header )
         {
             this.モーフ種類 = モーフ種別.グループ;
-            this.モーフインデックス = ParserHelper.get_Index( fs, header.モーフインデックスサイズ );
-            this.影響度 = ParserHelper.get_Float( fs );
+            this.モーフインデックス = ParserHelper.get_Index( st, header.モーフインデックスサイズ );
+            this.影響度 = ParserHelper.get_Float( st );
         }
     }
 }

@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using SharpDX;
+
+#pragma warning disable 0649
 
 namespace MikuMikuFlex3
 {
@@ -15,9 +17,37 @@ namespace MikuMikuFlex3
         // 生成と終了
 
 
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Control parent, string pmxファイルパス )
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス )
         {
-            this.読み込む( d3dDevice, parent, pmxファイルパス );
+            using( var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            {
+                this._読み込む( d3dDevice, stream, リソースを開く: ( file ) => {
+
+                    var baseFolder = Path.GetDirectoryName( PMXファイルパス );
+                    var path = Path.Combine( baseFolder, file );
+                    return new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read );
+
+                } );
+            }
+        }
+
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を持つ型, string リソース名 )
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var path = $"{this.GetType().Namespace}.{リソース名}";
+
+            using( var stream = assembly.GetManifestResourceStream( path ) )
+            {
+                this._読み込む( d3dDevice, stream, リソースを開く: ( resource ) => {
+
+                    // PMXではテクスチャ名などにパス区切り文字を使用できるが、その区切りがなんであるかはOSに依存して
+                    // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
+                    var rpath = resource.Replace( Path.DirectorySeparatorChar, '.' ).Replace( Path.AltDirectorySeparatorChar, '.' );    // '.' 区切りに変換
+
+                    return assembly.GetManifestResourceStream( 名前空間を持つ型, rpath );
+
+                } );
+            }
         }
 
         public virtual void Dispose()
@@ -33,15 +63,15 @@ namespace MikuMikuFlex3
             this._D3DBoneQuaternionデータストリーム?.Dispose();
             this._D3DBoneQuaternion定数バッファ?.Dispose();
 
-            foreach( var kvp in this._個別テクスチャリスト )
+            foreach( var pair in this._個別テクスチャリスト )
             {
-                kvp.Value.srv?.Dispose();
-                kvp.Value.tex2d?.Dispose();
+                pair.srv?.Dispose();
+                pair.tex2d?.Dispose();
             }
-            foreach( var kvp in this._共有テクスチャリスト )
+            foreach( var pair in this._共有テクスチャリスト )
             {
-                kvp.Value.srv?.Dispose();
-                kvp.Value.tex2d?.Dispose();
+                pair.srv?.Dispose();
+                pair.tex2d?.Dispose();
             }
 
             this._裏側片面描画の際のラスタライザステート?.Dispose();
@@ -64,14 +94,11 @@ namespace MikuMikuFlex3
             this._PMXFモデル = null;
         }
 
-        public void 読み込む( SharpDX.Direct3D11.Device d3dDevice, Control parent, string pmxファイルパス )
+        private void _読み込む( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, Func<string, Stream> リソースを開く )
         {
-            this._Parent = parent;
-
             #region " モデルを読み込む。"
             //----------------
-            using( var fs = new FileStream( pmxファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-                this._PMXFモデル = new PMXFormat.モデル( fs );
+            this._PMXFモデル = new PMXFormat.モデル( PMXデータ );
             //----------------
             #endregion
 
@@ -83,20 +110,30 @@ namespace MikuMikuFlex3
                 this._PMXボーン配列 = new PMXボーン[ ボーン数 ];
 
                 for( int i = 0; i < ボーン数; i++ )
+                {
                     this._PMXボーン配列[ i ] = new PMXボーン( this._PMXFモデル.ボーンリスト[ i ], i );
+                }
 
                 for( int i = 0; i < ボーン数; i++ )
+                {
                     this._PMXボーン配列[ i ].子ボーンリストを構築する( this._PMXボーン配列 );
+                }
             }
             //----------------
             #endregion
             #region " ボーンのルートリストを作成する。"
             //----------------
-            this._ルートボーンリスト = new List<PMXボーン>();
-            for( int i = 0; i < this._PMXボーン配列.Length; i++ )
             {
-                if( this._PMXボーン配列[ i ].PMXFボーン.親ボーンのインデックス == -1 )
-                    this._ルートボーンリスト.Add( this._PMXボーン配列[ i ] );
+                this._ルートボーンリスト = new List<PMXボーン>();
+
+                for( int i = 0; i < this._PMXボーン配列.Length; i++ )
+                {
+                    // 親ボーンを持たないのがルートボーン。
+                    if( this._PMXボーン配列[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                    {
+                        this._ルートボーンリスト.Add( this._PMXボーン配列[ i ] );
+                    }
+                }
             }
             //----------------
             #endregion
@@ -105,7 +142,8 @@ namespace MikuMikuFlex3
             //----------------
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                using( var st = assembly.GetManifestResourceStream( "MikuMikuFlex3.Resources.Shaders.DefaultShader.cso" ) )
+
+                using( var st = assembly.GetManifestResourceStream( this.GetType(), "Resources.Shaders.DefaultShader.cso" ) )
                 {
                     var effectByteCode = new byte[ st.Length ];
                     st.Read( effectByteCode, 0, (int) st.Length );
@@ -118,46 +156,51 @@ namespace MikuMikuFlex3
             #region " テクニックリストを生成する。"
             //----------------
             {
-                var D3Dテクニックリスト = new List<SharpDX.Direct3D11.EffectTechnique>();
+                var techList = new List<SharpDX.Direct3D11.EffectTechnique>();
 
                 for( int i = 0; i < this._Effect.Description.TechniqueCount; i++ )
                 {
                     var tech = this._Effect.GetTechniqueByIndex( i );
 
-                    if( D3Dテクニックリスト.FindIndex( ( t ) => ( t.Description.Name == tech.Description.Name ) ) == -1 )
-                        D3Dテクニックリスト.Add( tech );
+                    // 名前が重複しないテクニックのみ採択
+                    if( techList.FindIndex( ( t ) => ( t.Description.Name == tech.Description.Name ) ) == -1 )
+                        techList.Add( tech );
                 }
 
                 this._D3Dテクニックリスト = new List<テクニック>();
+
                 int subsetCount = this._PMXFモデル.材質リスト.Count;
-                foreach( var d3dTech in D3Dテクニックリスト )
+
+                foreach( var d3dTech in techList )
                 {
                     this._D3Dテクニックリスト.Add( new テクニック( this._Effect, d3dTech, subsetCount ) );
                 }
 
-                D3Dテクニックリスト.Clear();
+                techList.Clear();
             }
             //----------------
             #endregion
 
             #region " 行列を初期化する "
             //----------------
-            this._カメラ位置 = new Vector3( 0f, 0f, -45f );
+            {
+                this._カメラ位置 = new Vector3( 0f, 0f, -45f );
 
-            this._光源位置 = new Vector3( -0.5f, 1.0f, -0.5f );
+                this._光源位置 = new Vector3( -0.5f, 1.0f, -0.5f );
 
-            this._ワールド変換行列 = Matrix.Identity;
+                this._ワールド変換行列 = Matrix.Identity;
 
-            this._ビュー行列 = Matrix.LookAtLH(
-                this._カメラ位置,
-                new Vector3( 0f, 10f, 0f ),     // 注視点
-                new Vector3( 0f, 1f, 0f ) );    // 上方向
+                this._ビュー行列 = Matrix.LookAtLH(
+                    this._カメラ位置,
+                    new Vector3( 0f, 10f, 0f ),     // 注視点
+                    new Vector3( 0f, 1f, 0f ) );    // 上方向
 
-            this._射影行列 = Matrix.PerspectiveFovLH(
-                MathUtil.Pi * 30f / 180f,   // 視野角[rad]
-                1.618f,                     // アスペクト比
-                1f,                         // 近面Z
-                200f );                     // 遠面Z
+                this._射影行列 = Matrix.PerspectiveFovLH(
+                    MathUtil.Pi * 30f / 180f,   // 視野角[rad]
+                    1.618f,                     // アスペクト比
+                    1f,                         // 近面Z
+                    200f );                     // 遠面Z
+            }
             //----------------
             #endregion
 
@@ -167,7 +210,9 @@ namespace MikuMikuFlex3
                 var 頂点リスト = new List<CS_INPUT>( this._PMXFモデル.頂点リスト.Count );
 
                 for( int i = 0; i < this._PMXFモデル.頂点リスト.Count; i++ )
+                {
                     this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
+                }
 
                 this._入力頂点リスト = 頂点リスト.ToArray();
             }
@@ -267,20 +312,6 @@ namespace MikuMikuFlex3
             }
             //----------------
             #endregion
-            #region " ビューポートを作成する。"
-            //----------------
-            {
-                this._D3DViewport = new SharpDX.Mathematics.Interop.RawViewportF {
-                    X = 0,
-                    Y = 0,
-                    Width = this._Parent.ClientSize.Width,
-                    Height = this._Parent.ClientSize.Height,
-                    MinDepth = 0.0f,
-                    MaxDepth = 1.0f,
-                };
-            }
-            //----------------
-            #endregion
             #region " ラスタライザステートを作成する。"
             //----------------
             {
@@ -315,25 +346,44 @@ namespace MikuMikuFlex3
             #region " 共有テクスチャを読み込む "
             //----------------
             {
-                this._共有テクスチャリスト = new Dictionary<string, (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)>();
+                this._共有テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ 11 ];
 
                 var 共有テクスチャパス = new string[] {
-                    @"Resources\Toon\toon0.bmp",
-                    @"Resources\Toon\toon1.bmp",
-                    @"Resources\Toon\toon2.bmp",
-                    @"Resources\Toon\toon3.bmp",
-                    @"Resources\Toon\toon4.bmp",
-                    @"Resources\Toon\toon5.bmp",
-                    @"Resources\Toon\toon6.bmp",
-                    @"Resources\Toon\toon7.bmp",
-                    @"Resources\Toon\toon8.bmp",
-                    @"Resources\Toon\toon9.bmp",
-                    @"Resources\Toon\toon10.bmp",
+                    @"Resources.Toon.toon0.bmp",
+                    @"Resources.Toon.toon1.bmp",
+                    @"Resources.Toon.toon2.bmp",
+                    @"Resources.Toon.toon3.bmp",
+                    @"Resources.Toon.toon4.bmp",
+                    @"Resources.Toon.toon5.bmp",
+                    @"Resources.Toon.toon6.bmp",
+                    @"Resources.Toon.toon7.bmp",
+                    @"Resources.Toon.toon8.bmp",
+                    @"Resources.Toon.toon9.bmp",
+                    @"Resources.Toon.toon10.bmp",
                 };
-                foreach( var path in 共有テクスチャパス )
+
+                var assembly = Assembly.GetExecutingAssembly();
+
+                for( int i = 0; i < 11; i++ )
                 {
-                    var srv = MMFShaderResourceView.FromFile( d3dDevice, path, out var tex2d );
-                    this._共有テクスチャリスト.Add( path, (tex2d, srv) );
+                    this._共有テクスチャリスト[ i ] = (null, null);
+
+                    var path = $"{this.GetType().Namespace}.{共有テクスチャパス[ i ]}";
+
+                    try
+                    {
+                        if( null != assembly.GetManifestResourceInfo( path ) )
+                        {
+                            var stream = assembly.GetManifestResourceStream( path );
+                            var srv = MMFShaderResourceView.FromStream( d3dDevice, stream, out var tex2d );
+
+                            this._共有テクスチャリスト[ i ] = (tex2d, srv);
+                        }
+                    }
+                    catch( Exception e )
+                    {
+                        Trace.TraceError( $"共有テクスチャの読み込みに失敗しました。[{path}][{e.Message}]" );
+                    }
                 }
             }
             //----------------
@@ -341,29 +391,35 @@ namespace MikuMikuFlex3
             #region " 個別テクスチャを読み込む "
             //----------------
             {
-                this._個別テクスチャリスト = new Dictionary<string, (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)>();
+                this._個別テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
 
-                var pmxFolder = Path.GetDirectoryName( pmxファイルパス );
-                foreach( var file in this._PMXFモデル.テクスチャリスト )
+                for( int i = 0; i < this._PMXFモデル.テクスチャリスト.Count; i++ )
                 {
-                    Debug.Write( $"Loading {file} ... " );
+                    this._個別テクスチャリスト[ i ] = (null, null);
 
-                    string path = Path.Combine( pmxFolder, file );
-                    if( Path.GetExtension( file ).ToLower() == ".tga" )
-                    {
-                        using( var st = TargaSolver.LoadTargaImage( path ) )
-                        {
-                            var srv = MMFShaderResourceView.FromStream( d3dDevice, st, out var tex2d );
-                            this._個別テクスチャリスト.Add( path, (tex2d, srv) );
-                        }
-                    }
-                    else
-                    {
-                        var srv = MMFShaderResourceView.FromFile( d3dDevice, path, out var tex2d );
-                        this._個別テクスチャリスト.Add( path, (tex2d, srv) );
-                    }
+                    var texturePath = this._PMXFモデル.テクスチャリスト[ i ];
+                    var 拡張子 = Path.GetExtension( texturePath ).ToLower();
 
-                    Debug.WriteLine( "OK" );
+                    Debug.Write( $"Loading {texturePath} ... " );
+
+                    try
+                    {
+                        var stream = リソースを開く( texturePath );    // 開く方法は呼び出し元に任せる
+
+                        var srv = MMFShaderResourceView.FromStream(
+                            d3dDevice,
+                            ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
+                            out var tex2d );
+
+                        this._個別テクスチャリスト[ i ] = (tex2d, srv);
+
+                        Debug.WriteLine( "OK" );
+                    }
+                    catch( Exception e )
+                    {
+                        Debug.WriteLine( "error!" );
+                        Trace.TraceError( $"個別テクスチャファイルの読み込みに失敗しました。[{texturePath}][{e.Message}]" );
+                    }
                 }
             }
             //----------------
@@ -413,10 +469,12 @@ namespace MikuMikuFlex3
         }
 
 
-
         // 進行と描画
 
 
+        /// <summary>
+        ///     現在時刻におけるモデルの各種状態を更新する。
+        /// </summary>
         public void 進行する()
         {
             foreach( var root in this._ルートボーンリスト )
@@ -432,7 +490,12 @@ namespace MikuMikuFlex3
 
         }
 
-        public void 描画する( SharpDX.Direct3D11.DeviceContext d3ddc, Vector2 viewport )
+        /// <summary>
+        ///     進行処理によって得られた各種状態を描画する。
+        /// </summary>
+        /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
+        /// <param name="viewport">描画先ビューポートのサイズ。</param>
+        public void 描画する( SharpDX.Direct3D11.DeviceContext d3ddc, ViewportF viewport )
         {
             #region " スキニングを行う。"
             //----------------
@@ -495,7 +558,7 @@ namespace MikuMikuFlex3
                     d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
                     d3ddc.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
 
-                    d3ddc.Rasterizer.SetViewport( this._D3DViewport );
+                    d3ddc.Rasterizer.SetViewport( viewport );
                 }
                 //----------------
                 #endregion
@@ -565,29 +628,29 @@ namespace MikuMikuFlex3
                         case "MATERIALTEXTURE":
                             if( -1 != 材質.通常テクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト.ElementAt( 材質.通常テクスチャの参照インデックス ).Value.srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALSPHEREMAP":
                             if( -1 != 材質.スフィアテクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト.ElementAt( 材質.スフィアテクスチャの参照インデックス ).Value.srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALTOONTEXTURE":
                             if( 1 == 材質.共有Toonフラグ )
                             {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト.ElementAt( 材質.共有Toonのテクスチャ参照インデックス ).Value.srv );
+                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
                             else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト.ElementAt( 材質.共有Toonのテクスチャ参照インデックス ).Value.srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
                             else
                             {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト.ElementAt( 0 ).Value.srv );
+                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 0 ].srv );
                             }
                             break;
 
@@ -700,11 +763,9 @@ namespace MikuMikuFlex3
 
         private PMXボーン[] _PMXボーン配列;
 
-        private Control _Parent;
+        private (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[] _共有テクスチャリスト;
 
-        private Dictionary<string, (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)> _共有テクスチャリスト;
-
-        private Dictionary<string, (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)> _個別テクスチャリスト;
+        private (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[] _個別テクスチャリスト;
 
         private SharpDX.Direct3D11.Effect _Effect;
 
@@ -720,50 +781,41 @@ namespace MikuMikuFlex3
 
         private Vector4[] _ボーンの回転配列;
 
-        protected struct _D3DBoneTrans  // private じゃなく protected なのは warning CS0649 封じのため
+        private struct _D3DBoneTrans    // サイズ計測用構造体
         {
-            /// <summary>
-            ///     <see cref="MikuMikuFlex.ボーン.ボーン.モデルポーズ行列"/> が格納される。
-            /// </summary>
             public Matrix boneTrans;
 
             /// <summary>
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
             public static int SizeInBytes
-                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
+                => ( ( Marshal.SizeOf( typeof( _D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
         }
         private DataStream _D3DBoneTransデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneTrans定数バッファ;
 
-        protected struct _D3DBoneLocalPosition  // private じゃなく protected なのは warning CS0649 封じのため
+        private struct _D3DBoneLocalPosition    // サイズ計測用構造体
         {
-            /// <summary>
-            ///     <see cref="MikuMikuFlex.ボーン.ボーン.移動"/> が格納される。
-            /// </summary>
             public Vector3 boneLocalPosition;
 
             /// <summary>
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
             public static int SizeInBytes
-                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneLocalPosition ) ) ) / 16 + 1 ) * 16;
+                => ( ( Marshal.SizeOf( typeof( _D3DBoneLocalPosition ) ) ) / 16 + 1 ) * 16;
         }
         private DataStream _D3DBoneLocalPositionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
 
-        protected struct _D3DBoneQuaternion // private じゃなく protected なのは warning CS0649 封じのため
+        private struct _D3DBoneQuaternion    // サイズ計測用構造体
         {
-            /// <summary>
-            ///     <see cref="MikuMikuFlex.ボーン.ボーン.回転"/> が格納される。
-            /// </summary>
             public Vector4 boneQuaternion;
 
             /// <summary>
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
             public static int SizeInBytes
-                => ( ( System.Runtime.InteropServices.Marshal.SizeOf( typeof( _D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
+                => ( ( Marshal.SizeOf( typeof( _D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
         }
         private DataStream _D3DBoneQuaternionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
@@ -792,8 +844,6 @@ namespace MikuMikuFlex3
 
         private SharpDX.Direct3D11.InputLayout _D3D頂点レイアウト;
 
-        private SharpDX.Mathematics.Interop.RawViewportF _D3DViewport;
-
         private SharpDX.Direct3D11.RasterizerState _裏側片面描画の際のラスタライザステート;
 
         private SharpDX.Direct3D11.RasterizerState _片面描画の際のラスタライザステート;
@@ -807,6 +857,12 @@ namespace MikuMikuFlex3
         private List<PMXボーン> _ルートボーンリスト;
 
 
+        /// <summary>
+        ///     指定されたリソースパスを、埋め込みリソースまたはファイルとして開き、
+        ///     Stream として返す。
+        /// </summary>
+        /// <param name="リソースパス">ファイルパスまたはリソースパス。</param>
+        /// <returns></returns>
         private void _頂点データを頂点レイアウトリストに追加する( PMXFormat.頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
         {
             var layout = new CS_INPUT() {

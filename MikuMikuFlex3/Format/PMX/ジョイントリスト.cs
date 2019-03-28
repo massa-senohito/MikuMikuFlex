@@ -16,15 +16,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ジョイントリスト( Stream fs, ヘッダ header )
+        internal ジョイントリスト( Stream st, ヘッダ header )
         {
-            int ジョイント数 = ParserHelper.get_Int( fs );
+            int ジョイント数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"ジョイント数: {ジョイント数}" );
 
             this.Capacity = ジョイント数;
 
             for( int i = 0; i < ジョイント数; i++ )
-                this.Add( new ジョイント( fs, header ) );
+                this.Add( new ジョイント( st, header ) );
         }
     }
 }

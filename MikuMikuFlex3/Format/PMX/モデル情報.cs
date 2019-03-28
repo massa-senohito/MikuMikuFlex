@@ -24,12 +24,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal モデル情報( FileStream fs, ヘッダ header )
+        internal モデル情報( Stream st, ヘッダ header )
         {
-            this.モデル名 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.モデル名_英 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.コメント = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.コメント_英 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
+            this.モデル名 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.モデル名_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.コメント = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.コメント_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
         }
     }
 }

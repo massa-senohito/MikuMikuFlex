@@ -24,11 +24,11 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal UVモーフオフセット( FileStream fs, ヘッダ header, モーフ種別 type )
+        internal UVモーフオフセット( Stream st, ヘッダ header, モーフ種別 type )
         {
             this.モーフ種類 = type;
-            this.頂点インデックス = ParserHelper.get_VertexIndex( fs, header.頂点インデックスサイズ );
-            this.UVオフセット量 = ParserHelper.get_Float4( fs );
+            this.頂点インデックス = ParserHelper.get_VertexIndex( st, header.頂点インデックスサイズ );
+            this.UVオフセット量 = ParserHelper.get_Float4( st );
         }
     }
 }

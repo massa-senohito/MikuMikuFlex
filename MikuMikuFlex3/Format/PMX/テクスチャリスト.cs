@@ -27,15 +27,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal テクスチャリスト( FileStream fs, ヘッダ header )
+        internal テクスチャリスト( Stream st, ヘッダ header )
         {
-            int テクスチャ数 = ParserHelper.get_Int( fs );
+            int テクスチャ数 = ParserHelper.get_Int( st );
             Debug.WriteLine( $"テクスチャ数: {テクスチャ数}" );
 
             this.Capacity = テクスチャ数;
 
             for( int i = 0; i < テクスチャ数; i++ )
-                this.Add( ParserHelper.get_TextBuf( fs, header.エンコード方式 ) );
+                this.Add( ParserHelper.get_TextBuf( st, header.エンコード方式 ) );
         }
     }
 }
