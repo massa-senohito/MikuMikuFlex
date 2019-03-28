@@ -6,6 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using SharpDX;
+using SharpDX.DXGI;
+using SharpDX.Direct3D;
+using SharpDX.Direct3D11;
 
 #pragma warning disable 0649
 
@@ -104,7 +107,7 @@ namespace MikuMikuFlex3
 
             foreach( var tech in this._D3Dテクニックリスト )
                 tech?.Dispose();
-            this._Effect?.Dispose();
+            this._既定のEffect?.Dispose();
             this._PMXFモデル = null;
         }
 
@@ -152,7 +155,7 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " エフェクトを生成する。"
+            #region " 既定のエフェクトを生成する。"
             //----------------
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -162,7 +165,7 @@ namespace MikuMikuFlex3
                     var effectByteCode = new byte[ st.Length ];
                     st.Read( effectByteCode, 0, (int) st.Length );
 
-                    this._Effect = new SharpDX.Direct3D11.Effect( d3dDevice, effectByteCode );
+                    this._既定のEffect = new Effect( d3dDevice, effectByteCode );
                 }
             }
             //----------------
@@ -170,11 +173,11 @@ namespace MikuMikuFlex3
             #region " テクニックリストを生成する。"
             //----------------
             {
-                var techList = new List<SharpDX.Direct3D11.EffectTechnique>();
+                var techList = new List<EffectTechnique>();
 
-                for( int i = 0; i < this._Effect.Description.TechniqueCount; i++ )
+                for( int i = 0; i < this._既定のEffect.Description.TechniqueCount; i++ )
                 {
-                    var tech = this._Effect.GetTechniqueByIndex( i );
+                    var tech = this._既定のEffect.GetTechniqueByIndex( i );
 
                     // 名前が重複しないテクニックのみ採択
                     if( techList.FindIndex( ( t ) => ( t.Description.Name == tech.Description.Name ) ) == -1 )
@@ -187,7 +190,7 @@ namespace MikuMikuFlex3
 
                 foreach( var d3dTech in techList )
                 {
-                    this._D3Dテクニックリスト.Add( new テクニック( this._Effect, d3dTech, subsetCount ) );
+                    this._D3Dテクニックリスト.Add( new テクニック( this._既定のEffect, d3dTech, subsetCount ) );
                 }
 
                 techList.Clear();
@@ -198,8 +201,6 @@ namespace MikuMikuFlex3
             #region " 行列を初期化する "
             //----------------
             {
-                this._光源位置 = new Vector3( -0.5f, 1.0f, -0.5f );
-
                 this._ワールド変換行列 = Matrix.Identity;
             }
             //----------------
@@ -227,22 +228,22 @@ namespace MikuMikuFlex3
 
                 this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
-                    new SharpDX.Direct3D11.BufferDescription {
+                    new BufferDescription {
                         SizeInBytes = CS_INPUT.SizeInBytes * this._入力頂点リスト.Length,
-                        Usage = SharpDX.Direct3D11.ResourceUsage.Default,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.ShaderResource | SharpDX.Direct3D11.BindFlags.UnorderedAccess,
-                        CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
-                        OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.BufferStructured,   // 構造化バッファ
+                        Usage = ResourceUsage.Default,
+                        BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
+                        CpuAccessFlags = CpuAccessFlags.None,
+                        OptionFlags = ResourceOptionFlags.BufferStructured,   // 構造化バッファ
                         StructureByteStride = CS_INPUT.SizeInBytes,
                     } );
 
-                this._D3DスキニングバッファSRView = new SharpDX.Direct3D11.ShaderResourceView(
+                this._D3DスキニングバッファSRView = new ShaderResourceView(
                     d3dDevice,
                     this._D3Dスキニングバッファ,  // 構造化バッファ
-                    new SharpDX.Direct3D11.ShaderResourceViewDescription {
-                        Format = SharpDX.DXGI.Format.Unknown,
-                        Dimension = SharpDX.Direct3D.ShaderResourceViewDimension.ExtendedBuffer,
-                        BufferEx = new SharpDX.Direct3D11.ShaderResourceViewDescription.ExtendedBufferResource {
+                    new ShaderResourceViewDescription {
+                        Format = Format.Unknown,
+                        Dimension = ShaderResourceViewDimension.ExtendedBuffer,
+                        BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
                             FirstElement = 0,
                             ElementCount = this._入力頂点リスト.Length,
                         },
@@ -255,24 +256,24 @@ namespace MikuMikuFlex3
             {
                 this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
-                    new SharpDX.Direct3D11.BufferDescription {
+                    new BufferDescription {
                         SizeInBytes = VS_INPUT.SizeInBytes * this._入力頂点リスト.Length,
-                        Usage = SharpDX.Direct3D11.ResourceUsage.Default,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.VertexBuffer | SharpDX.Direct3D11.BindFlags.ShaderResource | SharpDX.Direct3D11.BindFlags.UnorderedAccess,  // 非順序アクセス
-                        CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
-                        OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
+                        Usage = ResourceUsage.Default,
+                        BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
+                        CpuAccessFlags = CpuAccessFlags.None,
+                        OptionFlags = ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
                     } );
 
-                this._D3D頂点バッファビューUAView = new SharpDX.Direct3D11.UnorderedAccessView(
+                this._D3D頂点バッファビューUAView = new UnorderedAccessView(
                     d3dDevice,
                     this._D3D頂点バッファ,
-                    new SharpDX.Direct3D11.UnorderedAccessViewDescription {
-                        Format = SharpDX.DXGI.Format.R32_Typeless,
-                        Dimension = SharpDX.Direct3D11.UnorderedAccessViewDimension.Buffer,
-                        Buffer = new SharpDX.Direct3D11.UnorderedAccessViewDescription.BufferResource {
+                    new UnorderedAccessViewDescription {
+                        Format = Format.R32_Typeless,
+                        Dimension = UnorderedAccessViewDimension.Buffer,
+                        Buffer = new UnorderedAccessViewDescription.BufferResource {
                             FirstElement = 0,
                             ElementCount = VS_INPUT.SizeInBytes * this._入力頂点リスト.Length / 4,
-                            Flags = SharpDX.Direct3D11.UnorderedAccessViewBufferFlags.Raw,
+                            Flags = UnorderedAccessViewBufferFlags.Raw,
                         },
                     } );
             }
@@ -295,8 +296,8 @@ namespace MikuMikuFlex3
                     this._D3Dインデックスバッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         dataStream,
-                        new SharpDX.Direct3D11.BufferDescription {
-                            BindFlags = SharpDX.Direct3D11.BindFlags.IndexBuffer,
+                        new BufferDescription {
+                            BindFlags = BindFlags.IndexBuffer,
                             SizeInBytes = (int) dataStream.Length
                         } );
                 }
@@ -306,9 +307,9 @@ namespace MikuMikuFlex3
             #region " 頂点レイアウトを作成する。"
             //----------------
             {
-                this._D3D頂点レイアウト = new SharpDX.Direct3D11.InputLayout(
+                this._D3D頂点レイアウト = new InputLayout(
                     d3dDevice,
-                    this._Effect.GetTechniqueByName( "DefaultObject" ).GetPassByIndex( 0 ).Description.Signature,
+                    this._既定のEffect.GetTechniqueByName( "DefaultObject" ).GetPassByIndex( 0 ).Description.Signature,
                     VS_INPUT.VertexElements );
             }
             //----------------
@@ -316,29 +317,29 @@ namespace MikuMikuFlex3
             #region " ラスタライザステートを作成する。"
             //----------------
             {
-                this._片面描画の際のラスタライザステート = new SharpDX.Direct3D11.RasterizerState( d3dDevice, new SharpDX.Direct3D11.RasterizerStateDescription {
-                    CullMode = SharpDX.Direct3D11.CullMode.Back,
-                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                this._片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                    CullMode = CullMode.Back,
+                    FillMode = FillMode.Solid,
                 } );
 
-                this._両面描画の際のラスタライザステート = new SharpDX.Direct3D11.RasterizerState( d3dDevice, new SharpDX.Direct3D11.RasterizerStateDescription {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                this._両面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                    CullMode = CullMode.None,
+                    FillMode = FillMode.Solid,
                 } );
 
-                this._片面描画の際のラスタライザステートLine = new SharpDX.Direct3D11.RasterizerState( d3dDevice, new SharpDX.Direct3D11.RasterizerStateDescription {
-                    CullMode = SharpDX.Direct3D11.CullMode.Back,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                this._片面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                    CullMode = CullMode.Back,
+                    FillMode = FillMode.Wireframe,
                 } );
 
-                this._両面描画の際のラスタライザステートLine = new SharpDX.Direct3D11.RasterizerState( d3dDevice, new SharpDX.Direct3D11.RasterizerStateDescription {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                this._両面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                    CullMode = CullMode.None,
+                    FillMode = FillMode.Wireframe,
                 } );
 
-                this._裏側片面描画の際のラスタライザステート = new SharpDX.Direct3D11.RasterizerState( d3dDevice, new SharpDX.Direct3D11.RasterizerStateDescription {
-                    CullMode = SharpDX.Direct3D11.CullMode.Front,
-                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                this._裏側片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                    CullMode = CullMode.Front,
+                    FillMode = FillMode.Solid,
                 } );
             }
             //----------------
@@ -347,7 +348,7 @@ namespace MikuMikuFlex3
             #region " 共有テクスチャを読み込む。"
             //----------------
             {
-                this._共有テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ 11 ];
+                this._共有テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ 11 ];
 
                 var 共有テクスチャパス = new string[] {
                     @"Resources.Toon.toon0.bmp",
@@ -392,7 +393,7 @@ namespace MikuMikuFlex3
             #region " 個別テクスチャを読み込む。"
             //----------------
             {
-                this._個別テクスチャリスト = new (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
+                this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
 
                 for( int i = 0; i < this._PMXFモデル.テクスチャリスト.Count; i++ )
                 {
@@ -440,9 +441,9 @@ namespace MikuMikuFlex3
 
                 this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
-                    new SharpDX.Direct3D11.BufferDescription {
+                    new BufferDescription {
                         SizeInBytes = _入力頂点リスト.Length * _D3DBoneTrans.SizeInBytes,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                        BindFlags = BindFlags.ConstantBuffer,
                     } );
 
 
@@ -450,9 +451,9 @@ namespace MikuMikuFlex3
 
                 this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
-                    new SharpDX.Direct3D11.BufferDescription {
+                    new BufferDescription {
                         SizeInBytes = _入力頂点リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                        BindFlags = BindFlags.ConstantBuffer,
                     } );
 
 
@@ -460,9 +461,9 @@ namespace MikuMikuFlex3
 
                 this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
-                    new SharpDX.Direct3D11.BufferDescription {
+                    new BufferDescription {
                         SizeInBytes = _入力頂点リスト.Length * _D3DBoneQuaternion.SizeInBytes,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.ConstantBuffer,
+                        BindFlags = BindFlags.ConstantBuffer,
                     } );
             }
             //----------------
@@ -497,7 +498,7 @@ namespace MikuMikuFlex3
         /// </summary>
         /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( SharpDX.Direct3D11.DeviceContext d3ddc, カメラ camera, ViewportF viewport )
+        public void 描画する( DeviceContext d3ddc, カメラ camera, 照明 light, ViewportF viewport )
         {
             #region " スキニングを行う。"
             //----------------
@@ -506,17 +507,17 @@ namespace MikuMikuFlex3
                 this._D3DBoneTransデータストリーム.WriteRange( this._ボーンのモデルポーズ配列 );
                 this._D3DBoneTransデータストリーム.Position = 0;
                 d3ddc.UpdateSubresource( new DataBox( this._D3DBoneTransデータストリーム.DataPointer, 0, 0 ), this._D3DBoneTrans定数バッファ, 0 );
-                this._Effect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
+                this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
 
                 this._D3DBoneLocalPositionデータストリーム.WriteRange( this._ボーンのローカル位置配列 );
                 this._D3DBoneLocalPositionデータストリーム.Position = 0;
                 d3ddc.UpdateSubresource( new DataBox( this._D3DBoneLocalPositionデータストリーム.DataPointer, 0, 0 ), this._D3DBoneLocalPosition定数バッファ, 0 );
-                this._Effect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
+                this._既定のEffect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
 
                 this._D3DBoneQuaternionデータストリーム.WriteRange( this._ボーンの回転配列 );
                 this._D3DBoneQuaternionデータストリーム.Position = 0;
                 d3ddc.UpdateSubresource( new DataBox( this._D3DBoneQuaternionデータストリーム.DataPointer, 0, 0 ), this._D3DBoneQuaternion定数バッファ, 0 );
-                this._Effect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
+                this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
                 // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
                 this._D3Dスキニングバッファデータストリーム.WriteRange( this._入力頂点リスト );
@@ -550,10 +551,10 @@ namespace MikuMikuFlex3
             #region " モデル単位のD3Dパイプラインを構築する。"
             //----------------
             {
-                d3ddc.InputAssembler.SetVertexBuffers( 0, new SharpDX.Direct3D11.VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, SharpDX.DXGI.Format.R32_UInt, 0 );
+                d3ddc.InputAssembler.SetVertexBuffers( 0, new VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
+                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, Format.R32_UInt, 0 );
                 d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
-                d3ddc.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PatchListWith3ControlPoints;
+                d3ddc.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
                 d3ddc.Rasterizer.SetViewport( viewport );
             }
@@ -570,9 +571,9 @@ namespace MikuMikuFlex3
 
                 #region " エフェクト変数を設定する。"
                 //----------------
-                for( int j = 0; j < this._Effect.Description.GlobalVariableCount; j++ )
+                for( int j = 0; j < this._既定のEffect.Description.GlobalVariableCount; j++ )
                 {
-                    var 変数 = this._Effect.GetVariableByIndex( j );
+                    var 変数 = this._既定のEffect.GetVariableByIndex( j );
 
                     switch( 変数.Description.Semantic?.ToUpper() )
                     {
@@ -625,7 +626,7 @@ namespace MikuMikuFlex3
                                     break;
 
                                 case "light":
-                                    変数.AsVector().Set( new Vector4( this._光源位置, 0f ) );
+                                    変数.AsVector().Set( new Vector4( -light.照射方向, 0f ) );
                                     break;
                             }
                             break;
@@ -753,7 +754,7 @@ namespace MikuMikuFlex3
             }
         }
 
-        private void _エフェクトを適用しつつ材質を描画する( SharpDX.Direct3D11.DeviceContext d3ddc, PMXFormat.材質 ipmxSubset, MMDPass種別 passType, Action<PMXFormat.材質> drawAction )
+        private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMXFormat.材質 ipmxSubset, MMDPass種別 passType, Action<PMXFormat.材質> drawAction )
         {
             if( ipmxSubset.拡散色.W == 0 )
                 return;
@@ -783,11 +784,11 @@ namespace MikuMikuFlex3
 
         private PMXボーン[] _PMXボーン配列;
 
-        private (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[] _共有テクスチャリスト;
+        private (Texture2D tex2d, ShaderResourceView srv)[] _共有テクスチャリスト;
 
-        private (SharpDX.Direct3D11.Texture2D tex2d, SharpDX.Direct3D11.ShaderResourceView srv)[] _個別テクスチャリスト;
+        private (Texture2D tex2d, ShaderResourceView srv)[] _個別テクスチャリスト;
 
-        private SharpDX.Direct3D11.Effect _Effect;
+        private Effect _既定のEffect;
 
         private List<テクニック> _D3Dテクニックリスト;
 
@@ -840,33 +841,31 @@ namespace MikuMikuFlex3
         private DataStream _D3DBoneQuaternionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
-        private Vector3 _光源位置;
-
         private Matrix _ワールド変換行列;
 
         private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
 
-        private SharpDX.Direct3D11.ShaderResourceView _D3DスキニングバッファSRView;
+        private ShaderResourceView _D3DスキニングバッファSRView;
 
         private DataStream _D3Dスキニングバッファデータストリーム;
 
         private SharpDX.Direct3D11.Buffer _D3D頂点バッファ;
 
-        private SharpDX.Direct3D11.UnorderedAccessView _D3D頂点バッファビューUAView;
+        private UnorderedAccessView _D3D頂点バッファビューUAView;
 
         private SharpDX.Direct3D11.Buffer _D3Dインデックスバッファ;
 
-        private SharpDX.Direct3D11.InputLayout _D3D頂点レイアウト;
+        private InputLayout _D3D頂点レイアウト;
 
-        private SharpDX.Direct3D11.RasterizerState _裏側片面描画の際のラスタライザステート;
+        private RasterizerState _裏側片面描画の際のラスタライザステート;
 
-        private SharpDX.Direct3D11.RasterizerState _片面描画の際のラスタライザステート;
+        private RasterizerState _片面描画の際のラスタライザステート;
 
-        private SharpDX.Direct3D11.RasterizerState _片面描画の際のラスタライザステートLine;
+        private RasterizerState _片面描画の際のラスタライザステートLine;
 
-        private SharpDX.Direct3D11.RasterizerState _両面描画の際のラスタライザステート;
+        private RasterizerState _両面描画の際のラスタライザステート;
 
-        private SharpDX.Direct3D11.RasterizerState _両面描画の際のラスタライザステートLine;
+        private RasterizerState _両面描画の際のラスタライザステートLine;
 
         private List<PMXボーン> _ルートボーンリスト;
 

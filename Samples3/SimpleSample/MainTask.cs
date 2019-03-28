@@ -139,6 +139,8 @@ namespace SimpleSample
                 初期位置: new Vector3( 0f, 0f, -45f ),
                 初期注視点: new Vector3( 0f, 10f, 0f ),
                 初期上方向: new Vector3( 0f, 1f, 0f ) );
+
+            this._照明 = new 照明();
         }
 
         public void Dispose()
@@ -172,7 +174,7 @@ namespace SimpleSample
                 // モデルの進行描画。
 
                 this._PMXモデル.進行する();
-                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._カメラ, this._D3DViewport );
+                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, this._カメラ, this._照明, this._D3DViewport );
 
 
                 // 画面の表示。
@@ -190,6 +192,8 @@ namespace SimpleSample
         private Control _Parent;
 
         private カメラ _カメラ;
+
+        private 照明 _照明;
 
         private SharpDX.Direct3D11.Device _D3D11Device;
 

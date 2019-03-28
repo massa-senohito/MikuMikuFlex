@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="フレームワーク\カメラ.cs" />
+    <Compile Include="フレームワーク\照明.cs" />
     <Compile Include="ヘルパ等\CS_INPUT.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイント.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
