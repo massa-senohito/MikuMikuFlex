@@ -142,6 +142,7 @@
     <Compile Include="ヘルパ等\Format\PMX\頂点.cs" />
     <Compile Include="ヘルパ等\Format\PMX\頂点リスト.cs" />
     <Compile Include="フレームワーク\モデル\Effects11\MMDPass種別.cs" />
+    <Compile Include="ヘルパ等\Format\VMD\モーション.cs" />
     <Compile Include="ヘルパ等\MMFShaderResourceView.cs" />
     <Compile Include="ヘルパ等\ParserHelper.cs" />
     <Compile Include="フレームワーク\モデル\PMXボーン制御.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="ヘルパ等\Format\VMD\モーフフレームリスト.cs" />
     <Compile Include="ヘルパ等\Format\VMD\照明フレーム.cs" />
     <Compile Include="ヘルパ等\Format\VMD\照明フレームリスト.cs" />
+    <Compile Include="ヘルパ等\QPCTimer.cs" />
     <Compile Include="ヘルパ等\TargaSolver.cs" />
     <Compile Include="ヘルパ等\VS_INPUT.cs" />
     <Compile Include="フレームワーク\モデル\Effects11\テクニック.cs" />

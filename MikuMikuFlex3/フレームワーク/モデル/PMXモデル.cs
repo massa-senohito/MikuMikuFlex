@@ -17,24 +17,14 @@ namespace MikuMikuFlex3
     public class PMXモデル : IDisposable
     {
 
-        // ボーン制御プロパティ
+        // 制御
 
 
         internal PMXボーン制御[] PMXボーン制御リスト { get; private protected set; }
 
         internal const int 最大ボーン数 = 768;
 
-
-
-        // 材質制御プロパティ
-
-
         internal PMX材質制御[] PMX材質制御リスト { get; private protected set; }
-
-
-
-        // 頂点制御プロパティ
-
 
         internal PMX頂点制御[] PMX頂点制御リスト { get; private protected set; }
 
@@ -523,20 +513,11 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     現在時刻におけるモデルの各種状態を更新する。
         /// </summary>
-        public void 進行する()
+        public void 進行する( double 現在時刻sec )
         {
-            // 各頂点を変形する。（数が多いので、必要のある頂点のみ。）
-
-
-            
-            // 各PMXボーンを変形する。
-
-
-
-            // 各PMXボーンの現状の変形から、「モデルポーズ行列」「ローカルポーズ行列」を確定する。（全ボーンに対して。）
+            // 全ボーンについて、現状の変形から、「モデルポーズ行列」「ローカルポーズ行列」を確定する。
             foreach( var root in this._ルートボーンリスト )
                 root.更新する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
-
         }
 
         /// <summary>

@@ -163,6 +163,8 @@ namespace SimpleSample
 
         public void MainLoop()
         {
+            var timer = new QPCTimer();
+
             while( !this.終了指示通知.IsSet )
             {
                 // モデル単位のパイプライン設定。
@@ -175,7 +177,7 @@ namespace SimpleSample
 
                 var world = Matrix.Identity;
 
-                this._PMXモデル.進行する();
+                this._PMXモデル.進行する( timer.現在のリアルタイムカウントsec );
                 this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
 
 
