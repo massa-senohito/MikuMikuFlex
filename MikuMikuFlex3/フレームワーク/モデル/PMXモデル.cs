@@ -5,11 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-using SharpDX.Animation;
 
 #pragma warning disable 0649
 
@@ -45,16 +46,17 @@ namespace MikuMikuFlex3
         /// </remarks>
         public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス )
         {
-            using( var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-            {
-                this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( file ) => {
+            var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read );
 
-                    var baseFolder = Path.GetDirectoryName( PMXファイルパス );
-                    var path = Path.Combine( baseFolder, file );
-                    return new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read );
+            this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( file ) => {
 
-                } );
-            }
+                var baseFolder = Path.GetDirectoryName( PMXファイルパス );
+                var path = Path.Combine( baseFolder, file );
+                return new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read );
+
+            } );
+
+            // stream は、初期化が終わると閉じられる。
         }
 
         /// <summary>
@@ -69,285 +71,280 @@ namespace MikuMikuFlex3
             var assembly = Assembly.GetExecutingAssembly();
             var path = $"{this.GetType().Namespace}.{リソース名}";
 
-            using( var stream = assembly.GetManifestResourceStream( path ) )
-            {
-                this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( resource ) => {
+            var stream = assembly.GetManifestResourceStream( path );
 
-                    // PMXではテクスチャ名などにパス区切り文字を使用できるが、その区切りがなんであるかはOSに依存して
-                    // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
-                    var rpath = resource.Replace( Path.DirectorySeparatorChar, '.' ).Replace( Path.AltDirectorySeparatorChar, '.' );    // '.' 区切りに変換
+            this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( resource ) => {
 
-                    return assembly.GetManifestResourceStream( 名前空間を示す型, rpath );
+                // PMXではテクスチャ名などにパス区切り文字を使用できるが、その区切りがなんであるかはOSに依存して
+                // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
+                var rpath = resource.Replace( Path.DirectorySeparatorChar, '.' ).Replace( Path.AltDirectorySeparatorChar, '.' );    // '.' 区切りに変換
 
-                } );
-            }
+                return assembly.GetManifestResourceStream( 名前空間を示す型, rpath );
+
+            } );
+
+            // stream は、初期化が終わると閉じられる。
         }
 
         private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, Func<string, Stream> リソースを開く )
         {
-            #region " モデルを読み込む。"
-            //----------------
-            this._PMXFモデル = new PMXFormat.モデル( PMXデータ );
+            Task.Run( () => {
 
-            if( this._PMXFモデル.ボーンリスト.Count > 最大ボーン数 )
-                throw new Exception( "ボーン数が多すぎます。" );
-            //----------------
-            #endregion
+                #region " モデルを読み込む。"
+                //----------------
+                this._PMXFモデル = new PMXFormat.モデル( PMXデータ );
 
-            #region " アニメーションを初期化する。"
-            //----------------
-            {
-                this._アニメーション管理 = new Manager();
+                if( this._PMXFモデル.ボーンリスト.Count > 最大ボーン数 )
+                    throw new Exception( "ボーン数が多すぎます。" );
 
-                this._ストーリーボード = new Storyboard( this._アニメーション管理 );
-            }
-            //----------------
-            #endregion
+                PMXデータ.Dispose();
+                //----------------
+                #endregion
 
-            #region " PMXボーン制御リストを作成する。"
-            //----------------
-            {
-                int ボーン数 = this._PMXFモデル.ボーンリスト.Count;
-
-                this.PMXボーン制御リスト = new PMXボーン制御[ ボーン数 ];
-
-                for( int i = 0; i < ボーン数; i++ )
-                    this.PMXボーン制御リスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
-
-                for( int i = 0; i < ボーン数; i++ )
-                    this.PMXボーン制御リスト[ i ].子ボーンリストを構築する( this.PMXボーン制御リスト );
-            }
-            //----------------
-            #endregion
-            #region " ボーンのルートリストを作成する。"
-            //----------------
-            {
-                this._ルートボーンリスト = new List<PMXボーン制御>();
-
-                for( int i = 0; i < this.PMXボーン制御リスト.Length; i++ )
+                #region " PMXボーン制御リストを作成する。"
+                //----------------
                 {
-                    // 親ボーンを持たないのがルートボーン。
-                    if( this.PMXボーン制御リスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                    int ボーン数 = this._PMXFモデル.ボーンリスト.Count;
+
+                    this.PMXボーン制御リスト = new PMXボーン制御[ ボーン数 ];
+
+                    for( int i = 0; i < ボーン数; i++ )
+                        this.PMXボーン制御リスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
+
+                    for( int i = 0; i < ボーン数; i++ )
+                        this.PMXボーン制御リスト[ i ].子ボーンリストを構築する( this.PMXボーン制御リスト );
+                }
+                //----------------
+                #endregion
+                #region " ボーンのルートリストを作成する。"
+                //----------------
+                {
+                    this._ルートボーンリスト = new List<PMXボーン制御>();
+
+                    for( int i = 0; i < this.PMXボーン制御リスト.Length; i++ )
                     {
-                        this._ルートボーンリスト.Add( this.PMXボーン制御リスト[ i ] );
+                        // 親ボーンを持たないのがルートボーン。
+                        if( this.PMXボーン制御リスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                        {
+                            this._ルートボーンリスト.Add( this.PMXボーン制御リスト[ i ] );
+                        }
                     }
                 }
-            }
-            //----------------
-            #endregion
-            #region " PMX材質制御リストを作成する。"
-            //----------------
-            {
-                int 材質数 = this._PMXFモデル.材質リスト.Count;
-
-                this.PMX材質制御リスト = new PMX材質制御[ 材質数 ];
-
-                for( int i = 0; i < 材質数; i++ )
-                    this.PMX材質制御リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ] );
-            }
-            //----------------
-            #endregion
-            #region " PMXモーフ制御リストを作成する。"
-            //----------------
-            {
-                int モーフ数 = this._PMXFモデル.モーフリスト.Count;
-
-                this.PMXモーフ制御リスト = new PMXモーフ制御[ モーフ数 ];
-
-                for( int i = 0; i < モーフ数; i++ )
-                    this.PMXモーフ制御リスト[ i ] = new PMXモーフ制御( this._PMXFモデル.モーフリスト[ i ], this._アニメーション管理 );
-            }
-            //----------------
-            #endregion
-
-            #region " 既定のエフェクトを生成する。"
-            //----------------
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-
-                using( var st = assembly.GetManifestResourceStream( this.GetType(), "Resources.Shaders.DefaultShader.cso" ) )
+                //----------------
+                #endregion
+                #region " PMX材質制御リストを作成する。"
+                //----------------
                 {
-                    var effectByteCode = new byte[ st.Length ];
-                    st.Read( effectByteCode, 0, (int) st.Length );
+                    int 材質数 = this._PMXFモデル.材質リスト.Count;
 
-                    this._既定のEffect = new Effect( d3dDevice, effectByteCode );
+                    this.PMX材質制御リスト = new PMX材質制御[ 材質数 ];
+
+                    for( int i = 0; i < 材質数; i++ )
+                        this.PMX材質制御リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ] );
                 }
-            }
-            //----------------
-            #endregion
-            #region " テクニックリストを生成する。"
-            //----------------
-            {
-                var techList = new List<EffectTechnique>();
-
-                for( int i = 0; i < this._既定のEffect.Description.TechniqueCount; i++ )
+                //----------------
+                #endregion
+                #region " PMXモーフ制御リストを作成する。"
+                //----------------
                 {
-                    var tech = this._既定のEffect.GetTechniqueByIndex( i );
+                    int モーフ数 = this._PMXFモデル.モーフリスト.Count;
 
-                    // 名前が重複しないテクニックのみ採択
-                    if( techList.FindIndex( ( t ) => ( t.Description.Name == tech.Description.Name ) ) == -1 )
-                        techList.Add( tech );
+                    this.PMXモーフ制御リスト = new PMXモーフ制御[ モーフ数 ];
+
+                    for( int i = 0; i < モーフ数; i++ )
+                        this.PMXモーフ制御リスト[ i ] = new PMXモーフ制御( this._PMXFモデル.モーフリスト[ i ] );
                 }
+                //----------------
+                #endregion
 
-                this._D3Dテクニックリスト = new List<テクニック>();
-
-                int subsetCount = this._PMXFモデル.材質リスト.Count;
-
-                foreach( var d3dTech in techList )
+                #region " 既定のエフェクトを生成する。"
+                //----------------
                 {
-                    this._D3Dテクニックリスト.Add( new テクニック( this._既定のEffect, d3dTech, subsetCount ) );
+                    var assembly = Assembly.GetExecutingAssembly();
+
+                    using( var st = assembly.GetManifestResourceStream( this.GetType(), "Resources.Shaders.DefaultShader.cso" ) )
+                    {
+                        var effectByteCode = new byte[ st.Length ];
+                        st.Read( effectByteCode, 0, (int) st.Length );
+
+                        this._既定のEffect = new Effect( d3dDevice, effectByteCode );
+                    }
                 }
-
-                techList.Clear();
-            }
-            //----------------
-            #endregion
-
-            #region " 入力頂点リストを生成する。"
-            //----------------
-            {
-                var 頂点リスト = new List<CS_INPUT>( this._PMXFモデル.頂点リスト.Count );
-
-                for( int i = 0; i < this._PMXFモデル.頂点リスト.Count; i++ )
+                //----------------
+                #endregion
+                #region " テクニックリストを生成する。"
+                //----------------
                 {
-                    this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
+                    var techList = new List<EffectTechnique>();
+
+                    for( int i = 0; i < this._既定のEffect.Description.TechniqueCount; i++ )
+                    {
+                        var tech = this._既定のEffect.GetTechniqueByIndex( i );
+
+                        // 名前が重複しないテクニックのみ採択
+                        if( techList.FindIndex( ( t ) => ( t.Description.Name == tech.Description.Name ) ) == -1 )
+                            techList.Add( tech );
+                    }
+
+                    this._D3Dテクニックリスト = new List<テクニック>();
+
+                    int subsetCount = this._PMXFモデル.材質リスト.Count;
+
+                    foreach( var d3dTech in techList )
+                    {
+                        this._D3Dテクニックリスト.Add( new テクニック( this._既定のEffect, d3dTech, subsetCount ) );
+                    }
+
+                    techList.Clear();
                 }
+                //----------------
+                #endregion
 
-                this.入力頂点配列 = 頂点リスト.ToArray();
-            }
-            //----------------
-            #endregion
-
-            #region " スキニングバッファを作成する。"
-            //----------------
-            {
-                this._D3Dスキニングバッファデータストリーム = new DataStream( this.入力頂点配列.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
-
-                this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
-                    d3dDevice,
-                    new BufferDescription {
-                        SizeInBytes = CS_INPUT.SizeInBytes * this.入力頂点配列.Length,
-                        Usage = ResourceUsage.Default,
-                        BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        OptionFlags = ResourceOptionFlags.BufferStructured,   // 構造化バッファ
-                        StructureByteStride = CS_INPUT.SizeInBytes,
-                    } );
-
-                this._D3DスキニングバッファSRView = new ShaderResourceView(
-                    d3dDevice,
-                    this._D3Dスキニングバッファ,  // 構造化バッファ
-                    new ShaderResourceViewDescription {
-                        Format = Format.Unknown,
-                        Dimension = ShaderResourceViewDimension.ExtendedBuffer,
-                        BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
-                            FirstElement = 0,
-                            ElementCount = this.入力頂点配列.Length,
-                        },
-                    } );
-            }
-            //----------------
-            #endregion
-            #region " 頂点バッファを作成する。"
-            //----------------
-            {
-                this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
-                    d3dDevice,
-                    new BufferDescription {
-                        SizeInBytes = VS_INPUT.SizeInBytes * this.入力頂点配列.Length,
-                        Usage = ResourceUsage.Default,
-                        BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
-                        CpuAccessFlags = CpuAccessFlags.None,
-                        OptionFlags = ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
-                    } );
-
-                this._D3D頂点バッファビューUAView = new UnorderedAccessView(
-                    d3dDevice,
-                    this._D3D頂点バッファ,
-                    new UnorderedAccessViewDescription {
-                        Format = Format.R32_Typeless,
-                        Dimension = UnorderedAccessViewDimension.Buffer,
-                        Buffer = new UnorderedAccessViewDescription.BufferResource {
-                            FirstElement = 0,
-                            ElementCount = VS_INPUT.SizeInBytes * this.入力頂点配列.Length / 4,
-                            Flags = UnorderedAccessViewBufferFlags.Raw,
-                        },
-                    } );
-            }
-            //----------------
-            #endregion
-            #region " インデックスバッファを作成する。"
-            //----------------
-            {
-                var インデックスリスト = new List<uint>();
-
-                foreach( PMXFormat.面 surface in this._PMXFモデル.面リスト )
+                #region " 入力頂点リストを生成する。"
+                //----------------
                 {
-                    インデックスリスト.Add( surface.頂点1 );
-                    インデックスリスト.Add( surface.頂点2 );
-                    インデックスリスト.Add( surface.頂点3 );
+                    var 頂点リスト = new List<CS_INPUT>( this._PMXFモデル.頂点リスト.Count );
+
+                    for( int i = 0; i < this._PMXFモデル.頂点リスト.Count; i++ )
+                    {
+                        this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
+                    }
+
+                    this.入力頂点配列 = 頂点リスト.ToArray();
                 }
+                //----------------
+                #endregion
 
-                using( var dataStream = DataStream.Create( インデックスリスト.ToArray(), true, true ) )
+                #region " スキニングバッファを作成する。"
+                //----------------
                 {
-                    this._D3Dインデックスバッファ = new SharpDX.Direct3D11.Buffer(
+                    this._D3Dスキニングバッファデータストリーム = new DataStream( this.入力頂点配列.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
+
+                    this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
-                        dataStream,
                         new BufferDescription {
-                            BindFlags = BindFlags.IndexBuffer,
-                            SizeInBytes = (int) dataStream.Length
+                            SizeInBytes = CS_INPUT.SizeInBytes * this.入力頂点配列.Length,
+                            Usage = ResourceUsage.Default,
+                            BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
+                            CpuAccessFlags = CpuAccessFlags.None,
+                            OptionFlags = ResourceOptionFlags.BufferStructured,   // 構造化バッファ
+                            StructureByteStride = CS_INPUT.SizeInBytes,
+                        } );
+
+                    this._D3DスキニングバッファSRView = new ShaderResourceView(
+                        d3dDevice,
+                        this._D3Dスキニングバッファ,  // 構造化バッファ
+                        new ShaderResourceViewDescription {
+                            Format = Format.Unknown,
+                            Dimension = ShaderResourceViewDimension.ExtendedBuffer,
+                            BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
+                                FirstElement = 0,
+                                ElementCount = this.入力頂点配列.Length,
+                            },
                         } );
                 }
-            }
-            //----------------
-            #endregion
-            #region " 頂点レイアウトを作成する。"
-            //----------------
-            {
-                this._D3D頂点レイアウト = new InputLayout(
-                    d3dDevice,
-                    this._既定のEffect.GetTechniqueByName( "DefaultObject" ).GetPassByIndex( 0 ).Description.Signature,
-                    VS_INPUT.VertexElements );
-            }
-            //----------------
-            #endregion
-            #region " ラスタライザステートを作成する。"
-            //----------------
-            {
-                this._片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
-                    CullMode = CullMode.Back,
-                    FillMode = FillMode.Solid,
-                } );
+                //----------------
+                #endregion
+                #region " 頂点バッファを作成する。"
+                //----------------
+                {
+                    this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
+                        d3dDevice,
+                        new BufferDescription {
+                            SizeInBytes = VS_INPUT.SizeInBytes * this.入力頂点配列.Length,
+                            Usage = ResourceUsage.Default,
+                            BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
+                            CpuAccessFlags = CpuAccessFlags.None,
+                            OptionFlags = ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
+                        } );
 
-                this._両面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
-                    CullMode = CullMode.None,
-                    FillMode = FillMode.Solid,
-                } );
+                    this._D3D頂点バッファビューUAView = new UnorderedAccessView(
+                        d3dDevice,
+                        this._D3D頂点バッファ,
+                        new UnorderedAccessViewDescription {
+                            Format = Format.R32_Typeless,
+                            Dimension = UnorderedAccessViewDimension.Buffer,
+                            Buffer = new UnorderedAccessViewDescription.BufferResource {
+                                FirstElement = 0,
+                                ElementCount = VS_INPUT.SizeInBytes * this.入力頂点配列.Length / 4,
+                                Flags = UnorderedAccessViewBufferFlags.Raw,
+                            },
+                        } );
+                }
+                //----------------
+                #endregion
+                #region " インデックスバッファを作成する。"
+                //----------------
+                {
+                    var インデックスリスト = new List<uint>();
 
-                this._片面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
-                    CullMode = CullMode.Back,
-                    FillMode = FillMode.Wireframe,
-                } );
+                    foreach( PMXFormat.面 surface in this._PMXFモデル.面リスト )
+                    {
+                        インデックスリスト.Add( surface.頂点1 );
+                        インデックスリスト.Add( surface.頂点2 );
+                        インデックスリスト.Add( surface.頂点3 );
+                    }
 
-                this._両面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
-                    CullMode = CullMode.None,
-                    FillMode = FillMode.Wireframe,
-                } );
+                    using( var dataStream = DataStream.Create( インデックスリスト.ToArray(), true, true ) )
+                    {
+                        this._D3Dインデックスバッファ = new SharpDX.Direct3D11.Buffer(
+                            d3dDevice,
+                            dataStream,
+                            new BufferDescription {
+                                BindFlags = BindFlags.IndexBuffer,
+                                SizeInBytes = (int) dataStream.Length
+                            } );
+                    }
+                }
+                //----------------
+                #endregion
+                #region " 頂点レイアウトを作成する。"
+                //----------------
+                {
+                    this._D3D頂点レイアウト = new InputLayout(
+                        d3dDevice,
+                        this._既定のEffect.GetTechniqueByName( "DefaultObject" ).GetPassByIndex( 0 ).Description.Signature,
+                        VS_INPUT.VertexElements );
+                }
+                //----------------
+                #endregion
+                #region " ラスタライザステートを作成する。"
+                //----------------
+                {
+                    this._片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                        CullMode = CullMode.Back,
+                        FillMode = FillMode.Solid,
+                    } );
 
-                this._裏側片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
-                    CullMode = CullMode.Front,
-                    FillMode = FillMode.Solid,
-                } );
-            }
-            //----------------
-            #endregion
+                    this._両面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                        CullMode = CullMode.None,
+                        FillMode = FillMode.Solid,
+                    } );
 
-            #region " 共有テクスチャを読み込む。"
-            //----------------
-            {
-                this._共有テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ 11 ];
+                    this._片面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                        CullMode = CullMode.Back,
+                        FillMode = FillMode.Wireframe,
+                    } );
 
-                var 共有テクスチャパス = new string[] {
+                    this._両面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                        CullMode = CullMode.None,
+                        FillMode = FillMode.Wireframe,
+                    } );
+
+                    this._裏側片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                        CullMode = CullMode.Front,
+                        FillMode = FillMode.Solid,
+                    } );
+                }
+                //----------------
+                #endregion
+
+                #region " 共有テクスチャを読み込む。"
+                //----------------
+                {
+                    this._共有テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ 11 ];
+
+                    var 共有テクスチャパス = new string[] {
                     @"Resources.Toon.toon0.bmp",
                     @"Resources.Toon.toon1.bmp",
                     @"Resources.Toon.toon2.bmp",
@@ -361,114 +358,120 @@ namespace MikuMikuFlex3
                     @"Resources.Toon.toon10.bmp",
                 };
 
-                var assembly = Assembly.GetExecutingAssembly();
+                    var assembly = Assembly.GetExecutingAssembly();
 
-                for( int i = 0; i < 11; i++ )
-                {
-                    this._共有テクスチャリスト[ i ] = (null, null);
-
-                    var path = $"{this.GetType().Namespace}.{共有テクスチャパス[ i ]}";
-
-                    try
+                    for( int i = 0; i < 11; i++ )
                     {
-                        if( null != assembly.GetManifestResourceInfo( path ) )
-                        {
-                            var stream = assembly.GetManifestResourceStream( path );
-                            var srv = MMFShaderResourceView.FromStream( d3dDevice, stream, out var tex2d );
+                        this._共有テクスチャリスト[ i ] = (null, null);
 
-                            this._共有テクスチャリスト[ i ] = (tex2d, srv);
+                        var path = $"{this.GetType().Namespace}.{共有テクスチャパス[ i ]}";
+
+                        try
+                        {
+                            if( null != assembly.GetManifestResourceInfo( path ) )
+                            {
+                                var stream = assembly.GetManifestResourceStream( path );
+                                var srv = MMFShaderResourceView.FromStream( d3dDevice, stream, out var tex2d );
+
+                                this._共有テクスチャリスト[ i ] = (tex2d, srv);
+                            }
+                        }
+                        catch( Exception e )
+                        {
+                            Trace.TraceError( $"共有テクスチャの読み込みに失敗しました。[{path}][{e.Message}]" );
                         }
                     }
-                    catch( Exception e )
-                    {
-                        Trace.TraceError( $"共有テクスチャの読み込みに失敗しました。[{path}][{e.Message}]" );
-                    }
                 }
-            }
-            //----------------
-            #endregion
-            #region " 個別テクスチャを読み込む。"
-            //----------------
-            {
-                this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
-
-                for( int i = 0; i < this._PMXFモデル.テクスチャリスト.Count; i++ )
+                //----------------
+                #endregion
+                #region " 個別テクスチャを読み込む。"
+                //----------------
                 {
-                    this._個別テクスチャリスト[ i ] = (null, null);
+                    this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
 
-                    var texturePath = this._PMXFモデル.テクスチャリスト[ i ];
-                    var 拡張子 = Path.GetExtension( texturePath ).ToLower();
-
-                    Debug.Write( $"Loading {texturePath} ... " );
-
-                    try
+                    for( int i = 0; i < this._PMXFモデル.テクスチャリスト.Count; i++ )
                     {
-                        var stream = リソースを開く( texturePath );    // 開く方法は呼び出し元に任せる
+                        this._個別テクスチャリスト[ i ] = (null, null);
 
-                        var srv = MMFShaderResourceView.FromStream(
-                            d3dDevice,
-                            ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
-                            out var tex2d );
+                        var texturePath = this._PMXFモデル.テクスチャリスト[ i ];
+                        var 拡張子 = Path.GetExtension( texturePath ).ToLower();
 
-                        this._個別テクスチャリスト[ i ] = (tex2d, srv);
+                        Debug.Write( $"Loading {texturePath} ... " );
 
-                        Debug.WriteLine( "OK" );
-                    }
-                    catch( Exception e )
-                    {
-                        Debug.WriteLine( "error!" );
-                        Trace.TraceError( $"個別テクスチャファイルの読み込みに失敗しました。[{texturePath}][{e.Message}]" );
+                        try
+                        {
+                            var stream = リソースを開く( texturePath );    // 開く方法は呼び出し元に任せる
+
+                            var srv = MMFShaderResourceView.FromStream(
+                                d3dDevice,
+                                ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
+                                out var tex2d );
+
+                            this._個別テクスチャリスト[ i ] = (tex2d, srv);
+
+                            Debug.WriteLine( "OK" );
+                        }
+                        catch( Exception e )
+                        {
+                            Debug.WriteLine( "error!" );
+                            Trace.TraceError( $"個別テクスチャファイルの読み込みに失敗しました。[{texturePath}][{e.Message}]" );
+                        }
                     }
                 }
-            }
-            //----------------
-            #endregion
+                //----------------
+                #endregion
 
-            #region " ボーン用バッファを作成する。"
-            //----------------
-            this._ボーンのモデルポーズ配列 = new Matrix[ this._PMXFモデル.ボーンリスト.Count ];
-            this._ボーンのローカル位置配列 = new Vector3[ this._PMXFモデル.ボーンリスト.Count ];
-            this._ボーンの回転配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
-            //----------------
-            #endregion
-            #region " ボーン用定数バッファを作成する。"
-            //----------------
-            {
-                this._D3DBoneTransデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
+                #region " ボーン用バッファを作成する。"
+                //----------------
+                this._ボーンのモデルポーズ配列 = new Matrix[ this._PMXFモデル.ボーンリスト.Count ];
+                this._ボーンのローカル位置配列 = new Vector3[ this._PMXFモデル.ボーンリスト.Count ];
+                this._ボーンの回転配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
+                //----------------
+                #endregion
+                #region " ボーン用定数バッファを作成する。"
+                //----------------
+                {
+                    this._D3DBoneTransデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
 
-                this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
-                    d3dDevice,
-                    new BufferDescription {
-                        SizeInBytes = 入力頂点配列.Length * _D3DBoneTrans.SizeInBytes,
-                        BindFlags = BindFlags.ConstantBuffer,
-                    } );
-
-
-                this._D3DBoneLocalPositionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
-
-                this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
-                    d3dDevice,
-                    new BufferDescription {
-                        SizeInBytes = 入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
-                        BindFlags = BindFlags.ConstantBuffer,
-                    } );
+                    this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
+                        d3dDevice,
+                        new BufferDescription {
+                            SizeInBytes = 入力頂点配列.Length * _D3DBoneTrans.SizeInBytes,
+                            BindFlags = BindFlags.ConstantBuffer,
+                        } );
 
 
-                this._D3DBoneQuaternionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
+                    this._D3DBoneLocalPositionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
 
-                this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
-                    d3dDevice,
-                    new BufferDescription {
-                        SizeInBytes = 入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes,
-                        BindFlags = BindFlags.ConstantBuffer,
-                    } );
-            }
-            //----------------
-            #endregion
+                    this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
+                        d3dDevice,
+                        new BufferDescription {
+                            SizeInBytes = 入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
+                            BindFlags = BindFlags.ConstantBuffer,
+                        } );
+
+
+                    this._D3DBoneQuaternionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
+
+                    this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
+                        d3dDevice,
+                        new BufferDescription {
+                            SizeInBytes = 入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes,
+                            BindFlags = BindFlags.ConstantBuffer,
+                        } );
+                }
+                //----------------
+                #endregion
+
+                this._初期化完了.Set();
+
+            } );
         }
 
         public virtual void Dispose()
         {
+            this._初期化完了.Reset();
+
             this._D3DBoneTrans定数バッファ?.Dispose();
             this._D3DBoneTransデータストリーム?.Dispose();
             this._D3DBoneLocalPosition定数バッファ?.Dispose();
@@ -523,11 +526,11 @@ namespace MikuMikuFlex3
                 bone.Dispose();
             this.PMXボーン制御リスト = null;
 
-            this._ストーリーボード?.Dispose();
-            this._アニメーション管理?.Dispose();
-
             this._PMXFモデル = null;
         }
+
+
+        private ManualResetEventSlim _初期化完了 = new ManualResetEventSlim( false );
 
 
 
@@ -537,50 +540,52 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     モデルに対する動作をスケジューリングする。
         /// </summary>
-        public void スケジューリングする( 動作対象 動作対象, string 対象名, Transition 動作, double 現在時刻sec )
-        {
-            switch( 動作対象 )
-            {
-                case 動作対象.ボーンモーション:
-                    #region " ボーンモーションにアニメーションを追加する。"
-                    //----------------
+        //public void スケジューリングする( 動作対象 動作対象, string 対象名, Transition 動作, double 現在時刻sec )
+        //{
+        //    if( !this._初期化完了.IsSet )
+        //        this._初期化完了.Wait();
+
+        //    switch( 動作対象 )
+        //    {
+        //        case 動作対象.ボーンモーション:
+        //            #region " ボーンモーションにアニメーションを追加する。"
+        //            //----------------
                     
-                    // undone: ボーンモーションの実装。
+        //            // undone: ボーンモーションの実装。
 
-                    //----------------
-                    #endregion
-                    break;
+        //            //----------------
+        //            #endregion
+        //            break;
 
-                case 動作対象.モーフ:
-                    #region " モーフにアニメーションを追加する。"
-                    //----------------
-                    {
-                        // 指定された対象名のモーフを検索する。
-                        var 対象モーフ = this.PMXモーフ制御リスト.Where( ( m ) => ( m.PMXFモーフ.モーフ名 == 対象名 ) ).FirstOrDefault();
+        //        case 動作対象.モーフ:
+        //            #region " モーフにアニメーションを追加する。"
+        //            //----------------
+        //            {
+        //                // 指定された対象名のモーフを検索する。
+        //                var 対象モーフ = this.PMXモーフ制御リスト.Where( ( m ) => ( m.PMXFモーフ.モーフ名 == 対象名 ) ).FirstOrDefault();
 
-                        if( null == 対象モーフ )
-                            return; // ない。
+        //                if( null == 対象モーフ )
+        //                    return; // ない。
 
-                        // PMXモデルのストリーボードに、変数と動作を追加する。
-                        this._ストーリーボード.AddTransition( 対象モーフ.アニメ変数, 動作 );
-                        this._ストーリーボード.Schedule( 現在時刻sec ); // すでに登録済みならエラーが返る
-                    }
-                    //----------------
-                    #endregion
-                    break;
-            }
-        }
+        //                // PMXモデルのストリーボードに、変数と動作を追加する。
+        //                this._ストーリーボード.AddTransition( 対象モーフ.アニメ変数, 動作 );
+        //                this._ストーリーボード.Schedule( 現在時刻sec ); // すでに登録済みならエラーが返る
+        //            }
+        //            //----------------
+        //            #endregion
+        //            break;
+        //    }
+        //}
 
         /// <summary>
         ///     現在時刻におけるモデルの各種状態を更新する。
         /// </summary>
         public void 進行する( double 現在時刻sec )
         {
-            // アニメーションを進行する。
+            if( !this._初期化完了.IsSet )
+                this._初期化完了.Wait();
 
-            this._アニメーション管理.Update( 現在時刻sec );
-
-
+            
             // 全ボーンについて、現状の変形から、「モデルポーズ行列」「ローカルポーズ行列」を確定する。
 
             foreach( var root in this._ルートボーンリスト )
@@ -594,6 +599,10 @@ namespace MikuMikuFlex3
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
         public void 描画する( DeviceContext d3ddc, Matrix ワールド変換行列, カメラ camera, 照明 light, ViewportF viewport )
         {
+            if( !this._初期化完了.IsSet )
+                this._初期化完了.Wait();
+
+
             #region " スキニングを行う。"
             //----------------
             {
@@ -956,11 +965,6 @@ namespace MikuMikuFlex3
         private RasterizerState _両面描画の際のラスタライザステートLine;
 
         private List<PMXボーン制御> _ルートボーンリスト;
-
-
-        private Manager _アニメーション管理;
-
-        private Storyboard _ストーリーボード;
 
 
         /// <summary>
