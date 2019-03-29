@@ -17,18 +17,18 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     頂点の "追加UV1" の値(float4)を "照明計算後の色値" として描画に利用するモード
         /// </summary>
-        頂点色 = 0x20,    // todo: 未対応
+        頂点色 = 0x20,    // todo: 描画フラグ.頂点色 への対応
 
         /// <summary>
         ///     描画プリミティブを PointList で描画
         ///     ※Point／Line 双方とも ON の場合は Point 優先
         /// </summary>
-        Point描画 = 0x40,     // todo: 未対応
+        Point描画 = 0x40,     // todo: 描画フラグ.Point描画への対応
 
         /// <summary>
         ///     描画プリミティブを LineList で描画
         ///     ※Point／Line 双方とも ON の場合は Point 優先
         /// </summary>
-        Line描画 = 0x80,      // todo: 未対応
+        Line描画 = 0x80,
     }
 }

@@ -27,7 +27,7 @@ namespace MikuMikuFlex3.PMXFormat
                 case ジョイント種別.円錐回転:
                 case ジョイント種別.スライダー:
                 case ジョイント種別.ヒンジ:
-                    throw new NotSupportedException( "PMX2.1 以降には未対応です。" );     // todo: これらの実装
+                    throw new NotSupportedException( "PMX2.1 以降には未対応です。" );     // todo: PMX2.1 拡張のジョイントの実装
 
                 default:
                     throw new NotSupportedException();

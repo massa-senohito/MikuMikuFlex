@@ -8,7 +8,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.材質"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMX材質
+    class PMX材質制御
     {
 
         // 基本情報
@@ -28,7 +28,7 @@ namespace MikuMikuFlex3
         // 生成と終了
 
 
-        public PMX材質( PMXFormat.材質 material )
+        public PMX材質制御( PMXFormat.材質 material )
         {
             this.PMXF材質 = material;
             this.テッセレーション係数 = 1.0f;
