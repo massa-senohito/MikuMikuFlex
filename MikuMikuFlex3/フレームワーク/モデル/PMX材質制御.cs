@@ -8,7 +8,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.材質"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMX材質制御
+    class PMX材質制御 : IDisposable
     {
 
         // 基本情報
@@ -32,6 +32,11 @@ namespace MikuMikuFlex3
         {
             this.PMXF材質 = material;
             this.テッセレーション係数 = 1.0f;
+        }
+
+        public virtual void Dispose()
+        {
+            this.PMXF材質 = null;
         }
     }
 }

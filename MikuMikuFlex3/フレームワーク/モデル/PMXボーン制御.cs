@@ -9,7 +9,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.ボーン"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMXボーン制御
+    class PMXボーン制御 : IDisposable
     {
 
         // 基本情報
@@ -79,6 +79,12 @@ namespace MikuMikuFlex3
                     this.子ボーンリスト.Add( 全ボーン[ i ] );
                 }
             }
+        }
+
+        public virtual void Dispose()
+        {
+            this.PMXFボーン = null;
+            this.子ボーンリスト = null;
         }
 
 

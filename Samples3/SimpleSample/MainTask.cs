@@ -16,7 +16,33 @@ namespace SimpleSample
 
         public MainTask( Control parent, string pmxファイルパス )
         {
-            this._Parent = parent;
+            this._Parent = parent.Handle;
+            this._ParentClientSize = new Size2( parent.ClientSize.Width, parent.ClientSize.Height );
+            this._PMXファイルパス = pmxファイルパス;
+        }
+
+        public void Dispose()
+        {
+            // モデルを解放する。
+
+            this._PMXモデル?.Dispose();
+
+
+            // D3D関連リソースを解放する。
+
+            this._BlendState通常合成?.Dispose();
+            this._既定のD3D11DepthStencilState?.Dispose();
+            this._既定のD3D11DepthStencilView?.Dispose();
+            this._既定のD3D11DepthStencil?.Dispose();
+            this._既定のD3D11RenderTargetView?.Dispose();
+            this._DXGISwapChain?.Dispose();
+            this._D3D11Device?.Dispose();
+        }
+
+        public void MainLoop()
+        {
+            #region " 初期化 "
+            //----------------
 
             #region " D3DDevice, DXGISwapChain を生成する。"
             //----------------
@@ -30,11 +56,11 @@ namespace SimpleSample
                     IsWindowed = true,
                     ModeDescription = new SharpDX.DXGI.ModeDescription {
                         Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
-                        Width = parent.ClientSize.Width,
-                        Height = parent.ClientSize.Height,
+                        Width = this._ParentClientSize.Width,
+                        Height = this._ParentClientSize.Height,
                         Scaling = SharpDX.DXGI.DisplayModeScaling.Stretched,
                     },
-                    OutputHandle = parent.Handle,
+                    OutputHandle = this._Parent,
                     SampleDescription = new SharpDX.DXGI.SampleDescription( 1, 0 ),
                     SwapEffect = SharpDX.DXGI.SwapEffect.Discard,
                     Usage = SharpDX.DXGI.Usage.RenderTargetOutput,
@@ -88,8 +114,8 @@ namespace SimpleSample
                 this._D3DViewport = new SharpDX.Mathematics.Interop.RawViewportF {
                     X = 0,
                     Y = 0,
-                    Width = this._Parent.ClientSize.Width,
-                    Height = this._Parent.ClientSize.Height,
+                    Width = this._ParentClientSize.Width,
+                    Height = this._ParentClientSize.Height,
                     MinDepth = 0.0f,
                     MaxDepth = 1.0f,
                 };
@@ -133,7 +159,7 @@ namespace SimpleSample
 
             // モデルその他を生成。
 
-            this._PMXモデル = new PMXモデル( this._D3D11Device, pmxファイルパス );
+            this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス );
 
             this._カメラ = new カメラ(
                 初期位置: new Vector3( 0f, 0f, -45f ),
@@ -141,29 +167,13 @@ namespace SimpleSample
                 初期上方向: new Vector3( 0f, 1f, 0f ) );
 
             this._照明 = new 照明();
-        }
 
-        public void Dispose()
-        {
-            // モデルを解放する。
-
-            this._PMXモデル?.Dispose();
-
-
-            // D3D関連リソースを解放する。
-
-            this._BlendState通常合成?.Dispose();
-            this._既定のD3D11DepthStencilState?.Dispose();
-            this._既定のD3D11DepthStencilView?.Dispose();
-            this._既定のD3D11DepthStencil?.Dispose();
-            this._既定のD3D11RenderTargetView?.Dispose();
-            this._DXGISwapChain?.Dispose();
-            this._D3D11Device?.Dispose();
-        }
-
-        public void MainLoop()
-        {
             var timer = new QPCTimer();
+            //----------------
+            #endregion
+
+            
+            // メインループ
 
             while( !this.終了指示通知.IsSet )
             {
@@ -186,14 +196,21 @@ namespace SimpleSample
                 this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
             }
 
+
+            // 終了
+
             this.Dispose();
             this.終了完了通知.Set();
         }
 
 
-        private PMXモデル _PMXモデル;
+        private string _PMXファイルパス;
 
-        private Control _Parent;
+        private IntPtr _Parent;
+
+        private Size2 _ParentClientSize;
+
+        private PMXモデル _PMXモデル;
 
         private カメラ _カメラ;
 
