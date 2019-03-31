@@ -546,8 +546,12 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
+            // 材質状態をリセット。
+            foreach( var mat in this.PMX材質制御リスト )
+                mat.状態をリセットする();
+
             // 頂点状態をリセット。
-            this.PMX頂点制御.頂点の移動情報をクリアする( this._PMXFモデル.頂点リスト );
+            this.PMX頂点制御.状態をリセットする( this._PMXFモデル.頂点リスト );
 
             // ボーン状態をリセット。
             foreach( var bone in this.PMXボーン制御リスト )
@@ -659,11 +663,11 @@ namespace MikuMikuFlex3
                     switch( 変数.Description.Semantic?.ToUpper() )
                     {
                         case "EDGECOLOR":
-                            変数.AsVector().Set( 材質.PMXF材質.エッジ色 );
+                            変数.AsVector().Set( 材質.エッジ色 );
                             break;
 
                         case "EDGEWIDTH":
-                            変数.AsScalar().Set( 材質.PMXF材質.エッジサイズ );
+                            変数.AsScalar().Set( 材質.エッジサイズ );
                             break;
 
                         case "WORLDVIEWPROJECTION":
@@ -713,27 +717,27 @@ namespace MikuMikuFlex3
                             break;
 
                         case "MATERIALTEXTURE":
-                            if( -1 != 材質.PMXF材質.通常テクスチャの参照インデックス )
+                            if( -1 != 材質.通常テクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.通常テクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALSPHEREMAP":
-                            if( -1 != 材質.PMXF材質.スフィアテクスチャの参照インデックス )
+                            if( -1 != 材質.スフィアテクスチャの参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.スフィアテクスチャの参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
                             }
                             break;
 
                         case "MATERIALTOONTEXTURE":
-                            if( 1 == 材質.PMXF材質.共有Toonフラグ )
+                            if( 1 == 材質.共有Toonフラグ )
                             {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
-                            else if( -1 != 材質.PMXF材質.共有Toonのテクスチャ参照インデックス )
+                            else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
                             {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.PMXF材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                             }
                             else
                             {
@@ -749,39 +753,39 @@ namespace MikuMikuFlex3
                             switch( 変数.Description.Name.ToLower() )
                             {
                                 case "use_spheremap":
-                                    変数.AsScalar().Set( 材質.PMXF材質.スフィアテクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.スフィアテクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "spadd":
-                                    変数.AsScalar().Set( 材質.PMXF材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                                    変数.AsScalar().Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
                                     break;
 
                                 case "use_texture":
-                                    変数.AsScalar().Set( 材質.PMXF材質.通常テクスチャの参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.通常テクスチャの参照インデックス != -1 );
                                     break;
 
                                 case "use_toontexturemap":
-                                    変数.AsScalar().Set( 材質.PMXF材質.共有Toonのテクスチャ参照インデックス != -1 );
+                                    変数.AsScalar().Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
                                     break;
 
                                 case "use_selfshadow":
-                                    変数.AsScalar().Set( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                                    変数.AsScalar().Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
                                     break;
 
                                 case "ambientcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.PMXF材質.環境色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( 材質.環境色, 1f ) );
                                     break;
 
                                 case "diffusecolor":
-                                    変数.AsVector().Set( 材質.PMXF材質.拡散色 );
+                                    変数.AsVector().Set( 材質.拡散色 );
                                     break;
 
                                 case "specularcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.PMXF材質.反射色, 1f ) );
+                                    変数.AsVector().Set( new Vector4( 材質.反射色, 1f ) );
                                     break;
 
                                 case "specularpower":
-                                    変数.AsScalar().Set( 材質.PMXF材質.反射強度 );
+                                    変数.AsScalar().Set( 材質.反射強度 );
                                     break;
                             }
                             break;
@@ -801,16 +805,16 @@ namespace MikuMikuFlex3
                 {
                     d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
                 }
-                else if( !材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
+                else if( !材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
                 {
-                    if( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステート;
                 }
                 else
                 {
-                    if( 材質.PMXF材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
+                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステートLine;
                     else
                         d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステート;
@@ -819,7 +823,7 @@ namespace MikuMikuFlex3
                 #endregion
 
                 this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
-                    d3ddc.DrawIndexed( mat.PMXF材質.頂点数, mat.PMXF材質.開始インデックス, 0 );
+                    d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
 
 
@@ -830,14 +834,14 @@ namespace MikuMikuFlex3
                 d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
 
                 this._エフェクトを適用しつつ材質を描画する( d3ddc, 材質, Pass種別, ( mat ) => {
-                    d3ddc.DrawIndexed( mat.PMXF材質.頂点数, mat.PMXF材質.開始インデックス, 0 );
+                    d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
             }
         }
 
         private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMX材質制御 ipmxSubset, MMDPass種別 passType, Action<PMX材質制御> drawAction )
         {
-            if( ipmxSubset.PMXF材質.拡散色.W == 0 )
+            if( ipmxSubset.拡散色.W == 0 )
                 return;
 
             // 使用するtechniqueを検索する

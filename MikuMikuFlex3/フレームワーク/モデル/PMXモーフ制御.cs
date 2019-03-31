@@ -150,6 +150,55 @@ namespace MikuMikuFlex3
                     break;
 
                 case PMXFormat.モーフ種別.材質:
+                    #region " 材質モーフ "
+                    //----------------
+                    {
+                        // todo: 材質モーフ・テクスチャ係数への対応
+                        // todo: 材質モーフ・スフィアテクスチャ係数への対応
+                        // todo: 材質モーフ・Toonテクスチャ係数への対応
+
+                        foreach( PMXFormat.材質モーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            if( offset.材質インデックス == -1 ) // -1:全材質が対象
+                            {
+                                foreach( var 材質 in PMXモデル.PMX材質制御リスト )
+                                    差分セット( offset, 材質 );
+                            }
+                            else
+                            {
+                                var 材質 = PMXモデル.PMX材質制御リスト[ offset.材質インデックス ];
+
+                                差分セット( offset, 材質 );
+                            }
+                        }
+
+
+                        void 差分セット( PMXFormat.材質モーフオフセット offset, PMX材質制御 材質 )
+                        {
+                            switch( offset.オフセット演算形式 )
+                            {
+                                case 0: // 乗算
+                                    材質.乗算差分.拡散色 += offset.拡散色 * 現在値;
+                                    材質.乗算差分.反射色 += offset.反射色 * 現在値;
+                                    材質.乗算差分.反射強度 += offset.反射強度 * 現在値;
+                                    材質.乗算差分.環境色 += offset.環境色 * 現在値;
+                                    材質.乗算差分.エッジ色 += offset.エッジ色 * 現在値;
+                                    材質.乗算差分.エッジサイズ += offset.エッジサイズ * 現在値;
+                                    break;
+
+                                case 1: // 加算
+                                    材質.加算差分.拡散色 += offset.拡散色 * 現在値;
+                                    材質.加算差分.反射色 += offset.反射色 * 現在値;
+                                    材質.加算差分.反射強度 += offset.反射強度 * 現在値;
+                                    材質.加算差分.環境色 += offset.環境色 * 現在値;
+                                    材質.加算差分.エッジ色 += offset.エッジ色 * 現在値;
+                                    材質.加算差分.エッジサイズ += offset.エッジサイズ * 現在値;
+                                    break;
+                            }
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.グループ:

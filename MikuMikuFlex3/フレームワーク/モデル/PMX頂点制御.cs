@@ -16,7 +16,7 @@ namespace MikuMikuFlex3
             this._移動された頂点.Add( 頂点インデックス );
         }
 
-        public void 頂点の移動情報をクリアする( PMXFormat.頂点リスト 初期リスト )
+        public void 状態をリセットする( PMXFormat.頂点リスト 初期リスト )
         {
             // 移動された頂点について、状態を初期化する。
             foreach( int i in this._移動された頂点 )
