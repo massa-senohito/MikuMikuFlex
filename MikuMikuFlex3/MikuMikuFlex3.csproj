@@ -92,11 +92,13 @@
     <Compile Include="アニメーション\アニメ遷移_回転ベジェ.cs" />
     <Compile Include="アニメーション\アニメ遷移_移動ベジェ.cs" />
     <Compile Include="フレームワーク\カメラ.cs" />
+    <Compile Include="フレームワーク\モデル\CCDによるIK変形更新.cs" />
     <Compile Include="フレームワーク\モデル\PMXモーフ制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX材質制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX頂点制御.cs" />
     <Compile Include="フレームワーク\動作対象.cs" />
     <Compile Include="フレームワーク\照明.cs" />
+    <Compile Include="ヘルパ等\CGHelper.cs" />
     <Compile Include="ヘルパ等\CS_INPUT.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイント.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />

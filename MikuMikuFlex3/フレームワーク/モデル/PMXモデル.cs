@@ -26,6 +26,8 @@ namespace MikuMikuFlex3
 
         internal PMXボーン制御[] PMXボーン制御リスト { get; private protected set; }
 
+        internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
+
         internal const int 最大ボーン数 = 768;
 
         internal PMX材質制御[] PMX材質制御リスト { get; private protected set; }
@@ -112,7 +114,18 @@ namespace MikuMikuFlex3
                         this.PMXボーン制御リスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
 
                     for( int i = 0; i < ボーン数; i++ )
-                        this.PMXボーン制御リスト[ i ].子ボーンリストを構築する( this.PMXボーン制御リスト );
+                        this.PMXボーン制御リスト[ i ].読み込み後の処理を行う( this.PMXボーン制御リスト );
+                }
+                //----------------
+                #endregion
+                #region " IKボーンリストを作成する。"
+                //----------------
+                {
+                    var ikBones = this.PMXボーン制御リスト.Where( ( bone ) => bone.PMXFボーン.IKボーンである );
+
+                    this.IKボーンリスト = new List<PMXボーン制御>( ikBones.Count() );
+                    for( int i = 0; i < ikBones.Count(); i++ )
+                        this.IKボーンリスト.Add( ikBones.ElementAt( i ) );
                 }
                 //----------------
                 #endregion
@@ -129,6 +142,38 @@ namespace MikuMikuFlex3
                             this._ルートボーンリスト.Add( this.PMXボーン制御リスト[ i ] );
                         }
                     }
+                }
+                //----------------
+                #endregion
+                #region " ボーンをソートする。"
+                //----------------
+                {
+                    var comparison = new Comparison<PMXボーン制御>( ( x, y ) => {
+
+                        // 後であればあるほどスコアが大きくなるように計算する
+
+                        int xScore = 0;
+                        int yScore = 0;
+                        int BoneCount = this.PMXボーン制御リスト.Length;
+
+                        if( x.PMXFボーン.物理後変形である )
+                        {
+                            xScore += BoneCount * BoneCount;
+                        }
+                        if( y.PMXFボーン.物理後変形である )
+                        {
+                            yScore += BoneCount * BoneCount;
+                        }
+                        xScore += BoneCount * x.PMXFボーン.変形階層;
+                        yScore += BoneCount * y.PMXFボーン.変形階層;
+                        xScore += x.ボーンインデックス;
+                        yScore += y.ボーンインデックス;
+                        return xScore - yScore;
+
+                    } );
+
+                    this.IKボーンリスト.Sort( comparison );
+                    this._ルートボーンリスト.Sort( comparison );
                 }
                 //----------------
                 #endregion
@@ -523,6 +568,7 @@ namespace MikuMikuFlex3
             this.PMX材質制御リスト = null;
 
             this._ルートボーンリスト = null;
+            this.IKボーンリスト = null;
             foreach( var bone in this.PMXボーン制御リスト )
                 bone.Dispose();
             this.PMXボーン制御リスト = null;
@@ -568,6 +614,15 @@ namespace MikuMikuFlex3
             // ボーンモーションを適用する。
             foreach( var bone in this.PMXボーン制御リスト )
                 bone.ボーンモーションを適用する( 現在時刻sec );
+
+            // IKを適用する。
+            CCDによるIK変形更新.変形を更新する( this.IKボーンリスト, this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+
+            // undone: 親付与によるFKを適用する。
+
+
+            // undone: 物理演算による変形を適用する。
+
 
             // ボーン状態を確定する。
             foreach( var root in this._ルートボーンリスト )

@@ -225,9 +225,11 @@ namespace MikuMikuFlex3
                     break;
 
                 case PMXFormat.モーフ種別.フリップ:
+                    // todo: フリップモーフの実装
                     break;
 
                 case PMXFormat.モーフ種別.インパルス:
+                    // todo: インパルスモーフの実装
                     break;
             }
         }

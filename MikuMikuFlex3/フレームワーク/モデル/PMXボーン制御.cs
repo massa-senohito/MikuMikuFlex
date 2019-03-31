@@ -24,6 +24,11 @@ namespace MikuMikuFlex3
         public List<PMXボーン制御> 子ボーンリスト { get; protected set; }
 
 
+        public PMXボーン制御 IKターゲットボーン { get; protected set; }
+
+        public IKリンク[] IKリンクリスト { get; protected set; }
+
+
 
         // 動的情報（入力）
 
@@ -75,14 +80,32 @@ namespace MikuMikuFlex3
             this.アニメ変数_回転 = new アニメ変数<Quaternion>( Quaternion.Identity );
         }
 
-        public void 子ボーンリストを構築する( PMXボーン制御[] 全ボーン )
+        public void 読み込み後の処理を行う( PMXボーン制御[] 全ボーン )
         {
+            // 子ボーンとの階層化
+
             for( int i = 0; i < 全ボーン.Length; i++ )
             {
                 if( 全ボーン[ i ].PMXFボーン.親ボーンのインデックス == this.ボーンインデックス )
                 {
                     全ボーン[ i ].親ボーン = this;
                     this.子ボーンリスト.Add( 全ボーン[ i ] );
+                }
+            }
+
+
+            // IK
+
+            if( this.PMXFボーン.IKボーンである )
+            {
+                this.IKターゲットボーン = 全ボーン[ this.PMXFボーン.IKターゲットボーンインデックス ];
+
+                this.IKリンクリスト = new IKリンク[ this.PMXFボーン.IKリンクリスト.Count ];
+                for( int i = 0; i < this.PMXFボーン.IKリンクリスト.Count; i++ )
+                {
+                    this.IKリンクリスト[ i ] = new IKリンク( this.PMXFボーン.IKリンクリスト[ i ] ) {
+                        IKリンクボーン = 全ボーン[ this.PMXFボーン.IKリンクリスト[ i ].リンクボーンのボーンインデックス ],
+                    };
                 }
             }
         }
@@ -140,5 +163,34 @@ namespace MikuMikuFlex3
 
 
         private Quaternion _回転;
+
+
+        public class IKリンク
+        {
+            public PMXボーン制御 IKリンクボーン;
+
+            public bool 回転制限がある => this._ikLink.角度制限あり;
+
+            public Vector3 最大回転量 { get; }
+
+            public Vector3 最小回転量 { get; }
+
+
+            public IKリンク( PMXFormat.ボーン.IKリンク ikLink )
+            {
+                this._ikLink = ikLink;
+
+                // minとmaxを正しく読み込む
+                Vector3 maxVec = ikLink.角度制限の上限rad;
+                Vector3 minVec = ikLink.角度制限の下限rad; 
+                this.最小回転量 = new Vector3( Math.Min( maxVec.X, minVec.X ), Math.Min( maxVec.Y, minVec.Y ), Math.Min( maxVec.Z, minVec.Z ) );
+                this.最大回転量 = new Vector3( Math.Max( maxVec.X, minVec.X ), Math.Max( maxVec.Y, minVec.Y ), Math.Max( maxVec.Z, minVec.Z ) );
+                this.最小回転量 = Vector3.Clamp( 最小回転量, CGHelper.オイラー角の最小値, CGHelper.オイラー角の最大値 );
+                this.最大回転量 = Vector3.Clamp( 最大回転量, CGHelper.オイラー角の最小値, CGHelper.オイラー角の最大値 );
+            }
+
+
+            private PMXFormat.ボーン.IKリンク _ikLink;
+        }
     }
 }
