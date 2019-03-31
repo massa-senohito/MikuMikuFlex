@@ -43,7 +43,12 @@ namespace MikuMikuFlex3
         {
             var 現在値 = this.アニメ遷移.更新する( 現在時刻sec );
 
-            switch( this.PMXFモーフ.モーフ種類 )
+            this._モーフを適用する( 現在値, PMXモデル, this );
+        }
+
+        private void _モーフを適用する( float 現在値, PMXモデル PMXモデル, PMXモーフ制御 適用対象モーフ )
+        {
+            switch( 適用対象モーフ.PMXFモーフ.モーフ種類 )
             {
                 case PMXFormat.モーフ種別.頂点:
                     #region " 頂点モーフ "
@@ -202,6 +207,21 @@ namespace MikuMikuFlex3
                     break;
 
                 case PMXFormat.モーフ種別.グループ:
+                    #region " グループモーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.グループモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            var モーフ = PMXモデル.PMXモーフ制御リスト[ offset.モーフインデックス ];
+
+                            if( モーフ.PMXFモーフ.モーフ種類 == PMXFormat.モーフ種別.グループ )
+                                throw new InvalidOperationException( "グループモーフのグループとしてグループモーフが指定されています。" );
+
+                            this._モーフを適用する( 現在値 * offset.影響度, PMXモデル, モーフ );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.フリップ:
