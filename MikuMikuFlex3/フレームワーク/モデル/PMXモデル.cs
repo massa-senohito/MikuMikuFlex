@@ -145,6 +145,21 @@ namespace MikuMikuFlex3
                 }
                 //----------------
                 #endregion
+                #region " PMXボーンの変形階層を設定する。"
+                //----------------
+                {
+                    foreach( var root in this._ルートボーンリスト )
+                        設定( root, 0 );
+
+                    void 設定( PMXボーン制御 bone, int layer )
+                    {
+                        bone.変形階層 = layer;
+                        foreach( var child in bone.子ボーンリスト )
+                            設定( child, layer + 1 );
+                    }
+                }
+                //----------------
+                #endregion
                 #region " ボーンをソートする。"
                 //----------------
                 {
@@ -164,8 +179,8 @@ namespace MikuMikuFlex3
                         {
                             yScore += BoneCount * BoneCount;
                         }
-                        xScore += BoneCount * x.PMXFボーン.変形階層;
-                        yScore += BoneCount * y.PMXFボーン.変形階層;
+                        xScore += BoneCount * x.変形階層;
+                        yScore += BoneCount * y.変形階層;
                         xScore += x.ボーンインデックス;
                         yScore += y.ボーンインデックス;
                         return xScore - yScore;
@@ -174,6 +189,13 @@ namespace MikuMikuFlex3
 
                     this.IKボーンリスト.Sort( comparison );
                     this._ルートボーンリスト.Sort( comparison );
+                }
+                //----------------
+                #endregion
+                #region " 親付与によるFKを初期化する。"
+                //----------------
+                {
+                    this._親付与によるFK変形更新 = new 親付与によるFK変形更新( this.PMXボーン制御リスト );
                 }
                 //----------------
                 #endregion
@@ -569,6 +591,7 @@ namespace MikuMikuFlex3
 
             this._ルートボーンリスト = null;
             this.IKボーンリスト = null;
+            this._親付与によるFK変形更新 = null;
             foreach( var bone in this.PMXボーン制御リスト )
                 bone.Dispose();
             this.PMXボーン制御リスト = null;
@@ -592,41 +615,90 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-            // 材質状態をリセット。
+
+            // リセットする
+
+
+            #region " 材質状態をリセットする。"
+            //----------------
             foreach( var mat in this.PMX材質制御リスト )
                 mat.状態をリセットする();
+            //----------------
+            #endregion
 
-            // 頂点状態をリセット。
+            #region " 頂点状態をリセットする。"
+            //----------------
             this.PMX頂点制御.状態をリセットする( this._PMXFモデル.頂点リスト );
+            //----------------
+            #endregion
 
-            // ボーン状態をリセット。
+            #region " ボーン状態をリセットする。"
+            //----------------
             foreach( var bone in this.PMXボーン制御リスト )
             {
                 bone.ローカル位置 = bone.PMXFボーン.位置;
                 bone.移動 = Vector3.Zero;
                 bone.回転 = Quaternion.Identity;
             }
+            //----------------
+            #endregion
 
-            // モーフを適用する。
+
+            // 更新する
+
+
+            this._モデルポーズを再計算する();
+
+            #region " モーフを適用する。"
+            //----------------
             foreach( var morph in this.PMXモーフ制御リスト )
                 morph.モーフを適用する( 現在時刻sec, this );
+            //----------------
+            #endregion
 
-            // ボーンモーションを適用する。
+            this._モデルポーズを再計算する();
+
+            #region " ボーンモーションを適用する。"
+            //----------------
             foreach( var bone in this.PMXボーン制御リスト )
                 bone.ボーンモーションを適用する( 現在時刻sec );
+            //----------------
+            #endregion
 
-            // IKを適用する。
-            CCDによるIK変形更新.変形を更新する( this.IKボーンリスト, this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+            this._モデルポーズを再計算する();
 
-            // undone: 親付与によるFKを適用する。
+            #region " IKを適用する。"
+            //----------------
+            CCDによるIK変形更新.変形を更新する( this.IKボーンリスト );
+            //----------------
+            #endregion
 
+            #region " 親付与によるFKを適用する。"
+            //----------------
+            this._親付与によるFK変形更新.変形を更新する();
+            //----------------
+            #endregion
+
+            this._モデルポーズを再計算する();
 
             // undone: 物理演算による変形を適用する。
 
 
-            // ボーン状態を確定する。
+            #region " モデルポーズを再計算しつつ、ボーン状態を確定する。"
+            //----------------
             foreach( var root in this._ルートボーンリスト )
+            {
+                root.モデルポーズを計算する();
                 root.状態を確定する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+            }
+            //----------------
+            #endregion
+        }
+
+        private void _モデルポーズを再計算する()
+        {
+            foreach( var root in this._ルートボーンリスト )
+                root.モデルポーズを計算する();
         }
 
         /// <summary>
@@ -1002,6 +1074,8 @@ namespace MikuMikuFlex3
         private RasterizerState _両面描画の際のラスタライザステートLine;
 
         private List<PMXボーン制御> _ルートボーンリスト;
+
+        private 親付与によるFK変形更新 _親付与によるFK変形更新;
 
 
         /// <summary>

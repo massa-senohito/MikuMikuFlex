@@ -18,6 +18,8 @@ namespace SimpleSample
         {
             InitializeComponent();
 
+            this.ClientSize = new Size( 1280, 720 );
+
             this._args = args;
         }
 

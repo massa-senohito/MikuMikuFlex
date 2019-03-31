@@ -13,13 +13,13 @@ namespace MikuMikuFlex3
 
         public void 頂点の変更を通知する( int 頂点インデックス )
         {
-            this._移動された頂点.Add( 頂点インデックス );
+            this._変更を受けた頂点のインデックス集合.Add( 頂点インデックス );
         }
 
         public void 状態をリセットする( PMXFormat.頂点リスト 初期リスト )
         {
             // 移動された頂点について、状態を初期化する。
-            foreach( int i in this._移動された頂点 )
+            foreach( int i in this._変更を受けた頂点のインデックス集合 )
             {
                 this.入力頂点配列[ i ].Position = new Vector4( 初期リスト[ i ].位置, 1f );
                 this.入力頂点配列[ i ].UV = 初期リスト[ i ].UV;
@@ -30,7 +30,7 @@ namespace MikuMikuFlex3
             }
 
             // フラグをクリアする。
-            this._移動された頂点 = new HashSet<int>();
+            this._変更を受けた頂点のインデックス集合 = new HashSet<int>();
         }
 
 
@@ -38,6 +38,6 @@ namespace MikuMikuFlex3
         ///     すべての頂点を初期化するには数が多いので、移動された頂点を記録しておいて、
         ///     記録された頂点についてのみ初期化するようにする。
         /// </summary>
-        private HashSet<int> _移動された頂点 = new HashSet<int>();
+        private HashSet<int> _変更を受けた頂点のインデックス集合 = new HashSet<int>();
     }
 }

@@ -17,11 +17,16 @@ namespace MikuMikuFlex3
         public static Vector3 オイラー角の値域を正規化する( this Vector3 source )
         {
             // Y: -π/2 ～ π/2 に収める（ Y は Arcsin の引数とするため、この範囲になる）
-            if( !source.Y.間にある( (float) -Math.PI * 0.5f, (float) Math.PI * 0.5f ) ) // X, Z もいじるので、X, Z よりも先に判定。
+            if( !source.Y.間にある( (float) -Math.PI * 0.5f, (float) Math.PI * 0.5f ) )
             {
-                source.X -= (float) Math.PI;
-                source.Y = (float) Math.PI - source.Y;
-                source.Z -= (float) Math.PI;
+                if( source.Y > 0 )
+                {
+                    source.Y -= (float) Math.PI * 2;
+                }
+                else
+                {
+                    source.Y += (float) Math.PI * 2;
+                }
             }
 
             // X: -π ～ π に収める

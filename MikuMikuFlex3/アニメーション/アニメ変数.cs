@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -44,6 +44,8 @@ namespace MikuMikuFlex3
         {
             bool 現在値を取得完了 = false;
 
+            double 次の連続する遷移の開始時刻sec = 現在時刻sec;
+
             while( !現在値を取得完了 )
             {
                 if( this._遷移リスト.TryPeek( out var 遷移 ) )
@@ -52,7 +54,7 @@ namespace MikuMikuFlex3
 
                     if( 遷移.確定されていない )
                     {
-                        遷移.確定する( 現在時刻sec, this.値 );
+                        遷移.確定する( 次の連続する遷移の開始時刻sec, this.値 );
                     }
 
                     if( 遷移.更新する( 現在時刻sec, out T 現在の値 ) )
@@ -63,6 +65,12 @@ namespace MikuMikuFlex3
                     }
                     else
                     {
+                        // 遷移リストに次の遷移が入っているなら、その遷移はこのあとすぐ開始されるが、現在時刻ではなく、この時刻から開始しなければならない。（ずれを抑えるため）
+                        // なお、遷移リストに次の遷移が入ってないなら、このメソッドはいったん抜けるので、次に入ってくる遷移の開始時刻は現在時刻にリセットされる。
+
+                        次の連続する遷移の開始時刻sec = 遷移.開始時刻sec + 遷移.持続時間sec;
+
+
                         // この遷移は終了した → 次の遷移へ
 
                         this._遷移リスト.TryDequeue( out _ );

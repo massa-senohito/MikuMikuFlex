@@ -204,6 +204,15 @@ namespace MikuMikuFlex3.PMXFormat
                 for( int i = 0; i < IKリンク数; i++ )
                     this.IKリンクリスト.Add( new IKリンク( st, header ) );
             }
+
+            if( this.付与親ボーンインデックス == -1 )
+            {
+                this.回転付与される = false;
+                this.移動付与される = false;
+            }
+
+            if( !this.移動付与される && !this.回転付与される )
+                this.付与親ボーンインデックス = -1;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MikuMikuFlex3
     /// </summary>
     internal static class CCDによるIK変形更新
     {
-        public static void 変形を更新する( IEnumerable<PMXボーン制御> IKボーンリスト, Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        public static void 変形を更新する( IEnumerable<PMXボーン制御> IKボーンリスト )
         {
             foreach( var IKbone in IKボーンリスト )
             {
@@ -136,7 +136,7 @@ namespace MikuMikuFlex3
                         }
 
                         // IKリンクの新しい回転行列を反映。
-                        ikLink.IKリンクボーン.状態を確定する( モデルポーズ配列, ローカル位置配列, 回転配列 );
+                        ikLink.IKリンクボーン.モデルポーズを計算する();
                     }
                 }
             }

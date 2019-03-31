@@ -28,6 +28,8 @@ namespace MikuMikuFlex3
 
         public IKリンク[] IKリンクリスト { get; protected set; }
 
+        public int 変形階層 { get; set; }
+
 
 
         // 動的情報（入力）
@@ -128,7 +130,7 @@ namespace MikuMikuFlex3
             this.回転 *= this.アニメ変数_回転.更新する( 現在時刻sec );
         }
 
-        public void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        public void モデルポーズを計算する()
         {
             // ポーズ計算。
 
@@ -143,13 +145,18 @@ namespace MikuMikuFlex3
                 ( this.親ボーン?.モデルポーズ行列 ?? Matrix.Identity );    // 親ボーンがあるなら親ボーンのモデルポーズを反映。
 
 
-            // 計算結果を出力。
+            // すべての子ボーンについても更新。
 
+            foreach( var 子ボーン in this.子ボーンリスト )
+                子ボーン.モデルポーズを計算する();
+        }
+
+        public void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        {
             モデルポーズ配列[ this.ボーンインデックス ] = this.モデルポーズ行列;
             モデルポーズ配列[ this.ボーンインデックス ].Transpose(); // エフェクトを介さない場合は自分で転置する必要がある。
             ローカル位置配列[ this.ボーンインデックス ] = this.ローカル位置;
             回転配列[ this.ボーンインデックス ] = new Vector4( this.回転.ToArray() );  // Quaternion → Vector4
-
 
             // すべての子ボーンについても更新。
 

@@ -96,6 +96,8 @@
     <Compile Include="フレームワーク\モデル\PMXモーフ制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX材質制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX頂点制御.cs" />
+    <Compile Include="フレームワーク\モデル\変形階層リスト.cs" />
+    <Compile Include="フレームワーク\モデル\親付与によるFK変形更新.cs" />
     <Compile Include="フレームワーク\動作対象.cs" />
     <Compile Include="フレームワーク\照明.cs" />
     <Compile Include="ヘルパ等\CGHelper.cs" />

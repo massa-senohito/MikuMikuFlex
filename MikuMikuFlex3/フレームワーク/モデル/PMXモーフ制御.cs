@@ -54,7 +54,7 @@ namespace MikuMikuFlex3
                     #region " 頂点モーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.頂点モーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.頂点モーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position += new Vector4( offset.座標オフセット量 * 現在値, 0f );
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -68,7 +68,7 @@ namespace MikuMikuFlex3
                     #region " UVモーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].UV += new Vector2( offset.UVオフセット量.X, offset.UVオフセット量.Y ) * 現在値;
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -82,7 +82,7 @@ namespace MikuMikuFlex3
                     #region " 追加UV1モーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV1 += offset.UVオフセット量 * 現在値;
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -96,7 +96,7 @@ namespace MikuMikuFlex3
                     #region " 追加UV2モーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV2 += offset.UVオフセット量 * 現在値;
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -110,7 +110,7 @@ namespace MikuMikuFlex3
                     #region " 追加UV3モーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV3 += offset.UVオフセット量 * 現在値;
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -124,7 +124,7 @@ namespace MikuMikuFlex3
                     #region " 追加UV4モーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV4 += offset.UVオフセット量 * 現在値;
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
@@ -138,7 +138,7 @@ namespace MikuMikuFlex3
                     #region " ボーンモーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.ボーンモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.ボーンモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             var bone = PMXモデル.PMXボーン制御リスト[ offset.ボーンインデックス ];
 
@@ -162,7 +162,7 @@ namespace MikuMikuFlex3
                         // todo: 材質モーフ・スフィアテクスチャ係数への対応
                         // todo: 材質モーフ・Toonテクスチャ係数への対応
 
-                        foreach( PMXFormat.材質モーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.材質モーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
                             if( offset.材質インデックス == -1 ) // -1:全材質が対象
                             {
@@ -210,14 +210,14 @@ namespace MikuMikuFlex3
                     #region " グループモーフ "
                     //----------------
                     {
-                        foreach( PMXFormat.グループモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.グループモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
-                            var モーフ = PMXモデル.PMXモーフ制御リスト[ offset.モーフインデックス ];
+                            var メンバモーフ = PMXモデル.PMXモーフ制御リスト[ offset.モーフインデックス ];
 
-                            if( モーフ.PMXFモーフ.モーフ種類 == PMXFormat.モーフ種別.グループ )
+                            if( メンバモーフ.PMXFモーフ.モーフ種類 == PMXFormat.モーフ種別.グループ )
                                 throw new InvalidOperationException( "グループモーフのグループとしてグループモーフが指定されています。" );
 
-                            this._モーフを適用する( 現在値 * offset.影響度, PMXモデル, モーフ );
+                            this._モーフを適用する( 現在値 * offset.影響度, PMXモデル, メンバモーフ );
                         }
                     }
                     //----------------
