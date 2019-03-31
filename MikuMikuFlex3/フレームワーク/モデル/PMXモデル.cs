@@ -22,7 +22,7 @@ namespace MikuMikuFlex3
         // 制御
 
 
-        internal CS_INPUT[] 入力頂点配列;
+        internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
         internal PMXボーン制御[] PMXボーン制御リスト { get; private protected set; }
 
@@ -210,7 +210,8 @@ namespace MikuMikuFlex3
                         this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
                     }
 
-                    this.入力頂点配列 = 頂点リスト.ToArray();
+                    this.PMX頂点制御 = new PMX頂点制御();
+                    this.PMX頂点制御.入力頂点配列 = 頂点リスト.ToArray();
                 }
                 //----------------
                 #endregion
@@ -218,12 +219,12 @@ namespace MikuMikuFlex3
                 #region " スキニングバッファを作成する。"
                 //----------------
                 {
-                    this._D3Dスキニングバッファデータストリーム = new DataStream( this.入力頂点配列.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
+                    this._D3Dスキニングバッファデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
 
                     this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = CS_INPUT.SizeInBytes * this.入力頂点配列.Length,
+                            SizeInBytes = CS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
                             Usage = ResourceUsage.Default,
                             BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
                             CpuAccessFlags = CpuAccessFlags.None,
@@ -239,7 +240,7 @@ namespace MikuMikuFlex3
                             Dimension = ShaderResourceViewDimension.ExtendedBuffer,
                             BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
                                 FirstElement = 0,
-                                ElementCount = this.入力頂点配列.Length,
+                                ElementCount = this.PMX頂点制御.入力頂点配列.Length,
                             },
                         } );
                 }
@@ -251,7 +252,7 @@ namespace MikuMikuFlex3
                     this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = VS_INPUT.SizeInBytes * this.入力頂点配列.Length,
+                            SizeInBytes = VS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
                             Usage = ResourceUsage.Default,
                             BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
                             CpuAccessFlags = CpuAccessFlags.None,
@@ -266,7 +267,7 @@ namespace MikuMikuFlex3
                             Dimension = UnorderedAccessViewDimension.Buffer,
                             Buffer = new UnorderedAccessViewDescription.BufferResource {
                                 FirstElement = 0,
-                                ElementCount = VS_INPUT.SizeInBytes * this.入力頂点配列.Length / 4,
+                                ElementCount = VS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length / 4,
                                 Flags = UnorderedAccessViewBufferFlags.Raw,
                             },
                         } );
@@ -431,32 +432,32 @@ namespace MikuMikuFlex3
                 #region " ボーン用定数バッファを作成する。"
                 //----------------
                 {
-                    this._D3DBoneTransデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
+                    this._D3DBoneTransデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
 
                     this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = 入力頂点配列.Length * _D3DBoneTrans.SizeInBytes,
+                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
 
-                    this._D3DBoneLocalPositionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
+                    this._D3DBoneLocalPositionデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
 
                     this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = 入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
+                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
 
-                    this._D3DBoneQuaternionデータストリーム = new DataStream( this.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
+                    this._D3DBoneQuaternionデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
 
                     this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = 入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes,
+                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
                 }
@@ -506,7 +507,7 @@ namespace MikuMikuFlex3
             this._D3Dスキニングバッファ?.Dispose();
             this._D3Dスキニングバッファデータストリーム?.Dispose();
 
-            this.入力頂点配列 = null;
+            this.PMX頂点制御 = null;
 
             foreach( var tech in this._D3Dテクニックリスト )
                 tech?.Dispose();
@@ -544,6 +545,9 @@ namespace MikuMikuFlex3
         {
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
+
+            // 頂点状態をリセット。
+            this.PMX頂点制御.頂点の移動情報をクリアする( this._PMXFモデル.頂点リスト );
 
             // ボーン状態をリセット。
             foreach( var bone in this.PMXボーン制御リスト )
@@ -597,7 +601,7 @@ namespace MikuMikuFlex3
                 this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
                 // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
-                this._D3Dスキニングバッファデータストリーム.WriteRange( this.入力頂点配列 );
+                this._D3Dスキニングバッファデータストリーム.WriteRange( this.PMX頂点制御.入力頂点配列 );
                 this._D3Dスキニングバッファデータストリーム.Position = 0;
                 d3ddc.UpdateSubresource( new DataBox( _D3Dスキニングバッファデータストリーム.DataPointer, 0, 0 ), this._D3Dスキニングバッファ, 0 );
 
@@ -616,7 +620,7 @@ namespace MikuMikuFlex3
                     // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
                     d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    d3ddc.Dispatch( ( this.入力頂点配列.Length / 64 ) + 1, 1, 1 );
+                    d3ddc.Dispatch( ( this.PMX頂点制御.入力頂点配列.Length / 64 ) + 1, 1, 1 );
                 }
 
                 // UAVを外す（このあと頂点シェーダーが使えるように）

@@ -46,6 +46,17 @@ namespace MikuMikuFlex3
             switch( this.PMXFモーフ.モーフ種類 )
             {
                 case PMXFormat.モーフ種別.頂点:
+                    #region " 頂点モーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.頂点モーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position += new Vector4( offset.座標オフセット量 * 現在値, 0f );
+                            PMXモデル.PMX頂点制御.頂点の移動を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.UV:
@@ -70,6 +81,7 @@ namespace MikuMikuFlex3
                         foreach( PMXFormat.ボーンモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
                         {
                             var bone = PMXモデル.PMXボーン制御リスト[ offset.ボーンインデックス ];
+
                             bone.移動 += offset.移動量 * 現在値;
                             bone.回転 *= new Quaternion(
                                 offset.回転量.X * 現在値,
