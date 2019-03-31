@@ -89,9 +89,9 @@ namespace MikuMikuFlex3
         public Matrix 射影行列を取得する()
         {
             return Matrix.PerspectiveFovLH(
-                MathUtil.Pi * this.視野角deg / 180.0f, 
-                this.アスペクト比, 
-                this.近面Z, 
+                MathUtil.Pi * this.視野角deg / 180.0f,
+                this.アスペクト比,
+                this.近面Z,
                 this.遠面Z );
         }
 

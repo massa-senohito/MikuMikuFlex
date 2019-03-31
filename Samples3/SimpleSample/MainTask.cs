@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -14,11 +15,12 @@ namespace SimpleSample
         public ManualResetEventSlim 終了指示通知 = new ManualResetEventSlim( false );
         public ManualResetEventSlim 終了完了通知 = new ManualResetEventSlim( false );
 
-        public MainTask( Control parent, string pmxファイルパス )
+        public MainTask( Control parent, string[] args )
         {
             this._Parent = parent.Handle;
             this._ParentClientSize = new Size2( parent.ClientSize.Width, parent.ClientSize.Height );
-            this._PMXファイルパス = pmxファイルパス;
+            this._PMXファイルパス = args[ 0 ];
+            this._VMDファイルパス = args[ 1 ];
         }
 
         public void Dispose()
@@ -161,6 +163,12 @@ namespace SimpleSample
 
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス );
 
+            using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            {
+                var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
+                VMDアニメーションビルダ.ボーンモーションを追加する( vmd.ボーンフレームリスト, this._PMXモデル, true );
+            }
+
             this._カメラ = new カメラ(
                 初期位置: new Vector3( 0f, 0f, -45f ),
                 初期注視点: new Vector3( 0f, 10f, 0f ),
@@ -205,6 +213,7 @@ namespace SimpleSample
 
 
         private string _PMXファイルパス;
+        private string _VMDファイルパス;
 
         private IntPtr _Parent;
 

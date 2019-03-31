@@ -15,8 +15,8 @@ float Script : STANDARDSGLOBAL <
 float4 EdgeColor : EDGECOLOR; // エッジの色 
 float  EdgeWidth : EDGEWIDTH; // エッジの幅
 
-float4x4 matWVP         : WORLDVIEWPROJECTION < string Object="Camera"; >;
-float4x4 matWV          : WORLDVIEW < string Object = "Camera"; >;
+float4x4 matWVP         : WORLDVIEWPROJECTION < string object="camera"; >;
+float4x4 matWV          : WORLDVIEW < string object = "camera"; >;
 float4x4 WorldMatrix    : WORLD;
 float4x4 ViewMatrix     : VIEW;
 float4x4 ViewProjMatrix : VIEWPROJECTION;

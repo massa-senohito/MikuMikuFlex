@@ -12,16 +12,18 @@ namespace SimpleSample
 {
     public partial class Form1 : Form
     {
-        public string pmxファイルパス;
+        private string[] _args;
 
-        public Form1()
+        public Form1( string[] args )
         {
             InitializeComponent();
+
+            this._args = args;
         }
 
         protected override void OnLoad( EventArgs e )
         {
-            this._MainTask = new MainTask( this, pmxファイルパス );
+            this._MainTask = new MainTask( this, this._args );
 
             Task.Run( () => {
                 this._MainTask.MainLoop();

@@ -88,8 +88,8 @@ namespace MikuMikuFlex3
 
         private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, Func<string, Stream> リソースを開く )
         {
-            Task.Run( () => {
-
+            //Task.Run( () => {
+            {
                 #region " モデルを読み込む。"
                 //----------------
                 this._PMXFモデル = new PMXFormat.モデル( PMXデータ );
@@ -464,8 +464,8 @@ namespace MikuMikuFlex3
                 #endregion
 
                 this._初期化完了.Set();
-
-            } );
+            }
+            //} );
         }
 
         public virtual void Dispose()
@@ -538,46 +538,6 @@ namespace MikuMikuFlex3
 
 
         /// <summary>
-        ///     モデルに対する動作をスケジューリングする。
-        /// </summary>
-        //public void スケジューリングする( 動作対象 動作対象, string 対象名, Transition 動作, double 現在時刻sec )
-        //{
-        //    if( !this._初期化完了.IsSet )
-        //        this._初期化完了.Wait();
-
-        //    switch( 動作対象 )
-        //    {
-        //        case 動作対象.ボーンモーション:
-        //            #region " ボーンモーションにアニメーションを追加する。"
-        //            //----------------
-                    
-        //            // undone: ボーンモーションの実装。
-
-        //            //----------------
-        //            #endregion
-        //            break;
-
-        //        case 動作対象.モーフ:
-        //            #region " モーフにアニメーションを追加する。"
-        //            //----------------
-        //            {
-        //                // 指定された対象名のモーフを検索する。
-        //                var 対象モーフ = this.PMXモーフ制御リスト.Where( ( m ) => ( m.PMXFモーフ.モーフ名 == 対象名 ) ).FirstOrDefault();
-
-        //                if( null == 対象モーフ )
-        //                    return; // ない。
-
-        //                // PMXモデルのストリーボードに、変数と動作を追加する。
-        //                this._ストーリーボード.AddTransition( 対象モーフ.アニメ変数, 動作 );
-        //                this._ストーリーボード.Schedule( 現在時刻sec ); // すでに登録済みならエラーが返る
-        //            }
-        //            //----------------
-        //            #endregion
-        //            break;
-        //    }
-        //}
-
-        /// <summary>
         ///     現在時刻におけるモデルの各種状態を更新する。
         /// </summary>
         public void 進行する( double 現在時刻sec )
@@ -585,11 +545,20 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-            
+
+            // リセット。
+
+            foreach( var bone in this.PMXボーン制御リスト )
+            {
+                bone.ローカル位置 = bone.PMXFボーン.位置;
+                bone.移動 = Vector3.Zero;
+                bone.回転 = Quaternion.Identity;
+            }
+
             // 全ボーンについて、現状の変形から、「モデルポーズ行列」「ローカルポーズ行列」を確定する。
 
             foreach( var root in this._ルートボーンリスト )
-                root.更新する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+                root.更新する( 現在時刻sec, this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
         }
 
         /// <summary>
