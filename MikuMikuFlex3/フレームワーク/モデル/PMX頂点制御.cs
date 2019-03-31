@@ -11,16 +11,23 @@ namespace MikuMikuFlex3
         public CS_INPUT[] 入力頂点配列;
 
 
-        public void 頂点の移動を通知する( int 頂点インデックス )
+        public void 頂点の変更を通知する( int 頂点インデックス )
         {
             this._移動された頂点.Add( 頂点インデックス );
         }
 
         public void 頂点の移動情報をクリアする( PMXFormat.頂点リスト 初期リスト )
         {
-            // 移動された頂点について、位置情報を初期化する。
+            // 移動された頂点について、状態を初期化する。
             foreach( int i in this._移動された頂点 )
+            {
                 this.入力頂点配列[ i ].Position = new Vector4( 初期リスト[ i ].位置, 1f );
+                this.入力頂点配列[ i ].UV = 初期リスト[ i ].UV;
+                this.入力頂点配列[ i ].AddUV1 = ( 0 < 初期リスト[ i ].追加UV.Length ) ? 初期リスト[ i ].追加UV[ 0 ] : Vector4.Zero;
+                this.入力頂点配列[ i ].AddUV2 = ( 1 < 初期リスト[ i ].追加UV.Length ) ? 初期リスト[ i ].追加UV[ 1 ] : Vector4.Zero;
+                this.入力頂点配列[ i ].AddUV3 = ( 2 < 初期リスト[ i ].追加UV.Length ) ? 初期リスト[ i ].追加UV[ 2 ] : Vector4.Zero;
+                this.入力頂点配列[ i ].AddUV4 = ( 3 < 初期リスト[ i ].追加UV.Length ) ? 初期リスト[ i ].追加UV[ 3 ] : Vector4.Zero;
+            }
 
             // フラグをクリアする。
             this._移動された頂点 = new HashSet<int>();

@@ -52,7 +52,7 @@ namespace MikuMikuFlex3
                         foreach( PMXFormat.頂点モーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
                         {
                             PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position += new Vector4( offset.座標オフセット量 * 現在値, 0f );
-                            PMXモデル.PMX頂点制御.頂点の移動を通知する( (int) offset.頂点インデックス );
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
                         }
                     }
                     //----------------
@@ -60,18 +60,73 @@ namespace MikuMikuFlex3
                     break;
 
                 case PMXFormat.モーフ種別.UV:
+                    #region " UVモーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].UV += new Vector2( offset.UVオフセット量.X, offset.UVオフセット量.Y ) * 現在値;
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.追加UV1:
+                    #region " 追加UV1モーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV1 += offset.UVオフセット量 * 現在値;
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.追加UV2:
+                    #region " 追加UV2モーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV2 += offset.UVオフセット量 * 現在値;
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.追加UV3:
+                    #region " 追加UV3モーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV3 += offset.UVオフセット量 * 現在値;
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.追加UV4:
+                    #region " 追加UV4モーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.UVモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV4 += offset.UVオフセット量 * 現在値;
+                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                        }
+                    }
+                    //----------------
+                    #endregion
                     break;
 
                 case PMXFormat.モーフ種別.ボーン:
