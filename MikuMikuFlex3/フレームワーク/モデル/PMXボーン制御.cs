@@ -99,21 +99,21 @@ namespace MikuMikuFlex3
         // 更新と出力
 
 
-        public void 更新する( double 現在時刻sec, Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        public void ボーンモーションを適用する( double 現在時刻sec )
         {
-            // ボーンモーションを更新。
+            this.移動 += this.アニメ変数_移動.更新する( 現在時刻sec );
+            this.回転 *= this.アニメ変数_回転.更新する( 現在時刻sec );
+        }
 
-            var モーション反映後の移動 = this.移動 + this.アニメ変数_移動.更新する( 現在時刻sec );
-            var モーション反映後の回転 = this.回転 * this.アニメ変数_回転.更新する( 現在時刻sec );
-
-
+        public void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        {
             // ポーズ計算。
 
             this.ローカルポーズ行列 =
-                Matrix.Translation( -this.ローカル位置 ) *              // 原点に戻って
-                Matrix.RotationQuaternion( モーション反映後の回転 ) *   // 回転して
-                Matrix.Translation( モーション反映後の移動 ) *          // 平行移動したのち
-                Matrix.Translation( this.ローカル位置 );                // 元の位置に戻す
+                Matrix.Translation( -this.ローカル位置 ) *    // 原点に戻って
+                Matrix.RotationQuaternion( this.回転 ) *      // 回転して
+                Matrix.Translation( this.移動 ) *             // 平行移動したのち
+                Matrix.Translation( this.ローカル位置 );      // 元の位置に戻す
 
             this.モデルポーズ行列 =
                 this.ローカルポーズ行列 *
@@ -131,7 +131,7 @@ namespace MikuMikuFlex3
             // すべての子ボーンについても更新。
 
             foreach( var 子ボーン in this.子ボーンリスト )
-                子ボーン.更新する( 現在時刻sec, モデルポーズ配列, ローカル位置配列, 回転配列 );
+                子ボーン.状態を確定する( モデルポーズ配列, ローカル位置配列, 回転配列 );
         }
 
 

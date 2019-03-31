@@ -88,6 +88,7 @@
     <Compile Include="アニメーション\VMDアニメーションビルダ.cs" />
     <Compile Include="アニメーション\アニメ変数.cs" />
     <Compile Include="アニメーション\アニメ遷移.cs" />
+    <Compile Include="アニメーション\アニメ遷移_モーフリニア.cs" />
     <Compile Include="アニメーション\アニメ遷移_回転ベジェ.cs" />
     <Compile Include="アニメーション\アニメ遷移_移動ベジェ.cs" />
     <Compile Include="フレームワーク\カメラ.cs" />

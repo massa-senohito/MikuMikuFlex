@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using SharpDX;
 
 namespace MikuMikuFlex3
 {
@@ -12,7 +13,11 @@ namespace MikuMikuFlex3
     {
         public PMXFormat.モーフ PMXFモーフ { get; protected set; }
 
+        public float モーフ値 { get; set; }
 
+        public アニメ変数<float> アニメ遷移;
+
+        
 
         // 生成と終了
 
@@ -20,11 +25,75 @@ namespace MikuMikuFlex3
         public PMXモーフ制御( PMXFormat.モーフ morph )
         {
             this.PMXFモーフ = morph;
+            this.モーフ値 = 0;
+            this.アニメ遷移 = new アニメ変数<float>( 0f );
         }
 
         public virtual void Dispose()
         {
             this.PMXFモーフ = null;
+        }
+
+
+
+        // 更新
+
+
+        public void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
+        {
+            var 現在値 = this.アニメ遷移.更新する( 現在時刻sec );
+
+            switch( this.PMXFモーフ.モーフ種類 )
+            {
+                case PMXFormat.モーフ種別.頂点:
+                    break;
+
+                case PMXFormat.モーフ種別.UV:
+                    break;
+
+                case PMXFormat.モーフ種別.追加UV1:
+                    break;
+
+                case PMXFormat.モーフ種別.追加UV2:
+                    break;
+
+                case PMXFormat.モーフ種別.追加UV3:
+                    break;
+
+                case PMXFormat.モーフ種別.追加UV4:
+                    break;
+
+                case PMXFormat.モーフ種別.ボーン:
+                    #region " ボーンモーフ "
+                    //----------------
+                    {
+                        foreach( PMXFormat.ボーンモーフオフセット offset in this.PMXFモーフ.モーフオフセットリスト )
+                        {
+                            var bone = PMXモデル.PMXボーン制御リスト[ offset.ボーンインデックス ];
+                            bone.移動 += offset.移動量 * 現在値;
+                            bone.回転 *= new Quaternion(
+                                offset.回転量.X * 現在値,
+                                offset.回転量.Y * 現在値,
+                                offset.回転量.Z * 現在値,
+                                offset.回転量.W * 現在値 );
+                        }
+                    }
+                    //----------------
+                    #endregion
+                    break;
+
+                case PMXFormat.モーフ種別.材質:
+                    break;
+
+                case PMXFormat.モーフ種別.グループ:
+                    break;
+
+                case PMXFormat.モーフ種別.フリップ:
+                    break;
+
+                case PMXFormat.モーフ種別.インパルス:
+                    break;
+            }
         }
     }
 }

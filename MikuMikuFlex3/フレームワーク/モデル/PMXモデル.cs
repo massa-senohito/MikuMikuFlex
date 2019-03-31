@@ -545,9 +545,7 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-
-            // リセット。
-
+            // ボーン状態をリセット。
             foreach( var bone in this.PMXボーン制御リスト )
             {
                 bone.ローカル位置 = bone.PMXFボーン.位置;
@@ -555,10 +553,17 @@ namespace MikuMikuFlex3
                 bone.回転 = Quaternion.Identity;
             }
 
-            // 全ボーンについて、現状の変形から、「モデルポーズ行列」「ローカルポーズ行列」を確定する。
+            // モーフを適用する。
+            foreach( var morph in this.PMXモーフ制御リスト )
+                morph.モーフを適用する( 現在時刻sec, this );
 
+            // ボーンモーションを適用する。
+            foreach( var bone in this.PMXボーン制御リスト )
+                bone.ボーンモーションを適用する( 現在時刻sec );
+
+            // ボーン状態を確定する。
             foreach( var root in this._ルートボーンリスト )
-                root.更新する( 現在時刻sec, this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+                root.状態を確定する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
         }
 
         /// <summary>

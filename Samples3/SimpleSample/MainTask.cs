@@ -167,6 +167,7 @@ namespace SimpleSample
             {
                 var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
                 VMDアニメーションビルダ.ボーンモーションを追加する( vmd.ボーンフレームリスト, this._PMXモデル, true );
+                VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._PMXモデル );
             }
 
             this._カメラ = new カメラ(

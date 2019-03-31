@@ -14,8 +14,6 @@ namespace MikuMikuFlex3
         /// <param name="PMXモデル">対象となるPMXモデル。</param>
         public static void ボーンモーションを追加する( VMDFormat.ボーンフレームリスト VMDFボーンフレームリスト, PMXモデル PMXモデル, bool 全ての親を無視する )
         {
-            // フレーム数をボーンごとにカウントする関係で、ボーンフレーム単位ではなく、PMXボーン単位で構築する。
-
             // すべてのPMXボーンについて……
             for( int i = 0; i < PMXモデル.PMXボーン制御リスト.Length; i++ )
             {
@@ -24,6 +22,7 @@ namespace MikuMikuFlex3
                 if( 全ての親を無視する && pmxBone.PMXFボーン.ボーン名 == "全ての親" )
                     continue;
                 
+
                 // 同じボーン名のフレームを列挙する。
 
                 var boneFrames = VMDFボーンフレームリスト
@@ -31,7 +30,7 @@ namespace MikuMikuFlex3
                     .OrderBy( ( frame ) => frame.フレーム番号 );                              // フレーム番号昇順に。
 
 
-                // 検出されたすべてのフレームについて……
+                // 列挙されたすべてのフレームについて……
 
                 uint 前のフレーム番号 = 0;
 
@@ -44,6 +43,41 @@ namespace MikuMikuFlex3
 
                     pmxBone.アニメ変数_回転.遷移を追加する( 
                         new アニメ遷移_回転ベジェ( frame.ボーンの回転, 持続時間sec, frame.ベジェ曲線[ 3 ] ) );
+
+                    前のフレーム番号 = frame.フレーム番号;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     VMDのモーフフレームリストからアニメ変数を構築する。
+        /// </summary>
+        /// <param name="VMDFモーフフレームリスト">入力となるモーフフレームリスト。</param>
+        /// <param name="PMXモデル">対象となるPMXモデル。</param>
+        public static void モーフを追加する( VMDFormat.モーフフレームリスト VMDFモーフフレームリスト, PMXモデル PMXモデル )
+        {
+            // すべてのモーフについて……
+            for( int i = 0; i < PMXモデル.PMXモーフ制御リスト.Length; i++ )
+            {
+                var pmxMorph = PMXモデル.PMXモーフ制御リスト[ i ];
+
+                
+                // 同じモーフ名のフレームを列挙する。
+
+                var morphFrames = VMDFモーフフレームリスト
+                    .Where( ( frame ) => ( frame.モーフ名 == pmxMorph.PMXFモーフ.モーフ名 ) ) // 同じ名前のフレームを、
+                    .OrderBy( ( frame ) => frame.フレーム番号 );                              // フレーム番号昇順に。
+
+
+                // 列挙されたすべてのフレームについて……
+
+                uint 前のフレーム番号 = 0;
+
+                foreach( var frame in morphFrames )
+                {
+                    var 持続時間sec = ( frame.フレーム番号 - 前のフレーム番号 ) / 30.0;   // 1frame = 1/30sec
+
+                    pmxMorph.アニメ遷移.遷移を追加する( new アニメ遷移_モーフリニア( frame.モーフ値, 持続時間sec ) );
 
                     前のフレーム番号 = frame.フレーム番号;
                 }
