@@ -292,8 +292,6 @@ namespace MikuMikuFlex3
                 #region " スキニングバッファを作成する。"
                 //----------------
                 {
-                    this._D3Dスキニングバッファデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * CS_INPUT.SizeInBytes, canRead: true, canWrite: true );
-
                     this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
@@ -505,8 +503,6 @@ namespace MikuMikuFlex3
                 #region " ボーン用定数バッファを作成する。"
                 //----------------
                 {
-                    this._D3DBoneTransデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes, canRead: true, canWrite: true );
-
                     this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
@@ -514,18 +510,12 @@ namespace MikuMikuFlex3
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
-
-                    this._D3DBoneLocalPositionデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes, canRead: true, canWrite: true );
-
                     this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
                             SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
-
-
-                    this._D3DBoneQuaternionデータストリーム = new DataStream( this.PMX頂点制御.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes, canRead: true, canWrite: true );
 
                     this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
@@ -549,11 +539,8 @@ namespace MikuMikuFlex3
             this._物理変形更新?.Dispose();
 
             this._D3DBoneTrans定数バッファ?.Dispose();
-            this._D3DBoneTransデータストリーム?.Dispose();
             this._D3DBoneLocalPosition定数バッファ?.Dispose();
-            this._D3DBoneLocalPositionデータストリーム?.Dispose();
             this._D3DBoneQuaternion定数バッファ?.Dispose();
-            this._D3DBoneQuaternionデータストリーム?.Dispose();
             this._ボーンのモデルポーズ配列 = null;
             this._ボーンのローカル位置配列 = null;
             this._ボーンの回転配列 = null;
@@ -580,7 +567,6 @@ namespace MikuMikuFlex3
             this._D3D頂点バッファ?.Dispose();
             this._D3DスキニングバッファSRView?.Dispose();
             this._D3Dスキニングバッファ?.Dispose();
-            this._D3Dスキニングバッファデータストリーム?.Dispose();
 
             this.PMX頂点制御 = null;
 
@@ -623,9 +609,7 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-
             // リセットする
-
 
             #region " 材質状態をリセットする。"
             //----------------
@@ -636,7 +620,7 @@ namespace MikuMikuFlex3
 
             #region " 頂点状態をリセットする。"
             //----------------
-            this.PMX頂点制御.状態をリセットする( this._PMXFモデル.頂点リスト );
+            this.PMX頂点制御.状態をリセットする( this._PMXFモデル.ヘッダ.追加UV数, this._PMXFモデル.頂点リスト );
             //----------------
             #endregion
 
@@ -651,9 +635,7 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-
             // 更新する
-
 
             this._モデルポーズを再計算する();
 
@@ -695,7 +677,6 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-
             #region " モデルポーズを再計算しつつ、ボーン状態を確定する。"
             //----------------
             foreach( var root in this._ルートボーンリスト )
@@ -713,6 +694,7 @@ namespace MikuMikuFlex3
                 root.モデルポーズを計算する();
         }
 
+        private bool 初回 = true;
         /// <summary>
         ///     進行処理によって得られた各種状態を描画する。
         /// </summary>
@@ -723,51 +705,257 @@ namespace MikuMikuFlex3
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-
             #region " スキニングを行う。"
             //----------------
             {
-                // ボーン用定数バッファを更新する。
-                this._D3DBoneTransデータストリーム.WriteRange( this._ボーンのモデルポーズ配列 );
-                this._D3DBoneTransデータストリーム.Position = 0;
-                d3ddc.UpdateSubresource( new DataBox( this._D3DBoneTransデータストリーム.DataPointer, 0, 0 ), this._D3DBoneTrans定数バッファ, 0 );
-                this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
+                bool コンピュートシェーダーを使う = true;
 
-                this._D3DBoneLocalPositionデータストリーム.WriteRange( this._ボーンのローカル位置配列 );
-                this._D3DBoneLocalPositionデータストリーム.Position = 0;
-                d3ddc.UpdateSubresource( new DataBox( this._D3DBoneLocalPositionデータストリーム.DataPointer, 0, 0 ), this._D3DBoneLocalPosition定数バッファ, 0 );
-                this._既定のEffect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
-
-                this._D3DBoneQuaternionデータストリーム.WriteRange( this._ボーンの回転配列 );
-                this._D3DBoneQuaternionデータストリーム.Position = 0;
-                d3ddc.UpdateSubresource( new DataBox( this._D3DBoneQuaternionデータストリーム.DataPointer, 0, 0 ), this._D3DBoneQuaternion定数バッファ, 0 );
-                this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
-
-                // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
-                this._D3Dスキニングバッファデータストリーム.WriteRange( this.PMX頂点制御.入力頂点配列 );
-                this._D3Dスキニングバッファデータストリーム.Position = 0;
-                d3ddc.UpdateSubresource( new DataBox( _D3Dスキニングバッファデータストリーム.DataPointer, 0, 0 ), this._D3Dスキニングバッファ, 0 );
-
-                // 使用するtechniqueを検索する。
-                テクニック technique =
-                    ( from teq in this._D3Dテクニックリスト
-                      where
-                        teq.テクニックを適用する描画対象 == MMDPass種別.スキニング
-                      select teq ).FirstOrDefault();
-
-                if( null != technique )
+                if( コンピュートシェーダーを使う )
                 {
-                    // パスを通じてコンピュートシェーダーステートを設定する。
-                    technique.パスリスト.ElementAt( 0 ).Value.D3DPass.Apply( d3ddc );
+                    // ボーン用定数バッファを更新する。
+                    d3ddc.UpdateSubresource( this._ボーンのモデルポーズ配列, this._D3DBoneTrans定数バッファ );
+                    this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
 
-                    // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
-                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
-                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    d3ddc.Dispatch( ( this.PMX頂点制御.入力頂点配列.Length / 64 ) + 1, 1, 1 );
+                    d3ddc.UpdateSubresource( this._ボーンのローカル位置配列, this._D3DBoneLocalPosition定数バッファ );
+                    this._既定のEffect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
+
+                    d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
+                    this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
+
+                    // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
+                    d3ddc.UpdateSubresource( this.PMX頂点制御.入力頂点配列, this._D3Dスキニングバッファ );
+
+                    // 使用するtechniqueを検索する。
+                    テクニック technique =
+                        ( from teq in this._D3Dテクニックリスト
+                          where
+                            teq.テクニックを適用する描画対象 == MMDPass種別.スキニング
+                          select teq ).FirstOrDefault();
+
+                    if( null != technique )
+                    {
+                        // パスを通じてコンピュートシェーダーステートを設定する。
+                        technique.パスリスト.ElementAt( 0 ).Value.D3DPass.Apply( d3ddc );
+
+                        // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
+                        d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
+                        d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
+                        d3ddc.Dispatch( ( this.PMX頂点制御.入力頂点配列.Length / 64 ) + 1, 1, 1 );
+                    }
+
+                    // UAVを外す（このあと頂点シェーダーが使えるように）
+                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, null );
                 }
+                else
+                {
+                    #region " CPUで行う場合 "
+                    //----------------
+                    var boneTrans = this._ボーンのモデルポーズ配列; // コンピュートシェーダー（HLSL）用に転置されているので注意。
 
-                // UAVを外す（このあと頂点シェーダーが使えるように）
-                d3ddc.ComputeShader.SetUnorderedAccessView( 0, null );
+                    var スキニング後の入力頂点リスト = new VS_INPUT[ this.PMX頂点制御.入力頂点配列.Length ];
+
+                    for( int i = 0; i < this.PMX頂点制御.入力頂点配列.Length; i++ )
+                    {
+                        switch( this.PMX頂点制御.入力頂点配列[ i ].変形方式 )
+                        {
+                            case (uint) PMXFormat.ボーンウェイト種別.BDEF1:
+                                #region " *** "
+                                //----------------
+                                {
+                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+
+                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    bt1.Transpose();
+
+                                    Matrix bt =
+                                        bt1;
+
+                                    if( Matrix.Zero == bt )
+                                        bt = Matrix.Identity;
+
+                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                }
+                                //----------------
+                                #endregion
+                                break;
+
+                            case (uint) PMXFormat.ボーンウェイト種別.BDEF2:
+                                #region " *** "
+                                //----------------
+                                {
+                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+
+                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    bt1.Transpose();
+                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    bt2.Transpose();
+
+                                    Matrix bt =
+                                        bt1 * 頂点.BoneWeight1 +
+                                        bt2 * 頂点.BoneWeight2;
+
+                                    if( Matrix.Zero == bt )
+                                        bt = Matrix.Identity;
+
+                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                }
+                                //----------------
+                                #endregion
+                                break;
+
+                            case (uint) PMXFormat.ボーンウェイト種別.BDEF4:
+                                #region " *** "
+                                //----------------
+                                {
+                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+
+                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    bt1.Transpose();
+                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    bt2.Transpose();
+                                    var bt3 = boneTrans[ 頂点.BoneIndex3 ];
+                                    bt3.Transpose();
+                                    var bt4 = boneTrans[ 頂点.BoneIndex4 ];
+                                    bt4.Transpose();
+
+                                    Matrix bt =
+                                        bt1 * 頂点.BoneWeight1 +
+                                        bt2 * 頂点.BoneWeight2 +
+                                        bt3 * 頂点.BoneWeight3 +
+                                        bt4 * 頂点.BoneWeight4;
+
+                                    if( Matrix.Zero == bt )
+                                        bt = Matrix.Identity;
+
+                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
+                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                }
+                                //----------------
+                                #endregion
+                                break;
+
+                            case (uint) PMXFormat.ボーンウェイト種別.SDEF:
+                                #region " *** "
+                                //----------------
+                                {
+                                    // 参考: 
+                                    // 自分用メモ「PMXのスフィリカルデフォームのコードっぽいもの」（sma42氏）
+                                    // https://www.pixiv.net/member_illust.php?mode=medium&illust_id=60755964
+
+                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+
+                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    bt1.Transpose();
+                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    bt2.Transpose();
+
+                                    #region " 影響度0,1 の算出 "
+                                    //----------------
+                                    float 影響度0 = 0f;  // 固定値であるSDEFパラメータにのみ依存するので、これらの値も固定値。
+                                    float 影響度1 = 0f;  //
+                                    {
+                                        float L0 = ( 頂点.SdefR0 - (Vector3) this._ボーンのローカル位置配列[ 頂点.BoneIndex2 ] ).Length();   // 子ボーンからR0までの距離
+                                        float L1 = ( 頂点.SdefR1 - (Vector3) this._ボーンのローカル位置配列[ 頂点.BoneIndex2 ] ).Length();   // 子ボーンからR1までの距離
+
+                                        影響度0 = ( Math.Abs( L0 - L1 ) < 0.0001f ) ? 0.5f : MathUtil.Clamp( L0 / ( L0 + L1 ), 0.0f, 1.0f );
+                                        影響度1 = 1.0f - 影響度0;
+                                    }
+                                    //----------------
+                                    #endregion
+
+                                    Matrix モデルポーズ行列L = bt1 * 頂点.BoneWeight1;
+                                    Matrix モデルポーズ行列R = bt2 * 頂点.BoneWeight2;
+                                    Matrix モデルポーズ行列C = モデルポーズ行列L + モデルポーズ行列R;
+
+                                    Vector4 点C = Vector4.Transform( 頂点.Sdef_C, モデルポーズ行列C );    // BDEF2で計算された点Cの位置
+                                    Vector4 点P = Vector4.Transform( 頂点.Position, モデルポーズ行列C );  // BDEF2で計算された頂点の位置
+
+                                    Matrix 重み付き回転行列 = Matrix.RotationQuaternion(
+                                        Quaternion.Slerp(   // 球体線形補間
+                                            new Quaternion( this._ボーンの回転配列[ 頂点.BoneIndex1 ].ToArray() ) * 頂点.BoneWeight1,
+                                            new Quaternion( this._ボーンの回転配列[ 頂点.BoneIndex2 ].ToArray() ) * 頂点.BoneWeight2,
+                                            頂点.BoneWeight1 ) );
+
+                                    Vector4 点R0 = Vector4.Transform( new Vector4( 頂点.SdefR0, 1f ), ( モデルポーズ行列L + ( モデルポーズ行列C * -頂点.BoneWeight1 ) ) );
+                                    Vector4 点R1 = Vector4.Transform( new Vector4( 頂点.SdefR1, 1f ), ( モデルポーズ行列R + ( モデルポーズ行列C * -頂点.BoneWeight2 ) ) );
+                                    点C += ( 点R0 * 影響度0 ) + ( 点R1 * 影響度1 );   // 膨らみすぎ防止
+
+                                    点P -= 点C;     // 頂点を点Cが中心になるよう移動して
+                                    点P = Vector4.Transform( 点P, 重み付き回転行列 );   // 回転して
+                                    点P += 点C;     // 元の位置へ
+
+                                    スキニング後の入力頂点リスト[ i ].Position = 点P;
+                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, 重み付き回転行列 );
+                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                }
+                                //----------------
+                                #endregion
+                                break;
+
+                            case (uint) PMXFormat.ボーンウェイト種別.QDEF:
+                                #region " *** "
+                                //----------------
+                                {
+                                    // ※ QDEFを使ったモデルが見つからないのでテストしてません。あれば教えてください！
+
+                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+
+                                    var dualQuaternion = new DualQuaternion[ 4 ];   // 最大４ボーンまで対応
+
+                                    var boneIndexes = new[] { 頂点.BoneIndex1, 頂点.BoneIndex2, 頂点.BoneIndex3, 頂点.BoneIndex4 };
+                                    var boneWeights = new[] { 頂点.BoneWeight1, 頂点.BoneWeight2, 頂点.BoneWeight3, 頂点.BoneWeight4 };
+
+                                    var bt = new[] { boneTrans[ boneIndexes[ 0 ] ], boneTrans[ boneIndexes[ 1 ] ], boneTrans[ boneIndexes[ 2 ] ], boneTrans[ boneIndexes[ 3 ] ] };
+                                    for( int b = 0; b < 4; b++ )
+                                        bt[ b ].Transpose();
+
+                                    for( int b = 0; b < 4; b++ )
+                                    {
+                                        if( boneWeights[ b ] == 0f )
+                                        {
+                                            dualQuaternion[ b ] = DualQuaternion.Zero;  // 未使用
+                                        }
+                                        else
+                                        {
+                                            dualQuaternion[ b ] = new DualQuaternion( bt[ boneIndexes[ b ] ] );
+                                        }
+                                    }
+
+                                    Matrix btm = (
+                                        dualQuaternion[ 0 ] * boneWeights[ 0 ] +
+                                        dualQuaternion[ 1 ] * boneWeights[ 1 ] +
+                                        dualQuaternion[ 2 ] * boneWeights[ 2 ] +
+                                        dualQuaternion[ 3 ] * boneWeights[ 3 ] ).ToMatrix();
+
+                                    if( Matrix.Zero == btm )
+                                        btm = Matrix.Identity;
+
+                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, btm );
+                                    スキニング後の入力頂点リスト[ i ].Normal = 頂点.Normal;
+                                }
+                                //----------------
+                                #endregion
+                                break;
+                        }
+
+                        スキニング後の入力頂点リスト[ i ].UV = this.PMX頂点制御.入力頂点配列[ i ].UV;
+                        スキニング後の入力頂点リスト[ i ].AddUV1 = this.PMX頂点制御.入力頂点配列[ i ].AddUV1;
+                        スキニング後の入力頂点リスト[ i ].AddUV2 = this.PMX頂点制御.入力頂点配列[ i ].AddUV2;
+                        スキニング後の入力頂点リスト[ i ].AddUV3 = this.PMX頂点制御.入力頂点配列[ i ].AddUV3;
+                        スキニング後の入力頂点リスト[ i ].AddUV4 = this.PMX頂点制御.入力頂点配列[ i ].AddUV4;
+                        スキニング後の入力頂点リスト[ i ].EdgeWeight = this.PMX頂点制御.入力頂点配列[ i ].EdgeWeight;
+                        スキニング後の入力頂点リスト[ i ].Index = this.PMX頂点制御.入力頂点配列[ i ].Index;
+                    }
+
+                    d3ddc.UpdateSubresource( スキニング後の入力頂点リスト, this._D3D頂点バッファ );
+                    //----------------
+                    #endregion
+                }
             }
             //----------------
             #endregion
@@ -793,146 +981,148 @@ namespace MikuMikuFlex3
                 var 材質 = this.PMX材質制御リスト[ i ];
 
 
-                #region " エフェクト変数を設定する。"
-                //----------------
-                for( int j = 0; j < this._既定のEffect.Description.GlobalVariableCount; j++ )
+                //if( 初回 )
                 {
-                    var 変数 = this._既定のEffect.GetVariableByIndex( j );
-
-                    switch( 変数.Description.Semantic?.ToUpper() )
+                    #region " エフェクト変数を設定する。"
+                    //----------------
+                    for( int j = 0; j < this._既定のEffect.Description.GlobalVariableCount; j++ )
                     {
-                        case "EDGECOLOR":
-                            変数.AsVector().Set( 材質.エッジ色 );
-                            break;
+                        var 変数 = this._既定のEffect.GetVariableByIndex( j );
 
-                        case "EDGEWIDTH":
-                            変数.AsScalar().Set( 材質.エッジサイズ );
-                            break;
+                        switch( 変数.Description.Semantic?.ToUpper() )
+                        {
+                            case "EDGECOLOR":
+                                変数.AsVector().Set( 材質.エッジ色 );
+                                break;
 
-                        case "WORLDVIEWPROJECTION":
-                            変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                            break;
+                            case "EDGEWIDTH":
+                                変数.AsScalar().Set( 材質.エッジサイズ );
+                                break;
 
-                        case "WORLDVIEW":
-                            変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
-                            break;
+                            case "WORLDVIEWPROJECTION":
+                                変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+                                break;
 
-                        case "WORLD":
-                            変数.AsMatrix().SetMatrix( ワールド変換行列 );
-                            break;
+                            case "WORLDVIEW":
+                                変数.AsMatrix().SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
+                                break;
 
-                        case "VIEW":
-                            変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() );
-                            break;
+                            case "WORLD":
+                                変数.AsMatrix().SetMatrix( ワールド変換行列 );
+                                break;
 
-                        case "VIEWPROJECTION":
-                            変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                            break;
+                            case "VIEW":
+                                変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() );
+                                break;
 
-                        case "VIEWPORTPIXELSIZE":
-                            変数.AsVector().Set( viewport );
-                            break;
+                            case "VIEWPROJECTION":
+                                変数.AsMatrix().SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+                                break;
 
-                        case "POSITION":
-                            switch( 変数.GetAnnotationByName( "object" ).AsString().GetString().ToLower() )
-                            {
-                                case "camera":
-                                    switch( 変数.TypeInfo.Description.TypeName )
-                                    {
-                                        case "float4":
-                                            変数.AsVector().Set( new Vector4( camera.位置, 0f ) );
-                                            break;
+                            case "VIEWPORTPIXELSIZE":
+                                変数.AsVector().Set( viewport );
+                                break;
 
-                                        case "float3":
-                                            変数.AsVector().Set( camera.位置 );
-                                            break;
-                                    }
-                                    break;
+                            case "POSITION":
+                                switch( 変数.GetAnnotationByName( "object" ).AsString().GetString().ToLower() )
+                                {
+                                    case "camera":
+                                        switch( 変数.TypeInfo.Description.TypeName )
+                                        {
+                                            case "float4":
+                                                変数.AsVector().Set( new Vector4( camera.位置, 0f ) );
+                                                break;
 
-                                case "light":
-                                    変数.AsVector().Set( new Vector4( -light.照射方向, 0f ) );
-                                    break;
-                            }
-                            break;
+                                            case "float3":
+                                                変数.AsVector().Set( camera.位置 );
+                                                break;
+                                        }
+                                        break;
 
-                        case "MATERIALTEXTURE":
-                            if( -1 != 材質.通常テクスチャの参照インデックス )
-                            {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
-                            }
-                            break;
+                                    case "light":
+                                        変数.AsVector().Set( new Vector4( -light.照射方向, 0f ) );
+                                        break;
+                                }
+                                break;
 
-                        case "MATERIALSPHEREMAP":
-                            if( -1 != 材質.スフィアテクスチャの参照インデックス )
-                            {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
-                            }
-                            break;
+                            case "MATERIALTEXTURE":
+                                if( -1 != 材質.通常テクスチャの参照インデックス )
+                                {
+                                    変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
+                                }
+                                break;
 
-                        case "MATERIALTOONTEXTURE":
-                            if( 1 == 材質.共有Toonフラグ )
-                            {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                            }
-                            else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
-                            {
-                                変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                            }
-                            else
-                            {
-                                変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 0 ].srv );
-                            }
-                            break;
+                            case "MATERIALSPHEREMAP":
+                                if( -1 != 材質.スフィアテクスチャの参照インデックス )
+                                {
+                                    変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
+                                }
+                                break;
 
-                        case "TESSFACTOR":
-                            変数.AsScalar().Set( 材質.テッセレーション係数 );
-                            break;
+                            case "MATERIALTOONTEXTURE":
+                                if( 1 == 材質.共有Toonフラグ )
+                                {
+                                    変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                }
+                                else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
+                                {
+                                    変数.AsShaderResource().SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                                }
+                                else
+                                {
+                                    変数.AsShaderResource().SetResource( this._共有テクスチャリスト[ 0 ].srv );
+                                }
+                                break;
 
-                        default:
-                            switch( 変数.Description.Name.ToLower() )
-                            {
-                                case "use_spheremap":
-                                    変数.AsScalar().Set( 材質.スフィアテクスチャの参照インデックス != -1 );
-                                    break;
+                            case "TESSFACTOR":
+                                変数.AsScalar().Set( 材質.テッセレーション係数 );
+                                break;
 
-                                case "spadd":
-                                    変数.AsScalar().Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
-                                    break;
+                            default:
+                                switch( 変数.Description.Name.ToLower() )
+                                {
+                                    case "use_spheremap":
+                                        変数.AsScalar().Set( 材質.スフィアテクスチャの参照インデックス != -1 );
+                                        break;
 
-                                case "use_texture":
-                                    変数.AsScalar().Set( 材質.通常テクスチャの参照インデックス != -1 );
-                                    break;
+                                    case "spadd":
+                                        変数.AsScalar().Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                                        break;
 
-                                case "use_toontexturemap":
-                                    変数.AsScalar().Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
-                                    break;
+                                    case "use_texture":
+                                        変数.AsScalar().Set( 材質.通常テクスチャの参照インデックス != -1 );
+                                        break;
 
-                                case "use_selfshadow":
-                                    変数.AsScalar().Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
-                                    break;
+                                    case "use_toontexturemap":
+                                        変数.AsScalar().Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
+                                        break;
 
-                                case "ambientcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.環境色, 1f ) );
-                                    break;
+                                    case "use_selfshadow":
+                                        変数.AsScalar().Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                                        break;
 
-                                case "diffusecolor":
-                                    変数.AsVector().Set( 材質.拡散色 );
-                                    break;
+                                    case "ambientcolor":
+                                        変数.AsVector().Set( new Vector4( 材質.環境色, 1f ) );
+                                        break;
 
-                                case "specularcolor":
-                                    変数.AsVector().Set( new Vector4( 材質.反射色, 1f ) );
-                                    break;
+                                    case "diffusecolor":
+                                        変数.AsVector().Set( 材質.拡散色 );
+                                        break;
 
-                                case "specularpower":
-                                    変数.AsScalar().Set( 材質.反射強度 );
-                                    break;
-                            }
-                            break;
+                                    case "specularcolor":
+                                        変数.AsVector().Set( new Vector4( 材質.反射色, 1f ) );
+                                        break;
+
+                                    case "specularpower":
+                                        変数.AsScalar().Set( 材質.反射強度 );
+                                        break;
+                                }
+                                break;
+                        }
                     }
+                    //----------------
+                    #endregion
                 }
-                //----------------
-                #endregion
-
                 
                 // オブジェクト描画
 
@@ -976,6 +1166,7 @@ namespace MikuMikuFlex3
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
             }
+            初回 = false;
         }
 
         private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMX材質制御 ipmxSubset, MMDPass種別 passType, Action<PMX材質制御> drawAction )
@@ -1031,7 +1222,6 @@ namespace MikuMikuFlex3
             public static int SizeInBytes
                 => ( ( Marshal.SizeOf( typeof( _D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
         }
-        private DataStream _D3DBoneTransデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneTrans定数バッファ;
 
         private struct _D3DBoneLocalPosition    // サイズ計測用構造体
@@ -1044,7 +1234,6 @@ namespace MikuMikuFlex3
             public static int SizeInBytes
                 => ( ( Marshal.SizeOf( typeof( _D3DBoneLocalPosition ) ) ) / 16 + 1 ) * 16;
         }
-        private DataStream _D3DBoneLocalPositionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
 
         private struct _D3DBoneQuaternion    // サイズ計測用構造体
@@ -1057,15 +1246,12 @@ namespace MikuMikuFlex3
             public static int SizeInBytes
                 => ( ( Marshal.SizeOf( typeof( _D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
         }
-        private DataStream _D3DBoneQuaternionデータストリーム;
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
 
         private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
 
         private ShaderResourceView _D3DスキニングバッファSRView;
-
-        private DataStream _D3Dスキニングバッファデータストリーム;
 
         private SharpDX.Direct3D11.Buffer _D3D頂点バッファ;
 

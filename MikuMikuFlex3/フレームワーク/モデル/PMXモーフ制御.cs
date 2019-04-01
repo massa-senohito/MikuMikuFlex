@@ -43,7 +43,8 @@ namespace MikuMikuFlex3
         {
             var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
 
-            this._モーフを適用する( 現在値, PMXモデル, this );
+            if( 現在値 > 0.001 )
+                this._モーフを適用する( 現在値, PMXモデル, this );
         }
 
         private void _モーフを適用する( float 現在値, PMXモデル PMXモデル, PMXモーフ制御 適用対象モーフ )
@@ -56,7 +57,10 @@ namespace MikuMikuFlex3
                     {
                         foreach( PMXFormat.頂点モーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position += new Vector4( offset.座標オフセット量 * 現在値, 0f );
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.X += offset.座標オフセット量.X * 現在値;
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.Y += offset.座標オフセット量.Y * 現在値;
+                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.Z += offset.座標オフセット量.Z * 現在値;
+
                             PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
                         }
                     }

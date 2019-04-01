@@ -162,7 +162,6 @@ namespace SimpleSample
             // モデルその他を生成。
 
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス );
-
             using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
             {
                 var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
@@ -178,10 +177,12 @@ namespace SimpleSample
             this._照明 = new 照明();
 
             var timer = new QPCTimer();
+
+            this._FPS = new FPS();
             //----------------
             #endregion
+                        
 
-            
             // メインループ
 
             while( !this.終了指示通知.IsSet )
@@ -194,15 +195,18 @@ namespace SimpleSample
 
                 // モデルの進行描画。
 
-                var world = Matrix.Identity;
-
                 this._PMXモデル.進行する( timer.現在のリアルタイムカウントsec );
+
+                var world = Matrix.Identity;
                 this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
+
+                if( this._FPS.FPSをカウントする() )
+                    Trace.WriteLine( $"{_FPS.現在のFPS} fps" );
 
 
                 // 画面の表示。
 
-                this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
+                this._DXGISwapChain.Present( 0, SharpDX.DXGI.PresentFlags.None );
             }
 
 
@@ -225,6 +229,8 @@ namespace SimpleSample
         private カメラ _カメラ;
 
         private 照明 _照明;
+
+        private FPS _FPS;
 
         private SharpDX.Direct3D11.Device _D3D11Device;
 

@@ -34,6 +34,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -96,12 +97,12 @@
     <Compile Include="フレームワーク\モデル\PMXモーフ制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX材質制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX頂点制御.cs" />
-    <Compile Include="フレームワーク\モデル\変形階層リスト.cs" />
+    <Compile Include="フレームワーク\モデル\階層順リスト.cs" />
     <Compile Include="フレームワーク\モデル\親付与によるFK変形更新.cs" />
-    <Compile Include="フレームワーク\動作対象.cs" />
     <Compile Include="フレームワーク\照明.cs" />
     <Compile Include="ヘルパ等\CGHelper.cs" />
     <Compile Include="ヘルパ等\CS_INPUT.cs" />
+    <Compile Include="ヘルパ等\DualQuaternion.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイント.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
     <Compile Include="ヘルパ等\Format\PMX\ジョイントパラメータ\ばね付き6DOFジョイントパラメータ.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="ヘルパ等\Format\PMX\頂点リスト.cs" />
     <Compile Include="フレームワーク\モデル\Effects11\MMDPass種別.cs" />
     <Compile Include="ヘルパ等\Format\VMD\モーション.cs" />
+    <Compile Include="ヘルパ等\FPS.cs" />
     <Compile Include="ヘルパ等\MMFShaderResourceView.cs" />
     <Compile Include="ヘルパ等\ParserHelper.cs" />
     <Compile Include="フレームワーク\モデル\PMXボーン制御.cs" />

@@ -38,7 +38,7 @@ namespace MikuMikuFlex3.PMXFormat
 
         public int モーフオフセット数 { get; private set; }
 
-        public List<モーフオフセット> モーフオフセットリスト { get; private set; }
+        public モーフオフセット[] モーフオフセットリスト { get; private set; }
 
 
         public モーフ()
@@ -50,12 +50,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// </summary>
         internal モーフ( Stream st, ヘッダ header )
         {
-            this.モーフオフセットリスト = new List<モーフオフセット>();
             this.モーフ名 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
             this.モーフ名_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
             this.操作パネル = ParserHelper.get_Byte( st );
             byte Morphtype = ParserHelper.get_Byte( st );
             this.モーフオフセット数 = ParserHelper.get_Int( st );
+            this.モーフオフセットリスト = new モーフオフセット[ this.モーフオフセット数 ];
 
             for( int i = 0; i < this.モーフオフセット数; i++ )
             {
@@ -64,52 +64,52 @@ namespace MikuMikuFlex3.PMXFormat
                     case 0:
                         //Group Morph
                         this.モーフ種類 = モーフ種別.グループ;
-                        this.モーフオフセットリスト.Add( new グループモーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new グループモーフオフセット( st, header );
                         break;
                     case 1:
                         //Vertex Morph
                         this.モーフ種類 = モーフ種別.頂点;
-                        this.モーフオフセットリスト.Add( new 頂点モーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new 頂点モーフオフセット( st, header );
                         break;
                     case 2:
                         this.モーフ種類 = モーフ種別.ボーン;
-                        this.モーフオフセットリスト.Add( new ボーンモーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new ボーンモーフオフセット( st, header );
                         break;
                     //3~7はすべてUVMorph
                     case 3:
                         this.モーフ種類 = モーフ種別.UV;
-                        this.モーフオフセットリスト.Add( new UVモーフオフセット( st, header, モーフ種別.UV ) );
+                        this.モーフオフセットリスト[ i ] = new UVモーフオフセット( st, header, モーフ種別.UV );
                         break;
                     case 4:
                         this.モーフ種類 = モーフ種別.追加UV1;
-                        this.モーフオフセットリスト.Add( new UVモーフオフセット( st, header, モーフ種別.追加UV1 ) );
+                        this.モーフオフセットリスト[ i ] = new UVモーフオフセット( st, header, モーフ種別.追加UV1 );
                         break;
                     case 5:
                         this.モーフ種類 = モーフ種別.追加UV2;
-                        this.モーフオフセットリスト.Add( new UVモーフオフセット( st, header, モーフ種別.追加UV2 ) );
+                        this.モーフオフセットリスト[ i ] = new UVモーフオフセット( st, header, モーフ種別.追加UV2 );
                         break;
                     case 6:
                         this.モーフ種類 = モーフ種別.追加UV3;
-                        this.モーフオフセットリスト.Add( new UVモーフオフセット( st, header, モーフ種別.追加UV3 ) );
+                        this.モーフオフセットリスト[ i ] = new UVモーフオフセット( st, header, モーフ種別.追加UV3 );
                         break;
                     case 7:
                         this.モーフ種類 = モーフ種別.追加UV4;
-                        this.モーフオフセットリスト.Add( new UVモーフオフセット( st, header, モーフ種別.追加UV4 ) );
+                        this.モーフオフセットリスト[ i ] = new UVモーフオフセット( st, header, モーフ種別.追加UV4 );
                         break;
                     case 8:
                         //Material Morph
                         this.モーフ種類 = モーフ種別.材質;
-                        this.モーフオフセットリスト.Add( new 材質モーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new 材質モーフオフセット( st, header );
                         break;
                     case 9:
                         if( header.PMXバージョン < 2.1 ) throw new InvalidDataException( "FlipモーフはPMX2.1以降でサポートされています。" );
                         this.モーフ種類 = モーフ種別.フリップ;
-                        this.モーフオフセットリスト.Add( new フリップモーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new フリップモーフオフセット( st, header );
                         break;
                     case 10:
                         if( header.PMXバージョン < 2.1 ) throw new InvalidDataException( "ImpulseモーフはPMX2.1以降でサポートされています。" );
                         this.モーフ種類 = モーフ種別.インパルス;
-                        this.モーフオフセットリスト.Add( new インパルスモーフオフセット( st, header ) );
+                        this.モーフオフセットリスト[ i ] = new インパルスモーフオフセット( st, header );
                         break;
                 }
             }
