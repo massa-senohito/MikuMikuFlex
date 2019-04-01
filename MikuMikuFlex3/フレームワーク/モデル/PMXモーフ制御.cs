@@ -15,7 +15,7 @@ namespace MikuMikuFlex3
 
         public float モーフ値 { get; set; }
 
-        public アニメ変数<float> アニメ遷移;
+        public アニメ変数<float> アニメ変数_モーフ;
 
         
 
@@ -26,7 +26,7 @@ namespace MikuMikuFlex3
         {
             this.PMXFモーフ = morph;
             this.モーフ値 = 0;
-            this.アニメ遷移 = new アニメ変数<float>( 0f );
+            this.アニメ変数_モーフ = new アニメ変数<float>( 0f );
         }
 
         public virtual void Dispose()
@@ -41,7 +41,7 @@ namespace MikuMikuFlex3
 
         public void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
         {
-            var 現在値 = this.アニメ遷移.更新する( 現在時刻sec );
+            var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
 
             this._モーフを適用する( 現在値, PMXモデル, this );
         }

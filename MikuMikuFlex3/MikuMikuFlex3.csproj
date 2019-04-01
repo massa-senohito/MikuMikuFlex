@@ -177,6 +177,15 @@
     <Compile Include="フレームワーク\モデル\Effects11\テクニック.cs" />
     <Compile Include="フレームワーク\モデル\Effects11\パス.cs" />
     <Compile Include="ヘルパ等\三状態Boolean.cs" />
+    <Compile Include="物理演算\Bulletタイマ.cs" />
+    <Compile Include="物理演算\Bullet管理.cs" />
+    <Compile Include="物理演算\PMX物理変形更新.cs" />
+    <Compile Include="物理演算\六軸ジョイント.cs" />
+    <Compile Include="物理演算\剛体ファクトリ.cs" />
+    <Compile Include="物理演算\剛体物性.cs" />
+    <Compile Include="物理演算\動的世界ファクトリ.cs" />
+    <Compile Include="物理演算\拘束ファクトリ.cs" />
+    <Compile Include="物理演算\物理演算を超越した特性.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

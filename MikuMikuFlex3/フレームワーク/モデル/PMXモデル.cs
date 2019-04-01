@@ -199,6 +199,13 @@ namespace MikuMikuFlex3
                 }
                 //----------------
                 #endregion
+                #region " 物理変形を初期化する。"
+                //----------------
+                {
+                    this._物理変形更新 = new PMX物理変形更新( this.PMXボーン制御リスト, this._PMXFモデル.剛体リスト, this._PMXFモデル.ジョイントリスト );
+                }
+                //----------------
+                #endregion
                 #region " PMX材質制御リストを作成する。"
                 //----------------
                 {
@@ -223,7 +230,6 @@ namespace MikuMikuFlex3
                 }
                 //----------------
                 #endregion
-
                 #region " 既定のエフェクトを生成する。"
                 //----------------
                 {
@@ -540,6 +546,8 @@ namespace MikuMikuFlex3
         {
             this._初期化完了.Reset();
 
+            this._物理変形更新?.Dispose();
+
             this._D3DBoneTrans定数バッファ?.Dispose();
             this._D3DBoneTransデータストリーム?.Dispose();
             this._D3DBoneLocalPosition定数バッファ?.Dispose();
@@ -681,7 +689,11 @@ namespace MikuMikuFlex3
 
             this._モデルポーズを再計算する();
 
-            // undone: 物理演算による変形を適用する。
+            #region " 物理演算による変形を適用する。"
+            //----------------
+            this._物理変形更新.変形を更新する();
+            //----------------
+            #endregion
 
 
             #region " モデルポーズを再計算しつつ、ボーン状態を確定する。"
@@ -1076,6 +1088,8 @@ namespace MikuMikuFlex3
         private List<PMXボーン制御> _ルートボーンリスト;
 
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
+
+        private PMX物理変形更新 _物理変形更新;
 
 
         /// <summary>

@@ -77,7 +77,7 @@ namespace MikuMikuFlex3
                 {
                     var 持続時間sec = ( frame.フレーム番号 - 前のフレーム番号 ) / 30.0;   // 1frame = 1/30sec
 
-                    pmxMorph.アニメ遷移.遷移を追加する( new アニメ遷移_モーフリニア( frame.モーフ値, 持続時間sec ) );
+                    pmxMorph.アニメ変数_モーフ.遷移を追加する( new アニメ遷移_モーフリニア( frame.モーフ値, 持続時間sec ) );
 
                     前のフレーム番号 = frame.フレーム番号;
                 }
