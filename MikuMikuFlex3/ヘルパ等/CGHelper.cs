@@ -90,7 +90,7 @@ namespace MikuMikuFlex3
         /// <param name="X軸回転">X軸回転(-PI/2～PI/2)</param>
         /// <param name="Y軸回転">Y軸回転</param>
         /// <returns>ジンバルロックが発生した時はfalse。ジンバルロックはX軸回転で発生</returns>
-        public static bool クォータニオンをZXY回転に分解する( Quaternion input, out float Z軸回転, out float X軸回転, out float Y軸回転 )
+        public static bool クォータニオンをZXY回転に分解する( in Quaternion input, out float Z軸回転, out float X軸回転, out float Y軸回転 )
         {
             // クォータニオンを正規化する。
             var 正規化済み入力 = new Quaternion( input.X, input.Y, input.Z, input.W );
@@ -141,7 +141,7 @@ namespace MikuMikuFlex3
         /// <param name="Y軸回転">Y軸回転(-PI/2～PI/2)</param>
         /// <param name="Z軸回転">Z軸回転</param>
         /// <returns></returns>
-        public static bool クォータニオンをXYZ回転に分解する( Quaternion input, out float X軸回転, out float Y軸回転, out float Z軸回転 )
+        public static bool クォータニオンをXYZ回転に分解する( in Quaternion input, out float X軸回転, out float Y軸回転, out float Z軸回転 )
         {
             // クォータニオンを正規化する。
             var 正規化済み入力 = new Quaternion( input.X, input.Y, input.Z, input.W );
@@ -190,7 +190,7 @@ namespace MikuMikuFlex3
         /// <param name="Z軸回転">Z軸回転(-PI/2～PI/2)</param>
         /// <param name="X軸回転">X軸回転</param>
         /// <returns></returns>
-        public static bool クォータニオンをYZX回転に分解する( Quaternion input, out float Y軸回転, out float Z軸回転, out float X軸回転 )
+        public static bool クォータニオンをYZX回転に分解する( in Quaternion input, out float Y軸回転, out float Z軸回転, out float X軸回転 )
         {
             // クォータニオンを正規化する。
             var 正規化済み入寮 = new Quaternion( input.X, input.Y, input.Z, input.W );
