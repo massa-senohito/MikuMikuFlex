@@ -506,21 +506,21 @@ namespace MikuMikuFlex3
                     this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneTrans.SizeInBytes,
+                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneTrans.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
                     this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneLocalPosition.SizeInBytes,
+                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
                     this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMX頂点制御.入力頂点配列.Length * _D3DBoneQuaternion.SizeInBytes,
+                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneQuaternion.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
                 }
