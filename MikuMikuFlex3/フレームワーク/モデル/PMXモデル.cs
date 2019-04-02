@@ -230,6 +230,7 @@ namespace MikuMikuFlex3
                 }
                 //----------------
                 #endregion
+
                 #region " 既定のエフェクトを生成する。"
                 //----------------
                 {
@@ -242,6 +243,8 @@ namespace MikuMikuFlex3
 
                         this._既定のEffect = new Effect( d3dDevice, effectByteCode );
                     }
+
+                    this._エフェクト変数 = new エフェクト変数( this._既定のEffect );
                 }
                 //----------------
                 #endregion
@@ -569,6 +572,8 @@ namespace MikuMikuFlex3
             this._D3Dスキニングバッファ?.Dispose();
 
             this.PMX頂点制御 = null;
+
+            this._エフェクト変数?.Dispose();
 
             foreach( var tech in this._D3Dテクニックリスト )
                 tech?.Dispose();
@@ -982,169 +987,45 @@ namespace MikuMikuFlex3
 
                 #region " エフェクト変数を設定する。"
                 //----------------
-                for( int j = 0; j < this._既定のEffect.Description.GlobalVariableCount; j++ )
                 {
-                    var 変数 = this._既定のEffect.GetVariableByIndex( j );
+                    this._エフェクト変数.EDGECOLOR.Set( 材質.エッジ色 );
+                    this._エフェクト変数.EDGEWIDTH.Set( 材質.エッジサイズ );
+                    this._エフェクト変数.WORLDVIEWPROJECTION.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+                    this._エフェクト変数.WORLDVIEW.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
+                    this._エフェクト変数.WORLD.SetMatrix( ワールド変換行列 );
+                    this._エフェクト変数.VIEW.SetMatrix( camera.ビュー行列を取得する() );
+                    this._エフェクト変数.VIEWPROJECTION.SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+                    this._エフェクト変数.VIEWPORTPIXELSIZE.Set( viewport );
+                    this._エフェクト変数.POSITION_camera.Set( new Vector4( camera.位置, 0f ) );
+                    this._エフェクト変数.POSITION_light.Set( new Vector4( -light.照射方向, 0f ) );
 
-                    switch( 変数.Description.Semantic?.ToUpper() )
-                    {
-                        case "EDGECOLOR":
-                            using( var v = 変数.AsVector() )
-                                v.Set( 材質.エッジ色 );
-                            break;
+                    if( -1 != 材質.通常テクスチャの参照インデックス )
+                        this._エフェクト変数.MATERIALTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
 
-                        case "EDGEWIDTH":
-                            using( var v = 変数.AsScalar() )
-                                v.Set( 材質.エッジサイズ );
-                            break;
+                    if( -1 != 材質.スフィアテクスチャの参照インデックス )
+                        this._エフェクト変数.MATERIALSPHEREMAP.SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
 
-                        case "WORLDVIEWPROJECTION":
-                            using( var v = 変数.AsMatrix() )
-                                v.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                            break;
+                    if( 1 == 材質.共有Toonフラグ )
+                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                    else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
+                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                    else
+                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 0 ].srv );
 
-                        case "WORLDVIEW":
-                            using( var v = 変数.AsMatrix() )
-                                v.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
-                            break;
-
-                        case "WORLD":
-                            using( var v = 変数.AsMatrix() )
-                                v.SetMatrix( ワールド変換行列 );
-                            break;
-
-                        case "VIEW":
-                            using( var v = 変数.AsMatrix() )
-                                v.SetMatrix( camera.ビュー行列を取得する() );
-                            break;
-
-                        case "VIEWPROJECTION":
-                            using( var v = 変数.AsMatrix() )
-                                v.SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                            break;
-
-                        case "VIEWPORTPIXELSIZE":
-                            using( var v = 変数.AsVector() )
-                                v.Set( viewport );
-                            break;
-
-                        case "POSITION":
-                            switch( 変数.GetAnnotationByName( "object" ).AsString().GetString().ToLower() )
-                            {
-                                case "camera":
-                                    switch( 変数.TypeInfo.Description.TypeName )
-                                    {
-                                        case "float4":
-                                            using( var v = 変数.AsVector() )
-                                                v.Set( new Vector4( camera.位置, 0f ) );
-                                            break;
-
-                                        case "float3":
-                                            using( var v = 変数.AsVector() )
-                                                v.Set( camera.位置 );
-                                            break;
-                                    }
-                                    break;
-
-                                case "light":
-                                    using( var v = 変数.AsVector() )
-                                        v.Set( new Vector4( -light.照射方向, 0f ) );
-                                    break;
-                            }
-                            break;
-
-                        case "MATERIALTEXTURE":
-                            if( -1 != 材質.通常テクスチャの参照インデックス )
-                            {
-                                using( var v = 変数.AsShaderResource() )
-                                    v.SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
-                            }
-                            break;
-
-                        case "MATERIALSPHEREMAP":
-                            if( -1 != 材質.スフィアテクスチャの参照インデックス )
-                            {
-                                using( var v = 変数.AsShaderResource() )
-                                    v.SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
-                            }
-                            break;
-
-                        case "MATERIALTOONTEXTURE":
-                            if( 1 == 材質.共有Toonフラグ )
-                            {
-                                using( var v = 変数.AsShaderResource() )
-                                    v.SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                            }
-                            else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
-                            {
-                                using( var v = 変数.AsShaderResource() )
-                                    v.SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                            }
-                            else
-                            {
-                                using( var v = 変数.AsShaderResource() )
-                                    v.SetResource( this._共有テクスチャリスト[ 0 ].srv );
-                            }
-                            break;
-
-                        case "TESSFACTOR":
-                            using( var v = 変数.AsScalar() )
-                                v.Set( 材質.テッセレーション係数 );
-                            break;
-
-                        default:
-                            switch( 変数.Description.Name.ToLower() )
-                            {
-                                case "use_spheremap":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.スフィアテクスチャの参照インデックス != -1 );
-                                    break;
-
-                                case "spadd":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
-                                    break;
-
-                                case "use_texture":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.通常テクスチャの参照インデックス != -1 );
-                                    break;
-
-                                case "use_toontexturemap":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
-                                    break;
-
-                                case "use_selfshadow":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
-                                    break;
-
-                                case "ambientcolor":
-                                    using( var v = 変数.AsVector() )
-                                        v.Set( new Vector4( 材質.環境色, 1f ) );
-                                    break;
-
-                                case "diffusecolor":
-                                    using( var v = 変数.AsVector() )
-                                        v.Set( 材質.拡散色 );
-                                    break;
-
-                                case "specularcolor":
-                                    using( var v = 変数.AsVector() )
-                                        v.Set( new Vector4( 材質.反射色, 1f ) );
-                                    break;
-
-                                case "specularpower":
-                                    using( var v = 変数.AsScalar() )
-                                        v.Set( 材質.反射強度 );
-                                    break;
-                            }
-                            break;
-                    }
+                    this._エフェクト変数.TESSFACTOR.Set( 材質.テッセレーション係数 );
+                    this._エフェクト変数.use_spheremap.Set( 材質.スフィアテクスチャの参照インデックス != -1 );
+                    this._エフェクト変数.spadd.Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                    this._エフェクト変数.use_texture.Set( 材質.通常テクスチャの参照インデックス != -1 );
+                    this._エフェクト変数.use_toontexturemap.Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
+                    this._エフェクト変数.use_selfshadow.Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                    this._エフェクト変数.ambientcolor.Set( new Vector4( 材質.環境色, 1f ) );
+                    this._エフェクト変数.diffusecolor.Set( 材質.拡散色 );
+                    this._エフェクト変数.specularcolor.Set( new Vector4( 材質.反射色, 1f ) );
+                    this._エフェクト変数.specularpower.Set( 材質.反射強度 );
                 }
                 //----------------
                 #endregion
+
 
                 // オブジェクト描画
 
@@ -1298,6 +1179,8 @@ namespace MikuMikuFlex3
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 
         private PMX物理変形更新 _物理変形更新;
+
+        private エフェクト変数 _エフェクト変数;
 
 
         /// <summary>
