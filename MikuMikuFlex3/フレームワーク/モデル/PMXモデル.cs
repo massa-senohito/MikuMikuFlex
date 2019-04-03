@@ -22,13 +22,13 @@ namespace MikuMikuFlex3
         // 制御
 
 
+        internal const int 最大ボーン数 = 768;
+
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
         internal PMXボーン制御[] PMXボーン制御リスト { get; private protected set; }
 
         internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
-
-        internal const int 最大ボーン数 = 768;
 
         internal PMX材質制御[] PMX材質制御リスト { get; private protected set; }
 
@@ -597,7 +597,6 @@ namespace MikuMikuFlex3
             this._PMXFモデル = null;
         }
 
-
         private ManualResetEventSlim _初期化完了 = new ManualResetEventSlim( false );
 
 
@@ -692,14 +691,6 @@ namespace MikuMikuFlex3
             #endregion
         }
 
-        private void _モデルポーズを再計算する()
-        {
-            foreach( var root in this._ルートボーンリスト )
-                root.モデルポーズを計算する();
-        }
-
-        private bool _初めての描画 = true;
-
         /// <summary>
         ///     進行処理によって得られた各種状態を描画する。
         /// </summary>
@@ -717,6 +708,8 @@ namespace MikuMikuFlex3
 
                 if( コンピュートシェーダーを使う )
                 {
+                    #region " コンピュートシェーダーでスキニングする。"
+                    //----------------
                     // ボーン用定数バッファを更新する。
                     d3ddc.UpdateSubresource( this._ボーンのモデルポーズ配列, this._D3DBoneTrans定数バッファ );
                     this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
@@ -773,6 +766,8 @@ namespace MikuMikuFlex3
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, null );
+                    //----------------
+                    #endregion
                 }
                 else
                 {
@@ -1002,50 +997,55 @@ namespace MikuMikuFlex3
             #endregion
 
 
+            #region " エフェクト変数（モデル単位）を設定する。"
+            //----------------
+            this._エフェクト変数.WORLDVIEWPROJECTION.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+            this._エフェクト変数.WORLDVIEW.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
+            this._エフェクト変数.WORLD.SetMatrix( ワールド変換行列 );
+            this._エフェクト変数.VIEW.SetMatrix( camera.ビュー行列を取得する() );
+            this._エフェクト変数.VIEWPROJECTION.SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
+            this._エフェクト変数.VIEWPORTPIXELSIZE.Set( viewport );
+            this._エフェクト変数.POSITION_camera.Set( new Vector4( camera.位置, 0f ) );
+            this._エフェクト変数.POSITION_light.Set( new Vector4( -light.照射方向, 0f ) );
+            //----------------
+            #endregion
+
+
             // すべての材質を描画する。
 
             for( int i = 0; i < this.PMX材質制御リスト.Length; i++ )
             {
                 var 材質 = this.PMX材質制御リスト[ i ];
 
-                #region " エフェクト変数を設定する。"
+
+                #region " エフェクト変数（材質単位）を設定する。"
                 //----------------
-                {
-                    this._エフェクト変数.EDGECOLOR.Set( 材質.エッジ色 );
-                    this._エフェクト変数.EDGEWIDTH.Set( 材質.エッジサイズ );
-                    this._エフェクト変数.WORLDVIEWPROJECTION.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                    this._エフェクト変数.WORLDVIEW.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() );
-                    this._エフェクト変数.WORLD.SetMatrix( ワールド変換行列 );
-                    this._エフェクト変数.VIEW.SetMatrix( camera.ビュー行列を取得する() );
-                    this._エフェクト変数.VIEWPROJECTION.SetMatrix( camera.ビュー行列を取得する() * camera.射影行列を取得する() );
-                    this._エフェクト変数.VIEWPORTPIXELSIZE.Set( viewport );
-                    this._エフェクト変数.POSITION_camera.Set( new Vector4( camera.位置, 0f ) );
-                    this._エフェクト変数.POSITION_light.Set( new Vector4( -light.照射方向, 0f ) );
+                this._エフェクト変数.EDGECOLOR.Set( 材質.エッジ色 );
+                this._エフェクト変数.EDGEWIDTH.Set( 材質.エッジサイズ );
 
-                    if( -1 != 材質.通常テクスチャの参照インデックス )
-                        this._エフェクト変数.MATERIALTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
+                if( -1 != 材質.通常テクスチャの参照インデックス )
+                    this._エフェクト変数.MATERIALTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
 
-                    if( -1 != 材質.スフィアテクスチャの参照インデックス )
-                        this._エフェクト変数.MATERIALSPHEREMAP.SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
+                if( -1 != 材質.スフィアテクスチャの参照インデックス )
+                    this._エフェクト変数.MATERIALSPHEREMAP.SetResource( this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
 
-                    if( 1 == 材質.共有Toonフラグ )
-                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                    else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
-                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
-                    else
-                        this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 0 ].srv );
+                if( 1 == 材質.共有Toonフラグ )
+                    this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
+                    this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                else
+                    this._エフェクト変数.MATERIALTOONTEXTURE.SetResource( this._共有テクスチャリスト[ 0 ].srv );
 
-                    this._エフェクト変数.TESSFACTOR.Set( 材質.テッセレーション係数 );
-                    this._エフェクト変数.use_spheremap.Set( 材質.スフィアテクスチャの参照インデックス != -1 );
-                    this._エフェクト変数.spadd.Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
-                    this._エフェクト変数.use_texture.Set( 材質.通常テクスチャの参照インデックス != -1 );
-                    this._エフェクト変数.use_toontexturemap.Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
-                    this._エフェクト変数.use_selfshadow.Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
-                    this._エフェクト変数.ambientcolor.Set( new Vector4( 材質.環境色, 1f ) );
-                    this._エフェクト変数.diffusecolor.Set( 材質.拡散色 );
-                    this._エフェクト変数.specularcolor.Set( new Vector4( 材質.反射色, 1f ) );
-                    this._エフェクト変数.specularpower.Set( 材質.反射強度 );
-                }
+                this._エフェクト変数.TESSFACTOR.Set( 材質.テッセレーション係数 );
+                this._エフェクト変数.use_spheremap.Set( 材質.スフィアテクスチャの参照インデックス != -1 );
+                this._エフェクト変数.spadd.Set( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                this._エフェクト変数.use_texture.Set( 材質.通常テクスチャの参照インデックス != -1 );
+                this._エフェクト変数.use_toontexturemap.Set( 材質.共有Toonのテクスチャ参照インデックス != -1 );
+                this._エフェクト変数.use_selfshadow.Set( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                this._エフェクト変数.ambientcolor.Set( new Vector4( 材質.環境色, 1f ) );
+                this._エフェクト変数.diffusecolor.Set( 材質.拡散色 );
+                this._エフェクト変数.specularcolor.Set( new Vector4( 材質.反射色, 1f ) );
+                this._エフェクト変数.specularpower.Set( 材質.反射強度 );
                 //----------------
                 #endregion
 
@@ -1092,7 +1092,14 @@ namespace MikuMikuFlex3
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
             }
-            _初めての描画 = false;
+
+            this._初めての描画 = false;
+        }
+
+        private void _モデルポーズを再計算する()
+        {
+            foreach( var root in this._ルートボーンリスト )
+                root.モデルポーズを計算する();
         }
 
         private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMX材質制御 ipmxSubset, MMDPass種別 passType, Action<PMX材質制御> drawAction )
@@ -1109,12 +1116,11 @@ namespace MikuMikuFlex3
                     teq.テクニックを適用する描画対象 == passType
                   select teq ).FirstOrDefault();
 
-            if( null != technique )
-            {
-                // 最初の１つだけ有効（複数はないはずだが）
+            if( null != technique ) // 最初の１つだけ有効（複数はないはずだが）
                 technique.パスの適用と描画をパスの数だけ繰り返す( d3ddc, drawAction, ipmxSubset );
-            }
         }
+
+        private bool _初めての描画 = true;
 
 
 
