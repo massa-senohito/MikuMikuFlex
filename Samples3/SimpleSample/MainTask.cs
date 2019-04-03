@@ -195,10 +195,8 @@ namespace SimpleSample
 
                 // モデルの進行描画。
 
-                this._PMXモデル.進行する( timer.現在のリアルタイムカウントsec );
-
                 var world = Matrix.Identity;
-                this._PMXモデル.描画する( this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
+                this._PMXモデル.描画する( timer.現在のリアルタイムカウントsec, this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
 
                 if( this._FPS.FPSをカウントする() )
                     Trace.WriteLine( $"{_FPS.現在のFPS} fps" );

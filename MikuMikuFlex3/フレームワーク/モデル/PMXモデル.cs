@@ -605,14 +605,18 @@ namespace MikuMikuFlex3
 
 
         /// <summary>
-        ///     現在時刻におけるモデルの各種状態を更新する。
+        ///     現在時刻におけるモデルの状態を更新し、描画する。
         /// </summary>
-        public void 進行する( double 現在時刻sec )
+        /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
+        /// <param name="viewport">描画先ビューポートのサイズ。</param>
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Matrix ワールド変換行列, カメラ camera, 照明 light, ViewportF viewport )
         {
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
 
-            // リセットする
+
+            // 進行
+
 
             #region " 材質状態をリセットする。"
             //----------------
@@ -638,27 +642,25 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            // 更新する
-
             this._モデルポーズを再計算する();
 
             #region " モーフを適用する。"
             //----------------
             foreach( var morph in this.PMXモーフ制御リスト )
                 morph.モーフを適用する( 現在時刻sec, this );
-            //----------------
-            #endregion
 
             this._モデルポーズを再計算する();
+            //----------------
+            #endregion
 
             #region " ボーンモーションを適用する。"
             //----------------
             foreach( var bone in this.PMXボーン制御リスト )
                 bone.ボーンモーションを適用する( 現在時刻sec );
-            //----------------
-            #endregion
 
             this._モデルポーズを再計算する();
+            //----------------
+            #endregion
 
             #region " IKを適用する。"
             //----------------
@@ -669,11 +671,10 @@ namespace MikuMikuFlex3
             #region " 親付与によるFKを適用する。"
             //----------------
             this._親付与によるFK変形更新.変形を更新する();
+            this._モデルポーズを再計算する();
             //----------------
             #endregion
-
-            this._モデルポーズを再計算する();
-
+            
             #region " 物理演算による変形を適用する。"
             //----------------
             this._物理変形更新.変形を更新する();
@@ -689,17 +690,9 @@ namespace MikuMikuFlex3
             }
             //----------------
             #endregion
-        }
 
-        /// <summary>
-        ///     進行処理によって得られた各種状態を描画する。
-        /// </summary>
-        /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
-        /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( DeviceContext d3ddc, Matrix ワールド変換行列, カメラ camera, 照明 light, ViewportF viewport )
-        {
-            if( !this._初期化完了.IsSet )
-                this._初期化完了.Wait();
+
+            // 描画
 
             #region " スキニングを行う。"
             //----------------
@@ -996,7 +989,6 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-
             #region " エフェクト変数（モデル単位）を設定する。"
             //----------------
             this._エフェクト変数.WORLDVIEWPROJECTION.SetMatrix( ワールド変換行列 * camera.ビュー行列を取得する() * camera.射影行列を取得する() );
@@ -1010,9 +1002,8 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-
-            // すべての材質を描画する。
-
+            #region " すべての材質を描画する。"
+            //----------------
             for( int i = 0; i < this.PMX材質制御リスト.Length; i++ )
             {
                 var 材質 = this.PMX材質制御リスト[ i ];
@@ -1092,6 +1083,8 @@ namespace MikuMikuFlex3
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
             }
+            //----------------
+            #endregion
 
             this._初めての描画 = false;
         }
