@@ -10,15 +10,41 @@ namespace MikuMikuFlex3
     {
         public CS_INPUT[] 入力頂点配列;
 
+        public bool[] 単位更新フラグ;
+
+        public const int 単位更新の頂点数 = 1500;
+
+
+        public PMX頂点制御( CS_INPUT[] 初期配列 )
+        {
+            this.入力頂点配列 = 初期配列;
+
+            int 単位数 = 初期配列.Length / 単位更新の頂点数 + 1;
+
+            this.単位更新フラグ = new bool[ 単位数 ];
+            this._単位更新フラグステータス = new 単位更新フラグステータス[ 単位数 ];
+
+            for( int i = 0; i < this.単位更新フラグ.Length; i++ )
+            {
+                this.単位更新フラグ[ i ] = false;
+                this._単位更新フラグステータス[ i ] = 単位更新フラグステータス.変更なし;
+            }
+        }
 
         public void 頂点の変更を通知する( int 頂点インデックス )
         {
             this._変更を受けた頂点のインデックス集合.Add( 頂点インデックス );
+
+            int 単位インデックス = 頂点インデックス / 単位更新の頂点数;
+
+            this.単位更新フラグ[ 単位インデックス ] = true;
+            this._単位更新フラグステータス[ 単位インデックス ] = 単位更新フラグステータス.変更あり;
         }
 
         public void 状態をリセットする( int 追加UV数, PMXFormat.頂点リスト 初期リスト )
         {
             // 移動された頂点について、状態を初期化する。
+
             foreach( int i in this._変更を受けた頂点のインデックス集合 )
             {
                 var iv = 初期リスト[ i ];
@@ -57,8 +83,26 @@ namespace MikuMikuFlex3
                 }
             }
 
-            // フラグをクリアする。
             this._変更を受けた頂点のインデックス集合.Clear();
+
+
+            // フラグをローテーションする。
+            //   変更なし/false   → 変更なし/false
+            //   変更あり/true    → 初期化あり/true
+            //   初期かあり/true  → 変更なし/false
+
+            for( int i = 0; i < this._単位更新フラグステータス.Length; i++ )
+            {
+                if( this._単位更新フラグステータス[ i ] == 単位更新フラグステータス.変更あり )
+                {
+                    this._単位更新フラグステータス[ i ] = 単位更新フラグステータス.初期化あり;
+                }
+                else if( this._単位更新フラグステータス[ i ] == 単位更新フラグステータス.初期化あり )
+                {
+                    this._単位更新フラグステータス[ i ] = 単位更新フラグステータス.変更なし;
+                    this.単位更新フラグ[ i ] = false;
+                }
+            }
         }
 
 
@@ -67,5 +111,13 @@ namespace MikuMikuFlex3
         ///     記録された頂点についてのみ初期化するようにする。
         /// </summary>
         private List<int> _変更を受けた頂点のインデックス集合 = new List<int>();
+
+        private enum 単位更新フラグステータス
+        {                 // 更新フラグが:
+            変更なし,     // 前回 false      → 今回 false
+            変更あり,     // 前回 false/true → 今回 true
+            初期化あり,   // 前回 true       → 今回 false
+        }
+        private 単位更新フラグステータス[] _単位更新フラグステータス;
     }
 }

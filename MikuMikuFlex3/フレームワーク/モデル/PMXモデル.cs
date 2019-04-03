@@ -286,8 +286,7 @@ namespace MikuMikuFlex3
                         this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
                     }
 
-                    this.PMX頂点制御 = new PMX頂点制御();
-                    this.PMX頂点制御.入力頂点配列 = 頂点リスト.ToArray();
+                    this.PMX頂点制御 = new PMX頂点制御( 頂点リスト.ToArray() );
                 }
                 //----------------
                 #endregion
@@ -300,7 +299,7 @@ namespace MikuMikuFlex3
                         new BufferDescription {
                             SizeInBytes = CS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
                             Usage = ResourceUsage.Default,
-                            BindFlags = BindFlags.ShaderResource | BindFlags.UnorderedAccess,
+                            BindFlags = BindFlags.ShaderResource,// | BindFlags.UnorderedAccess,
                             CpuAccessFlags = CpuAccessFlags.None,
                             OptionFlags = ResourceOptionFlags.BufferStructured,   // 構造化バッファ
                             StructureByteStride = CS_INPUT.SizeInBytes,
@@ -699,7 +698,8 @@ namespace MikuMikuFlex3
                 root.モデルポーズを計算する();
         }
 
-        private bool 初回 = true;
+        private bool _初めての描画 = true;
+
         /// <summary>
         ///     進行処理によって得られた各種状態を描画する。
         /// </summary>
@@ -727,10 +727,33 @@ namespace MikuMikuFlex3
                     d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
                     this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
-                    // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
-                    d3ddc.UpdateSubresource( this.PMX頂点制御.入力頂点配列, this._D3Dスキニングバッファ );
 
+                    // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
+
+                    if( _初めての描画 )
+                    {
+                        // 初回は全部転送。
+                        d3ddc.UpdateSubresource( this.PMX頂点制御.入力頂点配列, this._D3Dスキニングバッファ );
+                    }
+                    else
+                    {
+                        // ２回目以降は差分のみ転送。
+                        var dstRegion = new ResourceRegion( 0, 0, 0, 1, 1, 1 );
+
+                        for( int i = 0; i < this.PMX頂点制御.単位更新フラグ.Length; i++ )
+                        {
+                            if( this.PMX頂点制御.単位更新フラグ[ i ] )
+                            {
+                                dstRegion.Left = i * PMX頂点制御.単位更新の頂点数 * CS_INPUT.SizeInBytes;
+                                dstRegion.Right = Math.Min( ( i + 1 ) * PMX頂点制御.単位更新の頂点数, this.PMX頂点制御.入力頂点配列.Length ) * CS_INPUT.SizeInBytes;
+                                d3ddc.UpdateSubresource( ref this.PMX頂点制御.入力頂点配列[ i * PMX頂点制御.単位更新の頂点数 ], this._D3Dスキニングバッファ, region: dstRegion );
+                            }
+                        }
+                    }
+
+                    
                     // 使用するtechniqueを検索する。
+
                     テクニック technique =
                         ( from teq in this._D3Dテクニックリスト
                           where
@@ -1069,7 +1092,7 @@ namespace MikuMikuFlex3
                     d3ddc.DrawIndexed( mat.頂点数, mat.開始インデックス, 0 );
                 } );
             }
-            初回 = false;
+            _初めての描画 = false;
         }
 
         private void _エフェクトを適用しつつ材質を描画する( DeviceContext d3ddc, PMX材質制御 ipmxSubset, MMDPass種別 passType, Action<PMX材質制御> drawAction )
