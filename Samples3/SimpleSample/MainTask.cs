@@ -21,6 +21,7 @@ namespace SimpleSample
             this._ParentClientSize = new Size2( parent.ClientSize.Width, parent.ClientSize.Height );
             this._PMXファイルパス = args[ 0 ];
             this._VMDファイルパス = args[ 1 ];
+            this._カメラVMDファイルパス = args[ 2 ];
         }
 
         public void Dispose()
@@ -159,7 +160,7 @@ namespace SimpleSample
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
 
 
-            // モデルその他を生成。
+            // モデルを生成。
 
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス );
             using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
@@ -169,12 +170,26 @@ namespace SimpleSample
                 VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._PMXモデル );
             }
 
-            this._カメラ = new カメラ(
-                初期位置: new Vector3( 0f, 0f, -45f ),
+
+            // カメラを生成。
+
+            this._カメラ = new モーションカメラMMD(
+                注視点からの初期距離: 40f,
                 初期注視点: new Vector3( 0f, 10f, 0f ),
-                初期上方向: new Vector3( 0f, 1f, 0f ) );
+                初期回転rad: new Vector3( 0f, MathUtil.Pi, 0f ) );
+            using( var fs = new FileStream( this._カメラVMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            {
+                var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
+                VMDアニメーションビルダ.カメラモーションを追加する( vmd.カメラフレームリスト, this._カメラ );
+            }
+
+
+            // 照明を生成。
 
             this._照明 = new 照明();
+
+
+            // その他を生成。
 
             var timer = new QPCTimer();
 
@@ -187,6 +202,14 @@ namespace SimpleSample
 
             while( !this.終了指示通知.IsSet )
             {
+                var now = timer.現在のリアルタイムカウントsec;
+
+
+                // カメラの進行。
+
+                this._カメラ.更新する( now );
+
+
                 // モデル単位のパイプライン設定。
 
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, Color4.Black );
@@ -196,7 +219,7 @@ namespace SimpleSample
                 // モデルの進行描画。
 
                 var world = Matrix.Identity;
-                this._PMXモデル.描画する( timer.現在のリアルタイムカウントsec, this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
+                this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
 
                 if( this._FPS.FPSをカウントする() )
                     Trace.WriteLine( $"{_FPS.現在のFPS} fps" );
@@ -217,6 +240,7 @@ namespace SimpleSample
 
         private string _PMXファイルパス;
         private string _VMDファイルパス;
+        private string _カメラVMDファイルパス;
 
         private IntPtr _Parent;
 
@@ -224,7 +248,7 @@ namespace SimpleSample
 
         private PMXモデル _PMXモデル;
 
-        private カメラ _カメラ;
+        private モーションカメラMMD _カメラ;
 
         private 照明 _照明;
 

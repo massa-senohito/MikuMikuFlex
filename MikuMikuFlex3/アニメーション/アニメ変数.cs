@@ -8,7 +8,7 @@ namespace MikuMikuFlex3
 {
     public class アニメ変数<T>
     {
-        public T 値 { get; protected set; }
+        public T 値 { get; set; }
 
 
 

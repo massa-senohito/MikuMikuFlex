@@ -83,5 +83,31 @@ namespace MikuMikuFlex3
                 }
             }
         }
+
+        /// <summary>
+        ///     VMDのボーンフレームリストからアニメ変数を構築する。
+        /// </summary>
+        /// <param name="VMDFカメラフレームリスト">入力となるカメラフレームリスト。</param>
+        /// <param name="カメラ">対象となるカメラ。</param>
+        public static void カメラモーションを追加する( VMDFormat.カメラフレームリスト VMDFカメラフレームリスト, モーションカメラMMD カメラ )
+        {
+            var cameraFrames = VMDFカメラフレームリスト
+                .OrderBy( ( frame ) => frame.フレーム番号 );  // フレーム番号昇順に。
+
+            uint 前のフレーム番号 = 0;
+
+            foreach( var frame in cameraFrames )
+            {
+                var 持続時間sec = ( frame.フレーム番号 - 前のフレーム番号 ) / 30.0;   // 1frame = 1/30sec
+
+                カメラ.アニメ変数.注視点からの距離.遷移を追加する( new ベジェ実数アニメ遷移( frame.距離, 持続時間sec, frame.ベジェ曲線[ 4 ] ) );
+                カメラ.アニメ変数.注視点の位置.遷移を追加する( new ベジェ移動アニメ遷移( frame.位置, 持続時間sec, frame.ベジェ曲線[ 0 ], frame.ベジェ曲線[ 1 ], frame.ベジェ曲線[ 2 ] ) );
+                カメラ.アニメ変数.回転rad.遷移を追加する( new ベジェ移動アニメ遷移( frame.回転, 持続時間sec, frame.ベジェ曲線[ 3 ], frame.ベジェ曲線[ 3 ], frame.ベジェ曲線[ 3 ] ) );
+                カメラ.アニメ変数.視野角deg.遷移を追加する( new ベジェ実数アニメ遷移( frame.視野角, 持続時間sec, frame.ベジェ曲線[ 5 ] ) );
+                // todo: VMDカメラモーションのパースペクティブには未対応
+
+                前のフレーム番号 = frame.フレーム番号;
+            }
+        }
     }
 }

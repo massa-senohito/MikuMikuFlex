@@ -89,10 +89,12 @@
     <Compile Include="アニメーション\VMDアニメーションビルダ.cs" />
     <Compile Include="アニメーション\アニメ変数.cs" />
     <Compile Include="アニメーション\アニメ遷移.cs" />
+    <Compile Include="アニメーション\ベジェ実数アニメ遷移.cs" />
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
+    <Compile Include="フレームワーク\カメラ\モーションカメラMMD.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラDX.cs" />
     <Compile Include="フレームワーク\モデル\CCDによるIK変形更新.cs" />
     <Compile Include="フレームワーク\モデル\Effects11\エフェクト変数.cs" />
