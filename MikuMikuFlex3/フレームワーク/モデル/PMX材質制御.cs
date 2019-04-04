@@ -9,9 +9,9 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.材質"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMX材質制御 : IDisposable
+    public class PMX材質制御 : IDisposable
     {
-        public float テッセレーション係数 { get; protected set; }
+        public float テッセレーション係数 { get; set; }
 
         /// <summary>
         ///     (R, G, B, A)
@@ -79,9 +79,9 @@ namespace MikuMikuFlex3
             public float エッジサイズ { get; set; }
         }
 
-        public 差分 加算差分;
+        public 差分 加算差分;// { get; protected set; }
 
-        public 差分 乗算差分;
+        public 差分 乗算差分;// { get; protected set; }
 
 
         // 描画

@@ -22,7 +22,7 @@ namespace MikuMikuFlex3
         // 制御
 
 
-        internal const int 最大ボーン数 = 768;
+        public const int 最大ボーン数 = 768;
 
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
@@ -58,7 +58,7 @@ namespace MikuMikuFlex3
 
             } );
 
-            // stream は、初期化が終わると閉じられる。
+            // stream は、上記初期化作業の中で閉じられる。
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace MikuMikuFlex3
 
             } );
 
-            // stream は、初期化が終わると閉じられる。
+            // stream は、上記初期化作業の中で閉じられる。
         }
 
         private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, Func<string, Stream> リソースを開く )
@@ -1114,6 +1114,57 @@ namespace MikuMikuFlex3
         }
 
         private bool _初めての描画 = true;
+
+
+
+        // アニメ指示
+
+
+        // ボーン名が null ならすべてのボーンが対象。
+        public void ボーンアニメーションをクリアする( string ボーン名 = null )
+        {
+            foreach( var pmxBone in this.PMXボーン制御リスト )
+            {
+                if( null == ボーン名 || pmxBone.PMXFボーン.ボーン名 == ボーン名 )
+                {
+                    pmxBone.アニメ変数_移動.遷移をクリアする();
+                    pmxBone.アニメ変数_回転.遷移をクリアする();
+                }
+            }
+        }
+
+        // モーフ名が null ならすべてのモーフが対象。
+        public void モーフアニメーションをクリアする( string モーフ名 = null )
+        {
+            foreach( var pmxMorph in this.PMXモーフ制御リスト )
+            {
+                if( null == モーフ名 || pmxMorph.PMXFモーフ.モーフ名 == モーフ名 )
+                {
+                    pmxMorph.アニメ変数_モーフ.遷移をクリアする();
+                }
+            }
+        }
+
+        public void ボーンアニメーションを追加する( string ボーン名, アニメ遷移<Vector3> 移動遷移, アニメ遷移<Quaternion> 回転遷移 )
+        {
+            var pmxBone = this.PMXボーン制御リスト.Where( ( bone ) => bone.PMXFボーン.ボーン名 == ボーン名 ).FirstOrDefault();
+
+            if( null == pmxBone )
+                throw new Exception( $"指定された名前「{ボーン名}」のボーンが存在しません。" );
+
+            pmxBone.アニメ変数_移動.遷移を追加する( 移動遷移 );
+            pmxBone.アニメ変数_回転.遷移を追加する( 回転遷移 );
+        }
+
+        public void モーフアニメーションを追加する( string モーフ名, アニメ遷移<float> モーフ遷移 )
+        {
+            var pmxMorph = this.PMXモーフ制御リスト.Where( ( morph ) => morph.PMXFモーフ.モーフ名 == モーフ名 ).FirstOrDefault();
+
+            if( null == pmxMorph )
+                throw new Exception( $"指定された名前「{モーフ名}」のモーフが存在しません。" );
+
+            pmxMorph.アニメ変数_モーフ.遷移を追加する( モーフ遷移 );
+        }
 
 
 
