@@ -61,7 +61,7 @@ namespace MikuMikuFlex3
         }
 
 
-        public void 更新する( double 現在時刻sec )
+        public virtual void 更新する( double 現在時刻sec )
         {
             this.アニメ変数.注視点からの距離.更新する( 現在時刻sec );
             this.アニメ変数.注視点の位置.更新する( 現在時刻sec );

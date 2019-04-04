@@ -22,6 +22,11 @@ namespace SimpleSample
             this._PMXファイルパス = args[ 0 ];
             this._VMDファイルパス = args[ 1 ];
             this._カメラVMDファイルパス = args[ 2 ];
+
+            parent.MouseDown += this._Parent_MouseDown;
+            parent.MouseUp += this._Parent_MouseUp;
+            parent.MouseMove += this._Parent_MouseMove;
+            parent.MouseWheel += this._Parent_MouseWheel;
         }
 
         public void Dispose()
@@ -173,15 +178,17 @@ namespace SimpleSample
 
             // カメラを生成。
 
-            this._カメラ = new モーションカメラMMD(
-                注視点からの初期距離: 40f,
-                初期注視点: new Vector3( 0f, 10f, 0f ),
-                初期回転rad: new Vector3( 0f, MathUtil.Pi, 0f ) );
-            using( var fs = new FileStream( this._カメラVMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-            {
-                var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
-                VMDアニメーションビルダ.カメラモーションを追加する( vmd.カメラフレームリスト, this._カメラ );
-            }
+            this._カメラ = new マウスモーションカメラ( 45f );
+
+            //this._カメラ = new モーションカメラMMD(
+            //    注視点からの初期距離: 40f,
+            //    初期注視点: new Vector3( 0f, 10f, 0f ),
+            //    初期回転rad: new Vector3( 0f, MathUtil.Pi, 0f ) );
+            //using( var fs = new FileStream( this._カメラVMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            //{
+            //    var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
+            //    VMDアニメーションビルダ.カメラモーションを追加する( vmd.カメラフレームリスト, this._カメラ );
+            //}
 
 
             // 照明を生成。
@@ -248,7 +255,7 @@ namespace SimpleSample
 
         private PMXモデル _PMXモデル;
 
-        private モーションカメラMMD _カメラ;
+        private マウスモーションカメラ _カメラ;
 
         private 照明 _照明;
 
@@ -269,5 +276,27 @@ namespace SimpleSample
         private SharpDX.Direct3D11.BlendState _BlendState通常合成;
 
         private SharpDX.Mathematics.Interop.RawViewportF _D3DViewport;
+
+
+
+        private void _Parent_MouseWheel( object sender, MouseEventArgs e )
+        {
+            this._カメラ?.OnMouseWheel( sender, e );
+        }
+
+        private void _Parent_MouseMove( object sender, MouseEventArgs e )
+        {
+            this._カメラ?.OnMouseMove( sender, e );
+        }
+
+        private void _Parent_MouseUp( object sender, MouseEventArgs e )
+        {
+            this._カメラ?.OnMouseUp( sender, e );
+        }
+
+        private void _Parent_MouseDown( object sender, MouseEventArgs e )
+        {
+            this._カメラ?.OnMouseDown( sender, e );
+        }
     }
 }

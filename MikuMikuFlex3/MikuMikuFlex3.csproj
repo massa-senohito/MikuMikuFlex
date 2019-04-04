@@ -94,6 +94,7 @@
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
+    <Compile Include="フレームワーク\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラMMD.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラDX.cs" />
     <Compile Include="フレームワーク\モデル\CCDによるIK変形更新.cs" />
