@@ -703,7 +703,9 @@ namespace MikuMikuFlex3
                 {
                     #region " コンピュートシェーダーでスキニングする。"
                     //----------------
+
                     // ボーン用定数バッファを更新する。
+
                     d3ddc.UpdateSubresource( this._ボーンのモデルポーズ配列, this._D3DBoneTrans定数バッファ );
                     this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
 
@@ -737,14 +739,10 @@ namespace MikuMikuFlex3
                         }
                     }
 
-                    
+
                     // 使用するtechniqueを検索する。
 
-                    テクニック technique =
-                        ( from teq in this._D3Dテクニックリスト
-                          where
-                            teq.テクニックを適用する描画対象 == MMDPass種別.スキニング
-                          select teq ).FirstOrDefault();
+                    テクニック technique = this._D3Dテクニックリスト.Where( ( t ) => t.テクニックを適用する描画対象 == MMDPass種別.スキニング ).FirstOrDefault();
 
                     if( null != technique )
                     {
@@ -1101,13 +1099,7 @@ namespace MikuMikuFlex3
                 return;
 
             // 使用するtechniqueを検索する
-
-            テクニック technique =
-                ( from teq in _D3Dテクニックリスト
-                  where
-                    //teq.描画するサブセットIDの集合.Contains( ipmxSubset.サブセットID ) &&
-                    teq.テクニックを適用する描画対象 == passType
-                  select teq ).FirstOrDefault();
+            テクニック technique = this._D3Dテクニックリスト.Where( ( t ) => t.テクニックを適用する描画対象 == passType ).FirstOrDefault();
 
             if( null != technique ) // 最初の１つだけ有効（複数はないはずだが）
                 technique.パスの適用と描画をパスの数だけ繰り返す( d3ddc, drawAction, ipmxSubset );
@@ -1181,6 +1173,7 @@ namespace MikuMikuFlex3
 
         private List<テクニック> _D3Dテクニックリスト;
 
+        private エフェクト変数 _エフェクト変数;
 
         private Matrix[] _ボーンのモデルポーズ配列;
 
@@ -1252,8 +1245,6 @@ namespace MikuMikuFlex3
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 
         private PMX物理変形更新 _物理変形更新;
-
-        private エフェクト変数 _エフェクト変数;
 
 
         /// <summary>

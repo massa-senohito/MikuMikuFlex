@@ -59,7 +59,7 @@ namespace SimpleSample
                 SharpDX.Direct3D11.DeviceCreationFlags.BgraSupport,
                 new SharpDX.Direct3D.FeatureLevel[] { SharpDX.Direct3D.FeatureLevel.Level_11_1 },
                 new SharpDX.DXGI.SwapChainDescription {
-                    BufferCount = 2,
+                    BufferCount = 1,
                     Flags = SharpDX.DXGI.SwapChainFlags.AllowModeSwitch,
                     IsWindowed = true,
                     ModeDescription = new SharpDX.DXGI.ModeDescription {
