@@ -39,10 +39,10 @@ namespace MikuMikuFlex3
                     var 持続時間sec = ( frame.フレーム番号 - 前のフレーム番号 ) / 30.0;   // 1frame = 1/30sec
 
                     pmxBone.アニメ変数_移動.遷移を追加する( 
-                        new アニメ遷移_移動ベジェ( frame.ボーンの位置, 持続時間sec, frame.ベジェ曲線[ 0 ], frame.ベジェ曲線[ 1 ], frame.ベジェ曲線[ 2 ] ) );
+                        new ベジェ移動アニメ遷移( frame.ボーンの位置, 持続時間sec, frame.ベジェ曲線[ 0 ], frame.ベジェ曲線[ 1 ], frame.ベジェ曲線[ 2 ] ) );
 
                     pmxBone.アニメ変数_回転.遷移を追加する( 
-                        new アニメ遷移_回転ベジェ( frame.ボーンの回転, 持続時間sec, frame.ベジェ曲線[ 3 ] ) );
+                        new ベジェ回転アニメ遷移( frame.ボーンの回転, 持続時間sec, frame.ベジェ曲線[ 3 ] ) );
 
                     前のフレーム番号 = frame.フレーム番号;
                 }
@@ -77,7 +77,7 @@ namespace MikuMikuFlex3
                 {
                     var 持続時間sec = ( frame.フレーム番号 - 前のフレーム番号 ) / 30.0;   // 1frame = 1/30sec
 
-                    pmxMorph.アニメ変数_モーフ.遷移を追加する( new アニメ遷移_モーフリニア( frame.モーフ値, 持続時間sec ) );
+                    pmxMorph.アニメ変数_モーフ.遷移を追加する( new リニア実数アニメ遷移( frame.モーフ値, 持続時間sec ) );
 
                     前のフレーム番号 = frame.フレーム番号;
                 }

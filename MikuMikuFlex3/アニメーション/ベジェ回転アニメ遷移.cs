@@ -6,9 +6,9 @@ using SharpDX;
 
 namespace MikuMikuFlex3
 {
-    public class アニメ遷移_回転ベジェ : アニメ遷移<Quaternion>
+    public class ベジェ回転アニメ遷移 : アニメ遷移<Quaternion>
     {
-        public アニメ遷移_回転ベジェ( Quaternion 目標値, double 持続時間sec, VMDFormat.ベジェ曲線 ベジェ曲線 )
+        public ベジェ回転アニメ遷移( Quaternion 目標値, double 持続時間sec, VMDFormat.ベジェ曲線 ベジェ曲線 )
         {
             this.開始値 = Quaternion.Identity;
             this.終了値 = 目標値;

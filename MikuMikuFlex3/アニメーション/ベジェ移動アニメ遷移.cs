@@ -6,9 +6,9 @@ using SharpDX;
 
 namespace MikuMikuFlex3
 {
-    public class アニメ遷移_移動ベジェ : アニメ遷移<Vector3>
+    public class ベジェ移動アニメ遷移 : アニメ遷移<Vector3>
     {
-        public アニメ遷移_移動ベジェ( Vector3 目標値, double 持続時間sec, VMDFormat.ベジェ曲線 ベジェ曲線X, VMDFormat.ベジェ曲線 ベジェ曲線Y, VMDFormat.ベジェ曲線 ベジェ曲線Z )
+        public ベジェ移動アニメ遷移( Vector3 目標値, double 持続時間sec, VMDFormat.ベジェ曲線 ベジェ曲線X, VMDFormat.ベジェ曲線 ベジェ曲線Y, VMDFormat.ベジェ曲線 ベジェ曲線Z )
         {
             this.終了値 = 目標値;
             this.持続時間sec = 持続時間sec;

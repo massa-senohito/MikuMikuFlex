@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3
 {
-    class アニメ遷移_モーフリニア : アニメ遷移<float>
+    public class リニア実数アニメ遷移 : アニメ遷移<float>
     {
-        public アニメ遷移_モーフリニア( float 目標値, double 持続時間sec )
+        public リニア実数アニメ遷移( float 目標値, double 持続時間sec )
         {
             this.終了値 = 目標値;
             this.持続時間sec = 持続時間sec;
