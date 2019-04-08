@@ -46,11 +46,11 @@ namespace MikuMikuFlex3
         ///     PMXファイルで使用されるテクスチャ等のリソースファイルは、
         ///     PMXファイルと同じフォルダを基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス )
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス, ISkinning skinning = null, IRenderMaterial renderMaterial = null )
         {
             var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read );
 
-            this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( file ) => {
+            this._読み込んで初期化する( d3dDevice, stream, skinning, renderMaterial, リソースを開く: ( file ) => {
 
                 var baseFolder = Path.GetDirectoryName( PMXファイルパス );
                 var path = Path.Combine( baseFolder, file );
@@ -68,14 +68,14 @@ namespace MikuMikuFlex3
         ///     PMXリソースで使用されるテクスチャ等のリソースは、
         ///     PMXリソースと同じ名前空間を基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名 )
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名, ISkinning skinning = null, IRenderMaterial renderMaterial = null )
         {
             var assembly = Assembly.GetExecutingAssembly();
             var path = $"{this.GetType().Namespace}.{リソース名}";
 
             var stream = assembly.GetManifestResourceStream( path );
 
-            this._読み込んで初期化する( d3dDevice, stream, リソースを開く: ( resource ) => {
+            this._読み込んで初期化する( d3dDevice, stream, skinning, renderMaterial, リソースを開く: ( resource ) => {
 
                 // PMXではテクスチャ名などにパス区切り文字を使用できるが、その区切りがなんであるかはOSに依存して
                 // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
@@ -88,7 +88,7 @@ namespace MikuMikuFlex3
             // stream は、上記初期化作業の中で閉じられる。
         }
 
-        private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, Func<string, Stream> リソースを開く )
+        private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, ISkinning skinning, IRenderMaterial renderMaterial, Func<string, Stream> リソースを開く )
         {
             //Task.Run( () => {
             {
@@ -335,7 +335,7 @@ namespace MikuMikuFlex3
                             dataStream,
                             new BufferDescription {
                                 BindFlags = BindFlags.IndexBuffer,
-                                SizeInBytes = (int) dataStream.Length
+                                SizeInBytes = (int)dataStream.Length
                             } );
                     }
                 }
@@ -500,9 +500,35 @@ namespace MikuMikuFlex3
                     } );
                 //----------------
                 #endregion
+                #region " ISkinning を作成する。"
+                //----------------
+                if( null != skinning )
+                {
+                    this._スキニング = skinning;
+                    this._スキニングを解放する = false;
+                }
+                else
+                {
+                    this._スキニング = new 既定のスキニング( d3dDevice );
+                    this._スキニングを解放する = true;
+                }
+                //----------------
+                #endregion
+                #region " IRenderMaterial を作成する。"
+                //----------------
+                if( null != renderMaterial )
+                {
+                    this._材質描画 = renderMaterial;
+                    this._材質描画を解放する = false;
+                }
+                else
+                {
+                    this._材質描画 = new 既定の材質描画( d3dDevice );
+                    this._材質描画を解放する = true;
+                }
 
-                this._既定のスキニング = new 既定のスキニング( d3dDevice );
-                this._既定の材質描画 = new 既定の材質描画( d3dDevice );
+                //----------------
+                #endregion
 
                 this._初期化完了.Set();
             }
@@ -513,8 +539,12 @@ namespace MikuMikuFlex3
         {
             this._初期化完了.Reset();
 
-            this._既定の材質描画?.Dispose();
-            this._既定のスキニング?.Dispose();
+            if( this._材質描画を解放する )
+                this._材質描画?.Dispose();
+
+            if( this._スキニングを解放する )
+                this._スキニング?.Dispose();
+
             this._GlobalParameters定数バッファ?.Dispose();
 
             this._物理変形更新?.Dispose();
@@ -712,7 +742,7 @@ namespace MikuMikuFlex3
 
                     d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    this._既定のスキニング.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
+                    this._スキニング.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
 
@@ -1050,14 +1080,14 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._既定の材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
+                this._材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
 
 
                 // エッジ描画
 
                 d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
 
-                this._既定の材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
+                this._材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
             }
             //----------------
             #endregion
@@ -1209,9 +1239,11 @@ namespace MikuMikuFlex3
 
         private SharpDX.Direct3D11.Buffer _GlobalParameters定数バッファ;
 
-        private ISkinning _既定のスキニング;
+        private ISkinning _スキニング;
+        private bool _スキニングを解放する;
 
-        private 既定の材質描画 _既定の材質描画;
+        private IRenderMaterial _材質描画;
+        private bool _材質描画を解放する;
 
 
         /// <summary>
