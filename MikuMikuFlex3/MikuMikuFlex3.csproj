@@ -93,14 +93,16 @@
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\GlobalParameters.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\IRenderMaterial.cs" />
     <Compile Include="フレームワーク\パイプラインステート\ISkinning.cs" />
     <Compile Include="フレームワーク\パイプラインステート\既定のスキニング.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
     <Compile Include="フレームワーク\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラMMD.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラDX.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\既定の材質描画.cs" />
     <Compile Include="フレームワーク\モデル\CCDによるIK変形更新.cs" />
-    <Compile Include="フレームワーク\モデル\Effects11\エフェクト変数.cs" />
     <Compile Include="フレームワーク\モデル\PMXモーフ制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX材質制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX頂点制御.cs" />
@@ -161,7 +163,7 @@
     <Compile Include="ヘルパ等\Format\PMX\面リスト.cs" />
     <Compile Include="ヘルパ等\Format\PMX\頂点.cs" />
     <Compile Include="ヘルパ等\Format\PMX\頂点リスト.cs" />
-    <Compile Include="フレームワーク\モデル\Effects11\MMDPass種別.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\MMDPass.cs" />
     <Compile Include="ヘルパ等\Format\VMD\モーション.cs" />
     <Compile Include="ヘルパ等\FPS.cs" />
     <Compile Include="ヘルパ等\MMFShaderResourceView.cs" />
@@ -183,8 +185,6 @@
     <Compile Include="ヘルパ等\QPCTimer.cs" />
     <Compile Include="ヘルパ等\TargaSolver.cs" />
     <Compile Include="ヘルパ等\VS_INPUT.cs" />
-    <Compile Include="フレームワーク\モデル\Effects11\テクニック.cs" />
-    <Compile Include="フレームワーク\モデル\Effects11\パス.cs" />
     <Compile Include="ヘルパ等\三状態Boolean.cs" />
     <Compile Include="物理演算\Bulletタイマ.cs" />
     <Compile Include="物理演算\Bullet管理.cs" />
@@ -198,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\Shaders\DefaultShader.cso" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Shaders\DefaultSkinningComputeShader.cso" />

@@ -19,7 +19,6 @@
 
 cbuffer GlobalParameters : register(b0)
 {
-    
     // コントロールフラグ
 
 
@@ -46,10 +45,10 @@ cbuffer GlobalParameters : register(b0)
     // ワールドビュー射影変換
 
 
-    // ワールド変換行列。モデル単位。
-    float4x4 WorldMatrix;
+	// ワールド変換行列。モデル単位。
+	float4x4 WorldMatrix;
 
-    // ビュー変換行列。ステージ単位。
+	// ビュー変換行列。ステージ単位。
     float4x4 ViewMatrix;
 
     // 射影変換行列。ステージ単位。
@@ -106,11 +105,11 @@ cbuffer GlobalParameters : register(b0)
     // 反射色。材質単位。
     float4 SpecularColor;
 
-    // 反射係数。材質単位。
+	// エッジの色。材質単位。
+	float4 EdgeColor;
+	
+	// 反射係数。材質単位。
     float SpecularPower;
-
-    // エッジの色。材質単位。
-    float4 EdgeColor;
 
     // エッジの幅。材質単位。
     float EdgeWidth;
