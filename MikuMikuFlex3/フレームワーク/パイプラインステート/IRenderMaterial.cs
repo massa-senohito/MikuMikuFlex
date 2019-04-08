@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MikuMikuFlex3
+{
+    public interface IRenderMaterial : IDisposable
+    {
+        /// <summary>
+        ///     材質を描画する。
+        /// </summary>
+        /// <param name="材質名"></param>
+        /// <param name="材質番号"></param>
+        /// <param name="pass種別"></param>
+        /// <param name="d3ddc"></param>
+        /// <remarks>
+        ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
+        ///     - InputAssembler
+        ///         - 頂点バッファの割り当て
+        ///         - 頂点インデックスバッファの割り当て
+        ///         - 頂点レイアウトの割り当て
+        ///         - PrimitiveTopology の割り当て(PatchListWith3ControlPoints固定)
+        ///     - VertexShader
+        ///         - slot( b0 ) …… グローバルパラメータ
+        ///     - HullShader
+        ///         - slot( b0 ) …… グローバルパラメータ
+        ///     - DomainShader
+        ///         - slot( b0 ) …… グローバルパラメータ
+        ///     - GeometryShader
+        ///         - slot( b0 ) …… グローバルパラメータ
+        ///     - PixelShader
+        ///         - slot( b0 ) …… グローバルパラメータ
+        ///         - slot( t0 ) …… 材質の使うテクスチャ
+        ///         - slot( t1 ) …… 材質の使うスフィアマップテクスチャ
+        ///         - slot( t2 ) …… 材質の使うトゥーンテクスチャ
+        ///     - Rasterizer
+        ///         - Viewport の設定
+        ///         - RasterizerState の設定（材質に応じた固定値）
+        ///     - OutputMerger
+        ///         - RengerTargetView の割り当て（[0]のみ）
+        ///         - DepthStencilView の割り当て
+        ///         - DepthStencilState の割り当て（固定）
+        /// </remarks>
+        void Draw( string 材質名, int 材質番号, int 材質の頂点数, int 材質の頂点の開始インデックス, MMDPass pass種別, SharpDX.Direct3D11.DeviceContext d3ddc );
+    }
+}

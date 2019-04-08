@@ -4,8 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"
+#include "VS_INPUT.hlsli"
 #include "DefaultVS_OUTPUT.hlsli"
+#include "GlobalParameters.hlsli"
 
 VS_OUTPUT main(VS_INPUT input)
 {

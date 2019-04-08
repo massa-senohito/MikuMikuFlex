@@ -4,10 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"
 #include "DefaultVS_OUTPUT.hlsli"
 #include "DefaultCONSTANT_HS_OUT.hlsli"
-
+#include "GlobalParameters.hlsli"
 
 [domain("tri")]
 VS_OUTPUT main(CONSTANT_HS_OUT In, float3 uvw : SV_DomainLocation, const OutputPatch<VS_OUTPUT, 3> patch)

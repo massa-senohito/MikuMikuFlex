@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"
+#include "MaterialTexture.hlsli"
 #include "DefaultVS_OUTPUT.hlsli"
-
+#include "GlobalParameters.hlsli"
 
 SamplerState mySampler
 {

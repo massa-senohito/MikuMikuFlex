@@ -11,6 +11,8 @@ namespace MikuMikuFlex3
     /// </summary>
     public class PMX材質制御 : IDisposable
     {
+        public string 名前 => this._PMXF材質.材質名;
+
         public float テッセレーション係数 { get; set; }
 
         /// <summary>

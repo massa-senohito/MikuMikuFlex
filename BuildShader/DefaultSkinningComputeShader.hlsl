@@ -7,7 +7,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"   // “üo—Í’è‹`‚Í‚±‚Ì’†
+#include "VS_INPUT.hlsli"
+#include "Skinning.hlsli"
 #include "Quaternion.hlsli"
 
 
