@@ -1187,11 +1187,12 @@ namespace MikuMikuFlex3
         {
             public Vector3 boneLocalPosition;
 
+            public float dummy1;
+
             /// <summary>
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
-            public static int SizeInBytes
-                => ( ( Marshal.SizeOf( typeof( _D3DBoneLocalPosition ) ) ) / 16 + 1 ) * 16;
+            public static int SizeInBytes = 16;
         }
         private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
 
