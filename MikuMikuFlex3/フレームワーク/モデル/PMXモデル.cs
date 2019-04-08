@@ -529,6 +529,12 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
+                #region " 既定のスキニングを作成する。"
+                //----------------
+                this._既定のスキニング = new 既定のスキニング( d3dDevice );
+                //----------------
+                #endregion
+
                 this._初期化完了.Set();
             }
             //} );
@@ -539,6 +545,7 @@ namespace MikuMikuFlex3
             this._初期化完了.Reset();
 
             this._物理変形更新?.Dispose();
+            this._既定のスキニング?.Dispose();
 
             this._D3DBoneTrans定数バッファ?.Dispose();
             this._D3DBoneLocalPosition定数バッファ?.Dispose();
@@ -707,14 +714,12 @@ namespace MikuMikuFlex3
                     // ボーン用定数バッファを更新する。
 
                     d3ddc.UpdateSubresource( this._ボーンのモデルポーズ配列, this._D3DBoneTrans定数バッファ );
-                    this._既定のEffect.GetConstantBufferByName( "BoneTransBuffer" ).SetConstantBuffer( this._D3DBoneTrans定数バッファ );
-
                     d3ddc.UpdateSubresource( this._ボーンのローカル位置配列, this._D3DBoneLocalPosition定数バッファ );
-                    this._既定のEffect.GetConstantBufferByName( "BoneLocalPositionBuffer" ).SetConstantBuffer( this._D3DBoneLocalPosition定数バッファ );
-
                     d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
-                    this._既定のEffect.GetConstantBufferByName( "BoneQuaternionBuffer" ).SetConstantBuffer( this._D3DBoneQuaternion定数バッファ );
 
+                    d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTrans定数バッファ );
+                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneTrans定数バッファ );
+                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneTrans定数バッファ );
 
                     // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
 
@@ -739,23 +744,14 @@ namespace MikuMikuFlex3
                         }
                     }
 
+                    // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
 
-                    // 使用するtechniqueを検索する。
-
-                    テクニック technique = this._D3Dテクニックリスト.Where( ( t ) => t.テクニックを適用する描画対象 == MMDPass種別.スキニング ).FirstOrDefault();
-
-                    if( null != technique )
-                    {
-                        // パスを通じてコンピュートシェーダーステートを設定する。
-                        technique.パスリスト.ElementAt( 0 ).Value.D3DPass.Apply( d3ddc );
-
-                        // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
-                        d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
-                        d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                        d3ddc.Dispatch( ( this.PMX頂点制御.入力頂点配列.Length / 64 ) + 1, 1, 1 );
-                    }
+                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
+                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
+                    this._既定のスキニング.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
+
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, null );
                     //----------------
                     #endregion
@@ -1217,7 +1213,6 @@ namespace MikuMikuFlex3
         }
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
-
         private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
 
         private ShaderResourceView _D3DスキニングバッファSRView;
@@ -1245,6 +1240,8 @@ namespace MikuMikuFlex3
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 
         private PMX物理変形更新 _物理変形更新;
+
+        private ISkinning _既定のスキニング;
 
 
         /// <summary>

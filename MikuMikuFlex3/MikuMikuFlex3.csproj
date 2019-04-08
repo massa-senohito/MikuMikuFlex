@@ -93,6 +93,8 @@
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\ISkinning.cs" />
+    <Compile Include="フレームワーク\パイプラインステート\既定のスキニング.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
     <Compile Include="フレームワーク\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラMMD.cs" />
