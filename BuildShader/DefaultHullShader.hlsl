@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"
 #include "DefaultVS_OUTPUT.hlsli"
 #include "DefaultCONSTANT_HS_OUT.hlsli"
+#include "GlobalParameters.hlsli"
 
 CONSTANT_HS_OUT ConstantsHS_Object(InputPatch<VS_OUTPUT, 3> ip, uint PatchID : SV_PrimitiveID)
 {

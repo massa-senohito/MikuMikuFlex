@@ -4,8 +4,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "MikuMikuFlex.hlsli"
 #include "DefaultGS_OUTPUT.hlsli"
+#include "GlobalParameters.hlsli"
 
 [maxvertexcount(3)]
 void main(

@@ -13,9 +13,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Quaternion.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\MikuMikuFlex.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVS_OUTPUT.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultCONSTANT_HS_OUT.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultGS_OUTPUT.hlsli" />
+    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Skinning.hlsli" />
+    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\VS_INPUT.hlsli" />
+    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\MaterialTexture.hlsli" />
+    <None Include="GlobalParameters.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
   </ItemGroup>
 </Project>
