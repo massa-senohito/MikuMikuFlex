@@ -11,8 +11,6 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     スキニングを実行する。
         /// </summary>
-        /// <param name="d3ddc"></param>
-        /// <param name="入力頂点数"></param>
         /// <remarks>
         ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
         ///     - ComputeShader

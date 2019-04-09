@@ -8,9 +8,9 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    class 既定の材質描画 : IMaterialShader
+    public class DefaultMaterialShader : IMaterialShader
     {
-        public 既定の材質描画( Device d3dDevice )
+        public DefaultMaterialShader( Device d3dDevice )
         {
             this._CreateShader( this._VertexShaderForObjectCSOName, ( b ) => this._VertexShaderForObject = new VertexShader( d3dDevice, b ) );
             this._CreateShader( this._VertexShaderForEdgeCSOName, ( b ) => this._VertexShaderForEdge = new VertexShader( d3dDevice, b ) );
@@ -43,7 +43,7 @@ namespace MikuMikuFlex3
             }
         }
 
-        private void _CreateShader( string csoName, Action<byte[]> create )
+        protected void _CreateShader( string csoName, Action<byte[]> create )
         {
             try
             {
@@ -78,13 +78,11 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     材質を描画する。
         /// </summary>
-        /// <param name="pass種別"></param>
-        /// <param name="d3ddc"></param>
         /// <remarks>
         ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
         ///     - InputAssembler
-        ///         - 頂点バッファの割り当て
-        ///         - 頂点インデックスバッファの割り当て
+        ///         - 頂点バッファ（モデル全体）の割り当て
+        ///         - 頂点インデックスバッファ（モデル全体）の割り当て
         ///         - 頂点レイアウトの割り当て
         ///         - PrimitiveTopology の割り当て(PatchListWith3ControlPoints固定)
         ///     - VertexShader
@@ -97,9 +95,9 @@ namespace MikuMikuFlex3
         ///         - slot( b0 ) …… グローバルパラメータ
         ///     - PixelShader
         ///         - slot( b0 ) …… グローバルパラメータ
-        ///         - slot( t0 ) …… 材質の使うテクスチャ
-        ///         - slot( t1 ) …… 材質の使うスフィアマップテクスチャ
-        ///         - slot( t2 ) …… 材質の使うトゥーンテクスチャ
+        ///         - slot( t0 ) …… テクスチャ
+        ///         - slot( t1 ) …… スフィアマップテクスチャ
+        ///         - slot( t2 ) …… トゥーンテクスチャ
         ///     - Rasterizer
         ///         - Viewport の設定
         ///         - RasterizerState の設定（材質に応じた固定値）
@@ -144,6 +142,21 @@ namespace MikuMikuFlex3
         }
 
 
+        protected VertexShader _VertexShaderForObject;
+
+        protected VertexShader _VertexShaderForEdge;
+
+        protected HullShader _HullShader;
+
+        protected DomainShader _DomainShader;
+
+        protected GeometryShader _GeometryShader;
+
+        protected PixelShader _PixelShaderForObject;
+
+        protected PixelShader _PixelShaderForEdge;
+
+        protected BlendState _BlendState通常合成;
 
         private readonly string _VertexShaderForObjectCSOName = "Resources.Shaders.DefaultVertexShaderForObject.cso";
         private readonly string _VertexShaderForEdgeCSOName = "Resources.Shaders.DefaultVertexShaderForEdge.cso";
@@ -152,14 +165,5 @@ namespace MikuMikuFlex3
         private readonly string _GeometryShaderCSOName = "Resources.Shaders.DefaultGeometryShader.cso";
         private readonly string _PixelShaderForObjectCSOName = "Resources.Shaders.DefaultPixelShaderForObject.cso";
         private readonly string _PixelShaderForEdgeCSOName = "Resources.Shaders.DefaultPixelShaderForEdge.cso";
-
-        private VertexShader _VertexShaderForObject;
-        private VertexShader _VertexShaderForEdge;
-        private HullShader _HullShader;
-        private DomainShader _DomainShader;
-        private GeometryShader _GeometryShader;
-        private PixelShader _PixelShaderForObject;
-        private PixelShader _PixelShaderForEdge;
-        private BlendState _BlendState通常合成;
     }
 }

@@ -19,7 +19,7 @@ namespace MikuMikuFlex3
     public class PMXモデル : IDisposable
     {
 
-        // 制御
+        // 構造
 
 
         public const int 最大ボーン数 = 768;
@@ -33,6 +33,24 @@ namespace MikuMikuFlex3
         public PMXモーフ制御[] モーフリスト { get; protected set; }
 
         internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
+
+
+
+        // シェーダー
+
+
+        public ISkinning スキニングシェーダー { get; set; }
+
+        private bool _スキニングを解放する;
+
+
+        /// <summary>
+        ///     既定の材質描画シェーダー。
+        ///     材質ごとの <see cref="PMX材質制御.材質描画シェーダー"/> が null のときに使用される。
+        /// </summary>
+        public IMaterialShader 既定の材質描画シェーダー { get; set; }
+
+        private bool _材質描画を解放する;
 
 
 
@@ -214,7 +232,7 @@ namespace MikuMikuFlex3
                 this.材質リスト = new PMX材質制御[ 材質数 ];
 
                 for( int i = 0; i < 材質数; i++ )
-                    this.材質リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ] );
+                    this.材質リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ], 既定の材質シェーダー );
             }
             //----------------
             #endregion
@@ -504,12 +522,12 @@ namespace MikuMikuFlex3
             //----------------
             if( null != skinning )
             {
-                this._スキニング = skinning;
+                this.スキニングシェーダー = skinning;
                 this._スキニングを解放する = false;
             }
             else
             {
-                this._スキニング = new 既定のスキニング( d3dDevice );
+                this.スキニングシェーダー = new DefaultSkinning( d3dDevice );
                 this._スキニングを解放する = true;
             }
             //----------------
@@ -518,12 +536,12 @@ namespace MikuMikuFlex3
             //----------------
             if( null != 既定の材質シェーダー )
             {
-                this._材質描画 = 既定の材質シェーダー;
+                this.既定の材質描画シェーダー = 既定の材質シェーダー;
                 this._材質描画を解放する = false;
             }
             else
             {
-                this._材質描画 = new 既定の材質描画( d3dDevice );
+                this.既定の材質描画シェーダー = new DefaultMaterialShader( d3dDevice );
                 this._材質描画を解放する = true;
             }
 
@@ -538,10 +556,10 @@ namespace MikuMikuFlex3
             this._初期化完了.Reset();
 
             if( this._材質描画を解放する )
-                this._材質描画?.Dispose();
+                this.既定の材質描画シェーダー?.Dispose();
 
             if( this._スキニングを解放する )
-                this._スキニング?.Dispose();
+                this.スキニングシェーダー?.Dispose();
 
             this._GlobalParameters定数バッファ?.Dispose();
 
@@ -744,7 +762,7 @@ namespace MikuMikuFlex3
 
                     d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
                     d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    this._スキニング.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
+                    this.スキニングシェーダー.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
 
@@ -1061,6 +1079,8 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
+                var 材質描画シェーダー = 材質.材質描画シェーダー ?? this.既定の材質描画シェーダー;
+
 
                 // オブジェクト描画
 
@@ -1083,7 +1103,7 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._材質描画.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
+                材質描画シェーダー.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
 
 
                 // エッジ描画
@@ -1095,7 +1115,7 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._材質描画.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
+                材質描画シェーダー.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
             }
             //----------------
             #endregion
@@ -1196,12 +1216,6 @@ namespace MikuMikuFlex3
         private GlobalParameters _GlobalParameters;
 
         private SharpDX.Direct3D11.Buffer _GlobalParameters定数バッファ;
-
-        private ISkinning _スキニング;
-        private bool _スキニングを解放する;
-
-        private IMaterialShader _材質描画;
-        private bool _材質描画を解放する;
 
 
         /// <summary>

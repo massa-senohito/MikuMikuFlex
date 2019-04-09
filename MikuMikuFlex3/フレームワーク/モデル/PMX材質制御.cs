@@ -15,6 +15,48 @@ namespace MikuMikuFlex3
 
         public float テッセレーション係数 { get; set; }
 
+
+        public class 状態
+        {
+            /// <summary>
+            ///     (R, G, B, A)
+            /// </summary>
+            public Vector4 拡散色 { get; set; }
+
+            /// <summary>
+            ///     (R, G, B)
+            /// </summary>
+            public Vector3 反射色 { get; set; }
+
+            public float 反射強度 { get; set; }
+
+            /// <summary>
+            ///     (R, G, B)
+            /// </summary>
+            public Vector3 環境色 { get; set; }
+
+            /// <summary>
+            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
+            ///     (R, G, B, A)
+            /// </summary>
+            public Vector4 エッジ色 { get; set; }
+
+            /// <summary>
+            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
+            ///     Point 描画時は Point サイズ(※2.1拡張)。
+            /// </summary>
+            public float エッジサイズ { get; set; }
+        }
+
+        public 状態 加算差分 { get; protected set; }
+
+        public 状態 乗算差分 { get; protected set; }
+
+
+
+        // 現在の状態（加算と乗算でアニメーション可能なもの）
+
+
         /// <summary>
         ///     (R, G, B, A)
         /// </summary>
@@ -45,51 +87,16 @@ namespace MikuMikuFlex3
         public float エッジサイズ => ( this.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) ) ? this._PMXF材質.エッジサイズ * this.乗算差分.エッジサイズ + 加算差分.エッジサイズ : 0f;
 
 
-        public class 差分
-        {
-            // 材質色
-
-            /// <summary>
-            ///     (R, G, B, A)
-            /// </summary>
-            public Vector4 拡散色 { get; set; }
-
-            /// <summary>
-            ///     (R, G, B)
-            /// </summary>
-            public Vector3 反射色 { get; set; }
-
-            public float 反射強度 { get; set; }
-
-            /// <summary>
-            ///     (R, G, B)
-            /// </summary>
-            public Vector3 環境色 { get; set; }
-
-            // 描画
-
-            /// <summary>
-            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
-            ///     (R, G, B, A)
-            /// </summary>
-            public Vector4 エッジ色 { get; set; }
-
-            /// <summary>
-            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
-            ///     Point 描画時は Point サイズ(※2.1拡張)。
-            /// </summary>
-            public float エッジサイズ { get; set; }
-        }
-
-        public 差分 加算差分 { get; protected set; }
-
-        public 差分 乗算差分 { get; protected set; }
-
 
         // 描画
 
         public PMXFormat.描画フラグ 描画フラグ => this._PMXF材質.描画フラグ;
 
+        /// <summary>
+        ///     材質の描画をおこなうシェーダー。
+        ///     null なら既定のシェーダーが利用される。
+        /// </summary>
+        public IMaterialShader 材質描画シェーダー { get; set; }
 
 
         // テクスチャ／メモ
@@ -131,12 +138,13 @@ namespace MikuMikuFlex3
         // 生成と終了
 
 
-        public PMX材質制御( PMXFormat.材質 material )
+        public PMX材質制御( PMXFormat.材質 material, IMaterialShader 材質描画シェーダー )
         {
             this._PMXF材質 = material;
+            this.材質描画シェーダー = 材質描画シェーダー;
 
-            this.加算差分 = new 差分();
-            this.乗算差分 = new 差分();
+            this.加算差分 = new 状態();
+            this.乗算差分 = new 状態();
 
             this.状態をリセットする();
         }

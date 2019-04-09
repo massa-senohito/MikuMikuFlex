@@ -11,13 +11,11 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     材質を描画する。
         /// </summary>
-        /// <param name="pass種別"></param>
-        /// <param name="d3ddc"></param>
         /// <remarks>
         ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
         ///     - InputAssembler
-        ///         - 頂点バッファの割り当て
-        ///         - 頂点インデックスバッファの割り当て
+        ///         - 頂点バッファ（モデル全体）の割り当て
+        ///         - 頂点インデックスバッファ（モデル全体）の割り当て
         ///         - 頂点レイアウトの割り当て
         ///         - PrimitiveTopology の割り当て(PatchListWith3ControlPoints固定)
         ///     - VertexShader
@@ -30,9 +28,9 @@ namespace MikuMikuFlex3
         ///         - slot( b0 ) …… グローバルパラメータ
         ///     - PixelShader
         ///         - slot( b0 ) …… グローバルパラメータ
-        ///         - slot( t0 ) …… 材質の使うテクスチャ
-        ///         - slot( t1 ) …… 材質の使うスフィアマップテクスチャ
-        ///         - slot( t2 ) …… 材質の使うトゥーンテクスチャ
+        ///         - slot( t0 ) …… テクスチャ
+        ///         - slot( t1 ) …… スフィアマップテクスチャ
+        ///         - slot( t2 ) …… トゥーンテクスチャ
         ///     - Rasterizer
         ///         - Viewport の設定
         ///         - RasterizerState の設定（材質に応じた固定値）

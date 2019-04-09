@@ -8,37 +8,35 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    class 既定のスキニング : ISkinning
+    public class DefaultSkinning : ISkinning
     {
-        public 既定のスキニング( Device d3dDevice )
+        public DefaultSkinning( Device d3dDevice )
         {
             try
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                using( var fs = assembly.GetManifestResourceStream( this.GetType(), this._csoName ) )
+                using( var fs = assembly.GetManifestResourceStream( this.GetType(), this.CSOName ) )
                 {
                     var buffer = new byte[ fs.Length ];
                     fs.Read( buffer, 0, buffer.Length );
-                    this._ComputeShader = new ComputeShader( d3dDevice, buffer );
+                    this.ComputeShader = new ComputeShader( d3dDevice, buffer );
                 }
             }
             catch( Exception e )
             {
-                Trace.TraceError( $"リソースからのコンピュートシェーダーの作成に失敗しました。[{this._csoName}][{e.Message}]" );
-                this._ComputeShader = null;
+                Trace.TraceError( $"リソースからのコンピュートシェーダーの作成に失敗しました。[{this.CSOName}][{e.Message}]" );
+                this.ComputeShader = null;
             }
         }
 
         public virtual void Dispose()
         {
-            this._ComputeShader?.Dispose();
+            this.ComputeShader?.Dispose();
         }
 
         /// <summary>
         ///     スキニングを実行する。
         /// </summary>
-        /// <param name="d3ddc"></param>
-        /// <param name="入力頂点数"></param>
         /// <remarks>
         ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
         ///     - ComputeShader
@@ -50,13 +48,13 @@ namespace MikuMikuFlex3
         /// </remarks>
         public void Run( DeviceContext d3ddc, int 入力頂点数 )
         {
-            d3ddc.ComputeShader.Set( this._ComputeShader );
+            d3ddc.ComputeShader.Set( this.ComputeShader );
             d3ddc.Dispatch( ( 入力頂点数 / 64 ) + 1, 1, 1 );
         }
 
 
-        private readonly string  _csoName = "Resources.Shaders.DefaultSkinningComputeShader.cso";
+        protected ComputeShader ComputeShader;
 
-        private ComputeShader _ComputeShader;
+        private readonly string CSOName = "Resources.Shaders.DefaultSkinningComputeShader.cso";
     }
 }
