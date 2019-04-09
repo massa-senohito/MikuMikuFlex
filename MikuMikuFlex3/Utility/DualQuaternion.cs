@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX;
 
-namespace MikuMikuFlex3
+namespace MikuMikuFlex3.Utility
 {
-    struct DualQuaternion
+    public struct DualQuaternion
     {
         public Quaternion Real;
 

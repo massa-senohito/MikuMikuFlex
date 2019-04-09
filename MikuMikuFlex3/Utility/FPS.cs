@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace MikuMikuFlex3
+namespace MikuMikuFlex3.Utility
 {
     public class FPS
     {

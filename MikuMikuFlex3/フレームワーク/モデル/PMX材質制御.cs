@@ -45,7 +45,7 @@ namespace MikuMikuFlex3
         public float エッジサイズ => ( this.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) ) ? this._PMXF材質.エッジサイズ * this.乗算差分.エッジサイズ + 加算差分.エッジサイズ : 0f;
 
 
-        public struct 差分
+        public class 差分
         {
             // 材質色
 
@@ -81,9 +81,9 @@ namespace MikuMikuFlex3
             public float エッジサイズ { get; set; }
         }
 
-        public 差分 加算差分;// { get; protected set; }
+        public 差分 加算差分 { get; protected set; }
 
-        public 差分 乗算差分;// { get; protected set; }
+        public 差分 乗算差分 { get; protected set; }
 
 
         // 描画

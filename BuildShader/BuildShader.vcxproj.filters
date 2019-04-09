@@ -1,25 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultSkinningComputeShader.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForObject.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForEdge.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultHullShader.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultDomainShader.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultGeometryShader.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForObject.hlsl" />
-    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForEdge.hlsl" />
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultDomainShader.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultGeometryShader.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultHullShader.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForEdge.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultPixelShaderForObject.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultSkinningComputeShader.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForEdge.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVertexShaderForObject.hlsl">
+      <Filter>Default</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Quaternion.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVS_OUTPUT.hlsli" />
-    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultCONSTANT_HS_OUT.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\Skinning.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\VS_INPUT.hlsli" />
     <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\MaterialTexture.hlsli" />
     <None Include="GlobalParameters.hlsli" />
+    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultCONSTANT_HS_OUT.hlsli">
+      <Filter>Default</Filter>
+    </None>
+    <None Include="..\..\..\%40MMD\MikuMikuFlex\BuildShader\DefaultVS_OUTPUT.hlsli">
+      <Filter>Default</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Default">
+      <UniqueIdentifier>{4e231e4a-edc2-4735-87e4-5d509fc31188}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     CCDIKでIKボーンを更新するクラス
     /// </summary>
-    internal static class CCDによるIK変形更新
+    static class CCDによるIK変形更新
     {
         public static void 変形を更新する( IEnumerable<PMXボーン制御> IKボーンリスト )
         {

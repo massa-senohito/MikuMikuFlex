@@ -16,7 +16,7 @@ namespace MikuMikuFlex3
 	///		階層構造（親子関係）を持つ要素配列（T[]）を、親→子の順番になるように並べ替えて自身に格納する。
 	///		（例: E1,E2,E11,E12,E21,E22 → E1,E11,E12,E2,E21,E22）
 	/// </remarks>
-	public class 階層順リスト<T> : List<T>
+	class 階層順リスト<T> : List<T>
 	{
         /// <summary>
         ///		コンストラクタ。

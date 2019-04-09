@@ -17,7 +17,7 @@ namespace MikuMikuFlex3
         }
 
         // 遷移が完了しているなら false を返す。
-        public override bool 更新する( double 現在時刻sec, out Quaternion 現在の値 )
+        internal override bool 更新する( double 現在時刻sec, out Quaternion 現在の値 )
         {
             Debug.Assert( !this.確定されていない, "遷移が開始されていません。" );
 

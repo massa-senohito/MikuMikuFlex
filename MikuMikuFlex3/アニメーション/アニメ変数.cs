@@ -40,7 +40,7 @@ namespace MikuMikuFlex3
         // リストを再生
 
 
-        public T 更新する( double 現在時刻sec )
+        internal T 更新する( double 現在時刻sec )
         {
             bool 現在値を取得完了 = false;
 

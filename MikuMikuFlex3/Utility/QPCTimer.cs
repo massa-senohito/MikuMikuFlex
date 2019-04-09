@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace MikuMikuFlex3
+namespace MikuMikuFlex3.Utility
 {
     /// <summary>
     ///		パフォーマンスカウンタを使用した高精度タイマ。

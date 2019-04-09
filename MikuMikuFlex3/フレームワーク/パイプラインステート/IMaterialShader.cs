@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace MikuMikuFlex3
 {
-    public interface IRenderMaterial : IDisposable
+    public interface IMaterialShader : IDisposable
     {
         /// <summary>
         ///     材質を描画する。
         /// </summary>
-        /// <param name="材質名"></param>
-        /// <param name="材質番号"></param>
         /// <param name="pass種別"></param>
         /// <param name="d3ddc"></param>
         /// <remarks>
@@ -43,6 +41,6 @@ namespace MikuMikuFlex3
         ///         - DepthStencilView の割り当て
         ///         - DepthStencilState の割り当て（固定）
         /// </remarks>
-        void Draw( string 材質名, int 材質番号, int 材質の頂点数, int 材質の頂点の開始インデックス, MMDPass pass種別, SharpDX.Direct3D11.DeviceContext d3ddc );
+        void Draw( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, SharpDX.Direct3D11.DeviceContext d3ddc );
     }
 }

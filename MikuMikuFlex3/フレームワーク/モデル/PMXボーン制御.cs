@@ -9,26 +9,26 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.ボーン"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMXボーン制御 : IDisposable
+    public class PMXボーン制御 : IDisposable
     {
 
         // 基本情報
 
 
-        public PMXFormat.ボーン PMXFボーン { get; protected set; }
+        internal PMXFormat.ボーン PMXFボーン { get; private protected set; }
 
-        public int ボーンインデックス { get; protected set; }
+        internal int ボーンインデックス { get; private protected set; }
 
         public PMXボーン制御 親ボーン { get; protected set; }
 
         public List<PMXボーン制御> 子ボーンリスト { get; protected set; }
 
 
-        public PMXボーン制御 IKターゲットボーン { get; protected set; }
+        internal PMXボーン制御 IKターゲットボーン { get; private protected set; }
 
-        public IKリンク[] IKリンクリスト { get; protected set; }
+        internal IKリンク[] IKリンクリスト { get; private protected set; }
 
-        public int 変形階層 { get; set; }
+        internal int 変形階層 { get; set; }
 
 
 
@@ -58,9 +58,9 @@ namespace MikuMikuFlex3
         // 動的情報（出力）
 
 
-        public Matrix モデルポーズ行列 { get; protected set; }
+        internal Matrix モデルポーズ行列 { get; private protected set; }
 
-        public Matrix ローカルポーズ行列 { get; protected set; }
+        internal Matrix ローカルポーズ行列 { get; private protected set; }
 
 
 
@@ -82,7 +82,7 @@ namespace MikuMikuFlex3
             this.アニメ変数_回転 = new アニメ変数<Quaternion>( Quaternion.Identity );
         }
 
-        public void 読み込み後の処理を行う( PMXボーン制御[] 全ボーン )
+        internal void 読み込み後の処理を行う( PMXボーン制御[] 全ボーン )
         {
             // 子ボーンとの階層化
 
@@ -124,13 +124,13 @@ namespace MikuMikuFlex3
         // 更新と出力
 
 
-        public void ボーンモーションを適用する( double 現在時刻sec )
+        internal void ボーンモーションを適用する( double 現在時刻sec )
         {
             this.移動 += this.アニメ変数_移動.更新する( 現在時刻sec );
             this.回転 *= this.アニメ変数_回転.更新する( 現在時刻sec );
         }
 
-        public void モデルポーズを計算する()
+        internal void モデルポーズを計算する()
         {
             // ポーズ計算。
 
@@ -151,7 +151,7 @@ namespace MikuMikuFlex3
                 子ボーン.モデルポーズを計算する();
         }
 
-        public void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        internal void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
         {
             モデルポーズ配列[ this.ボーンインデックス ] = this.モデルポーズ行列;
             モデルポーズ配列[ this.ボーンインデックス ].Transpose(); // エフェクトを介さない場合は自分で転置する必要がある。

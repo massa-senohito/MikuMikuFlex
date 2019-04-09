@@ -6,11 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.DXGI;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
+using MikuMikuFlex3.Utility;
 
 #pragma warning disable 0649
 
@@ -26,13 +26,13 @@ namespace MikuMikuFlex3
 
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
-        internal PMXボーン制御[] PMXボーン制御リスト { get; private protected set; }
+        public PMXボーン制御[] ボーンリスト { get; protected set; }
+
+        public PMX材質制御[] 材質リスト { get; protected set; }
+
+        public PMXモーフ制御[] モーフリスト { get; protected set; }
 
         internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
-
-        internal PMX材質制御[] PMX材質制御リスト { get; private protected set; }
-
-        internal PMXモーフ制御[] PMXモーフ制御リスト { get; private protected set; }
 
 
 
@@ -46,7 +46,7 @@ namespace MikuMikuFlex3
         ///     PMXファイルで使用されるテクスチャ等のリソースファイルは、
         ///     PMXファイルと同じフォルダを基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス, ISkinning skinning = null, IRenderMaterial renderMaterial = null )
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス, ISkinning skinning = null, IMaterialShader renderMaterial = null )
         {
             var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read );
 
@@ -68,7 +68,7 @@ namespace MikuMikuFlex3
         ///     PMXリソースで使用されるテクスチャ等のリソースは、
         ///     PMXリソースと同じ名前空間を基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名, ISkinning skinning = null, IRenderMaterial renderMaterial = null )
+        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名, ISkinning skinning = null, IMaterialShader renderMaterial = null )
         {
             var assembly = Assembly.GetExecutingAssembly();
             var path = $"{this.GetType().Namespace}.{リソース名}";
@@ -88,7 +88,7 @@ namespace MikuMikuFlex3
             // stream は、上記初期化作業の中で閉じられる。
         }
 
-        private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, ISkinning skinning, IRenderMaterial renderMaterial, Func<string, Stream> リソースを開く )
+        private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, ISkinning skinning, IMaterialShader renderMaterial, Func<string, Stream> リソースを開く )
         {
             //Task.Run( () => {
             {
@@ -108,20 +108,20 @@ namespace MikuMikuFlex3
                 {
                     int ボーン数 = this._PMXFモデル.ボーンリスト.Count;
 
-                    this.PMXボーン制御リスト = new PMXボーン制御[ ボーン数 ];
+                    this.ボーンリスト = new PMXボーン制御[ ボーン数 ];
 
                     for( int i = 0; i < ボーン数; i++ )
-                        this.PMXボーン制御リスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
+                        this.ボーンリスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
 
                     for( int i = 0; i < ボーン数; i++ )
-                        this.PMXボーン制御リスト[ i ].読み込み後の処理を行う( this.PMXボーン制御リスト );
+                        this.ボーンリスト[ i ].読み込み後の処理を行う( this.ボーンリスト );
                 }
                 //----------------
                 #endregion
                 #region " IKボーンリストを作成する。"
                 //----------------
                 {
-                    var ikBones = this.PMXボーン制御リスト.Where( ( bone ) => bone.PMXFボーン.IKボーンである );
+                    var ikBones = this.ボーンリスト.Where( ( bone ) => bone.PMXFボーン.IKボーンである );
 
                     this.IKボーンリスト = new List<PMXボーン制御>( ikBones.Count() );
                     for( int i = 0; i < ikBones.Count(); i++ )
@@ -134,12 +134,12 @@ namespace MikuMikuFlex3
                 {
                     this._ルートボーンリスト = new List<PMXボーン制御>();
 
-                    for( int i = 0; i < this.PMXボーン制御リスト.Length; i++ )
+                    for( int i = 0; i < this.ボーンリスト.Length; i++ )
                     {
                         // 親ボーンを持たないのがルートボーン。
-                        if( this.PMXボーン制御リスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                        if( this.ボーンリスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
                         {
-                            this._ルートボーンリスト.Add( this.PMXボーン制御リスト[ i ] );
+                            this._ルートボーンリスト.Add( this.ボーンリスト[ i ] );
                         }
                     }
                 }
@@ -169,7 +169,7 @@ namespace MikuMikuFlex3
 
                         int xScore = 0;
                         int yScore = 0;
-                        int BoneCount = this.PMXボーン制御リスト.Length;
+                        int BoneCount = this.ボーンリスト.Length;
 
                         if( x.PMXFボーン.物理後変形である )
                         {
@@ -195,14 +195,14 @@ namespace MikuMikuFlex3
                 #region " 親付与によるFKを初期化する。"
                 //----------------
                 {
-                    this._親付与によるFK変形更新 = new 親付与によるFK変形更新( this.PMXボーン制御リスト );
+                    this._親付与によるFK変形更新 = new 親付与によるFK変形更新( this.ボーンリスト );
                 }
                 //----------------
                 #endregion
                 #region " 物理変形を初期化する。"
                 //----------------
                 {
-                    this._物理変形更新 = new PMX物理変形更新( this.PMXボーン制御リスト, this._PMXFモデル.剛体リスト, this._PMXFモデル.ジョイントリスト );
+                    this._物理変形更新 = new PMX物理変形更新( this.ボーンリスト, this._PMXFモデル.剛体リスト, this._PMXFモデル.ジョイントリスト );
                 }
                 //----------------
                 #endregion
@@ -211,10 +211,10 @@ namespace MikuMikuFlex3
                 {
                     int 材質数 = this._PMXFモデル.材質リスト.Count;
 
-                    this.PMX材質制御リスト = new PMX材質制御[ 材質数 ];
+                    this.材質リスト = new PMX材質制御[ 材質数 ];
 
                     for( int i = 0; i < 材質数; i++ )
-                        this.PMX材質制御リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ] );
+                        this.材質リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ] );
                 }
                 //----------------
                 #endregion
@@ -223,10 +223,10 @@ namespace MikuMikuFlex3
                 {
                     int モーフ数 = this._PMXFモデル.モーフリスト.Count;
 
-                    this.PMXモーフ制御リスト = new PMXモーフ制御[ モーフ数 ];
+                    this.モーフリスト = new PMXモーフ制御[ モーフ数 ];
 
                     for( int i = 0; i < モーフ数; i++ )
-                        this.PMXモーフ制御リスト[ i ] = new PMXモーフ制御( this._PMXFモデル.モーフリスト[ i ] );
+                        this.モーフリスト[ i ] = new PMXモーフ制御( this._PMXFモデル.モーフリスト[ i ] );
                 }
                 //----------------
                 #endregion
@@ -467,21 +467,21 @@ namespace MikuMikuFlex3
                     this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneTrans.SizeInBytes,
+                            SizeInBytes = this.ボーンリスト.Length * _D3DBoneTrans.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
                     this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneLocalPosition.SizeInBytes,
+                            SizeInBytes = this.ボーンリスト.Length * _D3DBoneLocalPosition.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
 
                     this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         new BufferDescription {
-                            SizeInBytes = this.PMXボーン制御リスト.Length * _D3DBoneQuaternion.SizeInBytes,
+                            SizeInBytes = this.ボーンリスト.Length * _D3DBoneQuaternion.SizeInBytes,
                             BindFlags = BindFlags.ConstantBuffer,
                         } );
                 }
@@ -580,20 +580,20 @@ namespace MikuMikuFlex3
 
             this.PMX頂点制御 = null;
 
-            foreach( var morph in this.PMXモーフ制御リスト )
+            foreach( var morph in this.モーフリスト )
                 morph.Dispose();
-            this.PMXモーフ制御リスト = null;
+            this.モーフリスト = null;
 
-            foreach( var material in this.PMX材質制御リスト )
+            foreach( var material in this.材質リスト )
                 material.Dispose();
-            this.PMX材質制御リスト = null;
+            this.材質リスト = null;
 
             this._ルートボーンリスト = null;
             this.IKボーンリスト = null;
             this._親付与によるFK変形更新 = null;
-            foreach( var bone in this.PMXボーン制御リスト )
+            foreach( var bone in this.ボーンリスト )
                 bone.Dispose();
-            this.PMXボーン制御リスト = null;
+            this.ボーンリスト = null;
 
             this._PMXFモデル = null;
         }
@@ -621,7 +621,7 @@ namespace MikuMikuFlex3
 
             #region " 材質状態をリセットする。"
             //----------------
-            foreach( var mat in this.PMX材質制御リスト )
+            foreach( var mat in this.材質リスト )
                 mat.状態をリセットする();
             //----------------
             #endregion
@@ -634,7 +634,7 @@ namespace MikuMikuFlex3
 
             #region " ボーン状態をリセットする。"
             //----------------
-            foreach( var bone in this.PMXボーン制御リスト )
+            foreach( var bone in this.ボーンリスト )
             {
                 bone.ローカル位置 = bone.PMXFボーン.位置;
                 bone.移動 = Vector3.Zero;
@@ -647,7 +647,7 @@ namespace MikuMikuFlex3
 
             #region " モーフを適用する。"
             //----------------
-            foreach( var morph in this.PMXモーフ制御リスト )
+            foreach( var morph in this.モーフリスト )
                 morph.モーフを適用する( 現在時刻sec, this );
 
             this._モデルポーズを再計算する();
@@ -656,7 +656,7 @@ namespace MikuMikuFlex3
 
             #region " ボーンモーションを適用する。"
             //----------------
-            foreach( var bone in this.PMXボーン制御リスト )
+            foreach( var bone in this.ボーンリスト )
                 bone.ボーンモーションを適用する( 現在時刻sec );
 
             this._モデルポーズを再計算する();
@@ -992,9 +992,9 @@ namespace MikuMikuFlex3
 
             #region " すべての材質を描画する。"
             //----------------
-            for( int i = 0; i < this.PMX材質制御リスト.Length; i++ )
+            for( int i = 0; i < this.材質リスト.Length; i++ )
             {
-                var 材質 = this.PMX材質制御リスト[ i ];
+                var 材質 = this.材質リスト[ i ];
 
 
                 #region " グローバルパラメータ（材質単位）を設定する。"
@@ -1080,14 +1080,14 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                this._材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
+                this._材質描画.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
 
 
                 // エッジ描画
 
                 d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
 
-                this._材質描画.Draw( 材質.名前, i, 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
+                this._材質描画.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
             }
             //----------------
             #endregion
@@ -1102,57 +1102,6 @@ namespace MikuMikuFlex3
         }
 
         private bool _初めての描画 = true;
-
-
-
-        // アニメ指示
-
-
-        // ボーン名が null ならすべてのボーンが対象。
-        public void ボーンアニメーションをクリアする( string ボーン名 = null )
-        {
-            foreach( var pmxBone in this.PMXボーン制御リスト )
-            {
-                if( null == ボーン名 || pmxBone.PMXFボーン.ボーン名 == ボーン名 )
-                {
-                    pmxBone.アニメ変数_移動.遷移をクリアする();
-                    pmxBone.アニメ変数_回転.遷移をクリアする();
-                }
-            }
-        }
-
-        // モーフ名が null ならすべてのモーフが対象。
-        public void モーフアニメーションをクリアする( string モーフ名 = null )
-        {
-            foreach( var pmxMorph in this.PMXモーフ制御リスト )
-            {
-                if( null == モーフ名 || pmxMorph.PMXFモーフ.モーフ名 == モーフ名 )
-                {
-                    pmxMorph.アニメ変数_モーフ.遷移をクリアする();
-                }
-            }
-        }
-
-        public void ボーンアニメーションを追加する( string ボーン名, アニメ遷移<Vector3> 移動遷移, アニメ遷移<Quaternion> 回転遷移 )
-        {
-            var pmxBone = this.PMXボーン制御リスト.Where( ( bone ) => bone.PMXFボーン.ボーン名 == ボーン名 ).FirstOrDefault();
-
-            if( null == pmxBone )
-                throw new Exception( $"指定された名前「{ボーン名}」のボーンが存在しません。" );
-
-            pmxBone.アニメ変数_移動.遷移を追加する( 移動遷移 );
-            pmxBone.アニメ変数_回転.遷移を追加する( 回転遷移 );
-        }
-
-        public void モーフアニメーションを追加する( string モーフ名, アニメ遷移<float> モーフ遷移 )
-        {
-            var pmxMorph = this.PMXモーフ制御リスト.Where( ( morph ) => morph.PMXFモーフ.モーフ名 == モーフ名 ).FirstOrDefault();
-
-            if( null == pmxMorph )
-                throw new Exception( $"指定された名前「{モーフ名}」のモーフが存在しません。" );
-
-            pmxMorph.アニメ変数_モーフ.遷移を追加する( モーフ遷移 );
-        }
 
 
 
@@ -1243,7 +1192,7 @@ namespace MikuMikuFlex3
         private ISkinning _スキニング;
         private bool _スキニングを解放する;
 
-        private IRenderMaterial _材質描画;
+        private IMaterialShader _材質描画;
         private bool _材質描画を解放する;
 
 

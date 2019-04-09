@@ -9,15 +9,20 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     <see cref="PMXFormat.モーフ"/> に追加情報を付与するクラス。
     /// </summary>
-    class PMXモーフ制御 : IDisposable
+    public class PMXモーフ制御 : IDisposable
     {
-        public PMXFormat.モーフ PMXFモーフ { get; protected set; }
+        public string モーフ名 => this.PMXFモーフ.モーフ名;
+
+        public PMXFormat.モーフ種別 モーフ種類 => this.PMXFモーフ.モーフ種類;
+
 
         public float モーフ値 { get; set; }
 
         public アニメ変数<float> アニメ変数_モーフ;
 
-        
+        internal PMXFormat.モーフ PMXFモーフ { get; private protected set; }
+
+
 
         // 生成と終了
 
@@ -39,7 +44,7 @@ namespace MikuMikuFlex3
         // 更新
 
 
-        public void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
+        internal void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
         {
             var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
 
@@ -144,7 +149,7 @@ namespace MikuMikuFlex3
                     {
                         foreach( PMXFormat.ボーンモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
-                            var bone = PMXモデル.PMXボーン制御リスト[ offset.ボーンインデックス ];
+                            var bone = PMXモデル.ボーンリスト[ offset.ボーンインデックス ];
 
                             bone.移動 += offset.移動量 * 現在値;
                             bone.回転 *= new Quaternion(
@@ -170,12 +175,12 @@ namespace MikuMikuFlex3
                         {
                             if( offset.材質インデックス == -1 ) // -1:全材質が対象
                             {
-                                foreach( var 材質 in PMXモデル.PMX材質制御リスト )
+                                foreach( var 材質 in PMXモデル.材質リスト )
                                     差分セット( offset, 材質 );
                             }
                             else
                             {
-                                var 材質 = PMXモデル.PMX材質制御リスト[ offset.材質インデックス ];
+                                var 材質 = PMXモデル.材質リスト[ offset.材質インデックス ];
 
                                 差分セット( offset, 材質 );
                             }
@@ -216,7 +221,7 @@ namespace MikuMikuFlex3
                     {
                         foreach( PMXFormat.グループモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
                         {
-                            var メンバモーフ = PMXモデル.PMXモーフ制御リスト[ offset.モーフインデックス ];
+                            var メンバモーフ = PMXモデル.モーフリスト[ offset.モーフインデックス ];
 
                             if( メンバモーフ.PMXFモーフ.モーフ種類 == PMXFormat.モーフ種別.グループ )
                                 throw new InvalidOperationException( "グループモーフのグループとしてグループモーフが指定されています。" );

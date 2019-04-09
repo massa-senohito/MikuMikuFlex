@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using SharpDX.Direct3D11;
 
-namespace MikuMikuFlex3
+namespace MikuMikuFlex3.Utility
 {
 	/// <summary>
 	///		シェーダーリソースビューを作成するためのヘルパメソッドを提供する。

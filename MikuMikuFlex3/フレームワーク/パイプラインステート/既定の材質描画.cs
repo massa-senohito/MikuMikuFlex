@@ -8,7 +8,7 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    class 既定の材質描画 : IRenderMaterial
+    class 既定の材質描画 : IMaterialShader
     {
         public 既定の材質描画( Device d3dDevice )
         {
@@ -78,8 +78,6 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     材質を描画する。
         /// </summary>
-        /// <param name="材質名"></param>
-        /// <param name="材質番号"></param>
         /// <param name="pass種別"></param>
         /// <param name="d3ddc"></param>
         /// <remarks>
@@ -110,7 +108,7 @@ namespace MikuMikuFlex3
         ///         - DepthStencilView の割り当て
         ///         - DepthStencilState の割り当て（固定）
         /// </remarks>
-        public void Draw( string 材質名, int 材質番号, int 材質の頂点数, int 材質の頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
+        public void Draw( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
         {
             switch( pass種別 )
             {
@@ -121,7 +119,7 @@ namespace MikuMikuFlex3
                     d3ddc.GeometryShader.Set( this._GeometryShader );
                     d3ddc.PixelShader.Set( this._PixelShaderForObject );
                     d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
-                    d3ddc.DrawIndexed( 材質の頂点数, 材質の頂点の開始インデックス, 0 );
+                    d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 
                 case MMDPass.Edge:
@@ -131,7 +129,7 @@ namespace MikuMikuFlex3
                     d3ddc.GeometryShader.Set( this._GeometryShader );
                     d3ddc.PixelShader.Set( this._PixelShaderForEdge );
                     d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
-                    d3ddc.DrawIndexed( 材質の頂点数, 材質の頂点の開始インデックス, 0 );
+                    d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 
                 case MMDPass.ObjectWithSelfShadow:

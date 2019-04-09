@@ -15,9 +15,9 @@ namespace MikuMikuFlex3
         public static void ボーンモーションを追加する( VMDFormat.ボーンフレームリスト VMDFボーンフレームリスト, PMXモデル PMXモデル, bool 全ての親を無視する )
         {
             // すべてのPMXボーンについて……
-            for( int i = 0; i < PMXモデル.PMXボーン制御リスト.Length; i++ )
+            for( int i = 0; i < PMXモデル.ボーンリスト.Length; i++ )
             {
-                var pmxBone = PMXモデル.PMXボーン制御リスト[ i ];
+                var pmxBone = PMXモデル.ボーンリスト[ i ];
 
                 if( 全ての親を無視する && pmxBone.PMXFボーン.ボーン名 == "全ての親" )
                     continue;
@@ -57,9 +57,9 @@ namespace MikuMikuFlex3
         public static void モーフを追加する( VMDFormat.モーフフレームリスト VMDFモーフフレームリスト, PMXモデル PMXモデル )
         {
             // すべてのモーフについて……
-            for( int i = 0; i < PMXモデル.PMXモーフ制御リスト.Length; i++ )
+            for( int i = 0; i < PMXモデル.モーフリスト.Length; i++ )
             {
-                var pmxMorph = PMXモデル.PMXモーフ制御リスト[ i ];
+                var pmxMorph = PMXモデル.モーフリスト[ i ];
 
                 
                 // 同じモーフ名のフレームを列挙する。

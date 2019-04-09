@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using SharpDX;
 using MikuMikuFlex3;
+using MikuMikuFlex3.Utility;
 
 namespace SimpleSample
 {
