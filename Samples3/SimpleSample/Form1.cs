@@ -38,6 +38,7 @@ namespace SimpleSample
         {
             this._MainTask.終了指示通知.Set();
             this._MainTask.終了完了通知.Wait( 5000 );
+            this._MainTask.Dispose();
 
             base.OnClosing( e );
         }

@@ -30,30 +30,8 @@ namespace SimpleSample
             parent.MouseWheel += this._Parent_MouseWheel;
         }
 
-        public void Dispose()
+        protected void Initialize()
         {
-            // モデルを解放する。
-
-            this._PMXモデル?.Dispose();
-            this._DefaultMaterialShader?.Dispose();
-
-
-            // D3D関連リソースを解放する。
-
-            this._BlendState通常合成?.Dispose();
-            this._既定のD3D11DepthStencilState?.Dispose();
-            this._既定のD3D11DepthStencilView?.Dispose();
-            this._既定のD3D11DepthStencil?.Dispose();
-            this._既定のD3D11RenderTargetView?.Dispose();
-            this._DXGISwapChain?.Dispose();
-            this._D3D11Device?.Dispose();
-        }
-
-        public void MainLoop()
-        {
-            #region " 初期化 "
-            //----------------
-
             #region " D3DDevice, DXGISwapChain を生成する。"
             //----------------
             SharpDX.Direct3D11.Device.CreateWithSwapChain(
@@ -159,7 +137,6 @@ namespace SimpleSample
             //----------------
             #endregion
 
-
             // ステージ単位のパイプライン設定。
 
             this._D3D11Device.ImmediateContext.OutputMerger.SetTargets( this._既定のD3D11DepthStencilView, this._既定のD3D11RenderTargetView );
@@ -169,7 +146,7 @@ namespace SimpleSample
 
             // PMX モデルを生成。
 
-            this._DefaultMaterialShader = new MikuMikuFlex3.DefaultMaterialShader( this._D3D11Device );
+            this._DefaultMaterialShader = MaterialShaderBuilder.BuildFromScript( this._D3D11Device, @"MaterialShader.csx" );
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス, 既定の材質シェーダー: this._DefaultMaterialShader );
 
 
@@ -200,18 +177,14 @@ namespace SimpleSample
             // 照明を生成。
 
             this._照明 = new 照明();
+        }
 
-
-            // その他を生成。
+        public void MainLoop()
+        {
+            this.Initialize();
 
             var timer = new QPCTimer();
-
             this._FPS = new FPS();
-            //----------------
-            #endregion
-                        
-
-            // メインループ
 
             while( !this.終了指示通知.IsSet )
             {
@@ -233,7 +206,7 @@ namespace SimpleSample
 
                 var world = Matrix.Identity;
                 this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
-
+                
                 if( this._FPS.FPSをカウントする() )
                     Trace.WriteLine( $"{_FPS.現在のFPS} fps" );
 
@@ -246,8 +219,26 @@ namespace SimpleSample
 
             // 終了
 
-            this.Dispose();
             this.終了完了通知.Set();
+        }
+
+        public void Dispose()
+        {
+            // モデルを解放する。
+
+            this._PMXモデル?.Dispose();
+            this._DefaultMaterialShader?.Dispose();
+
+
+            // D3D関連リソースを解放する。
+
+            this._BlendState通常合成?.Dispose();
+            this._既定のD3D11DepthStencilState?.Dispose();
+            this._既定のD3D11DepthStencilView?.Dispose();
+            this._既定のD3D11DepthStencil?.Dispose();
+            this._既定のD3D11RenderTargetView?.Dispose();
+            this._DXGISwapChain?.Dispose();
+            this._D3D11Device?.Dispose();
         }
 
 
