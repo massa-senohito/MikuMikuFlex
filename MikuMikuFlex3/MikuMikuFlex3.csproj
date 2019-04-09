@@ -93,15 +93,15 @@
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\GlobalParameters.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\IMaterialShader.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\ISkinning.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\既定のスキニング.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\GlobalParameters.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\IMaterialShader.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\ISkinning.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\既定のスキニング.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
     <Compile Include="フレームワーク\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラMMD.cs" />
     <Compile Include="フレームワーク\カメラ\モーションカメラDX.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\既定の材質描画.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\既定の材質描画.cs" />
     <Compile Include="フレームワーク\モデル\CCDによるIK変形更新.cs" />
     <Compile Include="フレームワーク\モデル\PMXモーフ制御.cs" />
     <Compile Include="フレームワーク\モデル\PMX材質制御.cs" />
@@ -110,7 +110,7 @@
     <Compile Include="フレームワーク\モデル\親付与によるFK変形更新.cs" />
     <Compile Include="フレームワーク\照明.cs" />
     <Compile Include="CGHelper.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\CS_INPUT.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\CS_INPUT.cs" />
     <Compile Include="Utility\DualQuaternion.cs" />
     <Compile Include="Format\PMX\ジョイント.cs" />
     <Compile Include="Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
@@ -163,7 +163,7 @@
     <Compile Include="Format\PMX\面リスト.cs" />
     <Compile Include="Format\PMX\頂点.cs" />
     <Compile Include="Format\PMX\頂点リスト.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\MMDPass.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\MMDPass.cs" />
     <Compile Include="Format\VMD\モーション.cs" />
     <Compile Include="Utility\FPS.cs" />
     <Compile Include="Utility\MMFShaderResourceView.cs" />
@@ -184,7 +184,7 @@
     <Compile Include="Format\VMD\照明フレームリスト.cs" />
     <Compile Include="Utility\QPCTimer.cs" />
     <Compile Include="TargaSolver.cs" />
-    <Compile Include="フレームワーク\パイプラインステート\VS_INPUT.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\VS_INPUT.cs" />
     <Compile Include="物理演算\Bulletタイマ.cs" />
     <Compile Include="物理演算\Bullet管理.cs" />
     <Compile Include="物理演算\PMX物理変形更新.cs" />

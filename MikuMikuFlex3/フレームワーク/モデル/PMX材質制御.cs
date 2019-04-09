@@ -134,6 +134,10 @@ namespace MikuMikuFlex3
         public PMX材質制御( PMXFormat.材質 material )
         {
             this._PMXF材質 = material;
+
+            this.加算差分 = new 差分();
+            this.乗算差分 = new 差分();
+
             this.状態をリセットする();
         }
 
