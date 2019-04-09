@@ -24,21 +24,21 @@ cbuffer GlobalParameters : register(b0)
 
     // 描画中の材質がスフィアマップを使用するなら true。材質単位。
     // 　true の場合、SphereTexture オブジェクトが有効であること。
-    bool UseSphereMap; // HLSLのboolは4byte
+    bool g_UseSphereMap; // HLSLのboolは4byte
 
     // スフィアマップの種類。true なら加算スフィア、false なら乗算スフィア。材質単位。
-    bool IsAddSphere;
+    bool g_IsAddSphere;
 
     // 描画中の材質がテクスチャを使用するなら true。材質単位。
     // 　true の場合、Texture オブジェクトが有効であること。
-    bool UseTexture;
+    bool g_UseTexture;
 
     // 描画中の材質がトゥーンテクスチャを使用するなら true。材質単位。
     // 　true の場合、ToonTexture オブジェクトが有効であること。
-    bool UseToonTextureMap;
+    bool g_UseToonTextureMap;
 
     // 描画中の材質がセルフ影を使用するなら true。材質単位。
-    bool UseSelfShadow;
+    bool g_UseSelfShadow;
 
 
 
@@ -46,13 +46,13 @@ cbuffer GlobalParameters : register(b0)
 
 
 	// ワールド変換行列。モデル単位。
-	float4x4 WorldMatrix;
+	float4x4 g_WorldMatrix;
 
 	// ビュー変換行列。ステージ単位。
-    float4x4 ViewMatrix;
+    float4x4 g_ViewMatrix;
 
     // 射影変換行列。ステージ単位。
-    float4x4 ProjectionMatrix;
+    float4x4 g_ProjectionMatrix;
 
 
 
@@ -60,13 +60,13 @@ cbuffer GlobalParameters : register(b0)
 
 
     // カメラの位置。ステージ単位。
-    float4 CameraPosition;
+    float4 g_CameraPosition;
 
     // カメラの注視点。ステージ単位。
-    float4 CameraTargetPosition;
+    float4 g_CameraTargetPosition;
 
     // カメラの上方向を示すベクトル。ステージ単位。
-    float4 CameraUp;
+    float4 g_CameraUp;
 
 
 
@@ -74,22 +74,22 @@ cbuffer GlobalParameters : register(b0)
     // 　※MMMでは照明１～３を同時に使用可能。（MMDでは照明１のみ）
 
     // 照明１の色。ステージ単位。
-    float4 Light1Color;
+    float4 g_Light1Color;
 
     // 照明１の方向。ステージ単位。
-    float4 Light1Direction;
+    float4 g_Light1Direction;
 
     // 照明２の色。ステージ単位。
-    float4 Light2Color;
+    float4 g_Light2Color;
 
     // 照明２の方向。ステージ単位。
-    float4 Light2Direction;
+    float4 g_Light2Direction;
 
     // 照明３の色。ステージ単位。
-    float4 Light3Color;
+    float4 g_Light3Color;
 
     // 照明３の方向。ステージ単位。
-    float4 Light3Direction;
+    float4 g_Light3Direction;
 
 
 
@@ -97,23 +97,23 @@ cbuffer GlobalParameters : register(b0)
 
 
     // 環境光。材質単位。
-    float4 AmbientColor;
+    float4 g_AmbientColor;
 
     // 拡散色。材質単位。
-    float4 DiffuseColor;
+    float4 g_DiffuseColor;
 
     // 反射色。材質単位。
-    float4 SpecularColor;
+    float4 g_SpecularColor;
 
 	// エッジの色。材質単位。
-	float4 EdgeColor;
+	float4 g_EdgeColor;
 	
 	// 反射係数。材質単位。
-    float SpecularPower;
+    float g_SpecularPower;
 
     // エッジの幅。材質単位。
-    float EdgeWidth;
+    float g_EdgeWidth;
 
     // テッセレーション係数。モデル単位。
-    float TessellationFactor;
+    float g_TessellationFactor;
 }

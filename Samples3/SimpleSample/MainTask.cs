@@ -35,6 +35,7 @@ namespace SimpleSample
             // モデルを解放する。
 
             this._PMXモデル?.Dispose();
+            this._DefaultMaterialShader?.Dispose();
 
 
             // D3D関連リソースを解放する。
@@ -166,9 +167,13 @@ namespace SimpleSample
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
 
 
-            // モデルを生成。
+            // PMX モデルを生成。
 
-            this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス );
+            this._DefaultMaterialShader = new MikuMikuFlex3.DefaultMaterialShader( this._D3D11Device );
+            this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス, 既定の材質シェーダー: this._DefaultMaterialShader );
+
+
+            // VMD アニメーションを設定。
             using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
             {
                 var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
@@ -278,6 +283,7 @@ namespace SimpleSample
 
         private SharpDX.Mathematics.Interop.RawViewportF _D3DViewport;
 
+        private IMaterialShader _DefaultMaterialShader;
 
 
         private void _Parent_MouseWheel( object sender, MouseEventArgs e )

@@ -20,30 +20,30 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 {
     // 反射色計算
 	
-    float3 LightDirection = normalize(mul(Light1Direction, WorldMatrix * ViewMatrix)).xyz;
-    float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), WorldMatrix * ViewMatrix).xyz);
-    float3 Specular = pow(max(0.00001, dot(HalfVector, normalize(IN.Normal))), SpecularPower) * SpecularColor.rgb;
+    float3 LightDirection = normalize(mul(g_Light1Direction, g_WorldMatrix * g_ViewMatrix)).xyz;
+    float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), g_WorldMatrix * g_ViewMatrix).xyz);
+    float3 Specular = pow(max(0.00001, dot(HalfVector, normalize(IN.Normal))), g_SpecularPower) * g_SpecularColor.rgb;
     float4 Color = IN.Color;
 
 
 	// テクスチャサンプリング
 
-    if (UseTexture)
+    if (g_UseTexture)
     {
-        Color *= Texture.Sample(mySampler, IN.Tex);
+        Color *= g_Texture.Sample(mySampler, IN.Tex);
     }
 
 	// スフィアマップサンプリング
 
-    if (UseSphereMap)
+    if (g_UseSphereMap)
     {
-        if (IsAddSphere)
+        if (g_IsAddSphere)
         {
-            Color.rgb += SphereTexture.Sample(mySampler, IN.SpTex).rgb; // 加算
+            Color.rgb += g_SphereTexture.Sample(mySampler, IN.SpTex).rgb; // 加算
         }
         else
         {
-            Color.rgb *= SphereTexture.Sample(mySampler, IN.SpTex).rgb; // 乗算
+            Color.rgb *= g_SphereTexture.Sample(mySampler, IN.SpTex).rgb; // 乗算
         }
     }
 
@@ -57,9 +57,9 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	
 	// トゥーンテクスチャサンプリング
 	
-    if (UseToonTextureMap)
+    if (g_UseToonTextureMap)
     {
-        float3 MaterialToon = ToonTexture.Sample(mySampler, float2(0, shading)).rgb;
+        float3 MaterialToon = g_ToonTexture.Sample(mySampler, float2(0, shading)).rgb;
         Color.rgb *= MaterialToon;
     }
     else
@@ -78,7 +78,7 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	// 色に環境光を加算
 
 	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMDのAmbientの係数がわからん・・・
-    Color.rgb += AmbientColor.rgb * 0.005;
+    Color.rgb += g_AmbientColor.rgb * 0.005;
 
     return Color;
 }

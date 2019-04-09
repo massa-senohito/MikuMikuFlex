@@ -15,10 +15,10 @@
 void BDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
 {
     float4x4 bt =
-        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+        g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+		g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+		g_BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+		g_BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
 
     position = mul(input.Position, bt);
     normal = normalize(mul(input.Normal, (float3x3) bt));
@@ -33,8 +33,8 @@ void SDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     float w0 = 0.0f; // 固定値であるSDEFパラメータにのみ依存するので、これらの値も実は固定値。
     float w1 = 0.0f; //
 
-    float L0 = length(input.Sdef_R0 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR0までの距離
-    float L1 = length(input.Sdef_R1 - (float3) BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR1までの距離
+    float L0 = length(input.Sdef_R0 - (float3) g_BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR0までの距離
+    float L1 = length(input.Sdef_R1 - (float3) g_BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR1までの距離
 
     if (abs(L0 - L1) < 0.0001f)
     {
@@ -46,16 +46,16 @@ void SDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     }
     w1 = 1.0f - w0;
 
-    float4x4 modelPoseL = BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0];
-    float4x4 modelPoseR = BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
+    float4x4 modelPoseL = g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0];
+    float4x4 modelPoseR = g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
     float4x4 modelPoseC = modelPoseL + modelPoseR;
 
     float4 Cpos = mul(input.Sdef_C, modelPoseC); // BDEF2で計算された点Cの位置
     float4 Ppos = mul(input.Position, modelPoseC); // BDEF2で計算された頂点の位置
 
     float4 qp = q_slerp(
-        BoneQuaternion[input.BoneWeight[0]] * input.BoneWeight[0],
-        BoneQuaternion[input.BoneWeight[1]] * input.BoneWeight[1],
+		g_BoneQuaternion[input.BoneWeight[0]] * input.BoneWeight[0],
+		g_BoneQuaternion[input.BoneWeight[1]] * input.BoneWeight[1],
         input.BoneWeight[0]);
     float4x4 qpm = quaternion_to_matrix(qp);
 
@@ -76,10 +76,10 @@ void QDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     // TODO: QDEF の実装に変更する。（いまはBDEF4と同じ）
 
     float4x4 bt =
-        BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-        BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-        BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-        BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+		g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
+		g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
+		g_BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
+		g_BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
 
     position = mul(input.Position, bt);
     normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;
@@ -100,7 +100,7 @@ void main(uint3 id : SV_DispatchThreadID)
     uint csIndex = id.x; // 頂点番号（0～頂点数-1）
     uint vsIndex = csIndex * VS_INPUT_SIZE; // 出力位置[byte単位（必ず4の倍数であること）]
 
-    CS_BDEF_INPUT input = CSBDEFBuffer[csIndex];
+    CS_BDEF_INPUT input = g_CSBDEFBuffer[csIndex];
 
     // ボーンウェイト変形を適用して、新しい位置と法線を求める。
 
@@ -127,13 +127,13 @@ void main(uint3 id : SV_DispatchThreadID)
     
     // 頂点バッファへ出力する。
 
-    VSBuffer.Store4(vsIndex + 0, asuint(position));
-    VSBuffer.Store3(vsIndex + 16, asuint(normal));
-    VSBuffer.Store2(vsIndex + 28, asuint(input.Tex));
-    VSBuffer.Store4(vsIndex + 36, asuint(input.AddUV1));
-    VSBuffer.Store4(vsIndex + 52, asuint(input.AddUV2));
-    VSBuffer.Store4(vsIndex + 68, asuint(input.AddUV3));
-    VSBuffer.Store4(vsIndex + 84, asuint(input.AddUV4));
-    VSBuffer.Store(vsIndex + 100, asuint(input.EdgeWeight));
-    VSBuffer.Store(vsIndex + 104, asuint(input.Index));
+	g_VSBuffer.Store4(vsIndex + 0, asuint(position));
+	g_VSBuffer.Store3(vsIndex + 16, asuint(normal));
+	g_VSBuffer.Store2(vsIndex + 28, asuint(input.Tex));
+	g_VSBuffer.Store4(vsIndex + 36, asuint(input.AddUV1));
+	g_VSBuffer.Store4(vsIndex + 52, asuint(input.AddUV2));
+	g_VSBuffer.Store4(vsIndex + 68, asuint(input.AddUV3));
+	g_VSBuffer.Store4(vsIndex + 84, asuint(input.AddUV4));
+	g_VSBuffer.Store(vsIndex + 100, asuint(input.EdgeWeight));
+	g_VSBuffer.Store(vsIndex + 104, asuint(input.Index));
 }

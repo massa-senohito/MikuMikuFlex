@@ -13,7 +13,7 @@ CONSTANT_HS_OUT ConstantsHS_Object(InputPatch<VS_OUTPUT, 3> ip, uint PatchID : S
     CONSTANT_HS_OUT Out;
 
     // 定数バッファの値をそのまま渡す
-    Out.Edges[0] = Out.Edges[1] = Out.Edges[2] = TessellationFactor; // パッチのエッジのテッセレーション係数
+    Out.Edges[0] = Out.Edges[1] = Out.Edges[2] = g_TessellationFactor; // パッチのエッジのテッセレーション係数
     Out.Inside = (Out.Edges[0] + Out.Edges[1] + Out.Edges[2]) / 3.0f; // パッチ内部のテッセレーション係数
 
     // コントロール ポイントを追加

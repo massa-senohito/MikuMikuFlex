@@ -34,10 +34,10 @@ VS_OUTPUT main(CONSTANT_HS_OUT In, float3 uvw : SV_DomainLocation, const OutputP
                       In.B102 * W * VV * 3 +
                       In.B012 * U * VV * 3 +
                       In.B111 * 6 * W * U * V;
-    Out.Position = mul(float4(Position, 1), mul(ViewMatrix, ProjectionMatrix));
+    Out.Position = mul(float4(Position, 1), mul(g_ViewMatrix, g_ProjectionMatrix));
 
     // カメラとの相対位置
-    Out.Eye = CameraPosition.xyz - Position;
+    Out.Eye = g_CameraPosition.xyz - Position;
 
     // 法線ベクトル
     float3 Normal = patch[2].Normal * WW +

@@ -21,19 +21,19 @@
 // スキニング用コンピュートシェーダーの入力：定数バッファ(1) ボーンのモデルポーズ行列の配列
 cbuffer BoneTransBuffer : register(b1)
 {
-	float4x4 BoneTrans[MAX_BONE];
+	float4x4 g_BoneTrans[MAX_BONE];
 }
 
 // スキニング用コンピュートシェーダーの入力：定数バッファ(2) ボーンのローカル位置の配列（SDEFで使用）
 cbuffer BoneLocalPositionBuffer : register(b2)
 {
-	float3 BoneLocalPosition[MAX_BONE];
+	float3 g_BoneLocalPosition[MAX_BONE];
 }
 
 // スキニング用コンピュートシェーダーの入力：定数バッファ(3) ボーンの回転（クォータニオン）の配列（SDEFでのみ使用する）
 cbuffer BoneQuaternionBuffer : register(b3)
 {
-	float4 BoneQuaternion[MAX_BONE];
+	float4 g_BoneQuaternion[MAX_BONE];
 }
 
 
@@ -58,10 +58,10 @@ struct CS_BDEF_INPUT
 };
 
 // スキニング用コンピュートシェーダーの入力：頂点の構造化バッファ
-StructuredBuffer<CS_BDEF_INPUT> CSBDEFBuffer : register(t0);
+StructuredBuffer<CS_BDEF_INPUT> g_CSBDEFBuffer : register(t0);
 
 
 // スキニング用コンピュートシェーダーの出力：頂点バッファ（RWバイトアドレスバッファ）
 // → このバッファは、そのまま頂点シェーダの入力（頂点バッファ）として使用される。
-RWByteAddressBuffer VSBuffer : register(u0);
+RWByteAddressBuffer g_VSBuffer : register(u0);
 

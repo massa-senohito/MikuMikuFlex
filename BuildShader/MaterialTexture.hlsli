@@ -8,10 +8,10 @@
 
 
 // 通常テクスチャ
-Texture2D Texture : register(t0);
+Texture2D g_Texture : register(t0);
 
 // スフィアマップテクスチャ
-Texture2D SphereTexture : register(t1);
+Texture2D g_SphereTexture : register(t1);
 
 // トゥーンテクスチャ
-Texture2D ToonTexture : register(t2);
+Texture2D g_ToonTexture : register(t2);
