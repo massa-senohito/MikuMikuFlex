@@ -8,17 +8,34 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    public class DefaultMaterialShader : IMaterialShader
+    public class DefaultMaterialShader : IMaterialShader, IDisposable
     {
+        public VertexShader VertexShaderForObject { get; protected set; }
+
+        public VertexShader VertexShaderForEdge { get; protected set; }
+
+        public HullShader HullShader { get; protected set; }
+
+        public DomainShader DomainShader { get; protected set; }
+
+        public GeometryShader GeometryShader { get; protected set; }
+
+        public PixelShader PixelShaderForObject { get; protected set; }
+
+        public PixelShader PixelShaderForEdge { get; protected set; }
+
+        public BlendState BlendState通常合成 { get; protected set; }
+
+
         public DefaultMaterialShader( Device d3dDevice )
         {
-            this._CreateShader( this._VertexShaderForObjectCSOName, ( b ) => this._VertexShaderForObject = new VertexShader( d3dDevice, b ) );
-            this._CreateShader( this._VertexShaderForEdgeCSOName, ( b ) => this._VertexShaderForEdge = new VertexShader( d3dDevice, b ) );
-            this._CreateShader( this._HullShaderCSOName, ( b ) => this._HullShader = new HullShader( d3dDevice, b ) );
-            this._CreateShader( this._DomainShaderCSOName, ( b ) => this._DomainShader = new DomainShader( d3dDevice, b ) );
-            this._CreateShader( this._GeometryShaderCSOName, ( b ) => this._GeometryShader = new GeometryShader( d3dDevice, b ) );
-            this._CreateShader( this._PixelShaderForObjectCSOName, ( b ) => this._PixelShaderForObject = new PixelShader( d3dDevice, b ) );
-            this._CreateShader( this._PixelShaderForEdgeCSOName, ( b ) => this._PixelShaderForEdge = new PixelShader( d3dDevice, b ) );
+            this._CreateShader( this._VertexShaderForObjectCSOName, ( b ) => this.VertexShaderForObject = new VertexShader( d3dDevice, b ) );
+            this._CreateShader( this._VertexShaderForEdgeCSOName, ( b ) => this.VertexShaderForEdge = new VertexShader( d3dDevice, b ) );
+            this._CreateShader( this._HullShaderCSOName, ( b ) => this.HullShader = new HullShader( d3dDevice, b ) );
+            this._CreateShader( this._DomainShaderCSOName, ( b ) => this.DomainShader = new DomainShader( d3dDevice, b ) );
+            this._CreateShader( this._GeometryShaderCSOName, ( b ) => this.GeometryShader = new GeometryShader( d3dDevice, b ) );
+            this._CreateShader( this._PixelShaderForObjectCSOName, ( b ) => this.PixelShaderForObject = new PixelShader( d3dDevice, b ) );
+            this._CreateShader( this._PixelShaderForEdgeCSOName, ( b ) => this.PixelShaderForEdge = new PixelShader( d3dDevice, b ) );
 
             {
                 var blendStateNorm = new BlendStateDescription() {
@@ -39,7 +56,7 @@ namespace MikuMikuFlex3
                 blendStateNorm.RenderTarget[ 0 ].BlendOperation = BlendOperation.Add;
 
                 // ブレンドステートを作成する。
-                this._BlendState通常合成 = new BlendState( d3dDevice, blendStateNorm );
+                this.BlendState通常合成 = new BlendState( d3dDevice, blendStateNorm );
             }
         }
 
@@ -64,15 +81,15 @@ namespace MikuMikuFlex3
 
         public virtual void Dispose()
         {
-            this._VertexShaderForObject?.Dispose();
-            this._VertexShaderForEdge?.Dispose();
-            this._HullShader?.Dispose();
-            this._DomainShader?.Dispose();
-            this._GeometryShader?.Dispose();
-            this._PixelShaderForObject?.Dispose();
-            this._PixelShaderForEdge?.Dispose();
+            this.VertexShaderForObject?.Dispose();
+            this.VertexShaderForEdge?.Dispose();
+            this.HullShader?.Dispose();
+            this.DomainShader?.Dispose();
+            this.GeometryShader?.Dispose();
+            this.PixelShaderForObject?.Dispose();
+            this.PixelShaderForEdge?.Dispose();
 
-            this._BlendState通常合成?.Dispose();
+            this.BlendState通常合成?.Dispose();
         }
 
         /// <summary>
@@ -111,22 +128,22 @@ namespace MikuMikuFlex3
             switch( pass種別 )
             {
                 case MMDPass.Object:
-                    d3ddc.VertexShader.Set( this._VertexShaderForObject );
-                    d3ddc.HullShader.Set( this._HullShader );
-                    d3ddc.DomainShader.Set( this._DomainShader );
-                    d3ddc.GeometryShader.Set( this._GeometryShader );
-                    d3ddc.PixelShader.Set( this._PixelShaderForObject );
-                    d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
+                    d3ddc.VertexShader.Set( this.VertexShaderForObject );
+                    d3ddc.HullShader.Set( this.HullShader );
+                    d3ddc.DomainShader.Set( this.DomainShader );
+                    d3ddc.GeometryShader.Set( this.GeometryShader );
+                    d3ddc.PixelShader.Set( this.PixelShaderForObject );
+                    d3ddc.OutputMerger.BlendState = this.BlendState通常合成;
                     d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 
                 case MMDPass.Edge:
-                    d3ddc.VertexShader.Set( this._VertexShaderForEdge );
-                    d3ddc.HullShader.Set( this._HullShader );
-                    d3ddc.DomainShader.Set( this._DomainShader );
-                    d3ddc.GeometryShader.Set( this._GeometryShader );
-                    d3ddc.PixelShader.Set( this._PixelShaderForEdge );
-                    d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
+                    d3ddc.VertexShader.Set( this.VertexShaderForEdge );
+                    d3ddc.HullShader.Set( this.HullShader );
+                    d3ddc.DomainShader.Set( this.DomainShader );
+                    d3ddc.GeometryShader.Set( this.GeometryShader );
+                    d3ddc.PixelShader.Set( this.PixelShaderForEdge );
+                    d3ddc.OutputMerger.BlendState = this.BlendState通常合成;
                     d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 
@@ -142,28 +159,18 @@ namespace MikuMikuFlex3
         }
 
 
-        protected VertexShader _VertexShaderForObject;
-
-        protected VertexShader _VertexShaderForEdge;
-
-        protected HullShader _HullShader;
-
-        protected DomainShader _DomainShader;
-
-        protected GeometryShader _GeometryShader;
-
-        protected PixelShader _PixelShaderForObject;
-
-        protected PixelShader _PixelShaderForEdge;
-
-        protected BlendState _BlendState通常合成;
-
         private readonly string _VertexShaderForObjectCSOName = "Resources.Shaders.DefaultVertexShaderForObject.cso";
+
         private readonly string _VertexShaderForEdgeCSOName = "Resources.Shaders.DefaultVertexShaderForEdge.cso";
+
         private readonly string _HullShaderCSOName = "Resources.Shaders.DefaultHullShader.cso";
+
         private readonly string _DomainShaderCSOName = "Resources.Shaders.DefaultDomainShader.cso";
+
         private readonly string _GeometryShaderCSOName = "Resources.Shaders.DefaultGeometryShader.cso";
+
         private readonly string _PixelShaderForObjectCSOName = "Resources.Shaders.DefaultPixelShaderForObject.cso";
+
         private readonly string _PixelShaderForEdgeCSOName = "Resources.Shaders.DefaultPixelShaderForEdge.cso";
     }
 }

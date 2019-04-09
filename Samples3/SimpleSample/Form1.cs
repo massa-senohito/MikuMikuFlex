@@ -26,6 +26,7 @@ namespace SimpleSample
         protected override void OnLoad( EventArgs e )
         {
             this._MainTask = new MainTask( this, this._args );
+            this._MainTask.Initialize();
 
             Task.Run( () => {
                 this._MainTask.MainLoop();

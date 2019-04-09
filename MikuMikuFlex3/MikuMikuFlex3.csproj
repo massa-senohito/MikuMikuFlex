@@ -124,8 +124,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Utility\ShaderScript\MaterialShaderBuilder.cs" />
-    <Compile Include="Utility\ShaderScript\ScriptGlobals.cs" />
+    <Compile Include="Script\PipelineState.cs" />
+    <Compile Include="Script\Reason.cs" />
+    <Compile Include="Script\ScriptedMaterialShader.cs" />
     <Compile Include="アニメーション\VMDアニメーションビルダ.cs" />
     <Compile Include="アニメーション\アニメ変数.cs" />
     <Compile Include="アニメーション\アニメ遷移.cs" />

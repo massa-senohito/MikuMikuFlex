@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using SharpDX;
 using MikuMikuFlex3;
 using MikuMikuFlex3.Utility;
+using MikuMikuFlex3.Script;
 
 namespace SimpleSample
 {
@@ -30,7 +31,7 @@ namespace SimpleSample
             parent.MouseWheel += this._Parent_MouseWheel;
         }
 
-        protected void Initialize()
+        public void Initialize()
         {
             #region " D3DDevice, DXGISwapChain を生成する。"
             //----------------
@@ -146,7 +147,7 @@ namespace SimpleSample
 
             // PMX モデルを生成。
 
-            this._DefaultMaterialShader = MaterialShaderBuilder.BuildFromScript( this._D3D11Device, @"MaterialShader.csx" );
+            this._DefaultMaterialShader = new ScriptedMaterialShader( @"MaterialShader.csx", this._D3D11Device );
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス, 既定の材質シェーダー: this._DefaultMaterialShader );
 
 
@@ -181,8 +182,6 @@ namespace SimpleSample
 
         public void MainLoop()
         {
-            this.Initialize();
-
             var timer = new QPCTimer();
             this._FPS = new FPS();
 
@@ -228,7 +227,6 @@ namespace SimpleSample
 
             this._PMXモデル?.Dispose();
             this._DefaultMaterialShader?.Dispose();
-
 
             // D3D関連リソースを解放する。
 
