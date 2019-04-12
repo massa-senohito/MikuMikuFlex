@@ -161,6 +161,32 @@ namespace MikuMikuFlex3.Script
         }
 
 
+        public void CreateTexture2D( object key, string imageFilePath )
+        {
+            this.RemoveTexture2D( key );
+
+            try
+            {
+                var srv = MikuMikuFlex3.Utility.MMFShaderResourceView.FromFile( this._d3dDevice, imageFilePath, out Texture2D tex2d );
+                this._プライベートテクスチャリスト[ key ] = (tex2d, srv);
+            }
+            catch( Exception e )
+            {
+                Trace.WriteLine( $"テクスチャの生成に失敗しました。[{imageFilePath}][{e.Message}]" );
+            }
+        }
+
+        public void RemoveTexture2D( object key )
+        {
+            if( this._プライベートテクスチャリスト.ContainsKey( key ) )
+            {
+                this._プライベートテクスチャリスト[ key ].tex?.Dispose();
+                this._プライベートテクスチャリスト[ key ].srv?.Dispose();
+                this._プライベートテクスチャリスト.Remove( key );
+            }
+        }
+
+
 
         // スクリプト（Run）向け
 
@@ -197,6 +223,19 @@ namespace MikuMikuFlex3.Script
             this._選択中のComputeShader = key;
         }
 
+        public Size2 GetViewportSize()
+        {
+            var vs = this._d3ddc.Rasterizer.GetViewports<ViewportF>();
+
+            return new Size2( (int) vs[ 0 ].Width, (int) vs[ 0 ].Height );
+        }
+
+        public Size2F GetViewportSize2F()
+        {
+            var vs = this._d3ddc.Rasterizer.GetViewports<ViewportF>();
+
+            return new Size2F( vs[ 0 ].Width, vs[ 0 ].Height );
+        }
 
 
         // 材質エフェクト用
@@ -269,6 +308,12 @@ namespace MikuMikuFlex3.Script
 
             foreach( var kvp in this._PixelShaderes )
                 kvp.Value.Dispose();
+
+            foreach( var kvp in this._プライベートテクスチャリスト )
+            {
+                kvp.Value.tex.Dispose();
+                kvp.Value.srv.Dispose();
+            }
 
             this._DefaultMaterialShader?.Dispose();
             this._d3ddc = null;     // Disposeしない
@@ -354,6 +399,8 @@ namespace MikuMikuFlex3.Script
         protected object _選択中のPixelShader = null;
 
         protected object _選択中のComputeShader = null;
+
+        protected Dictionary<object, (Texture2D tex, ShaderResourceView srv)> _プライベートテクスチャリスト = new Dictionary<object, (Texture2D tex, ShaderResourceView srv)>();
 
 
         protected void _CreateShader( string csoFilePath, Action<byte[]> create )

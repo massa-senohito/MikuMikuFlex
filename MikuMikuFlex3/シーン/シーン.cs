@@ -85,7 +85,5 @@ namespace MikuMikuFlex3
                 this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, globalParameters );
             }
         }
-
-
     }
 }

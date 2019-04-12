@@ -6,5 +6,7 @@
 void Run()
 {
     SetComputeShader( 0 );
-    Blit( 1280/8, 720/8, 1 );
+
+    var viewSize = GetViewportSize();
+    Blit( viewSize.Width/8, viewSize.Height/8, 1 );
 }
