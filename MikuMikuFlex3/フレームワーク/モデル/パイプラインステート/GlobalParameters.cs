@@ -51,11 +51,11 @@ namespace MikuMikuFlex3
         [FieldOffset( 32 )]
         public Matrix WorldMatrix;
 
-        // ビュー変換行列。ステージ単位。
+        // ビュー変換行列。シーン単位。
         [FieldOffset( 96 )]
         public Matrix ViewMatrix;
 
-        // 射影変換行列。ステージ単位。
+        // 射影変換行列。シーン単位。
         [FieldOffset( 160 )]
         public Matrix ProjectionMatrix;
 
@@ -64,15 +64,15 @@ namespace MikuMikuFlex3
         // カメラ
 
 
-        // カメラの位置。ステージ単位。
+        // カメラの位置。シーン単位。
         [FieldOffset( 224 )]
         public Vector4 CameraPosition;
 
-        // カメラの注視点。ステージ単位。
+        // カメラの注視点。シーン単位。
         [FieldOffset( 240 )]
         public Vector4 CameraTargetPosition;
 
-        // カメラの上方向を示すベクトル。ステージ単位。
+        // カメラの上方向を示すベクトル。シーン単位。
         [FieldOffset( 256 )]
         public Vector4 CameraUp;
 
@@ -81,27 +81,27 @@ namespace MikuMikuFlex3
         // 照明
         // 　※MMMでは照明１～３を同時に使用可能。（MMDでは照明１のみ）
 
-        // 照明１の色。ステージ単位。
+        // 照明１の色。シーン単位。
         [FieldOffset( 272 )]
         public Vector4 Light1Color;
 
-        // 照明１の方向。ステージ単位。
+        // 照明１の方向。シーン単位。
         [FieldOffset( 288 )]
         public Vector4 Light1Direction;
 
-        // 照明２の色。ステージ単位。
+        // 照明２の色。シーン単位。
         [FieldOffset( 304 )]
         public Vector4 Light2Color;
 
-        // 照明２の方向。ステージ単位。
+        // 照明２の方向。シーン単位。
         [FieldOffset( 320 )]
         public Vector4 Light2Direction;
 
-        // 照明３の色。ステージ単位。
+        // 照明３の色。シーン単位。
         [FieldOffset( 336 )]
         public Vector4 Light3Color;
 
-        // 照明３の方向。ステージ単位。
+        // 照明３の方向。シーン単位。
         [FieldOffset( 352 )]
         public Vector4 Light3Direction;
 
@@ -137,6 +137,12 @@ namespace MikuMikuFlex3
         // テッセレーション係数。モデル単位。
         [FieldOffset( 440 )]
         public float TessellationFactor;
+
+
+        // ビューポートサイズ[px]。シーン単位。
+        [FieldOffset( 444 )]
+        public Vector2 ViewportSize;
+
 
         public static int SizeInBytes => 448;
     }

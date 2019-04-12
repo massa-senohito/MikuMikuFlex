@@ -22,6 +22,8 @@ namespace MikuMikuFlex3
         // 構造
 
 
+        public Matrix ワールド変換行列 { get; set; }
+
         public const int 最大ボーン数 = 768;
 
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
@@ -506,10 +508,8 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " GlobalParametersを作成する。"
+            #region " グローバルパラメータ定数バッファを作成する。"
             //----------------
-            this._GlobalParameters = new GlobalParameters();
-
             this._GlobalParameters定数バッファ = new SharpDX.Direct3D11.Buffer(
                 d3dDevice,
                 new BufferDescription {
@@ -630,7 +630,7 @@ namespace MikuMikuFlex3
         /// <param name="camera">モデルに適用するカメラ。</param>
         /// <param name="light">モデルに適用する照明。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Matrix ワールド変換行列, カメラ camera, 照明 light, ViewportF viewport )
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
         {
             if( !this._初期化完了.IsSet )
                 this._初期化完了.Wait();
@@ -992,21 +992,23 @@ namespace MikuMikuFlex3
                 d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
                 d3ddc.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
-                d3ddc.Rasterizer.SetViewport( viewport );
+                d3ddc.Rasterizer.SetViewport( new ViewportF {
+                    X = 0,
+                    Y = 0,
+                    Width = globalParameters.ViewportSize.X,
+                    Height = globalParameters.ViewportSize.Y,
+                    MinDepth = 0f,
+                    MaxDepth = 1f,
+                } );
+
             }
             //----------------
             #endregion
 
             #region " グローバルパラメータ（モデル単位）を設定する。"
             //----------------
-            this._GlobalParameters.WorldMatrix = ワールド変換行列;
-            this._GlobalParameters.WorldMatrix.Transpose();
-            this._GlobalParameters.ViewMatrix = camera.ビュー行列を取得する();
-            this._GlobalParameters.ViewMatrix.Transpose();
-            this._GlobalParameters.ProjectionMatrix = camera.射影行列を取得する();
-            this._GlobalParameters.ProjectionMatrix.Transpose();
-            this._GlobalParameters.CameraPosition = new Vector4( camera.位置, 0f );
-            this._GlobalParameters.Light1Direction = new Vector4( light.照射方向, 0f );
+            globalParameters.WorldMatrix = ワールド変換行列;
+            globalParameters.WorldMatrix.Transpose();
             //----------------
             #endregion
 
@@ -1019,49 +1021,49 @@ namespace MikuMikuFlex3
 
                 #region " グローバルパラメータ（材質単位）を設定する。"
                 //----------------
-                this._GlobalParameters.EdgeColor = 材質.エッジ色;
-                this._GlobalParameters.EdgeWidth = 材質.エッジサイズ;
-                this._GlobalParameters.TessellationFactor = 材質.テッセレーション係数;
-                this._GlobalParameters.UseSelfShadow = ( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
-                this._GlobalParameters.AmbientColor = new Vector4( 材質.環境色, 1f );
-                this._GlobalParameters.DiffuseColor = 材質.拡散色;
-                this._GlobalParameters.SpecularColor = new Vector4( 材質.反射色, 1f );
-                this._GlobalParameters.SpecularPower = 材質.反射強度;
+                globalParameters.EdgeColor = 材質.エッジ色;
+                globalParameters.EdgeWidth = 材質.エッジサイズ;
+                globalParameters.TessellationFactor = 材質.テッセレーション係数;
+                globalParameters.UseSelfShadow = ( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
+                globalParameters.AmbientColor = new Vector4( 材質.環境色, 1f );
+                globalParameters.DiffuseColor = 材質.拡散色;
+                globalParameters.SpecularColor = new Vector4( 材質.反射色, 1f );
+                globalParameters.SpecularPower = 材質.反射強度;
 
                 if( -1 != 材質.通常テクスチャの参照インデックス )
                 {
-                    this._GlobalParameters.UseTexture = true;
+                    globalParameters.UseTexture = true;
                     d3ddc.PixelShader.SetShaderResource( 0, this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
                 }
                 else
                 {
-                    this._GlobalParameters.UseTexture = false;
+                    globalParameters.UseTexture = false;
                 }
 
                 if( -1 != 材質.スフィアテクスチャの参照インデックス )
                 {
-                    this._GlobalParameters.UseSphereMap = true;
-                    this._GlobalParameters.IsAddSphere = ( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
+                    globalParameters.UseSphereMap = true;
+                    globalParameters.IsAddSphere = ( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
                     d3ddc.PixelShader.SetShaderResource( 1, this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
                 }
                 else
                 {
-                    this._GlobalParameters.UseSphereMap = false;
+                    globalParameters.UseSphereMap = false;
                 }
 
                 if( 1 == 材質.共有Toonフラグ )
                 {
-                    this._GlobalParameters.UseToonTextureMap = true;
+                    globalParameters.UseToonTextureMap = true;
                     d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                 }
                 else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
                 {
-                    this._GlobalParameters.UseToonTextureMap = true;
+                    globalParameters.UseToonTextureMap = true;
                     d3ddc.PixelShader.SetShaderResource( 2, this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
                 }
                 else
                 {
-                    this._GlobalParameters.UseToonTextureMap = false;
+                    globalParameters.UseToonTextureMap = false;
                     d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 0 ].srv );
                 }
                 //----------------
@@ -1069,7 +1071,7 @@ namespace MikuMikuFlex3
 
                 #region " グローバルパラメータを各シェーダステージの定数バッファ b0 へ転送する。"
                 //----------------
-                d3ddc.UpdateSubresource( ref this._GlobalParameters, this._GlobalParameters定数バッファ );
+                d3ddc.UpdateSubresource( ref globalParameters, this._GlobalParameters定数バッファ );
 
                 d3ddc.VertexShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
                 d3ddc.HullShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
@@ -1212,8 +1214,6 @@ namespace MikuMikuFlex3
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 
         private PMX物理変形更新 _物理変形更新;
-
-        private GlobalParameters _GlobalParameters;
 
         private SharpDX.Direct3D11.Buffer _GlobalParameters定数バッファ;
 

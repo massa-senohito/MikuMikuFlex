@@ -97,21 +97,6 @@ namespace SimpleSample
             //----------------
             #endregion
 
-            #region " ビューポートを作成する。"
-            //----------------
-            {
-                this._D3DViewport = new SharpDX.Mathematics.Interop.RawViewportF {
-                    X = 0,
-                    Y = 0,
-                    Width = this._ParentClientSize.Width,
-                    Height = this._ParentClientSize.Height,
-                    MinDepth = 0.0f,
-                    MaxDepth = 1.0f,
-                };
-            }
-            //----------------
-            #endregion
-
             #region " ブレンドステート通常版を生成する。"
             //----------------
             {
@@ -137,6 +122,13 @@ namespace SimpleSample
             }
             //----------------
             #endregion
+
+            #region " GlobalParametersを作成する。"
+            //----------------
+            this._GlobalParameters = new GlobalParameters();
+            //----------------
+            #endregion
+
 
             // ステージ単位のパイプライン設定。
 
@@ -195,16 +187,27 @@ namespace SimpleSample
                 this._カメラ.更新する( now );
 
 
-                // モデル単位のパイプライン設定。
+                // シーン単位のパイプライン設定。
 
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, Color4.Black );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
 
+                // シーン単位のグローバルパラメータの設定。
+
+                this._GlobalParameters.ViewMatrix = this._カメラ.ビュー行列を取得する();
+                this._GlobalParameters.ViewMatrix.Transpose();
+                this._GlobalParameters.ProjectionMatrix = this._カメラ.射影行列を取得する();
+                this._GlobalParameters.ProjectionMatrix.Transpose();
+                this._GlobalParameters.CameraPosition = new Vector4( this._カメラ.位置, 0f );
+                this._GlobalParameters.Light1Direction = new Vector4( this._照明.照射方向, 0f );
+                this._GlobalParameters.ViewportSize = new Vector2( this._ParentClientSize.Width, this._ParentClientSize.Height );
+
+
                 // モデルの進行描画。
 
-                var world = Matrix.Identity;
-                this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, world, this._カメラ, this._照明, this._D3DViewport );
+                this._PMXモデル.ワールド変換行列 = Matrix.Identity;
+                this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
                 
                 if( this._FPS.FPSをカウントする() )
                     Trace.WriteLine( $"{_FPS.現在のFPS} fps" );
@@ -270,9 +273,9 @@ namespace SimpleSample
 
         private SharpDX.Direct3D11.BlendState _BlendState通常合成;
 
-        private SharpDX.Mathematics.Interop.RawViewportF _D3DViewport;
-
         private IMaterialShader _DefaultMaterialShader;
+
+        private GlobalParameters _GlobalParameters;
 
 
         private void _Parent_MouseWheel( object sender, MouseEventArgs e )
