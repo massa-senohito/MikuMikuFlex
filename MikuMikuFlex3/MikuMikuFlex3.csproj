@@ -134,8 +134,13 @@
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
+    <Compile Include="フレームワーク\シーン\エフェクトパス.cs" />
+    <Compile Include="フレームワーク\シーン\オブジェクトパス.cs" />
+    <Compile Include="フレームワーク\シーン\シーン.cs" />
+    <Compile Include="フレームワーク\シーン\パス.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\GlobalParameters.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\IMaterialShader.cs" />
+    <Compile Include="フレームワーク\モデル\パイプラインステート\IPostEffect.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\ISkinning.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\DefaultSkinning.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />

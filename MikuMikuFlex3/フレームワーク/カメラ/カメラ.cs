@@ -74,6 +74,9 @@ namespace MikuMikuFlex3
 
         // 行列の取得
 
+        public virtual void 更新する( double 現在時刻sec )
+        {
+        }
 
         /// <summary>
         ///     現在の位置、注視点、上方向から得られるビュー行列を返す。

@@ -23,7 +23,6 @@ namespace SimpleSample
             this._ParentClientSize = new Size2( parent.ClientSize.Width, parent.ClientSize.Height );
             this._PMXファイルパス = args[ 0 ];
             this._VMDファイルパス = args[ 1 ];
-            this._カメラVMDファイルパス = args[ 2 ];
 
             parent.MouseDown += this._Parent_MouseDown;
             parent.MouseUp += this._Parent_MouseUp;
@@ -59,41 +58,30 @@ namespace SimpleSample
             //----------------
             #endregion
 
-            #region " 既定のRenderTargetView, 既定のDepthStencilView を作成する。"
+            #region " 既定のRenderTarget と 既定のDepthStencil を作成する。"
             //----------------
-            using( var backbufferTexture2D = this._DXGISwapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>( 0 ) )
-            {
-                this._既定のD3D11RenderTargetView = new SharpDX.Direct3D11.RenderTargetView( this._D3D11Device, backbufferTexture2D );
+            this._既定のD3D11RenderTarget = this._DXGISwapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>( 0 );
 
-                this._既定のD3D11DepthStencil = new SharpDX.Direct3D11.Texture2D(
-                    this._D3D11Device,
-                    new SharpDX.Direct3D11.Texture2DDescription {
-                        Width = backbufferTexture2D.Description.Width,              // バックバッファと同じサイズ
-                        Height = backbufferTexture2D.Description.Height,            // 
-                        MipLevels = 1,
-                        ArraySize = 1,
-                        Format = SharpDX.DXGI.Format.D32_Float,                     // 32bit Depth
-                        SampleDescription = backbufferTexture2D.Description.SampleDescription,  // バックバッファと同じサンプル記述
-                        Usage = SharpDX.Direct3D11.ResourceUsage.Default,
-                        BindFlags = SharpDX.Direct3D11.BindFlags.DepthStencil,
-                        CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,    // CPUからはアクセスしない
-                        OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.None,
-                    } );
+            this._既定のD3D11RenderTargetView = new SharpDX.Direct3D11.RenderTargetView( this._D3D11Device, this._既定のD3D11RenderTarget );
 
-                this._既定のD3D11DepthStencilView = new SharpDX.Direct3D11.DepthStencilView(
-                    this._D3D11Device,
-                    this._既定のD3D11DepthStencil,
-                    new SharpDX.Direct3D11.DepthStencilViewDescription {
-                        Format = this._既定のD3D11DepthStencil.Description.Format,
-                        Dimension = SharpDX.Direct3D11.DepthStencilViewDimension.Texture2D,
-                        Flags = SharpDX.Direct3D11.DepthStencilViewFlags.None,
-                        Texture2D = new SharpDX.Direct3D11.DepthStencilViewDescription.Texture2DResource() {
-                            MipSlice = 0,
-                        },
-                    } );
+            this._既定のD3D11DepthStencil = new SharpDX.Direct3D11.Texture2D(
+                this._D3D11Device,
+                new SharpDX.Direct3D11.Texture2DDescription {
+                    Width = this._既定のD3D11RenderTarget.Description.Width,              // バックバッファと同じサイズ
+                    Height = this._既定のD3D11RenderTarget.Description.Height,            // 
+                    MipLevels = 1,
+                    ArraySize = 1,
+                    Format = SharpDX.DXGI.Format.D32_Float,                     // 32bit Depth
+                    SampleDescription = this._既定のD3D11RenderTarget.Description.SampleDescription,  // バックバッファと同じサンプル記述
+                    Usage = SharpDX.Direct3D11.ResourceUsage.Default,
+                    BindFlags = SharpDX.Direct3D11.BindFlags.DepthStencil,
+                    CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,    // CPUからはアクセスしない
+                    OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.None,
+                } );
 
-                this._既定のD3D11DepthStencilState = null;
-            }
+            this._既定のD3D11DepthStencilView = new SharpDX.Direct3D11.DepthStencilView( this._D3D11Device, this._既定のD3D11DepthStencil );
+
+            this._既定のD3D11DepthStencilState = null;
             //----------------
             #endregion
 
@@ -132,16 +120,19 @@ namespace SimpleSample
 
             // ステージ単位のパイプライン設定。
 
-            this._D3D11Device.ImmediateContext.OutputMerger.SetTargets( this._既定のD3D11DepthStencilView, this._既定のD3D11RenderTargetView );
             this._D3D11Device.ImmediateContext.OutputMerger.SetBlendState( this._BlendState通常合成, new Color4( 0f, 0f, 0f, 0f ), -1 );
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
+
+
+            // シーンを生成。
+
+            this._シーン = new シーン();
 
 
             // PMX モデルを生成。
 
             this._DefaultMaterialShader = new ScriptedMaterialShader( @"MaterialShader.csx", this._D3D11Device );
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス, 既定の材質シェーダー: this._DefaultMaterialShader );
-
 
             // VMD アニメーションを設定。
             using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
@@ -151,25 +142,24 @@ namespace SimpleSample
                 VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._PMXモデル );
             }
 
+            // モデルをシーンに追加。
 
-            // カメラを生成。
+            var pass = new オブジェクトパス( this._PMXモデル );
+            pass.RenderTargetを設定する( this._D3D11Device, this._既定のD3D11DepthStencil, new[] { this._既定のD3D11RenderTarget } );
 
-            this._カメラ = new マウスモーションカメラ( 45f );
-
-            //this._カメラ = new モーションカメラMMD(
-            //    注視点からの初期距離: 40f,
-            //    初期注視点: new Vector3( 0f, 10f, 0f ),
-            //    初期回転rad: new Vector3( 0f, MathUtil.Pi, 0f ) );
-            //using( var fs = new FileStream( this._カメラVMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-            //{
-            //    var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
-            //    VMDアニメーションビルダ.カメラモーションを追加する( vmd.カメラフレームリスト, this._カメラ );
-            //}
+            this._シーン.パスリスト.Add( pass );
 
 
-            // 照明を生成。
+            // カメラを生成しシーンに追加。
 
-            this._照明 = new 照明();
+            var camera = new マウスモーションカメラ( 45f );
+            this._シーン.カメラリスト.Add( camera );
+            this._シーン.選択中のカメラ = camera;
+
+            // 照明を生成しシーンに追加。
+
+            var light = new 照明();
+            this._シーン.照明リスト.Add( light );
         }
 
         public void MainLoop()
@@ -182,33 +172,29 @@ namespace SimpleSample
                 var now = timer.現在のリアルタイムカウントsec;
 
 
-                // カメラの進行。
+                // D3Dパイプラインの初期設定。
 
-                this._カメラ.更新する( now );
-
-
-                // シーン単位のパイプライン設定。
-
+                this._D3D11Device.ImmediateContext.OutputMerger.SetTargets( this._既定のD3D11DepthStencilView, this._既定のD3D11RenderTargetView );
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, Color4.Black );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
 
-                // シーン単位のグローバルパラメータの設定。
+                // GlobalParameters の設定（アプリ単位）
 
-                this._GlobalParameters.ViewMatrix = this._カメラ.ビュー行列を取得する();
-                this._GlobalParameters.ViewMatrix.Transpose();
-                this._GlobalParameters.ProjectionMatrix = this._カメラ.射影行列を取得する();
-                this._GlobalParameters.ProjectionMatrix.Transpose();
-                this._GlobalParameters.CameraPosition = new Vector4( this._カメラ.位置, 0f );
-                this._GlobalParameters.Light1Direction = new Vector4( this._照明.照射方向, 0f );
                 this._GlobalParameters.ViewportSize = new Vector2( this._ParentClientSize.Width, this._ParentClientSize.Height );
 
 
                 // モデルの進行描画。
 
                 this._PMXモデル.ワールド変換行列 = Matrix.Identity;
-                this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
-                
+
+
+                // シーンの描画。
+
+                //this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
+                this._シーン.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
+
+
                 if( this._FPS.FPSをカウントする() )
                     Trace.WriteLine( $"{_FPS.現在のFPS} fps" );
 
@@ -238,6 +224,7 @@ namespace SimpleSample
             this._既定のD3D11DepthStencilView?.Dispose();
             this._既定のD3D11DepthStencil?.Dispose();
             this._既定のD3D11RenderTargetView?.Dispose();
+            this._既定のD3D11RenderTarget?.Dispose();
             this._DXGISwapChain?.Dispose();
             this._D3D11Device?.Dispose();
         }
@@ -245,17 +232,14 @@ namespace SimpleSample
 
         private string _PMXファイルパス;
         private string _VMDファイルパス;
-        private string _カメラVMDファイルパス;
 
         private IntPtr _Parent;
 
         private Size2 _ParentClientSize;
 
+        private シーン _シーン;
+
         private PMXモデル _PMXモデル;
-
-        private マウスモーションカメラ _カメラ;
-
-        private 照明 _照明;
 
         private FPS _FPS;
 
@@ -263,9 +247,11 @@ namespace SimpleSample
 
         private SharpDX.DXGI.SwapChain _DXGISwapChain;
 
-        private SharpDX.Direct3D11.RenderTargetView _既定のD3D11RenderTargetView;
+        private SharpDX.Direct3D11.Texture2D _既定のD3D11RenderTarget;
 
         private SharpDX.Direct3D11.Texture2D _既定のD3D11DepthStencil;
+
+        private SharpDX.Direct3D11.RenderTargetView _既定のD3D11RenderTargetView;
 
         private SharpDX.Direct3D11.DepthStencilView _既定のD3D11DepthStencilView;
 
@@ -280,22 +266,26 @@ namespace SimpleSample
 
         private void _Parent_MouseWheel( object sender, MouseEventArgs e )
         {
-            this._カメラ?.OnMouseWheel( sender, e );
+            if( this._シーン.選択中のカメラ is マウスモーションカメラ mmcamera )
+                mmcamera.OnMouseWheel( sender, e );
         }
 
         private void _Parent_MouseMove( object sender, MouseEventArgs e )
         {
-            this._カメラ?.OnMouseMove( sender, e );
+            if( this._シーン.選択中のカメラ is マウスモーションカメラ mmcamera )
+                mmcamera.OnMouseMove( sender, e );
         }
 
         private void _Parent_MouseUp( object sender, MouseEventArgs e )
         {
-            this._カメラ?.OnMouseUp( sender, e );
+            if( this._シーン.選択中のカメラ is マウスモーションカメラ mmcamera )
+                mmcamera.OnMouseUp( sender, e );
         }
 
         private void _Parent_MouseDown( object sender, MouseEventArgs e )
         {
-            this._カメラ?.OnMouseDown( sender, e );
+            if( this._シーン.選択中のカメラ is マウスモーションカメラ mmcamera )
+                mmcamera.OnMouseDown( sender, e );
         }
     }
 }
