@@ -10,10 +10,6 @@ namespace MikuMikuFlex3
     [StructLayout(LayoutKind.Explicit)]
     public struct GlobalParameters
     {
-
-        // コントロールフラグ
-
-
         // 描画中の材質がスフィアマップを使用するなら true。材質単位。
         // 　true の場合、SphereTexture オブジェクトが有効であること。
         [FieldOffset( 0 )]
@@ -42,11 +38,6 @@ namespace MikuMikuFlex3
         [MarshalAs( UnmanagedType.Bool )]
         public bool UseSelfShadow;
 
-
-
-        // ワールドビュー射影変換
-
-
         // ワールド変換行列。モデル単位。
         [FieldOffset( 32 )]
         public Matrix WorldMatrix;
@@ -59,11 +50,6 @@ namespace MikuMikuFlex3
         [FieldOffset( 160 )]
         public Matrix ProjectionMatrix;
 
-
-
-        // カメラ
-
-
         // カメラの位置。シーン単位。
         [FieldOffset( 224 )]
         public Vector4 CameraPosition;
@@ -75,11 +61,6 @@ namespace MikuMikuFlex3
         // カメラの上方向を示すベクトル。シーン単位。
         [FieldOffset( 256 )]
         public Vector4 CameraUp;
-
-
-
-        // 照明
-        // 　※MMMでは照明１～３を同時に使用可能。（MMDでは照明１のみ）
 
         // 照明１の色。シーン単位。
         [FieldOffset( 272 )]
@@ -104,11 +85,6 @@ namespace MikuMikuFlex3
         // 照明３の方向。シーン単位。
         [FieldOffset( 352 )]
         public Vector4 Light3Direction;
-
-
-
-        // 材質
-
 
         // 環境光。材質単位。
         [FieldOffset( 368 )]
@@ -137,7 +113,6 @@ namespace MikuMikuFlex3
         // テッセレーション係数。モデル単位。
         [FieldOffset( 440 )]
         public float TessellationFactor;
-
 
         // ビューポートサイズ[px]。シーン単位。
         [FieldOffset( 444 )]

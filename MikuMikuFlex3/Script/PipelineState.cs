@@ -67,42 +67,42 @@ namespace MikuMikuFlex3.Script
         {
             this.RemoveVetexShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._VertexShaderes[ key ] = new VertexShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "vs_5_0", ( b ) => this._VertexShaderes[ key ] = new VertexShader( this._d3dDevice, b ) );
         }
 
         public void CreateHullShaderFromHLSL( object key, string hlslFilePath )
         {
             this.RemoveHullShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._HullShaderes[ key ] = new HullShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "hs_5_0", ( b ) => this._HullShaderes[ key ] = new HullShader( this._d3dDevice, b ) );
         }
 
         public void CreateDomainShaderFromHLSL( object key, string hlslFilePath )
         {
             this.RemoveDomainShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._DomainShaderes[ key ] = new DomainShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "ds_5_0", ( b ) => this._DomainShaderes[ key ] = new DomainShader( this._d3dDevice, b ) );
         }
 
         public void CreateGeometryShaderFromHLSL( object key, string hlslFilePath )
         {
             this.RemoveGeometryShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._GeometryShaderes[ key ] = new GeometryShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "gs_5_0", ( b ) => this._GeometryShaderes[ key ] = new GeometryShader( this._d3dDevice, b ) );
         }
 
         public void CreatePixelShaderFromHLSL( object key, string hlslFilePath )
         {
             this.RemovePixelShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._PixelShaderes[ key ] = new PixelShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "ps_5_0", ( b ) => this._PixelShaderes[ key ] = new PixelShader( this._d3dDevice, b ) );
         }
 
         public void CreateComputeShaderFromHLSL( object key, string hlslFilePath )
         {
             this.RemoveComputeShader( key );
 
-            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
+            this._CreateShaderFromHLSL( hlslFilePath, "cs_5_0", ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
         }
 
 
@@ -420,7 +420,7 @@ namespace MikuMikuFlex3.Script
             }
         }
 
-        protected void _CreateShaderFromHLSL( string hlslFilePath, Action<byte[]> create )
+        protected void _CreateShaderFromHLSL( string hlslFilePath, string profile, Action<byte[]> create )
         {
             try
             {
@@ -435,7 +435,7 @@ namespace MikuMikuFlex3.Script
                     flags |= ShaderFlags.SkipOptimization;
                     flags |= ShaderFlags.EnableBackwardsCompatibility;
 #endif
-                    var compileResult = ShaderBytecode.Compile( buffer, "main", "cs_5_0", flags );
+                    var compileResult = ShaderBytecode.Compile( buffer, "main", profile, flags );
 
                     if( compileResult?.Bytecode == null )
                         throw new Exception( "このHLSLファイルには対応していないか、エラーが発生しました。" );
