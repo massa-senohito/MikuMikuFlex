@@ -114,8 +114,13 @@ namespace SimpleSample
             this._GlobalParameters = new GlobalParameters();
 
 
+            // シーンを生成。
+
+            this._シーン = new シーン();
+
+
             // 中間テクスチャを作成する。
-            this._中間テクスチャ = new SharpDX.Direct3D11.Texture2D( this._D3D11Device, new SharpDX.Direct3D11.Texture2DDescription {
+            this._中間テクスチャ = this._シーン.グローバルテクスチャを作成する( this._D3D11Device, 0, new SharpDX.Direct3D11.Texture2DDescription {
                 Width = this._既定のD3D11RenderTarget.Description.Width,
                 Height = this._既定のD3D11RenderTarget.Description.Height,
                 MipLevels = 1,
@@ -133,11 +138,6 @@ namespace SimpleSample
 
             this._D3D11Device.ImmediateContext.OutputMerger.SetBlendState( this._BlendState通常合成, new Color4( 0f, 0f, 0f, 0f ), -1 );
             this._D3D11Device.ImmediateContext.OutputMerger.SetDepthStencilState( this._既定のD3D11DepthStencilState, 0 );
-
-
-            // シーンを生成。
-
-            this._シーン = new シーン();
 
 
             // PMX モデルを生成。
@@ -245,7 +245,8 @@ namespace SimpleSample
 
             // D3D関連リソースを解放する。
 
-            this._中間テクスチャ?.Dispose();
+            this._中間テクスチャ = null;   // Disposeしない
+            this._シーン?.Dispose();
             this._BlendState通常合成?.Dispose();
             this._既定のD3D11DepthStencilState?.Dispose();
             this._既定のD3D11DepthStencilView?.Dispose();
