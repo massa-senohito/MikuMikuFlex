@@ -216,7 +216,6 @@ namespace SimpleSample
 
                 // シーンの描画。
 
-                //this._PMXモデル.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
                 this._シーン.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
 
 

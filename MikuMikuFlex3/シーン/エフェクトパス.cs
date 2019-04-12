@@ -80,6 +80,9 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
+            // ビューが設定されてるリソースにはアクセスできないのでとりあえず外す
+            d3ddc.OutputMerger.SetRenderTargets( (DepthStencilView)null, (RenderTargetView)null );
+
             #region " 入出力ビューをシェーダーステージに設定する。"
             //----------------
             foreach( var kvp in this._シェーダーリソースビュー )
