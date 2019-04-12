@@ -58,7 +58,8 @@ switch( Reason )
 
         public void Blit( DeviceContext d3ddc )
         {
-            this._PipelineState.SetBlitState( d3ddc );
+            this._PipelineState.ResetBlitState( d3ddc );
+
             this._PipelineState.Reason = Reason.Run;
             this._ShaderScript.RunAsync( this._PipelineState );
         }

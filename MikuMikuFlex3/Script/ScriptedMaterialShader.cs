@@ -58,7 +58,8 @@ switch( Reason )
 
         public void Draw( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
         {
-            this._PipelineState.SetDrawState( 頂点数, 頂点の開始インデックス, pass種別, d3ddc );
+            this._PipelineState.ResetDrawState( 頂点数, 頂点の開始インデックス, pass種別, d3ddc );
+
             this._PipelineState.Reason = Reason.Run;
             this._ShaderScript.RunAsync( this._PipelineState );
         }

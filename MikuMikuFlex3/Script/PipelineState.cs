@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.D3DCompiler;
 
@@ -61,6 +62,41 @@ namespace MikuMikuFlex3.Script
             this._CreateShader( csoFilePath, ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
         }
 
+
+        public void CreateVertexShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemoveVetexShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._VertexShaderes[ key ] = new VertexShader( this._d3dDevice, b ) );
+        }
+
+        public void CreateHullShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemoveHullShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._HullShaderes[ key ] = new HullShader( this._d3dDevice, b ) );
+        }
+
+        public void CreateDomainShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemoveDomainShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._DomainShaderes[ key ] = new DomainShader( this._d3dDevice, b ) );
+        }
+
+        public void CreateGeometryShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemoveGeometryShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._GeometryShaderes[ key ] = new GeometryShader( this._d3dDevice, b ) );
+        }
+
+        public void CreatePixelShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemovePixelShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._PixelShaderes[ key ] = new PixelShader( this._d3dDevice, b ) );
+        }
 
         public void CreateComputeShaderFromHLSL( object key, string hlslFilePath )
         {
@@ -125,6 +161,7 @@ namespace MikuMikuFlex3.Script
         }
 
 
+
         // スクリプト（Run）向け
 
 
@@ -159,6 +196,7 @@ namespace MikuMikuFlex3.Script
         {
             this._選択中のComputeShader = key;
         }
+
 
 
         // 材質エフェクト用
@@ -237,7 +275,7 @@ namespace MikuMikuFlex3.Script
             this._d3dDevice = null; // Disposeしない
         }
 
-        public void SetDrawState( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
+        public void ResetDrawState( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
         {
             this._頂点数 = 頂点数;
             this._頂点の開始インデックス = 頂点の開始インデックス;
@@ -274,7 +312,7 @@ namespace MikuMikuFlex3.Script
             this._選択中のPixelShader = null;
         }
 
-        public void SetBlitState( DeviceContext d3ddc )
+        public void ResetBlitState( DeviceContext d3ddc )
         {
             this._d3ddc = d3ddc;
             this._d3ddc.ComputeShader.Set( null );

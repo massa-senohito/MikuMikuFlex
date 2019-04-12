@@ -8,5 +8,5 @@ RWTexture2D<float4> output : register(u0);
 void main(uint2 id : SV_DispatchThreadID)
 {
 	float4 col = input[id];
-	output[id] = float4(col.r, col.g, col.b, col.a);
+	output[id] = float4(col.b, col.g, col.r, col.a);	// �ԂƗ΂𔽑΂�
 }
