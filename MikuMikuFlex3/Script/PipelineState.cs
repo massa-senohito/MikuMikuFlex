@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using SharpDX.Direct3D11;
+using SharpDX.D3DCompiler;
 
 namespace MikuMikuFlex3.Script
 {
@@ -58,6 +59,14 @@ namespace MikuMikuFlex3.Script
             this.RemoveComputeShader( key );
 
             this._CreateShader( csoFilePath, ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
+        }
+
+
+        public void CreateComputeShaderFromHLSL( object key, string hlslFilePath )
+        {
+            this.RemoveComputeShader( key );
+
+            this._CreateShaderFromHLSL( hlslFilePath, ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
         }
 
 
@@ -313,8 +322,6 @@ namespace MikuMikuFlex3.Script
         {
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
-
                 using( var fs = new FileStream( csoFilePath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
                 {
                     var buffer = new byte[ fs.Length ];
@@ -325,6 +332,35 @@ namespace MikuMikuFlex3.Script
             catch( Exception e )
             {
                 Trace.TraceError( $"ファイルからのシェーダーの作成に失敗しました。[{csoFilePath}][{e.Message}]" );
+            }
+        }
+
+        protected void _CreateShaderFromHLSL( string hlslFilePath, Action<byte[]> create )
+        {
+            try
+            {
+                using( var fs = new FileStream( hlslFilePath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+                {
+                    var buffer = new byte[ fs.Length ];
+                    fs.Read( buffer, 0, buffer.Length );
+
+                    ShaderFlags flags = ShaderFlags.None;
+#if DEBUG
+                    flags |= ShaderFlags.Debug;
+                    flags |= ShaderFlags.SkipOptimization;
+                    flags |= ShaderFlags.EnableBackwardsCompatibility;
+#endif
+                    var compileResult = ShaderBytecode.Compile( buffer, "main", "cs_5_0", flags );
+
+                    if( compileResult?.Bytecode == null )
+                        throw new Exception( "このHLSLファイルには対応していないか、エラーが発生しました。" );
+
+                    create( compileResult.Bytecode );
+                }
+            }
+            catch( Exception e )
+            {
+                Trace.TraceError( $"ファイルからのシェーダーの作成に失敗しました。[{hlslFilePath}][{e.Message}]" );
             }
         }
     }

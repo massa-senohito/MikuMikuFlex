@@ -51,7 +51,7 @@ namespace SimpleSample
                     OutputHandle = this._Parent,
                     SampleDescription = new SharpDX.DXGI.SampleDescription( 1, 0 ),
                     SwapEffect = SharpDX.DXGI.SwapEffect.Discard,
-                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput,
+                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.UnorderedAccess,
                 },
                 out this._D3D11Device,
                 out this._DXGISwapChain );
@@ -111,8 +111,22 @@ namespace SimpleSample
             //----------------
             #endregion
 
-
             this._GlobalParameters = new GlobalParameters();
+
+
+            // 中間テクスチャを作成する。
+            this._中間テクスチャ = new SharpDX.Direct3D11.Texture2D( this._D3D11Device, new SharpDX.Direct3D11.Texture2DDescription {
+                Width = this._既定のD3D11RenderTarget.Description.Width,
+                Height = this._既定のD3D11RenderTarget.Description.Height,
+                MipLevels = 1,
+                ArraySize = 1,
+                Format = this._既定のD3D11RenderTarget.Description.Format,
+                SampleDescription = this._既定のD3D11RenderTarget.Description.SampleDescription,
+                Usage = SharpDX.Direct3D11.ResourceUsage.Default,
+                BindFlags = SharpDX.Direct3D11.BindFlags.RenderTarget | SharpDX.Direct3D11.BindFlags.ShaderResource,
+                CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
+                OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.None,
+            } );
 
 
             // ステージ単位のパイプライン設定。
@@ -146,8 +160,8 @@ namespace SimpleSample
 
             var pass = new オブジェクトパス( this._PMXモデル );
             pass.名前 = "テストモデル";
-            pass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
-
+            //pass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
+            pass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._中間テクスチャ );
             this._シーン.パスリスト.Add( pass );
 
 
@@ -162,6 +176,15 @@ namespace SimpleSample
 
             var light = new 照明();
             this._シーン.照明リスト.Add( light );
+
+
+            // ポストエフェクトを作成し、シーンに追加。
+
+            this._ScriptedPostEffect = new ScriptedPostEffect( @"PostEffect.csx", this._D3D11Device );
+            var pepass = new エフェクトパス( this._D3D11Device, this._ScriptedPostEffect );
+            pepass.名前 = "テストエフェクト";
+            pepass.リソースをバインドする( this._D3D11Device, this._既定のD3D11RenderTarget, (0, this._中間テクスチャ) );
+            this._シーン.パスリスト.Add( pepass );
         }
 
         public void MainLoop()
@@ -214,6 +237,8 @@ namespace SimpleSample
 
         public void Dispose()
         {
+            this._ScriptedPostEffect?.Dispose();
+
             // モデルを解放する。
 
             this._PMXモデル?.Dispose();
@@ -221,6 +246,7 @@ namespace SimpleSample
 
             // D3D関連リソースを解放する。
 
+            this._中間テクスチャ?.Dispose();
             this._BlendState通常合成?.Dispose();
             this._既定のD3D11DepthStencilState?.Dispose();
             this._既定のD3D11DepthStencilView?.Dispose();
@@ -264,6 +290,10 @@ namespace SimpleSample
         private IMaterialShader _DefaultMaterialShader;
 
         private GlobalParameters _GlobalParameters;
+
+        private ScriptedPostEffect _ScriptedPostEffect;
+
+        private SharpDX.Direct3D11.Texture2D _中間テクスチャ;
 
 
         private void _Parent_MouseWheel( object sender, MouseEventArgs e )
