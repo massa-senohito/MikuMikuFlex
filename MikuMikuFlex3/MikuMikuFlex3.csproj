@@ -126,6 +126,7 @@
   <ItemGroup>
     <Compile Include="Script\PipelineState.cs" />
     <Compile Include="Script\Reason.cs" />
+    <Compile Include="Script\ScriptedPostEffect.cs" />
     <Compile Include="Script\ScriptedMaterialShader.cs" />
     <Compile Include="アニメーション\VMDアニメーションビルダ.cs" />
     <Compile Include="アニメーション\アニメ変数.cs" />
