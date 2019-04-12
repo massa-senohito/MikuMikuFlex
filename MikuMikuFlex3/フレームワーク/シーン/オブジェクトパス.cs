@@ -7,7 +7,7 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    public class オブジェクトパス : パス, IDisposable
+    public class オブジェクトパス : パス
     {
 
         // 生成と終了
@@ -18,7 +18,7 @@ namespace MikuMikuFlex3
             this._オブジェクト = model;
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             this._深度ステンシルビュー?.Dispose();
 
@@ -33,7 +33,7 @@ namespace MikuMikuFlex3
         // 設定
 
 
-        public void RenderTargetを設定する( Device d3dDevice, Texture2D depthStencil, Texture2D[] renderTargets )
+        public void リソースをバインドする( Device d3dDevice, Texture2D depthStencil, params Texture2D[] renderTargets )
         {
             // 以前のビューを解放する。
 

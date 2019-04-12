@@ -35,7 +35,7 @@ namespace MikuMikuFlex3
         ///         - Viewport の設定
         ///         - RasterizerState の設定（材質に応じた固定値）
         ///     - OutputMerger
-        ///         - RengerTargetView の割り当て（[0]のみ）
+        ///         - RengerTargetView の割り当て
         ///         - DepthStencilView の割り当て
         ///         - DepthStencilState の割り当て（固定）
         /// </remarks>

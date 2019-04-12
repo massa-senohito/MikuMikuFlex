@@ -146,7 +146,7 @@ namespace SimpleSample
 
             var pass = new オブジェクトパス( this._PMXモデル );
             pass.名前 = "テストモデル";
-            pass.RenderTargetを設定する( this._D3D11Device, this._既定のD3D11DepthStencil, new[] { this._既定のD3D11RenderTarget } );
+            pass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
 
             this._シーン.パスリスト.Add( pass );
 

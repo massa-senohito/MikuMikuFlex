@@ -41,7 +41,7 @@ namespace MikuMikuFlex3
             globalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
 
 
-            // リストの登録順に描画。
+            // リストの先頭から順番にパスを描画。
 
             for( int i = 0; i < this.パスリスト.Count; i++ )
             {
