@@ -11,7 +11,7 @@ namespace MikuMikuFlex3
     /// </summary>
     public class PMXモーフ制御 : IDisposable
     {
-        public string モーフ名 => this.PMXFモーフ.モーフ名;
+        public string 名前 => this.PMXFモーフ.モーフ名;
 
         public PMXFormat.モーフ種別 モーフ種類 => this.PMXFモーフ.モーフ種類;
 

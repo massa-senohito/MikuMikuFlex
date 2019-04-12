@@ -14,6 +14,7 @@ namespace MikuMikuFlex3
 
         // 基本情報
 
+        public string 名前 => this.PMXFボーン.ボーン名;
 
         internal PMXFormat.ボーン PMXFボーン { get; private protected set; }
 
