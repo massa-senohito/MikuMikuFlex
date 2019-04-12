@@ -111,11 +111,8 @@ namespace SimpleSample
             //----------------
             #endregion
 
-            #region " GlobalParametersを作成する。"
-            //----------------
+
             this._GlobalParameters = new GlobalParameters();
-            //----------------
-            #endregion
 
 
             // ステージ単位のパイプライン設定。
@@ -134,7 +131,9 @@ namespace SimpleSample
             this._DefaultMaterialShader = new ScriptedMaterialShader( @"MaterialShader.csx", this._D3D11Device );
             this._PMXモデル = new PMXモデル( this._D3D11Device, this._PMXファイルパス, 既定の材質シェーダー: this._DefaultMaterialShader );
 
-            // VMD アニメーションを設定。
+
+            // モデルに VMD アニメーションを設定。
+
             using( var fs = new FileStream( this._VMDファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read ) )
             {
                 var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
@@ -142,9 +141,11 @@ namespace SimpleSample
                 VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._PMXモデル );
             }
 
+            
             // モデルをシーンに追加。
 
             var pass = new オブジェクトパス( this._PMXモデル );
+            pass.名前 = "テストモデル";
             pass.RenderTargetを設定する( this._D3D11Device, this._既定のD3D11DepthStencil, new[] { this._既定のD3D11RenderTarget } );
 
             this._シーン.パスリスト.Add( pass );
@@ -155,6 +156,7 @@ namespace SimpleSample
             var camera = new マウスモーションカメラ( 45f );
             this._シーン.カメラリスト.Add( camera );
             this._シーン.選択中のカメラ = camera;
+
 
             // 照明を生成しシーンに追加。
 
@@ -183,7 +185,7 @@ namespace SimpleSample
 
                 this._GlobalParameters.ViewportSize = new Vector2( this._ParentClientSize.Width, this._ParentClientSize.Height );
 
-
+                
                 // モデルの進行描画。
 
                 this._PMXモデル.ワールド変換行列 = Matrix.Identity;

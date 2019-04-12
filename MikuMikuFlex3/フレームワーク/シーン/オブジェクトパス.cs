@@ -58,6 +58,7 @@ namespace MikuMikuFlex3
 
         public override void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
         {
+            // パスに指定されたターゲットに変更。
             d3ddc.OutputMerger.SetTargets( this._深度ステンシルビュー, this._レンダーターゲットビュー );
 
             this._オブジェクト.描画する( 現在時刻sec, d3ddc, globalParameters );
