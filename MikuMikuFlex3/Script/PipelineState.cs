@@ -53,6 +53,14 @@ namespace MikuMikuFlex3.Script
             this._CreateShader( csoFilePath, ( b ) => this._PixelShaderes[ key ] = new PixelShader( this._d3dDevice, b ) );
         }
 
+        public void CreateComputeShader( object key, string csoFilePath )
+        {
+            this.RemoveComputeShader( key );
+
+            this._CreateShader( csoFilePath, ( b ) => this._ComputeShaderes[ key ] = new ComputeShader( this._d3dDevice, b ) );
+        }
+
+
         public void RemoveVetexShader( object key )
         {
             if( this._VertexShaderes.ContainsKey( key ) )
@@ -98,6 +106,14 @@ namespace MikuMikuFlex3.Script
             }
         }
 
+        public void RemoveComputeShader( object key )
+        {
+            if( this._ComputeShaderes.ContainsKey( key ) )
+            {
+                this._ComputeShaderes[ key ]?.Dispose();
+                this._ComputeShaderes.Remove( key );
+            }
+        }
 
 
         // スクリプト（Run）向け
@@ -130,6 +146,13 @@ namespace MikuMikuFlex3.Script
             this._選択中のPixelShader = key;
         }
 
+        public void SetComputeShader( object key )
+        {
+            this._選択中のComputeShader = key;
+        }
+
+
+        // 材質エフェクト用
         public void Draw()
         {
             // 選択されたシェーダーが既定値(null) ではなかったら設定する。
@@ -153,6 +176,20 @@ namespace MikuMikuFlex3.Script
             // 描画する。
 
             this._d3ddc.DrawIndexed( this._頂点数, this._頂点の開始インデックス, 0 );
+        }
+
+        // ポストエフェクト用
+        public void Blit( int threadGroupCountX, int threadGroupCountY, int threadGroupCountZ )
+        {
+            // 選択されたシェーダーが既定値(null) ではなかったら設定する。
+
+            if( null != this._選択中のComputeShader && this._ComputeShaderes.ContainsKey( this._選択中のComputeShader ) )
+                this._d3ddc.ComputeShader.Set( this._ComputeShaderes[ this._選択中のComputeShader ] );
+
+
+            // 実行する。
+
+            this._d3ddc.Dispatch( threadGroupCountX, threadGroupCountY, threadGroupCountZ );
         }
 
 
@@ -228,6 +265,12 @@ namespace MikuMikuFlex3.Script
             this._選択中のPixelShader = null;
         }
 
+        public void SetBlitState( DeviceContext d3ddc )
+        {
+            this._d3ddc = d3ddc;
+            this._d3ddc.ComputeShader.Set( null );
+            this._選択中のComputeShader = null;
+        }
 
 
         protected int _頂点数;
@@ -251,6 +294,8 @@ namespace MikuMikuFlex3.Script
 
         protected Dictionary<object, PixelShader> _PixelShaderes = new Dictionary<object, PixelShader>();
 
+        protected Dictionary<object, ComputeShader> _ComputeShaderes = new Dictionary<object, ComputeShader>();
+
         protected object _選択中のVertexShader = null;
 
         protected object _選択中のHullShader = null;
@@ -260,6 +305,8 @@ namespace MikuMikuFlex3.Script
         protected object _選択中のGeometryShader = null;
 
         protected object _選択中のPixelShader = null;
+
+        protected object _選択中のComputeShader = null;
 
 
         protected void _CreateShader( string csoFilePath, Action<byte[]> create )
