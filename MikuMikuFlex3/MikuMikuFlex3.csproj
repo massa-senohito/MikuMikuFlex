@@ -138,9 +138,9 @@
     <Compile Include="フレームワーク\シーン\オブジェクトパス.cs" />
     <Compile Include="フレームワーク\シーン\シーン.cs" />
     <Compile Include="フレームワーク\シーン\パス.cs" />
-    <Compile Include="フレームワーク\モデル\パイプラインステート\GlobalParameters.cs" />
+    <Compile Include="フレームワーク\シーン\GlobalParameters.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\IMaterialShader.cs" />
-    <Compile Include="フレームワーク\モデル\パイプラインステート\IPostEffect.cs" />
+    <Compile Include="フレームワーク\シーン\IPostEffect.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\ISkinning.cs" />
     <Compile Include="フレームワーク\モデル\パイプラインステート\DefaultSkinning.cs" />
     <Compile Include="フレームワーク\カメラ\カメラ.cs" />
