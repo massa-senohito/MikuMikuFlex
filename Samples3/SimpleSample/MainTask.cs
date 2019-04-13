@@ -111,8 +111,6 @@ namespace SimpleSample
             //----------------
             #endregion
 
-            this._GlobalParameters = new GlobalParameters();
-
 
             // シーンを生成。
 
@@ -120,6 +118,7 @@ namespace SimpleSample
 
 
             // 中間テクスチャを作成する。
+
             this._中間テクスチャ = this._シーン.グローバルテクスチャを作成する( this._D3D11Device, 0, new SharpDX.Direct3D11.Texture2DDescription {
                 Width = this._既定のD3D11RenderTarget.Description.Width,
                 Height = this._既定のD3D11RenderTarget.Description.Height,
@@ -203,11 +202,6 @@ namespace SimpleSample
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, Color4.Black );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
-
-                // GlobalParameters の設定（アプリ単位）
-
-                this._GlobalParameters.ViewportSize = new Vector2( this._ParentClientSize.Width, this._ParentClientSize.Height );
-
                 
                 // モデルの進行描画。
 
@@ -216,7 +210,8 @@ namespace SimpleSample
 
                 // シーンの描画。
 
-                this._シーン.描画する( now, this._D3D11Device.ImmediateContext, this._GlobalParameters );
+                this._シーン.ViewportSize = new Size2F( this._ParentClientSize.Width, this._ParentClientSize.Height );
+                this._シーン.描画する( now, this._D3D11Device.ImmediateContext );
 
 
                 if( this._FPS.FPSをカウントする() )
@@ -238,14 +233,11 @@ namespace SimpleSample
         {
             this._ScriptedPostEffect?.Dispose();
 
-            // モデルを解放する。
-
             this._PMXモデル?.Dispose();
             this._DefaultMaterialShader?.Dispose();
 
-            // D3D関連リソースを解放する。
-
             this._中間テクスチャ = null;   // Disposeしない
+
             this._シーン?.Dispose();
             this._BlendState通常合成?.Dispose();
             this._既定のD3D11DepthStencilState?.Dispose();
@@ -259,6 +251,7 @@ namespace SimpleSample
 
 
         private string _PMXファイルパス;
+
         private string _VMDファイルパス;
 
         private IntPtr _Parent;
@@ -288,8 +281,6 @@ namespace SimpleSample
         private SharpDX.Direct3D11.BlendState _BlendState通常合成;
 
         private IMaterialShader _DefaultMaterialShader;
-
-        private GlobalParameters _GlobalParameters;
 
         private ScriptedPostEffect _ScriptedPostEffect;
 

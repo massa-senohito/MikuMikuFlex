@@ -9,6 +9,12 @@ namespace MikuMikuFlex3
 {
     public class シーン : IDisposable
     {
+        public Size2F ViewportSize
+        {
+            get => new Size2F( this._GlobalParameters.ViewportSize.X, this._GlobalParameters.ViewportSize.Y );
+            set => this._GlobalParameters.ViewportSize = new Vector2( value.Width, value.Height );
+        }
+
         public List<カメラ> カメラリスト { get; protected set; } = new List<カメラ>();
 
         public カメラ 選択中のカメラ { get; set; }
@@ -47,7 +53,7 @@ namespace MikuMikuFlex3
             return tex2d;
         }
 
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc )
         {
             // カメラを進行する。
 
@@ -56,12 +62,12 @@ namespace MikuMikuFlex3
 
             // GlobalParameters の設定（シーン単位）
 
-            globalParameters.ViewMatrix = this.選択中のカメラ.ビュー行列を取得する();
-            globalParameters.ViewMatrix.Transpose();
-            globalParameters.ProjectionMatrix = this.選択中のカメラ.射影行列を取得する();
-            globalParameters.ProjectionMatrix.Transpose();
-            globalParameters.CameraPosition = new Vector4( this.選択中のカメラ.位置, 0f );
-            globalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
+            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー行列を取得する();
+            this._GlobalParameters.ViewMatrix.Transpose();
+            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影行列を取得する();
+            this._GlobalParameters.ProjectionMatrix.Transpose();
+            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.位置, 0f );
+            this._GlobalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
 
 
             // レンダーターゲットであるグローバルテクスチャをすべてクリア。
@@ -82,8 +88,10 @@ namespace MikuMikuFlex3
 
             for( int i = 0; i < this.パスリスト.Count; i++ )
             {
-                this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, globalParameters );
+                this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, this._GlobalParameters );
             }
         }
+
+        protected GlobalParameters _GlobalParameters = new GlobalParameters();
     }
 }
