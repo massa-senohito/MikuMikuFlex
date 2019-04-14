@@ -48,7 +48,9 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
     float LightNormal = dot(IN.Normal, -LightDirection.xyz);
     float shading = saturate(LightNormal); // 0～1 に丸める
 
-	
+	shading = 0.85f + shading * 0.15f;	// そのままだと濃ゆいので薄くする(0～1 → 0.85～1)
+
+
 	// トゥーンテクスチャサンプリング
 	
     if (g_UseToonTextureMap)
@@ -58,8 +60,7 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
     }
     else
     {
-        //float3 MaterialToon = 1.0f.xxx * shading;
-        float3 MaterialToon = 1.0f.xxx * (0.85f + shading * 0.15f); // shading:0→1 のとき、MaerialToon: 0.85→1.0
+        float3 MaterialToon = 1.0f.xxx * shading;
         Color.rgb *= MaterialToon;
     }
     
