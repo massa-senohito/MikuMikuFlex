@@ -16,10 +16,7 @@ namespace ニコニ立体ちゃんサンプル
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
-            //Application.Run( new Form1() );
-
-            var app = new Form1();
-            app.Run();
+            Application.Run( new Form1() );
         }
     }
 }

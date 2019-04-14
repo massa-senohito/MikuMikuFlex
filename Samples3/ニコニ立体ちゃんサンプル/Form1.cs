@@ -12,7 +12,6 @@ namespace ニコニ立体ちゃんサンプル
 {
     public partial class Form1 : SharpDX.Windows.RenderForm
     {
-        // フォームの初期化
         public Form1()
         {
             InitializeComponent();
@@ -21,7 +20,7 @@ namespace ニコニ立体ちゃんサンプル
             this.Text = "ニコニ立体ちゃんサンプル for MikuMikuFlex 3";
         }
 
-        // アプリの開始
+        // アプリの初期化
         protected override void OnLoad( EventArgs e )
         {
             this._Direct3Dを初期化する();
@@ -48,24 +47,14 @@ namespace ニコニ立体ちゃんサンプル
             this._シーン.照明リスト.Add( this._照明 );
             
             this.Activate(); // ウィンドウが後ろに隠れることがあるので、念のため。
-
             base.OnLoad( e );
-        }
 
-        // アプリの終了
-        protected override void OnClosing( CancelEventArgs e )
-        {
-            this._アリシア?.Dispose();
-
-            this._シーン?.Dispose();
-
-            this._Direct3Dを解放する();
-
-            base.OnClosing( e );
+            // 処理のごたごたが落ち着いたらメインループへ。
+            Application.Idle += this.Run;
         }
 
         // アプリのメインループ
-        public void Run()
+        private void Run( object sender, EventArgs e )
         {
             SharpDX.Windows.RenderLoop.Run( this, () => {
 
@@ -79,6 +68,18 @@ namespace ニコニ立体ちゃんサンプル
                 this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
 
             } );
+        }
+
+        // アプリの終了
+        protected override void OnClosing( CancelEventArgs e )
+        {
+            this._アリシア?.Dispose();
+
+            this._シーン?.Dispose();
+
+            this._Direct3Dを解放する();
+
+            base.OnClosing( e );
         }
 
 
