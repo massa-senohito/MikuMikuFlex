@@ -67,7 +67,7 @@ namespace ニコニ立体ちゃんサンプル
 
                 this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState通常合成;
                 this._D3D11Device.ImmediateContext.OutputMerger.DepthStencilState = null;
-                this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, SharpDX.Color4.Black );
+                this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, new SharpDX.Color4( 0.2f, 0.4f, 0.8f, 1.0f ) );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
                 this._シーン.描画する( 0.0, this._D3D11Device.ImmediateContext );
@@ -162,7 +162,7 @@ namespace ニコニ立体ちゃんサンプル
             //----------------
             {
                 var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
-                    AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
+                    AlphaToCoverageEnable = true,  // アルファマスクで透過する（するならZバッファ必須）
                     IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
                 };
                 blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
