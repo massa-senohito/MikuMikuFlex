@@ -22,7 +22,7 @@ namespace MikuMikuFlex3
         // 構造
 
 
-        public Matrix ワールド変換行列 { get; set; }
+        public Matrix ワールド変換行列 { get; set; } = Matrix.Identity;
 
         public const int 最大ボーン数 = 768;
 
@@ -35,6 +35,8 @@ namespace MikuMikuFlex3
         public PMXモーフ制御[] モーフリスト { get; protected set; }
 
         internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
+
+        public List<PMXボーン制御> ルートボーンリスト { get; protected set; }
 
 
 
@@ -149,14 +151,14 @@ namespace MikuMikuFlex3
             #region " ボーンのルートリストを作成する。"
             //----------------
             {
-                this._ルートボーンリスト = new List<PMXボーン制御>();
+                this.ルートボーンリスト = new List<PMXボーン制御>();
 
                 for( int i = 0; i < this.ボーンリスト.Length; i++ )
                 {
                     // 親ボーンを持たないのがルートボーン。
                     if( this.ボーンリスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
                     {
-                        this._ルートボーンリスト.Add( this.ボーンリスト[ i ] );
+                        this.ルートボーンリスト.Add( this.ボーンリスト[ i ] );
                     }
                 }
             }
@@ -165,7 +167,7 @@ namespace MikuMikuFlex3
             #region " PMXボーンの変形階層を設定する。"
             //----------------
             {
-                foreach( var root in this._ルートボーンリスト )
+                foreach( var root in this.ルートボーンリスト )
                 {
                     設定( root, 0 );
                 }
@@ -208,7 +210,7 @@ namespace MikuMikuFlex3
                 } );
 
                 this.IKボーンリスト.Sort( comparison );
-                this._ルートボーンリスト.Sort( comparison );
+                this.ルートボーンリスト.Sort( comparison );
             }
             //----------------
             #endregion
@@ -453,16 +455,17 @@ namespace MikuMikuFlex3
 
                     try
                     {
-                        var stream = リソースを開く( texturePath );    // 開く方法は呼び出し元に任せる
+                        using( var stream = リソースを開く( texturePath ) )    // 開く方法は呼び出し元に任せる
+                        {
+                            var srv = MMFShaderResourceView.FromStream(
+                                d3dDevice,
+                                ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
+                                out var tex2d );
 
-                        var srv = MMFShaderResourceView.FromStream(
-                            d3dDevice,
-                            ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
-                            out var tex2d );
+                            this._個別テクスチャリスト[ i ] = (tex2d, srv);
 
-                        this._個別テクスチャリスト[ i ] = (tex2d, srv);
-
-                        Debug.WriteLine( "OK" );
+                            Debug.WriteLine( "OK" );
+                        }
                     }
                     catch( Exception e )
                     {
@@ -604,7 +607,7 @@ namespace MikuMikuFlex3
                 material.Dispose();
             this.材質リスト = null;
 
-            this._ルートボーンリスト = null;
+            this.ルートボーンリスト = null;
             this.IKボーンリスト = null;
             this._親付与によるFK変形更新 = null;
             foreach( var bone in this.ボーンリスト )
@@ -704,7 +707,7 @@ namespace MikuMikuFlex3
 
             #region " モデルポーズを再計算しつつ、ボーン状態を確定する。"
             //----------------
-            foreach( var root in this._ルートボーンリスト )
+            foreach( var root in this.ルートボーンリスト )
             {
                 root.モデルポーズを計算する();
                 root.状態を確定する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
@@ -1127,7 +1130,7 @@ namespace MikuMikuFlex3
 
         private void _モデルポーズを再計算する()
         {
-            foreach( var root in this._ルートボーンリスト )
+            foreach( var root in this.ルートボーンリスト )
                 root.モデルポーズを計算する();
         }
 
@@ -1208,8 +1211,6 @@ namespace MikuMikuFlex3
         private RasterizerState _両面描画の際のラスタライザステート;
 
         private RasterizerState _両面描画の際のラスタライザステートLine;
-
-        private List<PMXボーン制御> _ルートボーンリスト;
 
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 

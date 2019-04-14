@@ -38,8 +38,8 @@ namespace MikuMikuFlex3
 
         public カメラ()
         {
-            this.VMD方式で更新する( 45.0f, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, 0f, 0f ) );    // MMD での初期値。
-            //this.VMD方式で更新する( 50.0f, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, 0f, 0f ) );    // MMM での初期値。
+            this.VMD方式で更新する( 45.0f, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, MathUtil.Pi, 0f ) );    // MMD での初期値。
+            //this.VMD方式で更新する( 50.0f, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, MathUtil.Pi, 0f ) );    // MMM での初期値。
         }
 
         /// <summary>

@@ -26,9 +26,21 @@ namespace MikuMikuFlex3
         public Dictionary<object, (Resource tex, Color4 clearColor)> グローバルテクスチャリスト { get; protected set; } = new Dictionary<object, (Resource tex, Color4 clearColor)>();
 
 
-        public シーン()
+        protected シーン()
         {
             this.パスリスト = new List<パス>();
+        }
+
+        public シーン( float width, float height )
+            : this()
+        {
+            this.ViewportSize = new Size2F( width, height );
+        }
+
+        public シーン( System.Drawing.Size size )
+            : this()
+        {
+            this.ViewportSize = new Size2F( size.Width, size.Height );
         }
 
         public virtual void Dispose()
@@ -57,6 +69,9 @@ namespace MikuMikuFlex3
         {
             // カメラを進行する。
 
+            if( null == this.選択中のカメラ )
+                this.選択中のカメラ = this.カメラリスト[ 0 ];
+
             this.選択中のカメラ.更新する( 現在時刻sec );
 
 
@@ -70,7 +85,7 @@ namespace MikuMikuFlex3
             this._GlobalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
 
 
-            // レンダーターゲットであるグローバルテクスチャをすべてクリア。
+            // レンダーターゲットと深度ステンシルであるグローバルテクスチャをすべてクリア。
 
             foreach( var kvp in this.グローバルテクスチャリスト )
             {

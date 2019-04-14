@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples3", "Samples3", "{EC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSample", "Samples3\SimpleSample\SimpleSample.csproj", "{BDC31558-273A-474F-BA2C-6A52712C3AD1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ニコニ立体ちゃんサンプル", "Samples3\ニコニ立体ちゃんサンプル\ニコニ立体ちゃんサンプル.csproj", "{CCD5DFC0-E001-4626-8B35-74E92D085E95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -112,6 +114,10 @@ Global
 		{BDC31558-273A-474F-BA2C-6A52712C3AD1}.Debug|x64.Build.0 = Debug|x64
 		{BDC31558-273A-474F-BA2C-6A52712C3AD1}.Release|x64.ActiveCfg = Release|x64
 		{BDC31558-273A-474F-BA2C-6A52712C3AD1}.Release|x64.Build.0 = Release|x64
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|x64.ActiveCfg = Debug|x64
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|x64.Build.0 = Debug|x64
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|x64.ActiveCfg = Release|x64
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{45221DCF-50B5-4823-B229-77498F87DBFC} = {A86591B8-E524-4D62-90B9-1A27AE19C37A}
 		{64307579-0C16-40BF-9DB6-F41B360F7D1F} = {A86591B8-E524-4D62-90B9-1A27AE19C37A}
 		{BDC31558-273A-474F-BA2C-6A52712C3AD1} = {EC199155-552B-426D-88C7-C797D38E2068}
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95} = {EC199155-552B-426D-88C7-C797D38E2068}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2D6A3DF-A626-46ED-9421-ED031DA39032}

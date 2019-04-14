@@ -19,7 +19,7 @@ namespace MikuMikuFlex3
         public 照明()
         {
             this.照射方向 = new Vector3( -0.5f, -1.0f, 0.5f );  // MMD での初期値
-            this.色 = new Color3( 0.6f, 0.6f, 0.6f );           // 
+            this.色 = new Color3( 0.6f, 0.6f, 0.6f );          // 
         }
     }
 }
