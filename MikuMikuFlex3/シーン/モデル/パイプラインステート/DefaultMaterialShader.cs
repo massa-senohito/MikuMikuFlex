@@ -24,8 +24,6 @@ namespace MikuMikuFlex3
 
         public PixelShader PixelShaderForEdge { get; protected set; }
 
-        public BlendState BlendState通常合成 { get; protected set; }
-
 
         public DefaultMaterialShader( Device d3dDevice )
         {
@@ -36,28 +34,6 @@ namespace MikuMikuFlex3
             this._CreateShader( this._GeometryShaderCSOName, ( b ) => this.GeometryShader = new GeometryShader( d3dDevice, b ) );
             this._CreateShader( this._PixelShaderForObjectCSOName, ( b ) => this.PixelShaderForObject = new PixelShader( d3dDevice, b ) );
             this._CreateShader( this._PixelShaderForEdgeCSOName, ( b ) => this.PixelShaderForEdge = new PixelShader( d3dDevice, b ) );
-
-            {
-                var blendStateNorm = new BlendStateDescription() {
-                    AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
-                    IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
-                };
-                blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
-                blendStateNorm.RenderTarget[ 0 ].RenderTargetWriteMask =  ColorWriteMaskFlags.All;        // RGBA の書き込みマスク。
-
-                // アルファ値のブレンディング設定 ... 特になし
-                blendStateNorm.RenderTarget[ 0 ].SourceAlphaBlend = BlendOption.One;
-                blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = BlendOption.Zero;
-                blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = BlendOperation.Add;
-
-                // 色値のブレンディング設定 ... アルファ強度に応じた透明合成（テクスチャのアルファ値は、テクスチャのアルファ×ピクセルシェーダでの全体アルファとする（HLSL参照））
-                blendStateNorm.RenderTarget[ 0 ].SourceBlend = BlendOption.SourceAlpha;
-                blendStateNorm.RenderTarget[ 0 ].DestinationBlend = BlendOption.InverseSourceAlpha;
-                blendStateNorm.RenderTarget[ 0 ].BlendOperation = BlendOperation.Add;
-
-                // ブレンドステートを作成する。
-                this.BlendState通常合成 = new BlendState( d3dDevice, blendStateNorm );
-            }
         }
 
         protected void _CreateShader( string csoName, Action<byte[]> create )
@@ -88,8 +64,6 @@ namespace MikuMikuFlex3
             this.GeometryShader?.Dispose();
             this.PixelShaderForObject?.Dispose();
             this.PixelShaderForEdge?.Dispose();
-
-            this.BlendState通常合成?.Dispose();
         }
 
         /// <summary>
@@ -133,7 +107,6 @@ namespace MikuMikuFlex3
                     d3ddc.DomainShader.Set( this.DomainShader );
                     d3ddc.GeometryShader.Set( this.GeometryShader );
                     d3ddc.PixelShader.Set( this.PixelShaderForObject );
-                    d3ddc.OutputMerger.BlendState = this.BlendState通常合成;
                     d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 
@@ -143,7 +116,6 @@ namespace MikuMikuFlex3
                     d3ddc.DomainShader.Set( this.DomainShader );
                     d3ddc.GeometryShader.Set( this.GeometryShader );
                     d3ddc.PixelShader.Set( this.PixelShaderForEdge );
-                    d3ddc.OutputMerger.BlendState = this.BlendState通常合成;
                     d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
                     break;
 

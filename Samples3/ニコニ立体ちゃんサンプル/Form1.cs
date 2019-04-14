@@ -28,8 +28,7 @@ namespace ニコニ立体ちゃんサンプル
 
             this._シーン = new MikuMikuFlex3.シーン( this.ClientSize );
 
-            //this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
-            this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"\\nas\Public\MMDデータ\モデル\Pronama-chan_Ver3\Ver3\MMD(Ver.3)\01_Normal_通常\プロ生ちゃん.pmx" );
+            this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
             var modelPass = new MikuMikuFlex3.オブジェクトパス( this._アリシア );
             modelPass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
             this._シーン.パスリスト.Add( modelPass );

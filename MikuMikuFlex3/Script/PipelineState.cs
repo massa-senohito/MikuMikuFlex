@@ -337,7 +337,6 @@ namespace MikuMikuFlex3.Script
                     this._d3ddc.DomainShader.Set( this._DefaultMaterialShader.DomainShader );
                     this._d3ddc.GeometryShader.Set( this._DefaultMaterialShader.GeometryShader );
                     this._d3ddc.PixelShader.Set( this._DefaultMaterialShader.PixelShaderForEdge );      // Edge
-                    this._d3ddc.OutputMerger.BlendState = this._DefaultMaterialShader.BlendState通常合成;
                     break;
 
                 default:
@@ -346,7 +345,6 @@ namespace MikuMikuFlex3.Script
                     this._d3ddc.DomainShader.Set( this._DefaultMaterialShader.DomainShader );
                     this._d3ddc.GeometryShader.Set( this._DefaultMaterialShader.GeometryShader );
                     this._d3ddc.PixelShader.Set( this._DefaultMaterialShader.PixelShaderForObject );
-                    this._d3ddc.OutputMerger.BlendState = this._DefaultMaterialShader.BlendState通常合成;
                     break;
             }
 

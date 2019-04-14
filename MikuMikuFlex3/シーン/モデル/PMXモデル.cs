@@ -276,9 +276,9 @@ namespace MikuMikuFlex3
                         SizeInBytes = CS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
                         Usage = ResourceUsage.Default,
                         BindFlags = BindFlags.ShaderResource,// | BindFlags.UnorderedAccess,
-                            CpuAccessFlags = CpuAccessFlags.None,
+                        CpuAccessFlags = CpuAccessFlags.None,
                         OptionFlags = ResourceOptionFlags.BufferStructured,   // 構造化バッファ
-                            StructureByteStride = CS_INPUT.SizeInBytes,
+                        StructureByteStride = CS_INPUT.SizeInBytes,
                     } );
 
                 this._D3DスキニングバッファSRView = new ShaderResourceView(
@@ -391,6 +391,22 @@ namespace MikuMikuFlex3
                     FillMode = FillMode.Solid,
                 } );
             }
+            //----------------
+            #endregion
+            #region " サンプラーステートを作成する。"
+            //----------------
+            this._PS用SamplerState = new SamplerState( d3dDevice, new SamplerStateDescription {
+                Filter = Filter.MinMagLinearMipPoint,
+                AddressU = TextureAddressMode.Wrap,
+                AddressV = TextureAddressMode.Wrap,
+                AddressW = TextureAddressMode.Wrap,
+                ComparisonFunction = Comparison.Never,
+                MipLodBias = 0f,
+                BorderColor = Color4.White,
+                MaximumAnisotropy = 1,
+                MinimumLod = -float.MaxValue,
+                MaximumLod = float.MaxValue,
+            } );
             //----------------
             #endregion
 
@@ -585,6 +601,7 @@ namespace MikuMikuFlex3
                 pair.tex2d?.Dispose();
             }
 
+            this._PS用SamplerState?.Dispose();
             this._裏側片面描画の際のラスタライザステート?.Dispose();
             this._片面描画の際のラスタライザステート?.Dispose();
             this._片面描画の際のラスタライザステートLine?.Dispose();
@@ -1004,6 +1021,7 @@ namespace MikuMikuFlex3
                     MaxDepth = 1f,
                 } );
 
+                d3ddc.PixelShader.SetSampler( 0, this._PS用SamplerState );
             }
             //----------------
             #endregion
@@ -1067,7 +1085,7 @@ namespace MikuMikuFlex3
                 else
                 {
                     globalParameters.UseToonTextureMap = false;
-                    d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 0 ].srv );
+                    //d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 0 ].srv );
                 }
                 //----------------
                 #endregion
@@ -1217,6 +1235,8 @@ namespace MikuMikuFlex3
         private PMX物理変形更新 _物理変形更新;
 
         private SharpDX.Direct3D11.Buffer _GlobalParameters定数バッファ;
+
+        private SamplerState _PS用SamplerState;
 
 
         /// <summary>

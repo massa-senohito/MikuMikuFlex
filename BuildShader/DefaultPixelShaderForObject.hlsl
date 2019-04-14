@@ -8,13 +8,7 @@
 #include "DefaultVS_OUTPUT.hlsli"
 #include "GlobalParameters.hlsli"
 
-SamplerState mySampler
-{
-    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = WRAP;
-    AddressV = WRAP;
-};
-
+SamplerState mySampler : register(s0);
 
 float4 main(VS_OUTPUT IN) : SV_TARGET
 {

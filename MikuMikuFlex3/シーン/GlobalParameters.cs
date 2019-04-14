@@ -115,10 +115,10 @@ namespace MikuMikuFlex3
         public float TessellationFactor;
 
         // ビューポートサイズ[px]。シーン単位。
-        [FieldOffset( 444 )]
+        [FieldOffset( 448 )]
         public Vector2 ViewportSize;
 
 
-        public static int SizeInBytes => 448;
+        public static int SizeInBytes => 464;
     }
 }
