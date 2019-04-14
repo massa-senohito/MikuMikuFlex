@@ -114,7 +114,7 @@ namespace SimpleSample
 
             // シーンを生成。
 
-            this._シーン = new シーン();
+            this._シーン = new シーン( this._ParentClientSize.Width, this._ParentClientSize.Height );
 
 
             // 中間テクスチャを作成する。

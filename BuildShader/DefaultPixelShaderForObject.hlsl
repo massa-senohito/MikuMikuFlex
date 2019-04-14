@@ -48,19 +48,18 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
     float LightNormal = dot(IN.Normal, -LightDirection.xyz);
     float shading = saturate(LightNormal); // 0`1 ‚ÉŠÛ‚ß‚é
 
-	shading = 0.85f + shading * 0.15f;	// ‚»‚Ì‚Ü‚Ü‚¾‚Æ”Z‚ä‚¢‚Ì‚Å”–‚­‚·‚é(0`1 ¨ 0.85`1)
-
 
 	// ƒgƒD[ƒ“ƒeƒNƒXƒ`ƒƒƒTƒ“ƒvƒŠƒ“ƒO
 	
     if (g_UseToonTextureMap)
     {
         float3 MaterialToon = g_ToonTexture.Sample(mySampler, float2(0, shading)).rgb;
-        Color.rgb *= MaterialToon;
+		Color.rgb *= 0.85f + MaterialToon * 0.15f;	// ‚»‚Ì‚Ü‚Ü‚¾‚Æ”Z‚ä‚¢‚Ì‚Å”–‚­‚·‚é(0`1 ¨ 0.95`1)
     }
     else
     {
-        float3 MaterialToon = 1.0f.xxx * shading;
+		shading = 0.95f + shading * 0.05f;	// ‚»‚Ì‚Ü‚Ü‚¾‚Æ”Z‚ä‚¢‚Ì‚Å”–‚­‚·‚é(0`1 ¨ 0.95`1)
+		float3 MaterialToon = 1.0f.xxx * shading;
         Color.rgb *= MaterialToon;
     }
     
@@ -72,7 +71,6 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	
 	// F‚ÉŠÂ‹«Œõ‚ğ‰ÁZ
 
-	//Color.rgb += AmbientColor.rgb * 0.2;	//TODO MMD‚ÌAmbient‚ÌŒW”‚ª‚í‚©‚ç‚ñEEE
     Color.rgb += g_AmbientColor.rgb * 0.005;
 
     return Color;
