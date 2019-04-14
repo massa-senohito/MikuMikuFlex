@@ -13,7 +13,7 @@ namespace MikuMikuFlex3
     {
         public string 名前 => this._PMXF材質.材質名;
 
-        public float テッセレーション係数 { get; set; }
+        public float テッセレーション係数 { get; set; } = 1f;
 
 
         public class 状態
@@ -161,8 +161,6 @@ namespace MikuMikuFlex3
 
         public void 状態をリセットする()
         {
-            this.テッセレーション係数 = 1f;
-
             this.加算差分.拡散色 = Vector4.Zero;
             this.加算差分.反射色 = Vector3.Zero;
             this.加算差分.反射強度 = 0;

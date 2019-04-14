@@ -29,6 +29,10 @@ namespace ニコニ立体ちゃんサンプル
             this._シーン = new MikuMikuFlex3.シーン( this.ClientSize );
 
             this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
+
+            foreach( var mat in this._アリシア.材質リスト )
+                mat.テッセレーション係数 = 3;
+
             var modelPass = new MikuMikuFlex3.オブジェクトパス( this._アリシア );
             modelPass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
             this._シーン.パスリスト.Add( modelPass );
@@ -125,9 +129,9 @@ namespace ニコニ立体ちゃんサンプル
                         Scaling = SharpDX.DXGI.DisplayModeScaling.Stretched,
                     },
                     OutputHandle = this.Handle,
-                    SampleDescription = new SharpDX.DXGI.SampleDescription( 1, 0 ),
+                    SampleDescription = new SharpDX.DXGI.SampleDescription( 4, 0 ), // MSAA x4
                     SwapEffect = SharpDX.DXGI.SwapEffect.Discard,
-                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.UnorderedAccess, // ポストエフェクトを使うなら UA 必須
+                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput,// | SharpDX.DXGI.Usage.UnorderedAccess, // ポストエフェクトを使うなら UA 必須 → MSAA を使うなら設定不可
                 },
                 out this._D3D11Device,
                 out this._DXGISwapChain );
