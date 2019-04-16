@@ -48,8 +48,7 @@ namespace MikuMikuFlex3
         {
             var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
 
-            if( 現在値 > 0.001 )
-                this._モーフを適用する( 現在値, PMXモデル, this );
+            this._モーフを適用する( 現在値, PMXモデル, this );
         }
 
         private void _モーフを適用する( float 現在値, PMXモデル PMXモデル, PMXモーフ制御 適用対象モーフ )
