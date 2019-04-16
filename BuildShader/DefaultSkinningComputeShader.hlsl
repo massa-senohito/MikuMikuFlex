@@ -53,10 +53,10 @@ void SDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     float4 Cpos = mul(input.Sdef_C, modelPoseC); // BDEF2で計算された点Cの位置
     float4 Ppos = mul(input.Position, modelPoseC); // BDEF2で計算された頂点の位置
 
-    float4 qp = quaternion_slerp(
+	float4 qp = quaternion_slerp(
 		mul(g_BoneQuaternion[input.BoneIndex1], input.BoneWeight1),
 		mul(g_BoneQuaternion[input.BoneIndex2], input.BoneWeight2),
-        input.BoneWeight1);
+		input.BoneWeight1);
     float4x4 qpm = quaternion_to_matrix(qp);
 
     float4 R0pos = mul(float4(input.Sdef_R0, 1.0f), (modelPoseL + mul(modelPoseC, -input.BoneWeight1)));

@@ -152,11 +152,11 @@ namespace MikuMikuFlex3
                 子ボーン.モデルポーズを計算する();
         }
 
-        internal void 状態を確定する( Matrix[] モデルポーズ配列, Vector3[] ローカル位置配列, Vector4[] 回転配列 )
+        internal void 状態を確定する( Matrix[] モデルポーズ配列, Vector4[] ローカル位置配列, Vector4[] 回転配列 )
         {
             モデルポーズ配列[ this.ボーンインデックス ] = this.モデルポーズ行列;
             モデルポーズ配列[ this.ボーンインデックス ].Transpose(); // エフェクトを介さない場合は自分で転置する必要がある。
-            ローカル位置配列[ this.ボーンインデックス ] = this.ローカル位置;
+            ローカル位置配列[ this.ボーンインデックス ] = new Vector4( this.ローカル位置, 0f );
             回転配列[ this.ボーンインデックス ] = new Vector4( this.回転.ToArray() );  // Quaternion → Vector4
 
             // すべての子ボーンについても更新。

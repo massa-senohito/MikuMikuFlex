@@ -6,6 +6,11 @@
 // â‘Î’l‚ª‚±‚ê‚æ‚è‚à¬‚³‚¢”‚Íƒ[ƒ‚Æ‚Ý‚È‚³‚ê‚éB
 #define ZeroTolerance 1e-6f
 
+float quaternion_dot(float4 left, float4 right)
+{
+	return (left.x * right.x) + (left.y * right.y) + (left.z * right.z) + (left.w * right.w);
+}
+
 // Quaternion ‚Ì‹…Œ`•âŠÔ
 float4 quaternion_slerp(float4 start, float4 end, float amount)
 {
@@ -13,7 +18,7 @@ float4 quaternion_slerp(float4 start, float4 end, float amount)
 
 	float opposite;
 	float inverse;
-	float dt = dot(start, end);
+	float dt = quaternion_dot(start, end);
 
 	if (abs(dt) > 1.0f - ZeroTolerance)
 	{

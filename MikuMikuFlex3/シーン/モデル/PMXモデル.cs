@@ -496,7 +496,7 @@ namespace MikuMikuFlex3
             #region " ボーン用の配列を作成する。"
             //----------------
             this._ボーンのモデルポーズ配列 = new Matrix[ this._PMXFモデル.ボーンリスト.Count ];
-            this._ボーンのローカル位置配列 = new Vector3[ this._PMXFモデル.ボーンリスト.Count ];
+            this._ボーンのローカル位置配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
             this._ボーンの回転配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
             //----------------
             #endregion
@@ -752,8 +752,8 @@ namespace MikuMikuFlex3
                     d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
 
                     d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTrans定数バッファ );
-                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneTrans定数バッファ );
-                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneTrans定数バッファ );
+                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneLocalPosition定数バッファ );
+                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneQuaternion定数バッファ );
 
                     // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
 
@@ -1167,7 +1167,7 @@ namespace MikuMikuFlex3
 
         private Matrix[] _ボーンのモデルポーズ配列;
 
-        private Vector3[] _ボーンのローカル位置配列;
+        private Vector4[] _ボーンのローカル位置配列;
 
         private Vector4[] _ボーンの回転配列;
 
