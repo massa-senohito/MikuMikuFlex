@@ -33,6 +33,22 @@ namespace MikuMikuFlex3.VMDFormat
         ///     指定されたストリームから読み込む。
         /// </summary>
         public モーション( Stream fs )
+            : this()
+        {
+            this._読み込む( fs );
+        }
+
+        /// <summary>
+        ///     指定されたファイルから読み込む。
+        /// </summary>
+        public モーション( string filePath )
+            : this()
+        {
+            using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+                this._読み込む( fs );
+        }
+
+        private void _読み込む( Stream fs )
         {
             this.ヘッダ = new ヘッダ( fs );
             this.ボーンフレームリスト = new ボーンフレームリスト( fs );
