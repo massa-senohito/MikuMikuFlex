@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +34,13 @@ namespace ニコニ立体ちゃんサンプル
             foreach( var mat in this._アリシア.材質リスト )
                 mat.テッセレーション係数 = 3;
 
+            using( var fs = new FileStream( @"サンプルデータ\Alicia\MMD Motion\2分ループステップ1.vmd", FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            {
+                var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
+                MikuMikuFlex3.VMDアニメーションビルダ.ボーンモーションを追加する( vmd.ボーンフレームリスト, this._アリシア, true );
+                MikuMikuFlex3.VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._アリシア );
+            }
+
             var modelPass = new MikuMikuFlex3.オブジェクトパス( this._アリシア );
             modelPass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
             this._シーン.パスリスト.Add( modelPass );
@@ -56,16 +65,23 @@ namespace ニコニ立体ちゃんサンプル
         // アプリのメインループ
         private void Run( object sender, EventArgs e )
         {
+            var timer = Stopwatch.StartNew();
+            var fps = new MikuMikuFlex3.Utility.FPS();
+
+            this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState通常合成;
+            this._D3D11Device.ImmediateContext.OutputMerger.DepthStencilState = null;
+
             SharpDX.Windows.RenderLoop.Run( this, () => {
 
-                this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState通常合成;
-                this._D3D11Device.ImmediateContext.OutputMerger.DepthStencilState = null;
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, new SharpDX.Color4( 0.2f, 0.4f, 0.8f, 1.0f ) );
                 this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
 
-                this._シーン.描画する( 0.0, this._D3D11Device.ImmediateContext );
+                this._シーン.描画する( timer.ElapsedMilliseconds / 1000.0, this._D3D11Device.ImmediateContext );
 
-                this._DXGISwapChain.Present( 1, SharpDX.DXGI.PresentFlags.None );
+                this._DXGISwapChain.Present( 0, SharpDX.DXGI.PresentFlags.None );
+
+                if( fps.FPSをカウントする() )
+                    Debug.WriteLine( $"{fps.現在のFPS} fps" );
 
             } );
         }
