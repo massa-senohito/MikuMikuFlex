@@ -3,60 +3,38 @@
 
 #define QUATERNION_IDENTITY float4(0, 0, 0, 1)
 
+// â‘Î’l‚ª‚±‚ê‚æ‚è‚à¬‚³‚¢”‚Íƒ[ƒ‚Æ‚Ý‚È‚³‚ê‚éB
+#define ZeroTolerance 1e-6f
+
 // Quaternion ‚Ì‹…Œ`•âŠÔ
-float4 q_slerp(float4 a, float4 b, float t)
+float4 quaternion_slerp(float4 start, float4 end, float amount)
 {
-    // if either input is zero, return the other.
-    if (length(a) == 0.0)
-    {
-        if (length(b) == 0.0)
-        {
-            return QUATERNION_IDENTITY;
-        }
-        return b;
-    }
-    else if (length(b) == 0.0)
-    {
-        return a;
-    }
+	float4 result = QUATERNION_IDENTITY;
 
-    float cosHalfAngle = a.w * b.w + dot(a.xyz, b.xyz);
+	float opposite;
+	float inverse;
+	float dt = dot(start, end);
 
-    if (cosHalfAngle >= 1.0 || cosHalfAngle <= -1.0)
-    {
-        return a;
-    }
-    else if (cosHalfAngle < 0.0)
-    {
-        b.xyz = -b.xyz;
-        b.w = -b.w;
-        cosHalfAngle = -cosHalfAngle;
-    }
+	if (abs(dt) > 1.0f - ZeroTolerance)
+	{
+		inverse = 1.0f - amount;
+		opposite = amount * sign(dt);
+	}
+	else
+	{
+		float acs = acos(abs(dt));
+		float invSin = 1.0f / sin(acs);
 
-    float blendA;
-    float blendB;
-    if (cosHalfAngle < 0.99)
-    {
-        // do proper slerp for big angles
-        float halfAngle = acos(cosHalfAngle);
-        float sinHalfAngle = sin(halfAngle);
-        float oneOverSinHalfAngle = 1.0 / sinHalfAngle;
-        blendA = sin(halfAngle * (1.0 - t)) * oneOverSinHalfAngle;
-        blendB = sin(halfAngle * t) * oneOverSinHalfAngle;
-    }
-    else
-    {
-        // do lerp if angle is really small.
-        blendA = 1.0 - t;
-        blendB = t;
-    }
+		inverse = sin((1.0f - amount) * acs) * invSin;
+		opposite = sin(amount * acs) * invSin * sign(dt);
+	}
 
-    float4 result = float4(blendA * a.xyz + blendB * b.xyz, blendA * a.w + blendB * b.w);
-    if (length(result) > 0.0)
-    {
-        return normalize(result);
-    }
-    return QUATERNION_IDENTITY;
+	result.x = (inverse * start.x) + (opposite * end.x);
+	result.y = (inverse * start.y) + (opposite * end.y);
+	result.z = (inverse * start.z) + (opposite * end.z);
+	result.w = (inverse * start.w) + (opposite * end.w);
+
+	return result;
 }
 
 // Quaternion (float4) ‚©‚ç Matrix (float4x4) ‚Ö‚Ì•ÏŠ·
@@ -64,25 +42,32 @@ float4x4 quaternion_to_matrix(float4 quat)
 {
     float4x4 m = float4x4(float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0), float4(0, 0, 0, 0));
 
-    float x = quat.x, y = quat.y, z = quat.z, w = quat.w;
-    float x2 = x + x, y2 = y + y, z2 = z + z;
-    float xx = x * x2, xy = x * y2, xz = x * z2;
-    float yy = y * y2, yz = y * z2, zz = z * z2;
-    float wx = w * x2, wy = w * y2, wz = w * z2;
+	float xx = quat.x * quat.x;
+	float yy = quat.y * quat.y;
+	float zz = quat.z * quat.z;
+	float xy = quat.x * quat.y;
+	float zw = quat.z * quat.w;
+	float zx = quat.z * quat.x;
+	float yw = quat.y * quat.w;
+	float yz = quat.y * quat.z;
+	float xw = quat.x * quat.w;
 
-    m[0][0] = 1.0 - (yy + zz);
-    m[0][1] = xy - wz;
-    m[0][2] = xz + wy;
-
-    m[1][0] = xy + wz;
-    m[1][1] = 1.0 - (xx + zz);
-    m[1][2] = yz - wx;
-
-    m[2][0] = xz - wy;
-    m[2][1] = yz + wx;
-    m[2][2] = 1.0 - (xx + yy);
-
-    m[3][3] = 1.0;
+	m[0][0] = 1.0f - (2.0f * (yy + zz));
+	m[0][1] = 2.0f * (xy + zw);
+	m[0][2] = 2.0f * (zx - yw);
+	m[0][3] = 0.0f;
+	m[1][0] = 2.0f * (xy - zw);
+	m[1][1] = 1.0f - (2.0f * (zz + xx));
+	m[1][2] = 2.0f * (yz + xw);
+	m[1][3] = 0.0f;
+	m[2][0] = 2.0f * (zx + yw);
+	m[2][1] = 2.0f * (yz - xw);
+	m[2][2] = 1.0f - (2.0f * (yy + xx));
+	m[2][3] = 0.0f;
+	m[3][0] = 0.0f;
+	m[3][1] = 0.0f;
+	m[3][2] = 0.0f;
+	m[3][3] = 1.0f;
 
     return m;
 }

@@ -14,11 +14,11 @@
 
 void BDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
 {
-    float4x4 bt =
-        g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-		g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-		g_BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-		g_BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+	float4x4 bt =
+		mul(g_BoneTrans[input.BoneIndex1], input.BoneWeight1) +
+		mul(g_BoneTrans[input.BoneIndex2], input.BoneWeight2) +
+		mul(g_BoneTrans[input.BoneIndex3], input.BoneWeight3) +
+		mul(g_BoneTrans[input.BoneIndex4], input.BoneWeight4);
 
     position = mul(input.Position, bt);
     normal = normalize(mul(input.Normal, (float3x3) bt));
@@ -33,8 +33,8 @@ void SDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     float w0 = 0.0f; // 固定値であるSDEFパラメータにのみ依存するので、これらの値も実は固定値。
     float w1 = 0.0f; //
 
-    float L0 = length(input.Sdef_R0 - (float3) g_BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR0までの距離
-    float L1 = length(input.Sdef_R1 - (float3) g_BoneLocalPosition[input.BoneIndex[1]]); // 子ボーンからR1までの距離
+    float L0 = length(input.Sdef_R0 - g_BoneLocalPosition[input.BoneIndex2].xyz); // 子ボーンからR0までの距離
+    float L1 = length(input.Sdef_R1 - g_BoneLocalPosition[input.BoneIndex2].xyz); // 子ボーンからR1までの距離
 
     if (abs(L0 - L1) < 0.0001f)
     {
@@ -46,22 +46,22 @@ void SDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     }
     w1 = 1.0f - w0;
 
-    float4x4 modelPoseL = g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0];
-    float4x4 modelPoseR = g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1];
+	float4x4 modelPoseL = mul(g_BoneTrans[input.BoneIndex1], input.BoneWeight1);
+	float4x4 modelPoseR = mul(g_BoneTrans[input.BoneIndex2], input.BoneWeight2);
     float4x4 modelPoseC = modelPoseL + modelPoseR;
 
     float4 Cpos = mul(input.Sdef_C, modelPoseC); // BDEF2で計算された点Cの位置
     float4 Ppos = mul(input.Position, modelPoseC); // BDEF2で計算された頂点の位置
 
-    float4 qp = q_slerp(
-		g_BoneQuaternion[input.BoneWeight[0]] * input.BoneWeight[0],
-		g_BoneQuaternion[input.BoneWeight[1]] * input.BoneWeight[1],
-        input.BoneWeight[0]);
+    float4 qp = quaternion_slerp(
+		mul(g_BoneQuaternion[input.BoneIndex1], input.BoneWeight1),
+		mul(g_BoneQuaternion[input.BoneIndex2], input.BoneWeight2),
+        input.BoneWeight1);
     float4x4 qpm = quaternion_to_matrix(qp);
 
-    float4 R0pos = mul(float4(input.Sdef_R0, 1.0f), (modelPoseL + (modelPoseC * -input.BoneWeight[0])));
-    float4 R1pos = mul(float4(input.Sdef_R1, 1.0f), (modelPoseR + (modelPoseC * -input.BoneWeight[1])));
-    Cpos += (R0pos * w0) + (R1pos * w1); // 膨らみすぎ防止？
+    float4 R0pos = mul(float4(input.Sdef_R0, 1.0f), (modelPoseL + mul(modelPoseC, -input.BoneWeight1)));
+    float4 R1pos = mul(float4(input.Sdef_R1, 1.0f), (modelPoseR + mul(modelPoseC, -input.BoneWeight2)));
+    Cpos += mul(R0pos, w0) + mul(R1pos, w1); // 膨らみすぎ防止？
 
     Ppos -= Cpos; // 頂点を点Cが中心になるよう移動して
     Ppos = mul(Ppos, qpm); // 回転して
@@ -76,10 +76,10 @@ void QDEF(CS_BDEF_INPUT input, out float4 position, out float3 normal)
     // TODO: QDEF の実装に変更する。（いまはBDEF4と同じ）
 
     float4x4 bt =
-		g_BoneTrans[input.BoneIndex[0]] * input.BoneWeight[0] +
-		g_BoneTrans[input.BoneIndex[1]] * input.BoneWeight[1] +
-		g_BoneTrans[input.BoneIndex[2]] * input.BoneWeight[2] +
-		g_BoneTrans[input.BoneIndex[3]] * input.BoneWeight[3];
+		mul(g_BoneTrans[input.BoneIndex1], input.BoneWeight1) +
+		mul(g_BoneTrans[input.BoneIndex2], input.BoneWeight2) +
+		mul(g_BoneTrans[input.BoneIndex3], input.BoneWeight3) +
+		mul(g_BoneTrans[input.BoneIndex4], input.BoneWeight4);
 
     position = mul(input.Position, bt);
     normal = normalize(mul(float4(input.Normal, 0), bt)).xyz;

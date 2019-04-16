@@ -18,7 +18,7 @@ VS_OUTPUT main(VS_INPUT input)
 	// 位置
     float4 position = input.Position;
 	// 法線方向に膨らませる。
-	position += float4(Out.Normal, 1) * g_EdgeWidth * input.EdgeWeight * distance(input.Position, g_CameraPosition) * 0.0010;
+	position += mul(float4(Out.Normal, 1), g_EdgeWidth * input.EdgeWeight * distance(input.Position, g_CameraPosition) * 0.0010);
     Out.Position = mul(position, g_WorldMatrix); // ワールド変換
 
 	// カメラとの相対位置

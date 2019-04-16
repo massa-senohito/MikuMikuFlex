@@ -27,7 +27,7 @@ cbuffer BoneTransBuffer : register(b1)
 // スキニング用コンピュートシェーダーの入力：定数バッファ(2) ボーンのローカル位置の配列（SDEFで使用）
 cbuffer BoneLocalPositionBuffer : register(b2)
 {
-	float3 g_BoneLocalPosition[MAX_BONE];
+	float4 g_BoneLocalPosition[MAX_BONE];
 }
 
 // スキニング用コンピュートシェーダーの入力：定数バッファ(3) ボーンの回転（クォータニオン）の配列（SDEFでのみ使用する）
@@ -41,8 +41,14 @@ cbuffer BoneQuaternionBuffer : register(b3)
 struct CS_BDEF_INPUT
 {
 	float4 Position;
-	float4 BoneWeight;
-	uint4 BoneIndex;
+	float BoneWeight1;
+	float BoneWeight2;
+	float BoneWeight3;
+	float BoneWeight4;
+	uint BoneIndex1;
+	uint BoneIndex2;
+	uint BoneIndex3;
+	uint BoneIndex4;
 	float3 Normal;
 	float2 Tex;
 	float4 AddUV1;

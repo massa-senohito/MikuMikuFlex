@@ -12,11 +12,13 @@ SamplerState mySampler : register(s0);
 
 float4 main(VS_OUTPUT IN) : SV_TARGET
 {
+	float4x4 WorldViewMatrix = mul(g_WorldMatrix, g_ViewMatrix);
+
     // îΩéÀêFåvéZ
 	
-    float3 LightDirection = normalize(mul(g_Light1Direction, g_WorldMatrix * g_ViewMatrix)).xyz;
-    float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), g_WorldMatrix * g_ViewMatrix).xyz);
-    float3 Specular = pow(max(0.00001, dot(HalfVector, normalize(IN.Normal))), g_SpecularPower) * g_SpecularColor.rgb;
+    float3 LightDirection = normalize(mul(g_Light1Direction, WorldViewMatrix)).xyz;
+    float3 HalfVector = normalize(normalize(IN.Eye) - mul(float4(LightDirection, 0), WorldViewMatrix).xyz);
+	float3 Specular = mul(pow(max(0.00001, dot(HalfVector, normalize(IN.Normal))), g_SpecularPower), g_SpecularColor.rgb);
     float4 Color = IN.Color;
 
 
@@ -71,7 +73,7 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	
 	// êFÇ…ä¬ã´åıÇâ¡éZ
 
-    Color.rgb += g_AmbientColor.rgb * 0.005;
+	Color.rgb += mul(g_AmbientColor.rgb, 0.005);
 
     return Color;
 }
