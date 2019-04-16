@@ -10,7 +10,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     マウスで動かせるカメラ。
     /// </summary>
-    public class マウスモーションカメラ : モーションカメラMMD
+    public class マウスモーションカメラ : カメラ
     {
         public void OnMouseDown( object sender, MouseEventArgs e )
         {

@@ -72,36 +72,12 @@ namespace MikuMikuFlex3
 
 
 
-        // 行列の取得
+        // 更新
+
 
         public virtual void 更新する( double 現在時刻sec )
         {
         }
-
-        /// <summary>
-        ///     現在の位置、注視点、上方向から得られるビュー行列を返す。
-        /// </summary>
-        public Matrix ビュー行列を取得する()
-        {
-            return Matrix.LookAtLH( this.位置, this.注視点, this.上方向 );
-        }
-
-        /// <summary>
-        ///     現在の視野角、近面/遠面Z、アスペクト比から得られる射影行列を返す。
-        /// </summary>
-        public Matrix 射影行列を取得する()
-        {
-            return Matrix.PerspectiveFovLH(
-                MathUtil.Pi * this.視野角deg / 180.0f,
-                this.アスペクト比,
-                this.近面Z,
-                this.遠面Z );
-        }
-
-
-
-        // VMD互換
-
 
         /// <summary>
         ///     VMDカメラモーション互換のカメラ移動。
@@ -122,5 +98,29 @@ namespace MikuMikuFlex3
         /// </param>
         public void VMD方式で更新する( float 注視点からの距離, Vector3 注視点の位置, Vector3 回転rad )
             => this.VMD方式で更新する( 注視点からの距離, 注視点の位置, Quaternion.RotationYawPitchRoll( 回転rad.Y, 回転rad.X, 回転rad.Z ) );
+
+
+        // 行列の取得
+
+
+        /// <summary>
+        ///     現在の位置、注視点、上方向から得られるビュー行列を返す。
+        /// </summary>
+        public Matrix ビュー行列を取得する()
+        {
+            return Matrix.LookAtLH( this.位置, this.注視点, this.上方向 );
+        }
+
+        /// <summary>
+        ///     現在の視野角、近面/遠面Z、アスペクト比から得られる射影行列を返す。
+        /// </summary>
+        public Matrix 射影行列を取得する()
+        {
+            return Matrix.PerspectiveFovLH(
+                MathUtil.Pi * this.視野角deg / 180.0f,
+                this.アスペクト比,
+                this.近面Z,
+                this.遠面Z );
+        }
     }
 }
