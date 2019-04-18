@@ -11,16 +11,19 @@ namespace MikuMikuFlex3
     /// </summary>
     public class PMXモーフ制御 : IDisposable
     {
+
+        // 基本情報
+
+
         public string 名前 => this.PMXFモーフ.モーフ名;
 
         public PMXFormat.モーフ種別 モーフ種類 => this.PMXFモーフ.モーフ種類;
 
+        internal PMXFormat.モーフ PMXFモーフ { get; private protected set; }
 
         public float モーフ値 { get; set; }
 
         public アニメ変数<float> アニメ変数_モーフ;
-
-        internal PMXFormat.モーフ PMXFモーフ { get; private protected set; }
 
 
 

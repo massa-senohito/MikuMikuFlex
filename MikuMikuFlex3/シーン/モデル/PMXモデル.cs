@@ -26,17 +26,17 @@ namespace MikuMikuFlex3
 
         public const int 最大ボーン数 = 768;
 
-        internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
-
         public PMXボーン制御[] ボーンリスト { get; protected set; }
 
         public PMX材質制御[] 材質リスト { get; protected set; }
 
         public PMXモーフ制御[] モーフリスト { get; protected set; }
 
+        public List<PMXボーン制御> ルートボーンリスト { get; protected set; }
+
         internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
 
-        public List<PMXボーン制御> ルートボーンリスト { get; protected set; }
+        internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
 
 

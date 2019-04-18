@@ -8,6 +8,9 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
+    /// <summary>
+    ///     <see cref="ISkinning"/> の既定の実装。
+    /// </summary>
     public class DefaultSkinning : ISkinning
     {
         public DefaultSkinning( Device d3dDevice )
@@ -54,6 +57,9 @@ namespace MikuMikuFlex3
 
 
         protected ComputeShader ComputeShader;
+
+
+        // 既定のシェーダーの CSO ファイル
 
         private readonly string CSOName = "Resources.Shaders.DefaultSkinningComputeShader.cso";
     }

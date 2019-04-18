@@ -8,7 +8,11 @@ using SharpDX;
 namespace MikuMikuFlex3
 {
 	class 親付与によるFK変形更新
-	{
+    {
+
+        // 生成と終了
+
+
 		public 親付与によるFK変形更新( PMXボーン制御[] 全ボーン )
 		{
             this._ボーン配列 = new 階層順リスト<PMXボーン制御>(
@@ -16,6 +20,11 @@ namespace MikuMikuFlex3
                 ( child ) => ( child.PMXFボーン.移動付与される || child.PMXFボーン.回転付与される ) ? child.PMXFボーン.付与親ボーンインデックス : -1,
                 ( target ) => ( target.ボーンインデックス ) );
         }
+
+
+
+        // 更新
+
 
 		public void 変形を更新する()
 		{
@@ -34,6 +43,10 @@ namespace MikuMikuFlex3
 				}
 			}
 		}
+
+
+
+        // private
 
 
         private 階層順リスト<PMXボーン制御> _ボーン配列;

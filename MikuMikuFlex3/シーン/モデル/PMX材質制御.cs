@@ -90,6 +90,7 @@ namespace MikuMikuFlex3
 
         // 描画
 
+
         public PMXFormat.描画フラグ 描画フラグ => this._PMXF材質.描画フラグ;
 
         /// <summary>
@@ -99,7 +100,9 @@ namespace MikuMikuFlex3
         public IMaterialShader 材質描画シェーダー { get; set; }
 
 
+
         // テクスチャ／メモ
+
 
         public int 通常テクスチャの参照インデックス => this._PMXF材質.通常テクスチャの参照インデックス;
 
@@ -123,7 +126,6 @@ namespace MikuMikuFlex3
         ///     自由欄／スクリプト記述／エフェクトへのパラメータ配置など
         /// </summary>
         public String メモ => this._PMXF材質.メモ;
-
 
         /// <summary>
         ///     材質に対応する面数（頂点数で示す）。

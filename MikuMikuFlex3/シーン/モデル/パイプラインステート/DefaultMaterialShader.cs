@@ -8,6 +8,9 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
+    /// <summary>
+    ///     <see cref="IMaterialShader"/> の既定の実装。
+    /// </summary>
     public class DefaultMaterialShader : IMaterialShader, IDisposable
     {
         public VertexShader VertexShaderForObject { get; protected set; }
@@ -93,7 +96,7 @@ namespace MikuMikuFlex3
         ///         - Viewport の設定
         ///         - RasterizerState の設定（材質に応じた固定値）
         ///     - OutputMerger
-        ///         - RengerTargetView の割り当て（[0]のみ）
+        ///         - RengerTargetView の割り当て
         ///         - DepthStencilView の割り当て
         ///         - DepthStencilState の割り当て（固定）
         /// </remarks>
@@ -130,6 +133,8 @@ namespace MikuMikuFlex3
             }
         }
 
+
+        // 既定のシェーダーの CSO ファイル
 
         private readonly string _VertexShaderForObjectCSOName = "Resources.Shaders.DefaultVertexShaderForObject.cso";
 

@@ -13,6 +13,10 @@ namespace MikuMikuFlex3
         public bool[] 単位更新フラグ;
 
         public const int 単位更新の頂点数 = 1500;
+        
+
+
+        // 生成と終了
 
 
         public PMX頂点制御( CS_INPUT[] 初期配列 )
@@ -31,15 +35,10 @@ namespace MikuMikuFlex3
             }
         }
 
-        public void 頂点の変更を通知する( int 頂点インデックス )
-        {
-            this._変更を受けた頂点のインデックス集合.Add( 頂点インデックス );
 
-            int 単位インデックス = 頂点インデックス / 単位更新の頂点数;
 
-            this.単位更新フラグ[ 単位インデックス ] = true;
-            this._単位更新フラグステータス[ 単位インデックス ] = 単位更新フラグステータス.変更あり;
-        }
+        // 更新
+
 
         public void 状態をリセットする( int 追加UV数, PMXFormat.頂点リスト 初期リスト )
         {
@@ -104,6 +103,20 @@ namespace MikuMikuFlex3
                 }
             }
         }
+
+        public void 頂点の変更を通知する( int 頂点インデックス )
+        {
+            this._変更を受けた頂点のインデックス集合.Add( 頂点インデックス );
+
+            int 単位インデックス = 頂点インデックス / 単位更新の頂点数;
+
+            this.単位更新フラグ[ 単位インデックス ] = true;
+            this._単位更新フラグステータス[ 単位インデックス ] = 単位更新フラグステータス.変更あり;
+        }
+
+
+
+        // private
 
 
         /// <summary>

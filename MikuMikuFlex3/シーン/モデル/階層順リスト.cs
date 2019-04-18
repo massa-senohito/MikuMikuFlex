@@ -21,9 +21,7 @@ namespace MikuMikuFlex3
         /// <summary>
         ///		コンストラクタ。
         /// </summary>
-        /// <param name="ソートしたい要素の配列">
-        ///		要素はインデックス順に並んでいるものとする。
-        ///	</param>
+        /// <param name="ソートしたい要素の配列">要素はインデックス順に並んでいるものとする。</param>
         public 階層順リスト( T[] ソートしたい要素の配列, Func<T,int> 親のインデックスを返す, Func<T,int> 自身のインデックスを返す )
         {
 			var ソート済みインデックスキュー = new Queue<int>();

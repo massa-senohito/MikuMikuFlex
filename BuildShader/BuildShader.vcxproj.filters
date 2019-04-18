@@ -40,11 +40,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="README.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Default">
       <UniqueIdentifier>{4e231e4a-edc2-4735-87e4-5d509fc31188}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
   </ItemGroup>
 </Project>

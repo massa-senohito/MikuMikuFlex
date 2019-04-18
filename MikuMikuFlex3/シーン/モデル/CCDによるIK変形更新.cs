@@ -135,7 +135,9 @@ namespace MikuMikuFlex3
                             #endregion
                         }
 
-                        // IKリンクの新しい回転行列を反映。
+
+                        // IKリンクの新しい回転行列を反映する。
+
                         ikLink.IKリンクボーン.モデルポーズを計算する();
                     }
                 }

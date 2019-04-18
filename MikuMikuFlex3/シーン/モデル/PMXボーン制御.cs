@@ -14,16 +14,16 @@ namespace MikuMikuFlex3
 
         // 基本情報
 
+
         public string 名前 => this.PMXFボーン.ボーン名;
-
-        internal PMXFormat.ボーン PMXFボーン { get; private protected set; }
-
-        internal int ボーンインデックス { get; private protected set; }
 
         public PMXボーン制御 親ボーン { get; protected set; }
 
         public List<PMXボーン制御> 子ボーンリスト { get; protected set; }
 
+        internal PMXFormat.ボーン PMXFボーン { get; private protected set; }
+
+        internal int ボーンインデックス { get; private protected set; }
 
         internal PMXボーン制御 IKターゲットボーン { get; private protected set; }
 
