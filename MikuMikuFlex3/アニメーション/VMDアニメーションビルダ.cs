@@ -7,7 +7,7 @@ namespace MikuMikuFlex3
 {
     public static class VMDアニメーションビルダ
     {
-        public static void VMDファイルからアニメーションを追加する( string vmdFilePath, PMXモデル PMXモデル, bool すべての親を無視する = true )
+        public static void アニメーションを追加する( string vmdFilePath, PMXモデル PMXモデル, bool すべての親を無視する = true )
         {
             var vmd = new VMDFormat.モーション( vmdFilePath );
             ボーンモーションを追加する( vmd.ボーンフレームリスト, PMXモデル, すべての親を無視する );

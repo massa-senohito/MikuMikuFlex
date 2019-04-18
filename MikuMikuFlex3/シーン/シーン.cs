@@ -15,38 +15,33 @@ namespace MikuMikuFlex3
             set => this._GlobalParameters.ViewportSize = new Vector2( value.Width, value.Height );
         }
 
-        public List<カメラ> カメラリスト { get; protected set; } = new List<カメラ>();
+        protected List<カメラ> カメラリスト { get; private protected set; } = new List<カメラ>();
 
         public カメラ 選択中のカメラ { get; set; }
+        
+        protected List<照明> 照明リスト { get; private protected set; } = new List<照明>();
 
-        public List<照明> 照明リスト { get; protected set; } = new List<照明>();
-
-        public List<パス> パスリスト { get; protected set; } = new List<パス>();
+        protected List<パス> パスリスト { get; private protected set; } = new List<パス>();
 
         public Dictionary<object, (Resource tex, Color4 clearColor)> グローバルテクスチャリスト { get; protected set; } = new Dictionary<object, (Resource tex, Color4 clearColor)>();
 
 
-        protected シーン()
+        public シーン( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
         {
+            this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
             this.パスリスト = new List<パス>();
-        }
 
-        public シーン( float width, float height )
-            : this()
-        {
-            this.ViewportSize = new Size2F( width, height );
-        }
-
-        public シーン( System.Drawing.Size size )
-            : this()
-        {
-            this.ViewportSize = new Size2F( size.Width, size.Height );
+            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
+            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
         }
 
         public virtual void Dispose()
         {
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
+
+            this._既定のDepthStencilView?.Dispose();
+            this._既定のRenderTargetView?.Dispose();
         }
 
 
@@ -65,8 +60,12 @@ namespace MikuMikuFlex3
             return tex2d;
         }
 
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc )
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Color4 背景色 )
         {
+            d3ddc.ClearRenderTargetView( this._既定のRenderTargetView, 背景色 );
+            d3ddc.ClearDepthStencilView( this._既定のDepthStencilView, DepthStencilClearFlags.Depth, 1f, 0 );
+
+
             // カメラを進行する。
 
             if( null == this.選択中のカメラ )
@@ -107,6 +106,41 @@ namespace MikuMikuFlex3
             }
         }
 
+        public void 追加する( PMXモデル model )
+        {
+            var modelPass = new オブジェクトパス( model );
+            this.追加する( modelPass );
+        }
+
+        public void 追加する( パス pass )
+        {
+            this.パスリスト.Add( pass );
+
+            if( pass is オブジェクトパス objPass )
+            {
+                if( null == objPass.深度ステンシルビュー )
+                    objPass.深度ステンシルビュー = this._既定のDepthStencilView;
+
+                if( 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    objPass.レンダーターゲットビューs[ 0 ] = this._既定のRenderTargetView;
+            }
+        }
+
+        public void 追加する( カメラ camera )
+        {
+            this.カメラリスト.Add( camera );
+        }
+
+        public void 追加する( 照明 light )
+        {
+            this.照明リスト.Add( light );
+        }
+
+
         protected GlobalParameters _GlobalParameters = new GlobalParameters();
+
+        protected DepthStencilView _既定のDepthStencilView;
+
+        protected RenderTargetView _既定のRenderTargetView;
     }
 }

@@ -20,9 +20,9 @@ namespace MikuMikuFlex3
 
         public override void Dispose()
         {
-            this._深度ステンシルビュー?.Dispose();
+            this.深度ステンシルビュー?.Dispose();
 
-            foreach( var rt in this._レンダーターゲットビュー )
+            foreach( var rt in this.レンダーターゲットビューs )
                 rt?.Dispose();
 
             this._オブジェクト = null;    // Disposeしない
@@ -37,18 +37,18 @@ namespace MikuMikuFlex3
         {
             // 以前のビューを解放する。
 
-            this._深度ステンシルビュー?.Dispose();
+            this.深度ステンシルビュー?.Dispose();
 
-            foreach( var rt in this._レンダーターゲットビュー )
+            foreach( var rt in this.レンダーターゲットビューs )
                 rt?.Dispose();
 
 
             // 新しくビューを生成する。
 
-            this._深度ステンシルビュー = new DepthStencilView( d3dDevice, depthStencil );
+            this.深度ステンシルビュー = new DepthStencilView( d3dDevice, depthStencil );
 
-            for( int i = 0; i < renderTargets.Length && i < this._レンダーターゲットビュー.Length; i++ )
-                this._レンダーターゲットビュー[ i ] = ( null != renderTargets[ i ] ) ? new RenderTargetView( d3dDevice, renderTargets[ i ] ) : null;
+            for( int i = 0; i < renderTargets.Length && i < this.レンダーターゲットビューs.Length; i++ )
+                this.レンダーターゲットビューs[ i ] = ( null != renderTargets[ i ] ) ? new RenderTargetView( d3dDevice, renderTargets[ i ] ) : null;
         }
 
 
@@ -59,7 +59,7 @@ namespace MikuMikuFlex3
         public override void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
         {
             // パスに指定されたターゲットに変更。
-            d3ddc.OutputMerger.SetTargets( this._深度ステンシルビュー, this._レンダーターゲットビュー );
+            d3ddc.OutputMerger.SetTargets( this.深度ステンシルビュー, this.レンダーターゲットビューs );
 
             this._オブジェクト.描画する( 現在時刻sec, d3ddc, globalParameters );
         }
@@ -71,8 +71,8 @@ namespace MikuMikuFlex3
 
         protected PMXモデル _オブジェクト = null;
 
-        protected DepthStencilView _深度ステンシルビュー;
+        internal DepthStencilView 深度ステンシルビュー;
 
-        protected RenderTargetView[] _レンダーターゲットビュー = new RenderTargetView[ OutputMergerStage.SimultaneousRenderTargetCount ];
+        internal RenderTargetView[] レンダーターゲットビューs = new RenderTargetView[ OutputMergerStage.SimultaneousRenderTargetCount ];
     }
 }
