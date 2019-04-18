@@ -153,7 +153,7 @@
     <Compile Include="シーン\モデル\階層順リスト.cs" />
     <Compile Include="シーン\モデル\親付与によるFK変形更新.cs" />
     <Compile Include="シーン\照明.cs" />
-    <Compile Include="CGHelper.cs" />
+    <Compile Include="Utility\CGHelper.cs" />
     <Compile Include="シーン\モデル\パイプラインステート\CS_INPUT.cs" />
     <Compile Include="Utility\DualQuaternion.cs" />
     <Compile Include="Format\PMX\ジョイント.cs" />
@@ -211,7 +211,7 @@
     <Compile Include="Format\VMD\モーション.cs" />
     <Compile Include="Utility\FPS.cs" />
     <Compile Include="Utility\MMFShaderResourceView.cs" />
-    <Compile Include="ParserHelper.cs" />
+    <Compile Include="Utility\ParserHelper.cs" />
     <Compile Include="シーン\モデル\PMXボーン制御.cs" />
     <Compile Include="シーン\モデル\PMXモデル.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -227,7 +227,7 @@
     <Compile Include="Format\VMD\照明フレーム.cs" />
     <Compile Include="Format\VMD\照明フレームリスト.cs" />
     <Compile Include="Utility\QPCTimer.cs" />
-    <Compile Include="TargaSolver.cs" />
+    <Compile Include="Utility\TargaSolver.cs" />
     <Compile Include="シーン\モデル\パイプラインステート\VS_INPUT.cs" />
     <Compile Include="シーン\モデル\物理演算\Bulletタイマ.cs" />
     <Compile Include="シーン\モデル\物理演算\Bullet管理.cs" />
