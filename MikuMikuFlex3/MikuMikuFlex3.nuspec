@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MikuMikuFlex</id>
+    <version>3.0.0</version>
+    <authors>FROM/Kenji Yamazaki</authors>
+    <owners>FROM</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>http://fromalto.sakura.ne.jp/kkk/MikuMikuFlex</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex/Resource/mmf.jpg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+MikuMikuDance drawing library for .NET.
+This package supports .NET Framework 4.7.1+ and the x64 architecture only.
+    </description>
+    <copyright>Copyright 2018 2019 FROM/Kenji Yamazaki, kyasbal-1994</copyright>
+    <tags>MMD MikuMikuDance MikuMikuFlex direct3d</tags>
+    <language>ja-JP</language>
+    <releaseNotes>
+スクラップアンドビルドを実施。v2.x との互換性なし。
+Effects11 (SharpDX.Direct3D11.Effects) の利用を廃止。
+    </releaseNotes>
+  </metadata>
+  <files>
+    <file src="bin\x64\Release\MikuMikuFlex.pdb" target="lib/net471"/>
+    <file src="..\NuGet\install.ps1" target="tools\Install.ps1"/>
+    <file src="TgaLib.dll" target="lib\net471"/>
+  </files>
+</package>

@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\build\Microsoft.CodeAnalysis.Analyzers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MikuMikuFlex3</RootNamespace>
+    <AssemblyName>MikuMikuFlex</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Scripting.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Scripting, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Scripting.Common.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Desktop, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Desktop.4.2.0\lib\net45\SharpDX.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.5.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TgaLib, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\TgaLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Script\PipelineState.cs" />
+    <Compile Include="Script\Reason.cs" />
+    <Compile Include="Script\ScriptedPostEffect.cs" />
+    <Compile Include="Script\ScriptedMaterialShader.cs" />
+    <Compile Include="アニメーション\VMDアニメーションビルダ.cs" />
+    <Compile Include="アニメーション\アニメ変数.cs" />
+    <Compile Include="アニメーション\アニメ遷移.cs" />
+    <Compile Include="アニメーション\ベジェ実数アニメ遷移.cs" />
+    <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
+    <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
+    <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
+    <Compile Include="シーン\エフェクトパス.cs" />
+    <Compile Include="シーン\オブジェクトパス.cs" />
+    <Compile Include="シーン\シーン.cs" />
+    <Compile Include="シーン\パス.cs" />
+    <Compile Include="シーン\GlobalParameters.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\IMaterialShader.cs" />
+    <Compile Include="シーン\IPostEffect.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\ISkinning.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\DefaultSkinning.cs" />
+    <Compile Include="シーン\カメラ\カメラ.cs" />
+    <Compile Include="シーン\カメラ\マウスモーションカメラ.cs" />
+    <Compile Include="シーン\カメラ\モーションカメラMMD.cs" />
+    <Compile Include="シーン\カメラ\モーションカメラDX.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\DefaultMaterialShader.cs" />
+    <Compile Include="シーン\モデル\CCDによるIK変形更新.cs" />
+    <Compile Include="シーン\モデル\PMXモーフ制御.cs" />
+    <Compile Include="シーン\モデル\PMX材質制御.cs" />
+    <Compile Include="シーン\モデル\PMX頂点制御.cs" />
+    <Compile Include="シーン\モデル\階層順リスト.cs" />
+    <Compile Include="シーン\モデル\親付与によるFK変形更新.cs" />
+    <Compile Include="シーン\照明.cs" />
+    <Compile Include="Utility\CGHelper.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\CS_INPUT.cs" />
+    <Compile Include="Utility\DualQuaternion.cs" />
+    <Compile Include="Format\PMX\ジョイント.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ばね付き6DOFジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\スライダージョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\ヒンジジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\基本6DOFジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントパラメータ\錐回転ジョイントパラメータ.cs" />
+    <Compile Include="Format\PMX\ジョイントリスト.cs" />
+    <Compile Include="Format\PMX\ジョイント種別.cs" />
+    <Compile Include="Format\PMX\スフィアモード.cs" />
+    <Compile Include="Format\PMX\テクスチャリスト.cs" />
+    <Compile Include="Format\PMX\ヘッダ.cs" />
+    <Compile Include="Format\PMX\ボーン.cs" />
+    <Compile Include="Format\PMX\ボーンの接続先表示方法.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF1.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF2.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\BDEF4.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\QDEF.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\SDEF.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\ボーンウェイト.cs" />
+    <Compile Include="Format\PMX\ボーンウェイト\ボーンウェイト種別.cs" />
+    <Compile Include="Format\PMX\ボーンリスト.cs" />
+    <Compile Include="Format\PMX\モデル.cs" />
+    <Compile Include="Format\PMX\モデル情報.cs" />
+    <Compile Include="Format\PMX\モーフ.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\UVモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\インパルスモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\グループモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\フリップモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\ボーンモーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\材質モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフオフセット\頂点モーフオフセット.cs" />
+    <Compile Include="Format\PMX\モーフリスト.cs" />
+    <Compile Include="Format\PMX\モーフ種別.cs" />
+    <Compile Include="Format\PMX\ローカル付与対象.cs" />
+    <Compile Include="Format\PMX\剛体.cs" />
+    <Compile Include="Format\PMX\剛体の物理演算.cs" />
+    <Compile Include="Format\PMX\剛体リスト.cs" />
+    <Compile Include="Format\PMX\剛体形状.cs" />
+    <Compile Include="Format\PMX\描画フラグ.cs" />
+    <Compile Include="Format\PMX\材質.cs" />
+    <Compile Include="Format\PMX\材質リスト.cs" />
+    <Compile Include="Format\PMX\枠内要素.cs" />
+    <Compile Include="Format\PMX\表示枠.cs" />
+    <Compile Include="Format\PMX\表示枠リスト.cs" />
+    <Compile Include="Format\PMX\面.cs" />
+    <Compile Include="Format\PMX\面リスト.cs" />
+    <Compile Include="Format\PMX\頂点.cs" />
+    <Compile Include="Format\PMX\頂点リスト.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\MMDPass.cs" />
+    <Compile Include="Format\VMD\モーション.cs" />
+    <Compile Include="Utility\FPS.cs" />
+    <Compile Include="Utility\MMFShaderResourceView.cs" />
+    <Compile Include="Utility\ParserHelper.cs" />
+    <Compile Include="シーン\モデル\PMXボーン制御.cs" />
+    <Compile Include="シーン\モデル\PMXモデル.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Format\VMD\IFrameData.cs" />
+    <Compile Include="Format\VMD\カメラフレーム.cs" />
+    <Compile Include="Format\VMD\カメラフレームリスト.cs" />
+    <Compile Include="Format\VMD\ヘッダ.cs" />
+    <Compile Include="Format\VMD\ベジェ曲線.cs" />
+    <Compile Include="Format\VMD\ボーンフレーム.cs" />
+    <Compile Include="Format\VMD\ボーンフレームリスト.cs" />
+    <Compile Include="Format\VMD\モーフフレーム.cs" />
+    <Compile Include="Format\VMD\モーフフレームリスト.cs" />
+    <Compile Include="Format\VMD\照明フレーム.cs" />
+    <Compile Include="Format\VMD\照明フレームリスト.cs" />
+    <Compile Include="Utility\QPCTimer.cs" />
+    <Compile Include="Utility\TargaSolver.cs" />
+    <Compile Include="シーン\モデル\パイプラインステート\VS_INPUT.cs" />
+    <Compile Include="シーン\モデル\物理演算\Bulletタイマ.cs" />
+    <Compile Include="シーン\モデル\物理演算\Bullet管理.cs" />
+    <Compile Include="シーン\モデル\物理演算\PMX物理変形更新.cs" />
+    <Compile Include="シーン\モデル\物理演算\六軸ジョイント.cs" />
+    <Compile Include="シーン\モデル\物理演算\剛体ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\剛体物性.cs" />
+    <Compile Include="シーン\モデル\物理演算\動的世界ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\拘束ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\物理演算を超越した特性.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Shaders\DefaultSkinningComputeShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultDomainShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultGeometryShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultHullShader.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultPixelShaderForEdge.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultPixelShaderForObject.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultVertexShaderForEdge.cso" />
+    <EmbeddedResource Include="Resources\Shaders\DefaultVertexShaderForObject.cso" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Toon\toon0.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon1.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon10.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon2.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon3.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon4.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon5.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon6.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon7.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon8.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Toon\toon9.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="TgaLib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+  </Target>
+</Project>
