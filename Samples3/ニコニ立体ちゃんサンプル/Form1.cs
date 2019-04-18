@@ -17,26 +17,42 @@ namespace ニコニ立体ちゃんサンプル
         public Form1()
         {
             InitializeComponent();
-
-            this.ClientSize = new Size( 1280, 720 );
-            this.Text = "ニコニ立体ちゃんサンプル for MikuMikuFlex 3";
         }
 
         // アプリの初期化
         protected override void OnLoad( EventArgs e )
         {
+            this.ClientSize = new Size( 1280, 720 );
+            this.Text = "ニコニ立体ちゃんサンプル for MikuMikuFlex 3";
+
             this._Direct3Dを初期化する();
 
+
+            // シーンを作成。
+
             this._シーン = new MikuMikuFlex3.シーン( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
+
+
+            // モデル１・アリシアを作成してシーンに追加。
 
             this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
 
             foreach( var mat in this._アリシア.材質リスト )
                 mat.テッセレーション係数 = 5;
 
-            MikuMikuFlex3.VMDアニメーションビルダ.アニメーションを追加する( @"サンプルデータ\Alicia\MMD Motion\2分ループステップ1.vmd", this._アリシア );
+            MikuMikuFlex3.VMDアニメーションビルダ.アニメーションを追加する( @"サンプルデータ/Alicia/MMD Motion/2分ループステップ1.vmd", this._アリシア );
 
             this._シーン.追加する( this._アリシア );
+
+
+            // モデル２・ニコニ立体ステージを作成してシーンに追加。
+
+            this._舞台 = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/nicosolid_stage/nicosolid_stage.pmx" );
+
+            this._シーン.追加する( this._舞台 );
+
+
+            // カメラを作成してシーンに追加。
 
             var カメラ = new MikuMikuFlex3.マウスモーションカメラ( 45f );
             this.MouseDown += カメラ.OnMouseDown;
@@ -45,10 +61,15 @@ namespace ニコニ立体ちゃんサンプル
             this.MouseWheel += カメラ.OnMouseWheel;
             this._シーン.追加する( カメラ );
 
+
+            // 照明を作成してシーンに追加。
+
             this._シーン.追加する( new MikuMikuFlex3.照明() );
             
+
             this.Activate(); // ウィンドウが後ろに隠れることがあるので、念のため。
             base.OnLoad( e );
+
 
             // 処理のごたごたが落ち着いたらメインループへ。
             Application.Idle += this.Run;
@@ -94,6 +115,8 @@ namespace ニコニ立体ちゃんサンプル
 
         private MikuMikuFlex3.PMXモデル _アリシア;
 
+        private MikuMikuFlex3.PMXモデル _舞台;
+
 
         // Direct3D11
 
@@ -110,8 +133,8 @@ namespace ニコニ立体ちゃんサンプル
 
         private void _Direct3Dを初期化する()
         {
-            #region " D3DDevice, DXGISwapChain を生成する。"
-            //----------------
+            // D3DDevice, DXGISwapChain を生成する。
+
             SharpDX.Direct3D11.Device.CreateWithSwapChain(
                 SharpDX.Direct3D.DriverType.Hardware,
                 SharpDX.Direct3D11.DeviceCreationFlags.BgraSupport,
@@ -129,15 +152,14 @@ namespace ニコニ立体ちゃんサンプル
                     OutputHandle = this.Handle,
                     SampleDescription = new SharpDX.DXGI.SampleDescription( 4, 0 ), // MSAA x4
                     SwapEffect = SharpDX.DXGI.SwapEffect.Discard,
-                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput,// | SharpDX.DXGI.Usage.UnorderedAccess, // ポストエフェクトを使うなら UA 必須 → MSAA を使うなら設定不可
+                    Usage = SharpDX.DXGI.Usage.RenderTargetOutput,
                 },
                 out this._D3D11Device,
                 out this._DXGISwapChain );
-            //----------------
-            #endregion
 
-            #region " 既定のRenderTarget と 既定のDepthStencil を作成する。"
-            //----------------
+
+            // 既定のRenderTarget と 既定のDepthStencil を作成する。
+
             this._既定のD3D11RenderTarget = this._DXGISwapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>( 0 );
 
             this._既定のD3D11DepthStencil = new SharpDX.Direct3D11.Texture2D(
@@ -154,34 +176,26 @@ namespace ニコニ立体ちゃんサンプル
                     CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.None,
                     OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.None,
                 } );
-            //----------------
-            #endregion
 
-            #region " ブレンドステート通常版を生成する。"
-            //----------------
-            {
-                var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
-                    AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
-                    IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
-                };
-                blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
-                blendStateNorm.RenderTarget[ 0 ].RenderTargetWriteMask = SharpDX.Direct3D11.ColorWriteMaskFlags.All;        // RGBA の書き込みマスク。
 
-                // アルファ値のブレンディング設定 ... 特になし
-                blendStateNorm.RenderTarget[ 0 ].SourceAlphaBlend = SharpDX.Direct3D11.BlendOption.One;
-                blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = SharpDX.Direct3D11.BlendOption.Zero;
-                blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+            // ブレンドステートを作成する。
 
-                // 色値のブレンディング設定 ... アルファ強度に応じた透明合成（テクスチャのアルファ値は、テクスチャのアルファ×ピクセルシェーダでの全体アルファとする（HLSL参照））
-                blendStateNorm.RenderTarget[ 0 ].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;
-                blendStateNorm.RenderTarget[ 0 ].DestinationBlend = SharpDX.Direct3D11.BlendOption.InverseSourceAlpha;
-                blendStateNorm.RenderTarget[ 0 ].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+            var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
+                AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
+                IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
+            };
+            blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
+            blendStateNorm.RenderTarget[ 0 ].RenderTargetWriteMask = SharpDX.Direct3D11.ColorWriteMaskFlags.All;
 
-                // ブレンドステートを作成する。
-                this._BlendState通常合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, blendStateNorm );
-            }
-            //----------------
-            #endregion
+            blendStateNorm.RenderTarget[ 0 ].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;                  // 色値のブレンディング
+            blendStateNorm.RenderTarget[ 0 ].DestinationBlend = SharpDX.Direct3D11.BlendOption.InverseSourceAlpha;
+            blendStateNorm.RenderTarget[ 0 ].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+
+            blendStateNorm.RenderTarget[ 0 ].SourceAlphaBlend = SharpDX.Direct3D11.BlendOption.One;                     // アルファ値のブレンディング
+            blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = SharpDX.Direct3D11.BlendOption.Zero;
+            blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+
+            this._BlendState通常合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, blendStateNorm );
         }
 
         private void _Direct3Dを解放する()
@@ -189,9 +203,11 @@ namespace ニコニ立体ちゃんサンプル
             this._BlendState通常合成?.Dispose();
 
             this._既定のD3D11DepthStencil?.Dispose();
+
             this._既定のD3D11RenderTarget?.Dispose();
 
             this._DXGISwapChain?.Dispose();
+
             this._D3D11Device?.Dispose();
         }
     }
