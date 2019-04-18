@@ -18,5 +18,5 @@ MMF公式の開発が終了してしまったようなので、それを独自�
 
 ## 開発環境
 * Windows 10 Pro (x64)
-* Visual Studio 2017 Community
+* Visual Studio 2019 Community
 
