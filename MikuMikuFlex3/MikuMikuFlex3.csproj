@@ -232,15 +232,15 @@
     <Compile Include="Utility\QPCTimer.cs" />
     <Compile Include="TargaSolver.cs" />
     <Compile Include="シーン\モデル\パイプラインステート\VS_INPUT.cs" />
-    <Compile Include="物理演算\Bulletタイマ.cs" />
-    <Compile Include="物理演算\Bullet管理.cs" />
-    <Compile Include="物理演算\PMX物理変形更新.cs" />
-    <Compile Include="物理演算\六軸ジョイント.cs" />
-    <Compile Include="物理演算\剛体ファクトリ.cs" />
-    <Compile Include="物理演算\剛体物性.cs" />
-    <Compile Include="物理演算\動的世界ファクトリ.cs" />
-    <Compile Include="物理演算\拘束ファクトリ.cs" />
-    <Compile Include="物理演算\物理演算を超越した特性.cs" />
+    <Compile Include="シーン\モデル\物理演算\Bulletタイマ.cs" />
+    <Compile Include="シーン\モデル\物理演算\Bullet管理.cs" />
+    <Compile Include="シーン\モデル\物理演算\PMX物理変形更新.cs" />
+    <Compile Include="シーン\モデル\物理演算\六軸ジョイント.cs" />
+    <Compile Include="シーン\モデル\物理演算\剛体ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\剛体物性.cs" />
+    <Compile Include="シーン\モデル\物理演算\動的世界ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\拘束ファクトリ.cs" />
+    <Compile Include="シーン\モデル\物理演算\物理演算を超越した特性.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -32,14 +32,9 @@ namespace ニコニ立体ちゃんサンプル
             this._アリシア = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
 
             foreach( var mat in this._アリシア.材質リスト )
-                mat.テッセレーション係数 = 3;
+                mat.テッセレーション係数 = 5;
 
-            using( var fs = new FileStream( @"サンプルデータ\Alicia\MMD Motion\2分ループステップ1.vmd", FileMode.Open, FileAccess.Read, FileShare.Read ) )
-            {
-                var vmd = new MikuMikuFlex3.VMDFormat.モーション( fs );
-                MikuMikuFlex3.VMDアニメーションビルダ.ボーンモーションを追加する( vmd.ボーンフレームリスト, this._アリシア, true );
-                MikuMikuFlex3.VMDアニメーションビルダ.モーフを追加する( vmd.モーフフレームリスト, this._アリシア );
-            }
+            MikuMikuFlex3.VMDアニメーションビルダ.VMDファイルからアニメーションを追加する( @"サンプルデータ\Alicia\MMD Motion\2分ループステップ1.vmd", this._アリシア );
 
             var modelPass = new MikuMikuFlex3.オブジェクトパス( this._アリシア );
             modelPass.リソースをバインドする( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
@@ -183,7 +178,7 @@ namespace ニコニ立体ちゃんサンプル
             //----------------
             {
                 var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
-                    AlphaToCoverageEnable = true,  // アルファマスクで透過する（するならZバッファ必須）
+                    AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
                     IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
                 };
                 blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
