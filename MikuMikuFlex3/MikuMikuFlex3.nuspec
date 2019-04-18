@@ -7,7 +7,7 @@
     <owners>FROM</owners>
     <license type="expression">MIT</license>
     <projectUrl>http://fromalto.sakura.ne.jp/kkk/MikuMikuFlex</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex/Resource/mmf.jpg</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/DTXMania/MikuMikuFlex/develop/MikuMikuFlex3/Resource/mmf.jpg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
 MikuMikuDance drawing library for .NET.
