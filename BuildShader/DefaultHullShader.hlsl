@@ -2,6 +2,9 @@
 //
 // ハルシェーダー
 //
+//   参考1：Curved PN Triangles  http://alex.vlachos.com/graphics/CurvedPNTriangles.pdf
+//   参考2：SimpleBezier11 サンプル(MSDN) https://msdn.microsoft.com/ja-jp/library/ee416574(v=vs.85).aspx
+//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "DefaultVS_OUTPUT.hlsli"
