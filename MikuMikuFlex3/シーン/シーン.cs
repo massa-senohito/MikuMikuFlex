@@ -37,6 +37,11 @@ namespace MikuMikuFlex3
 
         public virtual void Dispose()
         {
+            this.カメラリスト = null;      // Dispose不要
+            this.選択中のカメラ = null;    //
+            this.照明リスト = null;        //
+            this.パスリスト = null;        //
+
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
 
