@@ -66,6 +66,15 @@ namespace MikuMikuFlex3
         ///     スキニングの出力を書き込む頂点データリソースのUAV。
         ///     構造については <see cref="VS_INPUT"/> 参照。
         /// </param>
+        /// <remarks>
+        ///     このメソッドの呼び出し時には、<paramref name="d3ddc"/> には事前に以下のように設定される。
+        ///     ComputeShader
+        ///         - slot( b1 ) …… <paramref name="ボーンのモデルポーズ行列定数バッファ"/>
+        ///         - slot( b2 ) …… <paramref name="ボーンのローカル位置定数バッファ"/>
+        ///         - slot( b3 ) …… <paramref name="ボーンの回転行列定数バッファ"/>
+        ///         - slot( t0 ) …… <paramref name="変形前頂点データSRV"/>
+        ///         - slot( u0 ) …… <paramref name="変形後頂点データUAV"/>
+        /// </remarks>
         public void Run(
             SharpDX.Direct3D11.DeviceContext d3ddc,
             int 入力頂点数,
@@ -75,13 +84,7 @@ namespace MikuMikuFlex3
             SharpDX.Direct3D11.ShaderResourceView 変形前頂点データSRV,
             SharpDX.Direct3D11.UnorderedAccessView 変形後頂点データUAV )
         {
-            d3ddc.ComputeShader.SetConstantBuffer( 1, ボーンのモデルポーズ行列定数バッファ );
-            d3ddc.ComputeShader.SetConstantBuffer( 2, ボーンのローカル位置定数バッファ );
-            d3ddc.ComputeShader.SetConstantBuffer( 3, ボーンの回転行列定数バッファ );
-            d3ddc.ComputeShader.SetShaderResource( 0, 変形前頂点データSRV );
-            d3ddc.ComputeShader.SetUnorderedAccessView( 0, 変形後頂点データUAV );
             d3ddc.ComputeShader.Set( this.ComputeShader );
-
             d3ddc.Dispatch( ( 入力頂点数 / 64 ) + 1, 1, 1 );
         }
 

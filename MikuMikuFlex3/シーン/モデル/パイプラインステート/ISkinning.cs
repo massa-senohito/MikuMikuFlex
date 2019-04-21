@@ -37,6 +37,15 @@ namespace MikuMikuFlex3
         ///     スキニングの出力を書き込む頂点データリソースのUAV。
         ///     構造については <see cref="VS_INPUT"/> 参照。
         /// </param>
+        /// <remarks>
+        ///     このメソッドの呼び出し時には、<paramref name="d3ddc"/> には事前に以下のように設定される。
+        ///     - ComputeShader
+        ///         - slot( b1 ) …… <paramref name="ボーンのモデルポーズ行列定数バッファ"/>
+        ///         - slot( b2 ) …… <paramref name="ボーンのローカル位置定数バッファ"/>
+        ///         - slot( b3 ) …… <paramref name="ボーンの回転行列定数バッファ"/>
+        ///         - slot( t0 ) …… <paramref name="変形前頂点データSRV"/>
+        ///         - slot( u0 ) …… <paramref name="変形後頂点データUAV"/>
+        /// </remarks>
         void Run(
             SharpDX.Direct3D11.DeviceContext d3ddc,
             int 入力頂点数,

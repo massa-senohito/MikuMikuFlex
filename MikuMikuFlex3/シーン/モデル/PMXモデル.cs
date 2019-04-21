@@ -777,6 +777,12 @@ namespace MikuMikuFlex3
 
                     // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
 
+                    d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTrans定数バッファ );           // b1
+                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneLocalPosition定数バッファ );   // b2
+                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneQuaternion定数バッファ );      // b3
+                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );        // t0
+                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );   // u0
+
                     this.スキニングシェーダー.Run(
                         d3ddc,
                         this.PMX頂点制御.入力頂点配列.Length,
@@ -1059,36 +1065,43 @@ namespace MikuMikuFlex3
                 globalParameters.SpecularColor = new Vector4( 材質.反射色, 1f );
                 globalParameters.SpecularPower = 材質.反射強度;
 
+                ShaderResourceView テクスチャSRV = null;
                 if( -1 != 材質.通常テクスチャの参照インデックス )
                 {
                     globalParameters.UseTexture = true;
-                    d3ddc.PixelShader.SetShaderResource( 0, this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv );
+                    テクスチャSRV = this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 0, テクスチャSRV );
                 }
                 else
                 {
                     globalParameters.UseTexture = false;
                 }
 
+                ShaderResourceView スフィアマップテクスチャSRV = null;
                 if( -1 != 材質.スフィアテクスチャの参照インデックス )
                 {
                     globalParameters.UseSphereMap = true;
                     globalParameters.IsAddSphere = ( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
-                    d3ddc.PixelShader.SetShaderResource( 1, this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv );
+                    スフィアマップテクスチャSRV = this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 1, スフィアマップテクスチャSRV );
                 }
                 else
                 {
                     globalParameters.UseSphereMap = false;
                 }
 
+                ShaderResourceView トゥーンテクスチャSRV = null;
                 if( 1 == 材質.共有Toonフラグ )
                 {
                     globalParameters.UseToonTextureMap = true;
-                    d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                    トゥーンテクスチャSRV = this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 2, トゥーンテクスチャSRV );
                 }
                 else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
                 {
                     globalParameters.UseToonTextureMap = true;
-                    d3ddc.PixelShader.SetShaderResource( 2, this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv );
+                    トゥーンテクスチャSRV = this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 2, トゥーンテクスチャSRV );
                 }
                 else
                 {
@@ -1134,7 +1147,16 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                材質描画シェーダー.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Object, d3ddc );
+                材質描画シェーダー.Draw(
+                    d3ddc,
+                    材質.頂点数,
+                    材質.開始インデックス,
+                    MMDPass.Object,
+                    globalParameters,
+                    this._GlobalParameters定数バッファ,
+                    テクスチャSRV,
+                    スフィアマップテクスチャSRV,
+                    トゥーンテクスチャSRV );
 
 
                 // エッジ描画
@@ -1146,7 +1168,16 @@ namespace MikuMikuFlex3
                 //----------------
                 #endregion
 
-                材質描画シェーダー.Draw( 材質.頂点数, 材質.開始インデックス, MMDPass.Edge, d3ddc );
+                材質描画シェーダー.Draw(
+                    d3ddc,
+                    材質.頂点数,
+                    材質.開始インデックス,
+                    MMDPass.Edge,
+                    globalParameters,
+                    this._GlobalParameters定数バッファ,
+                    テクスチャSRV,
+                    スフィアマップテクスチャSRV,
+                    トゥーンテクスチャSRV );
             }
             //----------------
             #endregion
