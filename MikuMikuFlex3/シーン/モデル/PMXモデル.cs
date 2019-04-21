@@ -506,21 +506,21 @@ namespace MikuMikuFlex3
                 this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * _D3DBoneTrans.SizeInBytes,
+                        SizeInBytes = this.ボーンリスト.Length * D3DBoneTrans.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
                 this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * _D3DBoneLocalPosition.SizeInBytes,
+                        SizeInBytes = this.ボーンリスト.Length * D3DBoneLocalPosition.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
                 this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * _D3DBoneQuaternion.SizeInBytes,
+                        SizeInBytes = this.ボーンリスト.Length * D3DBoneQuaternion.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
             }
@@ -751,9 +751,6 @@ namespace MikuMikuFlex3
                     d3ddc.UpdateSubresource( this._ボーンのローカル位置配列, this._D3DBoneLocalPosition定数バッファ );
                     d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
 
-                    d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTrans定数バッファ );
-                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneLocalPosition定数バッファ );
-                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneQuaternion定数バッファ );
 
                     // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
 
@@ -780,9 +777,14 @@ namespace MikuMikuFlex3
 
                     // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
 
-                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );
-                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );
-                    this.スキニングシェーダー.Run( d3ddc, this.PMX頂点制御.入力頂点配列.Length );
+                    this.スキニングシェーダー.Run(
+                        d3ddc,
+                        this.PMX頂点制御.入力頂点配列.Length,
+                        this._D3DBoneTrans定数バッファ,
+                        this._D3DBoneLocalPosition定数バッファ,
+                        this._D3DBoneQuaternion定数バッファ,
+                        this._D3DスキニングバッファSRView,
+                        this._D3D頂点バッファビューUAView );
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
 
@@ -1177,7 +1179,7 @@ namespace MikuMikuFlex3
 
         private Vector4[] _ボーンの回転配列;
 
-        private struct _D3DBoneTrans    // サイズ計測用構造体
+        public struct D3DBoneTrans    // サイズ計測用構造体
         {
             public Matrix boneTrans;
 
@@ -1185,11 +1187,11 @@ namespace MikuMikuFlex3
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
             public static int SizeInBytes
-                => ( ( Marshal.SizeOf( typeof( _D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
+                => ( ( Marshal.SizeOf( typeof( D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
         }
         private SharpDX.Direct3D11.Buffer _D3DBoneTrans定数バッファ;
 
-        private struct _D3DBoneLocalPosition    // サイズ計測用構造体
+        public struct D3DBoneLocalPosition    // サイズ計測用構造体
         {
             public Vector3 boneLocalPosition;
 
@@ -1202,7 +1204,7 @@ namespace MikuMikuFlex3
         }
         private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
 
-        private struct _D3DBoneQuaternion    // サイズ計測用構造体
+        public struct D3DBoneQuaternion    // サイズ計測用構造体
         {
             public Vector4 boneQuaternion;
 
@@ -1210,7 +1212,7 @@ namespace MikuMikuFlex3
             ///     構造体の大きさ[byte] 。定数バッファで使う場合は、常に16の倍数であること。
             /// </summary>
             public static int SizeInBytes
-                => ( ( Marshal.SizeOf( typeof( _D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
+                => ( ( Marshal.SizeOf( typeof( D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
         }
         private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
 
