@@ -6,6 +6,10 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
+    /// <summary>
+    ///     すべてのジョイントパラメータの基本クラス。
+    ///     詳細は別クラスで実装すること。
+    /// </summary>
     public class ジョイント
     {
         public string ジョイント名 { get; private set; }
