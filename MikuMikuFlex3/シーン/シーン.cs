@@ -40,13 +40,47 @@ namespace MikuMikuFlex3
             this.カメラリスト = null;      // Dispose不要
             this.選択中のカメラ = null;    //
             this.照明リスト = null;        //
-            this.パスリスト = null;        //
+
+            foreach( var pass in this.パスリスト )
+                pass.Dispose();
+            this.パスリスト = null;
 
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
 
             this._既定のDepthStencilView?.Dispose();
             this._既定のRenderTargetView?.Dispose();
+        }
+
+
+        public void 追加する( PMXモデル model )
+        {
+            var modelPass = new オブジェクトパス( model );
+            this.追加する( modelPass );
+        }
+
+        public void 追加する( パス pass )
+        {
+            this.パスリスト.Add( pass );
+
+            if( pass is オブジェクトパス objPass )
+            {
+                if( null == objPass.深度ステンシルビュー )
+                    objPass.深度ステンシルビュー = this._既定のDepthStencilView;
+
+                if( 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    objPass.レンダーターゲットビューs[ 0 ] = this._既定のRenderTargetView;
+            }
+        }
+
+        public void 追加する( カメラ camera )
+        {
+            this.カメラリスト.Add( camera );
+        }
+
+        public void 追加する( 照明 light )
+        {
+            this.照明リスト.Add( light );
         }
 
 
@@ -64,6 +98,7 @@ namespace MikuMikuFlex3
 
             return tex2d;
         }
+
 
         public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Color4 背景色 )
         {
@@ -109,36 +144,6 @@ namespace MikuMikuFlex3
             {
                 this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, this._GlobalParameters );
             }
-        }
-
-        public void 追加する( PMXモデル model )
-        {
-            var modelPass = new オブジェクトパス( model );
-            this.追加する( modelPass );
-        }
-
-        public void 追加する( パス pass )
-        {
-            this.パスリスト.Add( pass );
-
-            if( pass is オブジェクトパス objPass )
-            {
-                if( null == objPass.深度ステンシルビュー )
-                    objPass.深度ステンシルビュー = this._既定のDepthStencilView;
-
-                if( 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    objPass.レンダーターゲットビューs[ 0 ] = this._既定のRenderTargetView;
-            }
-        }
-
-        public void 追加する( カメラ camera )
-        {
-            this.カメラリスト.Add( camera );
-        }
-
-        public void 追加する( 照明 light )
-        {
-            this.照明リスト.Add( light );
         }
 
 

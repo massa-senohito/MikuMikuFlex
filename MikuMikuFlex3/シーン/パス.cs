@@ -10,6 +10,7 @@ namespace MikuMikuFlex3
     {
         public string 名前 = null;
 
+
         public abstract void Dispose();
 
         public abstract void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters );
