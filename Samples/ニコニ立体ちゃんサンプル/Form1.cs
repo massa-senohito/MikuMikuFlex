@@ -25,48 +25,64 @@ namespace ニコニ立体ちゃんサンプル
             this.ClientSize = new Size( 1280, 720 );
             this.Text = "ニコニ立体ちゃんサンプル for MikuMikuFlex 3";
 
+
+            // Direct3D11 を初期化します。
+
             this._Direct3Dを初期化する();
 
 
-            // シーンを作成。
-            
-            this._シーン = new MikuMikuFlex3.シーン( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
+            // シーンを作成します。
+            {
+                // 既定の深度ステンシルと、既定のレンダーターゲット（１つ）を、それぞれ（ビューではなく）リソースで渡します。
+                this._シーン = new MikuMikuFlex3.シーン( this._D3D11Device, this._既定のD3D11DepthStencil, this._既定のD3D11RenderTarget );
+            }
 
+            // モデル１・アリシアを作成してシーンに追加します。
+            {
+                // PMXファイルを指定してモデルを生成します。
+                this._モデル = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
 
-            // モデル１・アリシアを作成してシーンに追加。
+                // 各材質ごとに持つテッセレーションの値（初期値 1）を、5 に変更します（任意）。
+                foreach( var mat in this._モデル.材質リスト )
+                    mat.テッセレーション係数 = 5;
 
-            this._モデル = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/Alicia/MMD/Alicia_solid.pmx" );
+                // VMDファイルを指定して、PMXモデルにアニメーションを追加します。
+                MikuMikuFlex3.VMDアニメーションビルダ.アニメーションを追加する( @"サンプルデータ/Alicia/MMD Motion/2分ループステップ1.vmd", this._モデル );
 
-            foreach( var mat in this._モデル.材質リスト )
-                mat.テッセレーション係数 = 5;
-
-            MikuMikuFlex3.VMDアニメーションビルダ.アニメーションを追加する( @"サンプルデータ/Alicia/MMD Motion/2分ループステップ1.vmd", this._モデル );
-
-            this._シーン.追加する( this._モデル );
-
+                // モデルをシーンに追加します。
+                this._シーン.追加する( this._モデル );
+            }
 
             // モデル２・ニコニ立体ステージを作成してシーンに追加。
+            {
+                // PMXファイルを指定してモデルを生成します。
+                this._ステージ = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/nicosolid_stage/nicosolid_stage.pmx" );
 
-            this._ステージ = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/nicosolid_stage/nicosolid_stage.pmx" );
-
-            this._シーン.追加する( this._ステージ );
-
+                // モデルをシーンに追加します。
+                this._シーン.追加する( this._ステージ );
+            }
 
             // カメラを作成してシーンに追加。
+            {
+                // いくつかあるカメラのうち、ここでは、マウスモーションカメラを作成します。
+                this._カメラ = new MikuMikuFlex3.マウスモーションカメラ( 45f );
+                this.MouseDown += this._カメラ.OnMouseDown;
+                this.MouseUp += this._カメラ.OnMouseUp;
+                this.MouseMove += this._カメラ.OnMouseMove;
+                this.MouseWheel += this._カメラ.OnMouseWheel;
 
-            this._カメラ = new MikuMikuFlex3.マウスモーションカメラ( 45f );
-            this.MouseDown += this._カメラ.OnMouseDown;
-            this.MouseUp += this._カメラ.OnMouseUp;
-            this.MouseMove += this._カメラ.OnMouseMove;
-            this.MouseWheel += this._カメラ.OnMouseWheel;
-            this._シーン.追加する( this._カメラ );
-
+                // カメラをシーンに追加します。
+                this._シーン.追加する( this._カメラ );
+            }
 
             // 照明を作成してシーンに追加。
+            {
+                // 照明を作成します。
+                this._照明 = new MikuMikuFlex3.照明();
 
-            this._照明 = new MikuMikuFlex3.照明();
-            this._シーン.追加する( this._照明 );
-
+                // 照明をシーンに追加します。
+                this._シーン.追加する( this._照明 );
+            }
 
             // 完了。
 
@@ -81,23 +97,36 @@ namespace ニコニ立体ちゃんサンプル
         // アプリのメインループ
         private void Run( object sender, EventArgs e )
         {
+            Application.Idle -= this.Run;   // イベントが複数発生する場合があるので解除
+
+            // シーンの描画には「現在時刻」が必要であるため、タイマを生成します。
             var timer = Stopwatch.StartNew();
+
+            // FPSを計測するクラスを生成します（任意）。
             var fps = new MikuMikuFlex3.Utility.FPS();
 
             SharpDX.Windows.RenderLoop.Run( this, () => {
+
+                // FPS を計測し、デバッグ表示します（任意）。
 
                 if( fps.FPSをカウントする() )
                     Debug.WriteLine( $"{fps.現在のFPS} fps" );
 
 
-                // シーンを描画する。
+                // 既定のレンダーターゲットと既定の深度ステンシルをクリアします。
+
+                var 背景色 = new SharpDX.Color4( 0.2f, 0.4f, 0.8f, 1.0f );
+                this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, 背景色 );
+                this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
+
+
+                // 時刻を指定して、シーンを描画します。
 
                 var 現在時刻sec = timer.ElapsedMilliseconds / 1000.0;
-                var 背景色 = new SharpDX.Color4( 0.2f, 0.4f, 0.8f, 1.0f );
-                this._シーン.描画する( 現在時刻sec, this._D3D11Device.ImmediateContext, 背景色 );
+                this._シーン.描画する( 現在時刻sec, this._D3D11Device.ImmediateContext );
 
 
-                // スワップチェーンを表示する。
+                // スワップチェーンを表示します。
 
                 this._DXGISwapChain.Present( 0, SharpDX.DXGI.PresentFlags.None );
 
@@ -108,11 +137,8 @@ namespace ニコニ立体ちゃんサンプル
         protected override void OnClosing( CancelEventArgs e )
         {
             this._モデル?.Dispose();
-
             this._照明 = null;
-
             this._カメラ = null;
-
             this._シーン?.Dispose();
 
             this._Direct3Dを解放する();
@@ -142,14 +168,18 @@ namespace ニコニ立体ちゃんサンプル
 
         private SharpDX.Direct3D11.Texture2D _既定のD3D11RenderTarget;
 
+        private SharpDX.Direct3D11.RenderTargetView _既定のD3D11RenderTargetView;
+
         private SharpDX.Direct3D11.Texture2D _既定のD3D11DepthStencil;
+
+        private SharpDX.Direct3D11.DepthStencilView _既定のD3D11DepthStencilView;
 
         private SharpDX.Direct3D11.BlendState _BlendState通常合成;
 
 
         private void _Direct3Dを初期化する()
         {
-            // D3DDevice, DXGISwapChain を生成する。
+            // D3D11デバイスと SwapChain を生成します。
 
             SharpDX.Direct3D11.Device.CreateWithSwapChain(
                 SharpDX.Direct3D.DriverType.Hardware,
@@ -174,7 +204,7 @@ namespace ニコニ立体ちゃんサンプル
                 out this._DXGISwapChain );
 
 
-            // 既定のRenderTarget と 既定のDepthStencil を作成する。
+            // 既定のRenderTarget と 既定のDepthStencil ならびにそのビューを作成します。
 
             this._既定のD3D11RenderTarget = this._DXGISwapChain.GetBackBuffer<SharpDX.Direct3D11.Texture2D>( 0 );
 
@@ -193,8 +223,13 @@ namespace ニコニ立体ちゃんサンプル
                     OptionFlags = SharpDX.Direct3D11.ResourceOptionFlags.None,
                 } );
 
+            this._既定のD3D11RenderTargetView = new SharpDX.Direct3D11.RenderTargetView( this._D3D11Device, this._既定のD3D11RenderTarget );
 
-            // ブレンドステートを作成する。
+            this._既定のD3D11DepthStencilView = new SharpDX.Direct3D11.DepthStencilView( this._D3D11Device, this._既定のD3D11DepthStencil );
+
+
+
+            // 通常合成用のブレンドステートを作成します。
 
             var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
                 AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
@@ -214,7 +249,7 @@ namespace ニコニ立体ちゃんサンプル
             this._BlendState通常合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, blendStateNorm );
 
 
-            // ブレンドステートと深度ステンシルステートを設定。
+            // ブレンドステートと深度ステンシルステートを OM に設定します。
 
             this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState通常合成;
             this._D3D11Device.ImmediateContext.OutputMerger.DepthStencilState = null;
@@ -224,8 +259,10 @@ namespace ニコニ立体ちゃんサンプル
         {
             this._BlendState通常合成?.Dispose();
 
+            this._既定のD3D11DepthStencilView?.Dispose();
             this._既定のD3D11DepthStencil?.Dispose();
 
+            this._既定のD3D11RenderTargetView?.Dispose();
             this._既定のD3D11RenderTarget?.Dispose();
 
             this._DXGISwapChain?.Dispose();

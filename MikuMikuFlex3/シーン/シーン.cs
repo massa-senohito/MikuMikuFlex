@@ -100,12 +100,8 @@ namespace MikuMikuFlex3
         }
 
 
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, Color4 背景色 )
+        public void 描画する( double 現在時刻sec, DeviceContext d3ddc )
         {
-            d3ddc.ClearRenderTargetView( this._既定のRenderTargetView, 背景色 );
-            d3ddc.ClearDepthStencilView( this._既定のDepthStencilView, DepthStencilClearFlags.Depth, 1f, 0 );
-
-
             // カメラを進行する。
 
             if( null == this.選択中のカメラ )
