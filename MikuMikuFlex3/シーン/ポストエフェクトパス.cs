@@ -6,13 +6,13 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    public class エフェクトパス : パス
+    public class ポストエフェクトパス : パス
     {
 
         // 生成と終了
 
 
-        public エフェクトパス( Device d3dDevice, IPostEffect postEffect )
+        public ポストエフェクトパス( Device d3dDevice, IPostEffect postEffect )
         {
             this._PostEffect = postEffect;
 
