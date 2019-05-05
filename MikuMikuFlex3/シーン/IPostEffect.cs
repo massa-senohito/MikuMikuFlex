@@ -14,7 +14,7 @@ namespace MikuMikuFlex3
         ///     このメソッドの呼び出し前に、<paramref name="d3ddc"/> には以下の設定が行われている。
         ///     - ComputeShader
         ///         - slot( b0 ) …… グローバルパラメータ
-        ///         - slot( t0 ) …… 転送元バッファ(Texture2D)
+        ///         - slot( tN ) …… 転送元バッファ(Texture2D)（N=0～）
         ///         - slot( u0 ) …… 転送先バッファ(RWTexture2D＜float4＞)
         /// </remarks>
         void Blit( SharpDX.Direct3D11.DeviceContext d3ddc );

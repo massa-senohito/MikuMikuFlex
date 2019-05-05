@@ -133,7 +133,7 @@
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
     <Compile Include="シーン\エフェクトパス.cs" />
-    <Compile Include="シーン\オブジェクトパス.cs" />
+    <Compile Include="シーン\PMXモデルパス.cs" />
     <Compile Include="シーン\シーン.cs" />
     <Compile Include="シーン\パス.cs" />
     <Compile Include="シーン\GlobalParameters.cs" />

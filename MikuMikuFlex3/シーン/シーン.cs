@@ -55,7 +55,7 @@ namespace MikuMikuFlex3
 
         public void 追加する( PMXモデル model )
         {
-            var modelPass = new オブジェクトパス( model );
+            var modelPass = new PMXモデルパス( model );
             this.追加する( modelPass );
         }
 
@@ -63,7 +63,7 @@ namespace MikuMikuFlex3
         {
             this.パスリスト.Add( pass );
 
-            if( pass is オブジェクトパス objPass )
+            if( pass is PMXモデルパス objPass )
             {
                 if( null == objPass.深度ステンシルビュー )
                     objPass.深度ステンシルビュー = this._既定のDepthStencilView;

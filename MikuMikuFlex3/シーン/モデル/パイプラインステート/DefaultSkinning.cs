@@ -85,7 +85,7 @@ namespace MikuMikuFlex3
             SharpDX.Direct3D11.UnorderedAccessView 変形後頂点データUAV )
         {
             d3ddc.ComputeShader.Set( this.ComputeShader );
-            d3ddc.Dispatch( ( 入力頂点数 / 64 ) + 1, 1, 1 );
+            d3ddc.Dispatch( ( 入力頂点数 / 64 ) + 1, 1, 1 ); // 既定のシェーダー（DefaultSkinningComputeShader.hlsl）に合わせてある
         }
 
 
