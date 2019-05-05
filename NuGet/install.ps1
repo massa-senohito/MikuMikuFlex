@@ -9,7 +9,7 @@ function Recurse($dir)
     {
         Recurse($i.ProjectItems)
 
-        if($i.Name -like "TgaLib.dll")
+        if($i.Name -like "TgaLib.dll" -Or $i.Name -Like "EffekseerRendererDX11NET.dll" )
         {
 			# ビルドアクション (0:None, 1:Compile, 2:Content, 3:EmbeddedResource)
             $i.Properties.Item("BuildAction").Value = [int]0

@@ -41,6 +41,10 @@
     <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
     </Reference>
+    <Reference Include="EffekseerRendererDX11NET, Version=1.0.7064.31696, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\EffekseerRendererDX11NET.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
@@ -132,29 +136,32 @@
     <Compile Include="アニメーション\リニア実数アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ回転アニメ遷移.cs" />
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
-    <Compile Include="シーン\ポストエフェクトパス.cs" />
-    <Compile Include="シーン\PMXモデルパス.cs" />
+    <Compile Include="シーン\Effekseer\Effekseer.cs" />
+    <Compile Include="シーン\Effekseer\EffekseerEffect.cs" />
+    <Compile Include="シーン\パス\Effekseerパス.cs" />
+    <Compile Include="シーン\パス\ポストエフェクトパス.cs" />
+    <Compile Include="シーン\パス\PMXモデルパス.cs" />
     <Compile Include="シーン\シーン.cs" />
-    <Compile Include="シーン\パス.cs" />
+    <Compile Include="シーン\パス\パス.cs" />
     <Compile Include="シーン\GlobalParameters.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\IMaterialShader.cs" />
-    <Compile Include="シーン\IPostEffect.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\ISkinning.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\DefaultSkinning.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\IMaterialShader.cs" />
+    <Compile Include="シーン\パス\IPostEffect.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\ISkinning.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\DefaultSkinning.cs" />
     <Compile Include="シーン\カメラ\カメラ.cs" />
     <Compile Include="シーン\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="シーン\カメラ\モーションカメラMMD.cs" />
     <Compile Include="シーン\カメラ\モーションカメラDX.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\DefaultMaterialShader.cs" />
-    <Compile Include="シーン\モデル\CCDによるIK変形更新.cs" />
-    <Compile Include="シーン\モデル\PMXモーフ制御.cs" />
-    <Compile Include="シーン\モデル\PMX材質制御.cs" />
-    <Compile Include="シーン\モデル\PMX頂点制御.cs" />
-    <Compile Include="シーン\モデル\階層順リスト.cs" />
-    <Compile Include="シーン\モデル\親付与によるFK変形更新.cs" />
-    <Compile Include="シーン\照明.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\DefaultMaterialShader.cs" />
+    <Compile Include="シーン\PMXモデル\CCDによるIK変形更新.cs" />
+    <Compile Include="シーン\PMXモデル\PMXモーフ制御.cs" />
+    <Compile Include="シーン\PMXモデル\PMX材質制御.cs" />
+    <Compile Include="シーン\PMXモデル\PMX頂点制御.cs" />
+    <Compile Include="シーン\PMXモデル\階層順リスト.cs" />
+    <Compile Include="シーン\PMXモデル\親付与によるFK変形更新.cs" />
+    <Compile Include="シーン\照明\照明.cs" />
     <Compile Include="Utility\CGHelper.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\CS_INPUT.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\CS_INPUT.cs" />
     <Compile Include="Utility\DualQuaternion.cs" />
     <Compile Include="Format\PMX\ジョイント.cs" />
     <Compile Include="Format\PMX\ジョイントパラメータ\P2Pジョイントパラメータ.cs" />
@@ -207,13 +214,13 @@
     <Compile Include="Format\PMX\面リスト.cs" />
     <Compile Include="Format\PMX\頂点.cs" />
     <Compile Include="Format\PMX\頂点リスト.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\MMDPass.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\MMDPass.cs" />
     <Compile Include="Format\VMD\モーション.cs" />
     <Compile Include="Utility\FPS.cs" />
     <Compile Include="Utility\MMFShaderResourceView.cs" />
     <Compile Include="Utility\ParserHelper.cs" />
-    <Compile Include="シーン\モデル\PMXボーン制御.cs" />
-    <Compile Include="シーン\モデル\PMXモデル.cs" />
+    <Compile Include="シーン\PMXモデル\PMXボーン制御.cs" />
+    <Compile Include="シーン\PMXモデル\PMXモデル.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Format\VMD\IFrameData.cs" />
     <Compile Include="Format\VMD\カメラフレーム.cs" />
@@ -228,16 +235,16 @@
     <Compile Include="Format\VMD\照明フレームリスト.cs" />
     <Compile Include="Utility\QPCTimer.cs" />
     <Compile Include="Utility\TargaSolver.cs" />
-    <Compile Include="シーン\モデル\パイプラインステート\VS_INPUT.cs" />
-    <Compile Include="シーン\モデル\物理演算\Bulletタイマ.cs" />
-    <Compile Include="シーン\モデル\物理演算\Bullet管理.cs" />
-    <Compile Include="シーン\モデル\物理演算\PMX物理変形更新.cs" />
-    <Compile Include="シーン\モデル\物理演算\六軸ジョイント.cs" />
-    <Compile Include="シーン\モデル\物理演算\剛体ファクトリ.cs" />
-    <Compile Include="シーン\モデル\物理演算\剛体物性.cs" />
-    <Compile Include="シーン\モデル\物理演算\動的世界ファクトリ.cs" />
-    <Compile Include="シーン\モデル\物理演算\拘束ファクトリ.cs" />
-    <Compile Include="シーン\モデル\物理演算\物理演算を超越した特性.cs" />
+    <Compile Include="シーン\PMXモデル\パイプラインステート\VS_INPUT.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\Bulletタイマ.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\Bullet管理.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\PMX物理変形更新.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\六軸ジョイント.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\剛体ファクトリ.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\剛体物性.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\動的世界ファクトリ.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\拘束ファクトリ.cs" />
+    <Compile Include="シーン\PMXモデル\物理演算\物理演算を超越した特性.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -294,6 +301,11 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EffekseerRendererDX11NET.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />

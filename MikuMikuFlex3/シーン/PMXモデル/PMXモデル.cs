@@ -409,6 +409,28 @@ namespace MikuMikuFlex3
             } );
             //----------------
             #endregion
+            #region " ブレンドステートを作成する。"
+            //----------------
+            {
+                var blendStateNorm = new BlendStateDescription() {
+                    AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
+                    IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
+                };
+                blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
+                blendStateNorm.RenderTarget[ 0 ].RenderTargetWriteMask = SharpDX.Direct3D11.ColorWriteMaskFlags.All;
+
+                blendStateNorm.RenderTarget[ 0 ].SourceBlend = BlendOption.SourceAlpha;                  // 色値のブレンディング
+                blendStateNorm.RenderTarget[ 0 ].DestinationBlend = BlendOption.InverseSourceAlpha;
+                blendStateNorm.RenderTarget[ 0 ].BlendOperation = BlendOperation.Add;
+
+                blendStateNorm.RenderTarget[ 0 ].SourceAlphaBlend = BlendOption.One;                     // アルファ値のブレンディング
+                blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = BlendOption.Zero;
+                blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = BlendOperation.Add;
+
+                this._BlendState通常合成 = new BlendState( d3dDevice, blendStateNorm );
+            }
+            //----------------
+            #endregion
 
             #region " 共有テクスチャを読み込む。"
             //----------------
@@ -602,6 +624,7 @@ namespace MikuMikuFlex3
             }
 
             this._PS用SamplerState?.Dispose();
+            this._BlendState通常合成?.Dispose();
             this._裏側片面描画の際のラスタライザステート?.Dispose();
             this._片面描画の際のラスタライザステート?.Dispose();
             this._片面描画の際のラスタライザステートLine?.Dispose();
@@ -1030,6 +1053,7 @@ namespace MikuMikuFlex3
                 } );
 
                 d3ddc.PixelShader.SetSampler( 0, this._PS用SamplerState );
+                d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
             }
             //----------------
             #endregion
@@ -1268,6 +1292,8 @@ namespace MikuMikuFlex3
         private RasterizerState _両面描画の際のラスタライザステート;
 
         private RasterizerState _両面描画の際のラスタライザステートLine;
+
+        private BlendState _BlendState通常合成;
 
         private 親付与によるFK変形更新 _親付与によるFK変形更新;
 

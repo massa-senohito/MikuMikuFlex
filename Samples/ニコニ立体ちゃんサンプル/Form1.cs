@@ -53,7 +53,7 @@ namespace ニコニ立体ちゃんサンプル
                 this._シーン.追加する( this._モデル );
             }
 
-            // モデル２・ニコニ立体ステージを作成してシーンに追加。
+            // モデル２・ニコニ立体ステージを作成してシーンに追加します。
             {
                 // PMXファイルを指定してモデルを生成します。
                 this._ステージ = new MikuMikuFlex3.PMXモデル( this._D3D11Device, @"サンプルデータ/nicosolid_stage/nicosolid_stage.pmx" );
@@ -62,7 +62,7 @@ namespace ニコニ立体ちゃんサンプル
                 this._シーン.追加する( this._ステージ );
             }
 
-            // カメラを作成してシーンに追加。
+            // カメラを作成してシーンに追加します。
             {
                 // いくつかあるカメラのうち、ここでは、マウスモーションカメラを作成します。
                 this._カメラ = new MikuMikuFlex3.マウスモーションカメラ( 45f );
@@ -75,7 +75,7 @@ namespace ニコニ立体ちゃんサンプル
                 this._シーン.追加する( this._カメラ );
             }
 
-            // 照明を作成してシーンに追加。
+            // 照明を作成してシーンに追加します。
             {
                 // 照明を作成します。
                 this._照明 = new MikuMikuFlex3.照明();
@@ -97,15 +97,17 @@ namespace ニコニ立体ちゃんサンプル
         // アプリのメインループ
         private void Run( object sender, EventArgs e )
         {
-            Application.Idle -= this.Run;   // イベントが複数発生する場合があるので解除
+            Application.Idle -= this.Run;   // イベントが複数発生する場合があるのでそれを回避。
 
-            // シーンの描画には「現在時刻」が必要であるため、タイマを生成します。
+            // シーンの描画には「現在時刻」が必要であるため、タイマを準備します。
             var timer = Stopwatch.StartNew();
 
             // FPSを計測するクラスを生成します（任意）。
             var fps = new MikuMikuFlex3.Utility.FPS();
 
+            // メインループを開始します。
             SharpDX.Windows.RenderLoop.Run( this, () => {
+
 
                 // FPS を計測し、デバッグ表示します（任意）。
 
@@ -117,7 +119,7 @@ namespace ニコニ立体ちゃんサンプル
 
                 var 背景色 = new SharpDX.Color4( 0.2f, 0.4f, 0.8f, 1.0f );
                 this._D3D11Device.ImmediateContext.ClearRenderTargetView( this._既定のD3D11RenderTargetView, 背景色 );
-                this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1f, 0 );
+                this._D3D11Device.ImmediateContext.ClearDepthStencilView( this._既定のD3D11DepthStencilView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth | SharpDX.Direct3D11.DepthStencilClearFlags.Stencil, 1f, 0 );
 
 
                 // 時刻を指定して、シーンを描画します。
@@ -174,7 +176,9 @@ namespace ニコニ立体ちゃんサンプル
 
         private SharpDX.Direct3D11.DepthStencilView _既定のD3D11DepthStencilView;
 
-        private SharpDX.Direct3D11.BlendState _BlendState通常合成;
+        private SharpDX.Direct3D11.BlendState _BlendState加算合成;
+
+        private SharpDX.Direct3D11.RasterizerState _RasterizerState;
 
 
         private void _Direct3Dを初期化する()
@@ -229,35 +233,46 @@ namespace ニコニ立体ちゃんサンプル
 
 
 
-            // 通常合成用のブレンドステートを作成します。
+            // 加算合成用のブレンドステートを作成します。
 
-            var blendStateNorm = new SharpDX.Direct3D11.BlendStateDescription() {
+            var BlendStateAdd = new SharpDX.Direct3D11.BlendStateDescription() {
                 AlphaToCoverageEnable = false,  // アルファマスクで透過する（するならZバッファ必須）
                 IndependentBlendEnable = false, // 個別設定。false なら BendStateDescription.RenderTarget[0] だけが有効で、[1～7] は無視される。
             };
-            blendStateNorm.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
-            blendStateNorm.RenderTarget[ 0 ].RenderTargetWriteMask = SharpDX.Direct3D11.ColorWriteMaskFlags.All;
-
-            blendStateNorm.RenderTarget[ 0 ].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;                  // 色値のブレンディング
-            blendStateNorm.RenderTarget[ 0 ].DestinationBlend = SharpDX.Direct3D11.BlendOption.InverseSourceAlpha;
-            blendStateNorm.RenderTarget[ 0 ].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
-
-            blendStateNorm.RenderTarget[ 0 ].SourceAlphaBlend = SharpDX.Direct3D11.BlendOption.One;                     // アルファ値のブレンディング
-            blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = SharpDX.Direct3D11.BlendOption.Zero;
-            blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
-
-            this._BlendState通常合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, blendStateNorm );
+            BlendStateAdd.RenderTarget[ 0 ].IsBlendEnabled = true; // true ならブレンディングが有効。
+            BlendStateAdd.RenderTarget[ 0 ].RenderTargetWriteMask = SharpDX.Direct3D11.ColorWriteMaskFlags.All;        // RGBA の書き込みマスク。
+            // アルファ値のブレンディング設定 ... 特になし
+            BlendStateAdd.RenderTarget[ 0 ].SourceAlphaBlend = SharpDX.Direct3D11.BlendOption.One;
+            BlendStateAdd.RenderTarget[ 0 ].DestinationAlphaBlend = SharpDX.Direct3D11.BlendOption.Zero;
+            BlendStateAdd.RenderTarget[ 0 ].AlphaBlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+            // 色値のブレンディング設定 ... 加算合成
+            BlendStateAdd.RenderTarget[ 0 ].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;
+            BlendStateAdd.RenderTarget[ 0 ].DestinationBlend = SharpDX.Direct3D11.BlendOption.One;
+            BlendStateAdd.RenderTarget[ 0 ].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+            // ブレンドステートを作成する。
+            this._BlendState加算合成 = new SharpDX.Direct3D11.BlendState( this._D3D11Device, BlendStateAdd );
 
 
             // ブレンドステートと深度ステンシルステートを OM に設定します。
 
-            this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState通常合成;
+            this._D3D11Device.ImmediateContext.OutputMerger.BlendState = this._BlendState加算合成;
             this._D3D11Device.ImmediateContext.OutputMerger.DepthStencilState = null;
+
+
+            // ラスタライザステートを作成します。
+
+            this._RasterizerState = new SharpDX.Direct3D11.RasterizerState(
+                this._D3D11Device,
+                new SharpDX.Direct3D11.RasterizerStateDescription {
+                    CullMode = SharpDX.Direct3D11.CullMode.Back,
+                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                } );
         }
 
         private void _Direct3Dを解放する()
         {
-            this._BlendState通常合成?.Dispose();
+            this._RasterizerState?.Dispose();
+            this._BlendState加算合成?.Dispose();
 
             this._既定のD3D11DepthStencilView?.Dispose();
             this._既定のD3D11DepthStencil?.Dispose();
