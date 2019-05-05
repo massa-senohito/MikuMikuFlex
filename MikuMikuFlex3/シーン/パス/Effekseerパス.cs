@@ -78,14 +78,14 @@ namespace MikuMikuFlex3
             }
             this._最後の描画時刻sec = 現在時刻sec;
 
-            this._Effekseer.Manager.Update( 経過フレーム数 );
+            this._Effekseer.進行する( 経過フレーム数 );
 
 
             // 描画する。
 
             d3ddc.OutputMerger.SetTargets( this.深度ステンシルビュー, this.レンダーターゲットビューs );
 
-            this._Effekseer.Draw( d3ddc, globalParameters );
+            this._Effekseer.描画する( d3ddc, globalParameters );
         }
 
 

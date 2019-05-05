@@ -13,6 +13,8 @@ namespace MikuMikuFlex3
 
         public EffekseerRendererDX11NET.Renderer Renderer { get; protected set; }
 
+        internal List<EffekseerEffect> EffectList { get; private protected set; }
+
 
 
         // 生成と終了
@@ -20,6 +22,8 @@ namespace MikuMikuFlex3
 
         public Effekseer( Device d3dDevice )
         {
+            this.EffectList = new List<EffekseerEffect>();
+
             // 描画用インスタンスを生成する。
             this.Renderer = EffekseerRendererDX11NET.Renderer.Create( d3dDevice, d3dDevice.ImmediateContext, 2000, Comparison.Less );
 
@@ -70,6 +74,8 @@ namespace MikuMikuFlex3
 
         public void Dispose()
         {
+            this.EffectList.Clear();
+
             // 先にエフェクト管理用インスタンスを破棄
             this.Manager.Destroy();
 
@@ -83,14 +89,19 @@ namespace MikuMikuFlex3
 
 
 
-        // 描画
+        // 進行と描画
 
 
-        /// <summary>
-        ///     描画する。
-        ///     事前に <see cref="Manager"/>.Update() を実行しておくこと。
-        /// </summary>
-        public void Draw( DeviceContext d3ddc, GlobalParameters globalParameters )
+        public void 進行する( float 経過フレーム数 )
+        {
+            this.Manager.Update( 経過フレーム数 );
+
+            // 登録されているすべてのエフェクトのUpdateアクションを呼び出す。
+            foreach( var effect in this.EffectList )
+                effect.UpdateAction?.Invoke( 経過フレーム数 );
+        }
+
+        public void 描画する( DeviceContext d3ddc, GlobalParameters globalParameters )
         {
             // ビュー変換行列と射影変換行列を設定する。
 
