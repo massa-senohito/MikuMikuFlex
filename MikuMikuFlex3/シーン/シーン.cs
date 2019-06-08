@@ -39,6 +39,8 @@ namespace MikuMikuFlex3
             this.選択中のカメラ = null;    //
             this.照明リスト = null;        //
 
+            this.スワップチェーンに依存するリソースを解放する();
+
             foreach( var pass in this.パスリスト )
                 pass.Dispose();
             this.パスリスト = null;
@@ -46,7 +48,6 @@ namespace MikuMikuFlex3
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
 
-            this.スワップチェーンに依存するリソースを解放する();
 
             this._D3DDevice = null;     // Dispose はしない
         }
@@ -59,10 +60,16 @@ namespace MikuMikuFlex3
             this._既定のRenderTarget = renderTarget;
             this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
             this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
+
+            foreach( var pass in this.パスリスト )
+                this._リソースをバインドする( pass );
         }
 
         public void スワップチェーンに依存するリソースを解放する()
         {
+            foreach( var pass in this.パスリスト )
+                this._リソースを解放する( pass );
+
             this._既定のDepthStencil = null;   // Dispose はしない
             this._既定のRenderTarget = null;   // Dispose はしない
             this._既定のDepthStencilView?.Dispose();
@@ -74,18 +81,7 @@ namespace MikuMikuFlex3
         {
             this.パスリスト.Add( pass );
 
-            // PMXモデルの場合、ビューの設定がなければ既定のビューを設定する。
-            if( pass is PMXモデルパス objPass )
-            {
-                if( null == objPass.深度ステンシルビュー || 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    objPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
-            }
-            // Effekseerパスの場合、ビューの設定がなければ既定のビューを設定する。
-            else if( pass is Effekseerパス effekseerPass )
-            {
-                if( null == effekseerPass.深度ステンシルビュー || 0 == effekseerPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    effekseerPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
-            }
+            this._リソースをバインドする( pass );
         }
 
         public void 追加する( PMXモデル model )
@@ -196,5 +192,34 @@ namespace MikuMikuFlex3
         protected DepthStencilView _既定のDepthStencilView;
 
         protected RenderTargetView _既定のRenderTargetView;
+
+
+        private void _リソースをバインドする( パス pass )
+        {
+            // PMXモデルの場合、ビューの設定がなければ既定のビューを設定する。
+            if( pass is PMXモデルパス objPass )
+            {
+                if( null == objPass.深度ステンシルビュー || 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    objPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+            }
+            // Effekseerパスの場合、ビューの設定がなければ既定のビューを設定する。
+            else if( pass is Effekseerパス effekseerPass )
+            {
+                if( null == effekseerPass.深度ステンシルビュー || 0 == effekseerPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    effekseerPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+            }
+        }
+
+        private void _リソースを解放する( パス pass )
+        {
+            if( pass is PMXモデルパス objPass )
+            {
+                objPass.リソースを解放する();
+            }
+            else if( pass is Effekseerパス effekseerPass )
+            {
+                effekseerPass.リソースを解放する();
+            }
+        }
     }
 }

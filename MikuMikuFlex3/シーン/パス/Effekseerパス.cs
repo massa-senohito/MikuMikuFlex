@@ -19,9 +19,7 @@ namespace MikuMikuFlex3
 
         public override void Dispose()
         {
-            this.深度ステンシルビュー?.Dispose();
-            foreach( var rt in this.レンダーターゲットビューs )
-                rt?.Dispose();
+            this.リソースを解放する();
 
             this._Effekseer = null;  // Dispose しない
         }
@@ -52,6 +50,13 @@ namespace MikuMikuFlex3
             this.深度ステンシルビュー = new DepthStencilView( d3dDevice, depthStencil );
             for( int i = 0; i < renderTargets.Length && i < this.レンダーターゲットビューs.Length; i++ )
                 this.レンダーターゲットビューs[ i ] = ( null != renderTargets[ i ] ) ? new RenderTargetView( d3dDevice, renderTargets[ i ] ) : null;
+        }
+
+        public void リソースを解放する()
+        {
+            this.深度ステンシルビュー?.Dispose();
+            foreach( var rt in this.レンダーターゲットビューs )
+                rt?.Dispose();
         }
 
 
