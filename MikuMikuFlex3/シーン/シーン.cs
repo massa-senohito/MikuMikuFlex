@@ -131,9 +131,12 @@ namespace MikuMikuFlex3
         {
             // カメラを進行する。
 
-            if( null == this.選択中のカメラ )
-                this.選択中のカメラ = this.カメラリスト[ 0 ];
+            if( 0 == this.カメラリスト.Count )
+                throw new Exception( "シーンにカメラが設定されていません。" );
+            if( 0 == this.照明リスト.Count )
+                throw new Exception( "シーンに照明が設定されていません。" );
 
+            this.選択中のカメラ = this.カメラリスト[ 0 ];
             this.選択中のカメラ.更新する( 現在時刻sec );
 
 
