@@ -29,14 +29,8 @@ namespace MikuMikuFlex3
         public シーン( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
         {
             this._D3DDevice = d3dDevice;
-
-            this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
+            this.スワップチェーンに依存するリソースを作成する( d3dDevice, depthStencil, renderTarget );
             this.パスリスト = new List<パス>();
-
-            this._既定のDepthStencil = depthStencil;
-            this._既定のRenderTarget = renderTarget;
-            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
-            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
         }
 
         public virtual void Dispose()
@@ -52,12 +46,27 @@ namespace MikuMikuFlex3
             foreach( var kvp in this.グローバルテクスチャリスト )
                 kvp.Value.tex?.Dispose();
 
+            this.スワップチェーンに依存するリソースを解放する();
+
+            this._D3DDevice = null;     // Dispose はしない
+        }
+
+        public void スワップチェーンに依存するリソースを作成する( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
+        {
+            this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
+
+            this._既定のDepthStencil = depthStencil;
+            this._既定のRenderTarget = renderTarget;
+            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
+            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
+        }
+
+        public void スワップチェーンに依存するリソースを解放する()
+        {
             this._既定のDepthStencil = null;   // Dispose はしない
             this._既定のRenderTarget = null;   // Dispose はしない
             this._既定のDepthStencilView?.Dispose();
             this._既定のRenderTargetView?.Dispose();
-
-            this._D3DDevice = null;     // Dispose はしない
         }
 
 
