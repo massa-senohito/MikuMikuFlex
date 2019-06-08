@@ -9,7 +9,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     DirectX 準拠のパラメータを使って、アニメーションを適用可能なカメラ。
     /// </summary>
-    public class モーションカメラDX : カメラ
+    public class モーションカメラDX : スタンダードカメラ
     {
         public class DXアニメ変数
         {

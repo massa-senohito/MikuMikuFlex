@@ -138,6 +138,7 @@
     <Compile Include="アニメーション\ベジェ移動アニメ遷移.cs" />
     <Compile Include="シーン\Effekseer\Effekseer.cs" />
     <Compile Include="シーン\Effekseer\EffekseerEffect.cs" />
+    <Compile Include="シーン\カメラ\カメラ.cs" />
     <Compile Include="シーン\パス\Effekseerパス.cs" />
     <Compile Include="シーン\パス\ポストエフェクトパス.cs" />
     <Compile Include="シーン\パス\PMXモデルパス.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="シーン\パス\IPostEffect.cs" />
     <Compile Include="シーン\PMXモデル\パイプラインステート\ISkinning.cs" />
     <Compile Include="シーン\PMXモデル\パイプラインステート\DefaultSkinning.cs" />
-    <Compile Include="シーン\カメラ\カメラ.cs" />
+    <Compile Include="シーン\カメラ\スタンダードカメラ.cs" />
     <Compile Include="シーン\カメラ\マウスモーションカメラ.cs" />
     <Compile Include="シーン\カメラ\モーションカメラMMD.cs" />
     <Compile Include="シーン\カメラ\モーションカメラDX.cs" />
@@ -248,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="MikuMikuFlex3.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

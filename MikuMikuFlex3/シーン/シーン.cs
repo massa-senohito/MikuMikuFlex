@@ -130,11 +130,11 @@ namespace MikuMikuFlex3
 
             // GlobalParameters の設定（シーン単位）
 
-            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー行列を取得する();
+            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー変換行列;
             this._GlobalParameters.ViewMatrix.Transpose();
-            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影行列を取得する();
+            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影変換行列;
             this._GlobalParameters.ProjectionMatrix.Transpose();
-            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.位置, 0f );
+            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.カメラ位置, 0f );
             this._GlobalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
 
 

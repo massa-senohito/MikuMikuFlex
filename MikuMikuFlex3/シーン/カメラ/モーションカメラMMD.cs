@@ -9,7 +9,7 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     MMD 準拠のパラメータを使って、アニメーションを適用可能なカメラ。
     /// </summary>
-    public class モーションカメラMMD : カメラ
+    public class モーションカメラMMD : スタンダードカメラ
     {
         public class MMDアニメ変数
         {
