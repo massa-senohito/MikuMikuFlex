@@ -41,11 +41,15 @@ namespace MikuMikuFlex3
         {
             // 古い深度ステンシルビューとレンダーターゲットビューを解放する。
             this.深度ステンシルビュー?.Dispose();
-            foreach( var rt in this.レンダーターゲットビューs )
-                rt?.Dispose();
+            if( null != this.レンダーターゲットビューs )
+            {
+                foreach( var rt in this.レンダーターゲットビューs )
+                    rt?.Dispose();
+            }
 
             // 新しい深度ステンシルビューとレンダーターゲットビューを生成する。
             this.深度ステンシルビュー = new DepthStencilView( d3dDevice, depthStencil );
+            this.レンダーターゲットビューs = new RenderTargetView[ OutputMergerStage.SimultaneousRenderTargetCount ];
             for( int i = 0; i < renderTargets.Length && i < this.レンダーターゲットビューs.Length; i++ )
                 this.レンダーターゲットビューs[ i ] = ( null != renderTargets[ i ] ) ? new RenderTargetView( d3dDevice, renderTargets[ i ] ) : null;
         }
@@ -59,8 +63,8 @@ namespace MikuMikuFlex3
             {
                 foreach( var rt in this.レンダーターゲットビューs )
                     rt?.Dispose();
+                this.レンダーターゲットビューs = null;
             }
-            this.レンダーターゲットビューs = null;
         }
 
 
