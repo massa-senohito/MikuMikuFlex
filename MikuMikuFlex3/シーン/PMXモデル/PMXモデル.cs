@@ -573,7 +573,7 @@ namespace MikuMikuFlex3
             }
             //----------------
             #endregion
-            #region " IRenderMaterial を作成する。"
+            #region " IMaterialShader を作成する。"
             //----------------
             if( null != 既定の材質シェーダー )
             {
