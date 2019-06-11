@@ -34,9 +34,9 @@ namespace MikuMikuFlex3
 
         public List<PMXボーン制御> ルートボーンリスト { get; protected set; }
 
-        internal List<PMXボーン制御> IKボーンリスト { get; private protected set; }
+        public List<PMXボーン制御> IKボーンリスト { get; private protected set; }
 
-        internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
+        public PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
         public PMXFormat.モデル Format { get; protected set; }
 

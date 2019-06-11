@@ -6,7 +6,7 @@ using SharpDX;
 
 namespace MikuMikuFlex3
 {
-    class PMX頂点制御
+    public class PMX頂点制御
     {
         public CS_INPUT[] 入力頂点配列;
 
