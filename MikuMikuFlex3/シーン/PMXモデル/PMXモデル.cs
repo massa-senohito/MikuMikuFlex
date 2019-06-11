@@ -38,6 +38,9 @@ namespace MikuMikuFlex3
 
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
+        public List<string> テクスチャリスト
+            => this._PMXFモデル.テクスチャリスト;
+
 
 
         // シェーダー
