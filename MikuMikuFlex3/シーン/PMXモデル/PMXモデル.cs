@@ -38,8 +38,7 @@ namespace MikuMikuFlex3
 
         internal PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
-        public List<string> テクスチャリスト
-            => this._PMXFモデル.テクスチャリスト;
+        public PMXFormat.モデル Format { get; protected set; }
 
 
 
@@ -117,9 +116,9 @@ namespace MikuMikuFlex3
         {
             #region " モデルを読み込む。"
             //----------------
-            this._PMXFモデル = new PMXFormat.モデル( PMXデータ );
+            this.Format = new PMXFormat.モデル( PMXデータ );
 
-            if( this._PMXFモデル.ボーンリスト.Count > 最大ボーン数 )
+            if( this.Format.ボーンリスト.Count > 最大ボーン数 )
                 throw new Exception( "ボーン数が多すぎます。" );
 
             PMXデータ.Dispose();
@@ -128,11 +127,11 @@ namespace MikuMikuFlex3
             #region " ボーンリストを作成する。"
             //----------------
             {
-                int ボーン数 = this._PMXFモデル.ボーンリスト.Count;
+                int ボーン数 = this.Format.ボーンリスト.Count;
                 this.ボーンリスト = new PMXボーン制御[ ボーン数 ];
 
                 for( int i = 0; i < ボーン数; i++ )
-                    this.ボーンリスト[ i ] = new PMXボーン制御( this._PMXFモデル.ボーンリスト[ i ], i );
+                    this.ボーンリスト[ i ] = new PMXボーン制御( this.Format.ボーンリスト[ i ], i );
 
                 for( int i = 0; i < ボーン数; i++ )
                     this.ボーンリスト[ i ].読み込み後の処理を行う( this.ボーンリスト );
@@ -227,31 +226,31 @@ namespace MikuMikuFlex3
             #region " 物理変形を初期化する。"
             //----------------
             {
-                this._物理変形更新 = new PMX物理変形更新( this.ボーンリスト, this._PMXFモデル.剛体リスト, this._PMXFモデル.ジョイントリスト );
+                this._物理変形更新 = new PMX物理変形更新( this.ボーンリスト, this.Format.剛体リスト, this.Format.ジョイントリスト );
             }
             //----------------
             #endregion
             #region " 材質リストを作成する。"
             //----------------
             {
-                int 材質数 = this._PMXFモデル.材質リスト.Count;
+                int 材質数 = this.Format.材質リスト.Count;
 
                 this.材質リスト = new PMX材質制御[ 材質数 ];
 
                 for( int i = 0; i < 材質数; i++ )
-                    this.材質リスト[ i ] = new PMX材質制御( this._PMXFモデル.材質リスト[ i ], 既定の材質シェーダー );
+                    this.材質リスト[ i ] = new PMX材質制御( this.Format.材質リスト[ i ], 既定の材質シェーダー );
             }
             //----------------
             #endregion
             #region " モーフリストを作成する。"
             //----------------
             {
-                int モーフ数 = this._PMXFモデル.モーフリスト.Count;
+                int モーフ数 = this.Format.モーフリスト.Count;
 
                 this.モーフリスト = new PMXモーフ制御[ モーフ数 ];
 
                 for( int i = 0; i < モーフ数; i++ )
-                    this.モーフリスト[ i ] = new PMXモーフ制御( this._PMXFモデル.モーフリスト[ i ] );
+                    this.モーフリスト[ i ] = new PMXモーフ制御( this.Format.モーフリスト[ i ] );
             }
             //----------------
             #endregion
@@ -259,11 +258,11 @@ namespace MikuMikuFlex3
             #region " PMX頂点制御を生成する。"
             //----------------
             {
-                var 頂点リスト = new List<CS_INPUT>( this._PMXFモデル.頂点リスト.Count );
+                var 頂点リスト = new List<CS_INPUT>( this.Format.頂点リスト.Count );
 
-                for( int i = 0; i < this._PMXFモデル.頂点リスト.Count; i++ )
+                for( int i = 0; i < this.Format.頂点リスト.Count; i++ )
                 {
-                    this._頂点データを頂点レイアウトリストに追加する( this._PMXFモデル.頂点リスト[ i ], 頂点リスト );
+                    this._頂点データを頂点レイアウトリストに追加する( this.Format.頂点リスト[ i ], 頂点リスト );
                 }
 
                 this.PMX頂点制御 = new PMX頂点制御( 頂点リスト.ToArray() );
@@ -288,7 +287,7 @@ namespace MikuMikuFlex3
                     d3dDevice,
                     this._D3Dスキニングバッファ,  // 構造化バッファ
                     new ShaderResourceViewDescription {
-                        Format = Format.Unknown,
+                        Format = SharpDX.DXGI.Format.Unknown,
                         Dimension = ShaderResourceViewDimension.ExtendedBuffer,
                         BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
                             FirstElement = 0,
@@ -315,7 +314,7 @@ namespace MikuMikuFlex3
                     d3dDevice,
                     this._D3D頂点バッファ,
                     new UnorderedAccessViewDescription {
-                        Format = Format.R32_Typeless,
+                        Format = SharpDX.DXGI.Format.R32_Typeless,
                         Dimension = UnorderedAccessViewDimension.Buffer,
                         Buffer = new UnorderedAccessViewDescription.BufferResource {
                             FirstElement = 0,
@@ -345,7 +344,7 @@ namespace MikuMikuFlex3
             {
                 var インデックスリスト = new List<uint>();
 
-                foreach( PMXFormat.面 surface in this._PMXFモデル.面リスト )
+                foreach( PMXFormat.面 surface in this.Format.面リスト )
                 {
                     インデックスリスト.Add( surface.頂点1 );
                     インデックスリスト.Add( surface.頂点2 );
@@ -483,13 +482,13 @@ namespace MikuMikuFlex3
             #region " 個別テクスチャを読み込む。"
             //----------------
             {
-                this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this._PMXFモデル.テクスチャリスト.Count ];
+                this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this.Format.テクスチャリスト.Count ];
 
-                for( int i = 0; i < this._PMXFモデル.テクスチャリスト.Count; i++ )
+                for( int i = 0; i < this.Format.テクスチャリスト.Count; i++ )
                 {
                     this._個別テクスチャリスト[ i ] = (null, null);
 
-                    var texturePath = this._PMXFモデル.テクスチャリスト[ i ];
+                    var texturePath = this.Format.テクスチャリスト[ i ];
                     var 拡張子 = Path.GetExtension( texturePath ).ToLower();
 
                     Debug.Write( $"Loading {texturePath} ... " );
@@ -520,9 +519,9 @@ namespace MikuMikuFlex3
 
             #region " ボーン用の配列を作成する。"
             //----------------
-            this._ボーンのモデルポーズ配列 = new Matrix[ this._PMXFモデル.ボーンリスト.Count ];
-            this._ボーンのローカル位置配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
-            this._ボーンの回転配列 = new Vector4[ this._PMXFモデル.ボーンリスト.Count ];
+            this._ボーンのモデルポーズ配列 = new Matrix[ this.Format.ボーンリスト.Count ];
+            this._ボーンのローカル位置配列 = new Vector4[ this.Format.ボーンリスト.Count ];
+            this._ボーンの回転配列 = new Vector4[ this.Format.ボーンリスト.Count ];
             //----------------
             #endregion
             #region " ボーン用の定数バッファを作成する。"
@@ -657,7 +656,7 @@ namespace MikuMikuFlex3
                 bone.Dispose();
             this.ボーンリスト = null;
 
-            this._PMXFモデル = null;
+            this.Format = null;
         }
 
         private ManualResetEventSlim _初期化完了 = new ManualResetEventSlim( false );
@@ -694,7 +693,7 @@ namespace MikuMikuFlex3
 
             #region " 頂点状態をリセットする。"
             //----------------
-            this.PMX頂点制御.状態をリセットする( this._PMXFモデル.ヘッダ.追加UV数, this._PMXFモデル.頂点リスト );
+            this.PMX頂点制御.状態をリセットする( this.Format.ヘッダ.追加UV数, this.Format.頂点リスト );
             //----------------
             #endregion
 
@@ -1042,7 +1041,7 @@ namespace MikuMikuFlex3
             //----------------
             {
                 d3ddc.InputAssembler.SetVertexBuffers( 0, new VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, Format.R32_UInt, 0 );
+                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, SharpDX.DXGI.Format.R32_UInt, 0 );
                 d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
                 d3ddc.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
@@ -1224,8 +1223,6 @@ namespace MikuMikuFlex3
 
         // private
 
-
-        private PMXFormat.モデル _PMXFモデル;
 
         private (Texture2D tex2d, ShaderResourceView srv)[] _共有テクスチャリスト;
 
