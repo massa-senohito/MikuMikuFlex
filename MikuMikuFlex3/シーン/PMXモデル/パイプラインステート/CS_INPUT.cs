@@ -30,7 +30,7 @@ namespace MikuMikuFlex3
         public float EdgeWeight;
         public UInt32 Index;
         /// <summary>
-        ///     <see cref="MMDFileParser.PMXModelParser.BoneWeight.変形方式"/> の値
+        ///     <see cref="PMXFormat.ボーンウェイト種別"/> の値
         /// </summary>
         public UInt32 変形方式;
 
