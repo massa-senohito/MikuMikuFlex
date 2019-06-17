@@ -19,7 +19,7 @@ namespace MikuMikuFlex3
 
         public PMXFormat.モーフ種別 モーフ種類 => this.PMXFモーフ.モーフ種類;
 
-        internal PMXFormat.モーフ PMXFモーフ { get; private protected set; }
+        public PMXFormat.モーフ PMXFモーフ { get; protected set; }
 
         public float モーフ値 { get; set; }
 
