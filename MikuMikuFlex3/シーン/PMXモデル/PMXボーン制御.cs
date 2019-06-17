@@ -19,7 +19,7 @@ namespace MikuMikuFlex3
 
         public string 名前_英 => this.PMXFボーン.ボーン名_英;
 
-        public PMXボーン制御 親ボーン { get; protected set; }
+        public PMXボーン制御 親ボーン { get; set; }
 
         public List<PMXボーン制御> 子ボーンリスト { get; protected set; }
 

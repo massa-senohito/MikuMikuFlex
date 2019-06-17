@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MikuMikuFlex</id>
-    <version>3.0.1-alpha07</version>
+    <version>3.0.1-alpha08</version>
     <authors>FROM/Kenji Yamazaki</authors>
     <owners>FROM</owners>
     <license type="expression">MIT</license>
