@@ -38,6 +38,8 @@ namespace MikuMikuFlex3
 
         public PMX頂点制御 PMX頂点制御 { get; private protected set; }
 
+        public uint[] インデックスリスト { get; protected set; }
+
         public PMXFormat.モデル Format { get; protected set; }
 
 
@@ -342,16 +344,18 @@ namespace MikuMikuFlex3
             #region " インデックスバッファを作成する。"
             //----------------
             {
-                var インデックスリスト = new List<uint>();
+                var indexList = new List<uint>();
 
                 foreach( PMXFormat.面 surface in this.Format.面リスト )
                 {
-                    インデックスリスト.Add( surface.頂点1 );
-                    インデックスリスト.Add( surface.頂点2 );
-                    インデックスリスト.Add( surface.頂点3 );
+                    indexList.Add( surface.頂点1 );
+                    indexList.Add( surface.頂点2 );
+                    indexList.Add( surface.頂点3 );
                 }
 
-                using( var dataStream = DataStream.Create( インデックスリスト.ToArray(), true, true ) )
+                this.インデックスリスト = indexList.ToArray();
+
+                using( var dataStream = DataStream.Create( this.インデックスリスト, true, true ) )
                 {
                     this._D3Dインデックスバッファ = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
