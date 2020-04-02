@@ -1191,23 +1191,25 @@ namespace MikuMikuFlex3
 
                 // エッジ描画
 
+                if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) )
+                {
+                    #region " D3Dパイプライン（材質単位）を設定する。"
+                    //----------------
+                    d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
+                    //----------------
+                    #endregion
 
-                #region " D3Dパイプライン（材質単位）を設定する。"
-                //----------------
-                d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
-                //----------------
-                #endregion
-
-                材質描画シェーダー.Draw(
-                    d3ddc,
-                    材質.頂点数,
-                    材質.開始インデックス,
-                    MMDPass.Edge,
-                    globalParameters,
-                    this._GlobalParameters定数バッファ,
-                    テクスチャSRV,
-                    スフィアマップテクスチャSRV,
-                    トゥーンテクスチャSRV );
+                    材質描画シェーダー.Draw(
+                        d3ddc,
+                        材質.頂点数,
+                        材質.開始インデックス,
+                        MMDPass.Edge,
+                        globalParameters,
+                        this._GlobalParameters定数バッファ,
+                        テクスチャSRV,
+                        スフィアマップテクスチャSRV,
+                        トゥーンテクスチャSRV );
+                }
             }
             //----------------
             #endregion
