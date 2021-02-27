@@ -13,33 +13,55 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildShader", "BuildShader\BuildShader.vcxproj", "{30421A76-6DDC-4EE9-82C0-2BAD516521AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikuMikuFlex3", "MikuMikuFlex3\MikuMikuFlex3.csproj", "{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MikuMikuFlex3", "MikuMikuFlex3\MikuMikuFlex3.csproj", "{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}"
 	ProjectSection(ProjectDependencies) = postProject
 		{30421A76-6DDC-4EE9-82C0-2BAD516521AF} = {30421A76-6DDC-4EE9-82C0-2BAD516521AF}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EC199155-552B-426D-88C7-C797D38E2068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ニコニ立体ちゃんサンプル", "Samples\ニコニ立体ちゃんサンプル\ニコニ立体ちゃんサンプル.csproj", "{CCD5DFC0-E001-4626-8B35-74E92D085E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ニコニ立体ちゃんサンプル", "Samples\ニコニ立体ちゃんサンプル\ニコニ立体ちゃんサンプル.csproj", "{CCD5DFC0-E001-4626-8B35-74E92D085E95}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgaLib", "TgaLib\TgaLib\TgaLib.csproj", "{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Debug|x64.ActiveCfg = Debug|x64
 		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Debug|x64.Build.0 = Debug|x64
+		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Release|Any CPU.ActiveCfg = Release|x64
 		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Release|x64.ActiveCfg = Release|x64
 		{30421A76-6DDC-4EE9-82C0-2BAD516521AF}.Release|x64.Build.0 = Release|x64
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Debug|x64.Build.0 = Debug|Any CPU
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|x64.ActiveCfg = Release|Any CPU
 		{6929FAAD-32C9-4958-9CCF-8BC86EF2F767}.Release|x64.Build.0 = Release|Any CPU
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Debug|x64.Build.0 = Debug|Any CPU
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|x64.ActiveCfg = Release|Any CPU
 		{CCD5DFC0-E001-4626-8B35-74E92D085E95}.Release|x64.Build.0 = Release|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Debug|x64.Build.0 = Debug|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|x64.ActiveCfg = Release|Any CPU
+		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

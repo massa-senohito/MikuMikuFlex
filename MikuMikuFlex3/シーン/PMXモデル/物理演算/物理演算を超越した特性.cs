@@ -18,8 +18,8 @@ namespace MikuMikuFlex3
 
         public CharacteristicsThatTranscendPhysics(
             bool NotAffectedByPhysicsKinematicRigidBody = false, 
-            CollisionFilterGroups OwnCollisionGroupNumber = CollisionFilterGroups.DefaultFilter,
-            CollisionFilterGroups OtherCollisionGroupNumbersThatCollideWithItself = CollisionFilterGroups.AllFilter )
+            CollisionFilterGroups OwnCollisionGroupNumber = CollisionFilterGroups.DefaultFilter,   //.AllFilter 
+            CollisionFilterGroups OtherCollisionGroupNumbersThatCollideWithItself = CollisionFilterGroups.Everything)
 		{
 			this.NotAffectedByPhysicsKinematicRigidBody = NotAffectedByPhysicsKinematicRigidBody;
 			this.OwnCollisionGroupNumber = OwnCollisionGroupNumber;
