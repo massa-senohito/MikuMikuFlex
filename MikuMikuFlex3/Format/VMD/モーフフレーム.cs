@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,33 +6,33 @@ using System.Linq;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class モーフフレーム : IFrameData
+    public class MorphFrame : IFrameData
     {
 		/// <summary>
 		///		"まばたき" など
 		/// </summary>
-        public string モーフ名;
+        public string MorphName;
 
-        public uint フレーム番号 { get; private set; }
+        public uint FrameNumber { get; private set; }
 
         /// <summary>
         ///     スライダーの値(0～1)
         /// </summary>
-        public float モーフ値;
+        public float MorphValue;
 
 
-        public モーフフレーム()
+        public MorphFrame()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal モーフフレーム( Stream fs )
+        internal MorphFrame( Stream fs )
         {
-            this.モーフ名 = ParserHelper.get_Shift_JISString( fs, 15 );
-            this.フレーム番号 = ParserHelper.get_DWORD( fs );
-            this.モーフ値 = ParserHelper.get_Float( fs );
+            this.MorphName = ParserHelper.get_Shift_JISString( fs, 15 );
+            this.FrameNumber = ParserHelper.get_DWORD( fs );
+            this.MorphValue = ParserHelper.get_Float( fs );
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace MikuMikuFlex3.VMDFormat
         /// </summary>
         public int CompareTo( Object x )
         {
-            return (int) フレーム番号 - (int) ( (IFrameData) x ).フレーム番号;
+            return (int) FrameNumber - (int) ( (IFrameData) x ).FrameNumber;
         }
     }
 }

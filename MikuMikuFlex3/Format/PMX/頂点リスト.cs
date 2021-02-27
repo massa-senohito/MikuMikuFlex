@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 頂点リスト : List<頂点>
+    public class VertexList : List<Vertex>
     {
-        public 頂点リスト()
+        public VertexList()
             : base()
         {
         }
@@ -18,28 +18,28 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 頂点リスト( Stream st, ヘッダ header )
+        internal VertexList( Stream st, Header header )
         {
-            int 頂点数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"頂点数: {頂点数}" );
+            int NumberOfVertices = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfVertices: {NumberOfVertices}" );
 
-            this.Capacity = 頂点数;
+            this.Capacity = NumberOfVertices;
 
-            for( int i = 0; i < 頂点数; i++ )
-                this.Add( new 頂点( st, header ) );
+            for( int i = 0; i < NumberOfVertices; i++ )
+                this.Add( new Vertex( st, header ) );
 #if DEBUG
-            int[] 出現数 = new int[ 5 ];
-            for( int i = 0; i < 頂点数; i++ )
+            int[] NumberOfAppearances = new int[ 5 ];
+            for( int i = 0; i < NumberOfVertices; i++ )
             {
-                var ウェイト変換方式 = (byte) this[ i ].ウェイト変形方式;
-                出現数[ ウェイト変換方式 ]++;
+                var WeightConversionMethod = (byte) this[ i ].WeightDeformationMethod;
+                NumberOfAppearances[ WeightConversionMethod ]++;
             }
             Debug.WriteLine( $"   " +
-                $"BDEF1:{出現数[(int) ボーンウェイト種別.BDEF1]}, "+
-                $"BDEF2:{出現数[ (int) ボーンウェイト種別.BDEF2 ]}, "+
-                $"BDEF4:{出現数[ (int) ボーンウェイト種別.BDEF4 ]}, "+
-                $"SDEF:{出現数[ (int) ボーンウェイト種別.SDEF ]}, "+
-                $"QDEF:{出現数[ (int) ボーンウェイト種別.QDEF ]}" );
+                $"BDEF1:{NumberOfAppearances[(int) BoneWeightType.BDEF1]}, "+
+                $"BDEF2:{NumberOfAppearances[ (int) BoneWeightType.BDEF2 ]}, "+
+                $"BDEF4:{NumberOfAppearances[ (int) BoneWeightType.BDEF4 ]}, "+
+                $"SDEF:{NumberOfAppearances[ (int) BoneWeightType.SDEF ]}, "+
+                $"QDEF:{NumberOfAppearances[ (int) BoneWeightType.QDEF ]}" );
 #endif
         }
     }

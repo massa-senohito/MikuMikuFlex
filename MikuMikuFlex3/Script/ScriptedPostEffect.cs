@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -42,7 +42,7 @@ switch( Reason )
             var imms = this._ShaderScript.Compile();
 
             if( 0 != imms.Length )
-                throw new Exception( $"スクリプトのコンパイルに失敗しました。- {imms[ 0 ].ToString()}" );
+                throw new Exception( $"ScriptCompilationFailed。- {imms[ 0 ].ToString()}" );
 
             this._PipelineState = new PipelineState( d3dDevice );
 

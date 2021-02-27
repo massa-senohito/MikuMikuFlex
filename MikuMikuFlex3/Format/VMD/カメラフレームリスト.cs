@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class カメラフレームリスト : List<カメラフレーム>
+    public class CameraFrameList : List<CameraFrame>
     {
-        public カメラフレームリスト()
+        public CameraFrameList()
             :base()
         {
         }
@@ -16,14 +16,14 @@ namespace MikuMikuFlex3.VMDFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal カメラフレームリスト( Stream fs )
+        internal CameraFrameList( Stream fs )
         {
-            var カメラフレーム数 = (int) ParserHelper.get_DWORD( fs );
+            var NumberOfCameraFrames = (int) ParserHelper.get_DWORD( fs );
 
-            this.Capacity = カメラフレーム数;
+            this.Capacity = NumberOfCameraFrames;
 
-            for( int i = 0; i < カメラフレーム数; i++ )
-                this.Add( new カメラフレーム( fs ) );
+            for( int i = 0; i < NumberOfCameraFrames; i++ )
+                this.Add( new CameraFrame( fs ) );
         }
     }
 }

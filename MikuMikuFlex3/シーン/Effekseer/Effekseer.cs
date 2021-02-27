@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -55,14 +55,14 @@ namespace MikuMikuFlex3
             BlendStateAdd.RenderTarget[ 0 ].SourceAlphaBlend = BlendOption.One;
             BlendStateAdd.RenderTarget[ 0 ].DestinationAlphaBlend = BlendOption.Zero;
             BlendStateAdd.RenderTarget[ 0 ].AlphaBlendOperation = BlendOperation.Add;
-            // 色値のブレンディング設定 ... 加算合成
+            // 色値のブレンディング設定 ... AdditiveSynthesis
             BlendStateAdd.RenderTarget[ 0 ].SourceBlend = BlendOption.SourceAlpha;
             BlendStateAdd.RenderTarget[ 0 ].DestinationBlend = BlendOption.One;
             BlendStateAdd.RenderTarget[ 0 ].BlendOperation = BlendOperation.Add;
-            this._BlendState加算合成 = new BlendState( d3dDevice, BlendStateAdd );
+            this._BlendStateAdditiveSynthesis = new BlendState( d3dDevice, BlendStateAdd );
 
 
-            // ラスタライザステートを作成する。
+            // CreateARasterizerState。
 
             this._RasterizerState = new RasterizerState(
                 d3dDevice,
@@ -83,7 +83,7 @@ namespace MikuMikuFlex3
             this.Renderer.Destroy();
 
             // 最後に D3D 関連を破棄
-            this._BlendState加算合成?.Dispose();
+            this._BlendStateAdditiveSynthesis?.Dispose();
             this._RasterizerState?.Dispose();
         }
 
@@ -92,16 +92,16 @@ namespace MikuMikuFlex3
         // 進行と描画
 
 
-        public void 進行する( float 経過フレーム数 )
+        public void Proceed( float NumberOfElapsedFrames )
         {
-            this.Manager.Update( 経過フレーム数 );
+            this.Manager.Update( NumberOfElapsedFrames );
 
             // 登録されているすべてのエフェクトのUpdateアクションを呼び出す。
             foreach( var effect in this.EffectList )
-                effect.UpdateAction?.Invoke( 経過フレーム数 );
+                effect.UpdateAction?.Invoke( NumberOfElapsedFrames );
         }
 
-        public void 描画する( DeviceContext d3ddc, GlobalParameters globalParameters )
+        public void Draw( DeviceContext d3ddc, GlobalParameters globalParameters )
         {
             // ビュー変換行列と射影変換行列を設定する。
 
@@ -121,11 +121,11 @@ namespace MikuMikuFlex3
             d3ddc.HullShader.Set( null );
             d3ddc.DomainShader.Set( null );
             d3ddc.GeometryShader.Set( null );
-            d3ddc.OutputMerger.BlendState = this._BlendState加算合成;
+            d3ddc.OutputMerger.BlendState = this._BlendStateAdditiveSynthesis;
             d3ddc.OutputMerger.DepthStencilState = null;
             d3ddc.Rasterizer.State = this._RasterizerState;
 
-            // 描画する。
+            // Draw。
 
             //this._Renderer.BeginRendering();  --> DX9 で必要
             this.Manager.Draw();
@@ -137,7 +137,7 @@ namespace MikuMikuFlex3
         // ローカル
 
 
-        private BlendState _BlendState加算合成;
+        private BlendState _BlendStateAdditiveSynthesis;
 
         private RasterizerState _RasterizerState;
     }

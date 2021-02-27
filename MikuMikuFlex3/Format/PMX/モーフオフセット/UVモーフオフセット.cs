@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,28 +7,28 @@ using SharpDX;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class UVモーフオフセット : モーフオフセット
+    public class UVMorphOffset : MorphOffset
     {
-        public uint 頂点インデックス { get; private set; }
+        public uint VertexIndex { get; private set; }
 
         /// <summary>
         ///     通常、UV では x,y だけが必要で z,w が不要項目になるが、モーフとしてのデータ値は記録しておく。
         /// </summary>
-        public Vector4 UVオフセット量 { get; private set; }
+        public Vector4 UVOffsetAmount { get; private set; }
 
 
-        public UVモーフオフセット()
+        public UVMorphOffset()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal UVモーフオフセット( Stream st, ヘッダ header, モーフ種別 type )
+        internal UVMorphOffset( Stream st, Header header, MorphType type )
         {
-            this.モーフ種類 = type;
-            this.頂点インデックス = ParserHelper.get_VertexIndex( st, header.頂点インデックスサイズ );
-            this.UVオフセット量 = ParserHelper.get_Float4( st );
+            this.MorphType = type;
+            this.VertexIndex = ParserHelper.get_VertexIndex( st, header.VertexIndexSize );
+            this.UVOffsetAmount = ParserHelper.get_Float4( st );
         }
     }
 }

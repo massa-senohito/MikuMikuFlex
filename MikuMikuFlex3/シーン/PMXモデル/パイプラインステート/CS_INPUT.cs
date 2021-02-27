@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using SharpDX;
 
@@ -30,9 +30,9 @@ namespace MikuMikuFlex3
         public float EdgeWeight;
         public UInt32 Index;
         /// <summary>
-        ///     <see cref="PMXFormat.ボーンウェイト種別"/> の値
+        ///     <see cref="PMXFormat.BoneWeightType"/> の値
         /// </summary>
-        public UInt32 変形方式;
+        public UInt32 DeformationMethod;
 
         public static int SizeInBytes => Marshal.SizeOf( typeof( CS_INPUT ) );
     }

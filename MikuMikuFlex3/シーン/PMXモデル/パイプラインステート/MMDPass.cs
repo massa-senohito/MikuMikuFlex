@@ -1,4 +1,4 @@
-﻿namespace MikuMikuFlex3
+namespace MikuMikuFlex3
 {
     /// <summary>
     ///     MMEのパスのタイプ。

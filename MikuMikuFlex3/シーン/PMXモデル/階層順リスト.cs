@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,42 +13,42 @@ namespace MikuMikuFlex3
 	///		要素の型。
 	/// </typeparam>
 	/// <remarks>
-	///		階層構造（親子関係）を持つ要素配列（T[]）を、親→子の順番になるように並べ替えて自身に格納する。
+	///		階層構造（親子関係）を持つ要素配列（T[]）を、Parent→子の順番になるように並べ替えて自身に格納する。
 	///		（例: E1,E2,E11,E12,E21,E22 → E1,E11,E12,E2,E21,E22）
 	/// </remarks>
-	class 階層順リスト<T> : List<T>
+	class HierarchicalList<T> : List<T>
 	{
         /// <summary>
         ///		コンストラクタ。
         /// </summary>
-        /// <param name="ソートしたい要素の配列">要素はインデックス順に並んでいるものとする。</param>
-        public 階層順リスト( T[] ソートしたい要素の配列, Func<T,int> 親のインデックスを返す, Func<T,int> 自身のインデックスを返す )
+        /// <param name="ArrayOfElementsYouWantToSort">要素はインデックス順に並んでいるものとする。</param>
+        public HierarchicalList( T[] ArrayOfElementsYouWantToSort, Func<T,int> ReturnsTheParentIndex, Func<T,int> ReturnsItsOwnIndex )
         {
-			var ソート済みインデックスキュー = new Queue<int>();
+			var SortedIndexQueue = new Queue<int>();
 
-			var ソート済み要素s = new HashSet<int>();
-			ソート済み要素s.Add( -1 );	// ルート要素のインデックス
+			var SortedElementss = new HashSet<int>();
+			SortedElementss.Add( -1 );	// ルート要素のインデックス
 
-			while( ソート済みインデックスキュー.Count != ソートしたい要素の配列.Length )	// 全要素が「ソート済み」になるまで、
+			while( SortedIndexQueue.Count != ArrayOfElementsYouWantToSort.Length )	// 全要素が「ソート済み」になるまで、
 			{
-				foreach( var 要素 in ソートしたい要素の配列 )							// 全要素を繰り返し確認する。
+				foreach( var Element in ArrayOfElementsYouWantToSort )							// 全要素を繰り返し確認する。
 				{
-					int 自index = 自身のインデックスを返す( 要素 );
-					int 親index = 親のインデックスを返す( 要素 );
+					int Selfindex = ReturnsItsOwnIndex( Element );
+					int Parentindex = ReturnsTheParentIndex( Element );
 
 					// 親要素がすでに格納済みの場合のみ、自要素をキューに格納する。
-					if( ソート済み要素s.Contains( 親index ) && !ソート済み要素s.Contains( 自index ) )
+					if( SortedElementss.Contains( Parentindex ) && !SortedElementss.Contains( Selfindex ) )
 					{
-						ソート済みインデックスキュー.Enqueue( 自index );
-						ソート済み要素s.Add( 自index );
+						SortedIndexQueue.Enqueue( Selfindex );
+						SortedElementss.Add( Selfindex );
 					}
 				}
 			}
 
 			// ソート済みキューの順番に、自分（List<T>）に要素を格納する。
-			while( ソート済みインデックスキュー.Count != 0 )
+			while( SortedIndexQueue.Count != 0 )
 			{
-				this.Add( ソートしたい要素の配列[ ソート済みインデックスキュー.Dequeue() ] );
+				this.Add( ArrayOfElementsYouWantToSort[ SortedIndexQueue.Dequeue() ] );
 			}
 		}
 	}

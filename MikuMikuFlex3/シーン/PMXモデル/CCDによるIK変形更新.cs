@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SharpDX;
@@ -8,28 +8,28 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     CCDIKでIKボーンを更新するクラス
     /// </summary>
-    static class CCDによるIK変形更新
+    static class CCDによるIKDeformationUpdate
     {
-        public static void 変形を更新する( IEnumerable<PMXボーン制御> IKボーンリスト )
+        public static void UpdateTransformation( IEnumerable<PMXBoneControl> IKBoneList )
         {
-            foreach( var IKbone in IKボーンリスト )
+            foreach( var IKbone in IKBoneList )
             {
                 // 決められた回数、IK演算を反復する。
-                for( int it = 0; it < IKbone.PMXFボーン.IKループ回数; it++ )
+                for( int it = 0; it < IKbone.PMXFBourne.IKNumberOfLoops; it++ )
                 {
-                    var エフェクタ = IKbone.IKターゲットボーン;
-                    var ターゲット = IKbone;
+                    var Effector = IKbone.IKTargetBone;
+                    var Target = IKbone;
 
-                    // すべての IKリンク について……
-                    foreach( var ikLink in IKbone.IKリンクリスト )
+                    // すべての IKLink について……
+                    foreach( var ikLink in IKbone.IKLinkList )
                     {
-                        var IKリンクのローカル座標へ変換する行列 = Matrix.Invert( ikLink.IKリンクボーン.モデルポーズ行列 );
+                        var IKMatrixToConvertToLocalCoordinatesOfTheLink = Matrix.Invert( ikLink.IKLinkBone.ModelPoseMatrix );
 
-                        var IKリンクローカル座標でのエフェクタ位置 = Vector3.TransformCoordinate( エフェクタ.ローカル位置, エフェクタ.モデルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
-                        var IKリンクローカル座標でのターゲット位置 = Vector3.TransformCoordinate( ターゲット.ローカル位置, ターゲット.モデルポーズ行列 * IKリンクのローカル座標へ変換する行列 );
+                        var IKEffectorPositionInLinkLocalCoordinates = Vector3.TransformCoordinate( Effector.LocalLocation, Effector.ModelPoseMatrix * IKMatrixToConvertToLocalCoordinatesOfTheLink );
+                        var IKTargetPositionInLinkLocalCoordinates = Vector3.TransformCoordinate( Target.LocalLocation, Target.ModelPoseMatrix * IKMatrixToConvertToLocalCoordinatesOfTheLink );
 
-                        var V1 = Vector3.Normalize( IKリンクローカル座標でのエフェクタ位置 - ikLink.IKリンクボーン.ローカル位置 );
-                        var V2 = Vector3.Normalize( IKリンクローカル座標でのターゲット位置 - ikLink.IKリンクボーン.ローカル位置 );
+                        var V1 = Vector3.Normalize( IKEffectorPositionInLinkLocalCoordinates - ikLink.IKLinkBone.LocalLocation );
+                        var V2 = Vector3.Normalize( IKTargetPositionInLinkLocalCoordinates - ikLink.IKLinkBone.LocalLocation );
 
 
                         // 回転軸 Vaxis ＝ v1×v2 を計算する。
@@ -39,32 +39,32 @@ namespace MikuMikuFlex3
 
                         // 回転軸周りの回転角 θa ＝ Cos-1(V1・V2) を計算する。
 
-                        var 内積 = (double) Vector3.Dot( V1, V2 );
-                        内積 = Math.Max( Math.Min( 内積, 1.0 ), -1.0 ); // 誤差丸め
+                        var InnerProduct = (double) Vector3.Dot( V1, V2 );
+                        InnerProduct = Math.Max( Math.Min( InnerProduct, 1.0 ), -1.0 ); // 誤差丸め
 
-                        double θa = Math.Acos( 内積 );                        // 内積: -1 → 1  のとき、θa: π → 0
-                        θa = Math.Min( θa, IKbone.PMXFボーン.IK単位角rad );  // θa は単位角を超えないこと
+                        double θa = Math.Acos( InnerProduct );                        // InnerProduct: -1 → 1  のとき、θa: π → 0
+                        θa = Math.Min( θa, IKbone.PMXFBourne.IKUnitAnglerad );  // θa は単位角を超えないこと
                         if( θa <= 0.00001 ) continue;                         // θa が小さすぎたら無視
 
 
                         // Vaxis と θa から、回転クォータニオンを計算する。
 
-                        var 回転クォータニオン = Quaternion.RotationAxis( Vaxis, (float) θa );
-                        回転クォータニオン.Normalize();
+                        var RotatingQuaternion = Quaternion.RotationAxis( Vaxis, (float) θa );
+                        RotatingQuaternion.Normalize();
 
 
                         // IKリンクに回転クォータニオンを適用する。
 
-                        ikLink.IKリンクボーン.回転 *= 回転クォータニオン;
+                        ikLink.IKLinkBone.Rotation *= RotatingQuaternion;
 
 
                         // 回転量制限があれば適用する。
 
-                        if( ikLink.回転制限がある )
+                        if( ikLink.ThereIsARotationLimit )
                         {
-                            #region " 回転量制限 "
+                            #region " RotationAmountLimit "
                             //----------------
-                            float X軸回転角, Y軸回転角, Z軸回転角;
+                            float XAxisRotationAngle, YAxisRotationAngle, ZAxisRotationAngle;
 
                             // 回転にはクォータニオンを使っているが、PMXのボーンの最小回転量・最大回転量は、クォータニオンではなくオイラー角（X,Y,Z）で指定される。
                             // そのため、回転数制限の手順は
@@ -80,51 +80,51 @@ namespace MikuMikuFlex3
                             //  (C) Z → X → Y の順
                             // の３通りを調べて、ジンバルロックが発生しない最初の分解値を採用する。
 
-                            if( CGHelper.クォータニオンをXYZ回転に分解する( ikLink.IKリンクボーン.回転, out X軸回転角, out Y軸回転角, out Z軸回転角 ) )    // ジンバルロックが発生しなければ true
+                            if( CGHelper.QuaternionXYZDisassembleIntoRotation( ikLink.IKLinkBone.Rotation, out XAxisRotationAngle, out YAxisRotationAngle, out ZAxisRotationAngle ) )    // ジンバルロックが発生しなければ true
                             {
-                                // (A) XYZ 回転
+                                // (A) XYZ Rotation
 
                                 var clamped = Vector3.Clamp(
-                                    new Vector3( X軸回転角, Y軸回転角, Z軸回転角 ).オイラー角の値域を正規化する(),
-                                    ikLink.最小回転量,
-                                    ikLink.最大回転量 );
+                                    new Vector3( XAxisRotationAngle, YAxisRotationAngle, ZAxisRotationAngle ).NormalizeTheRangeOfEulerAngles(),
+                                    ikLink.MinimumRotationAmount,
+                                    ikLink.MaximumRotationAmount );
 
-                                X軸回転角 = clamped.X;
-                                Y軸回転角 = clamped.Y;
-                                Z軸回転角 = clamped.Z;
+                                XAxisRotationAngle = clamped.X;
+                                YAxisRotationAngle = clamped.Y;
+                                ZAxisRotationAngle = clamped.Z;
 
-                                ikLink.IKリンクボーン.回転 = Quaternion.RotationMatrix( Matrix.RotationX( X軸回転角 ) * Matrix.RotationY( Y軸回転角 ) * Matrix.RotationZ( Z軸回転角 ) );    // X, Y, Z の順
+                                ikLink.IKLinkBone.Rotation = Quaternion.RotationMatrix( Matrix.RotationX( XAxisRotationAngle ) * Matrix.RotationY( YAxisRotationAngle ) * Matrix.RotationZ( ZAxisRotationAngle ) );    // X, Y, Z の順
                             }
-                            else if( CGHelper.クォータニオンをYZX回転に分解する( ikLink.IKリンクボーン.回転, out Y軸回転角, out Z軸回転角, out X軸回転角 ) )    // ジンバルロックが発生しなければ true
+                            else if( CGHelper.QuaternionYZXDisassembleIntoRotation( ikLink.IKLinkBone.Rotation, out YAxisRotationAngle, out ZAxisRotationAngle, out XAxisRotationAngle ) )    // ジンバルロックが発生しなければ true
                             {
-                                // (B) YZX 回転
+                                // (B) YZX Rotation
 
                                 var clamped = Vector3.Clamp(
-                                    new Vector3( X軸回転角, Y軸回転角, Z軸回転角 ).オイラー角の値域を正規化する(),
-                                    ikLink.最小回転量,
-                                    ikLink.最大回転量 );
+                                    new Vector3( XAxisRotationAngle, YAxisRotationAngle, ZAxisRotationAngle ).NormalizeTheRangeOfEulerAngles(),
+                                    ikLink.MinimumRotationAmount,
+                                    ikLink.MaximumRotationAmount );
 
-                                X軸回転角 = clamped.X;
-                                Y軸回転角 = clamped.Y;
-                                Z軸回転角 = clamped.Z;
+                                XAxisRotationAngle = clamped.X;
+                                YAxisRotationAngle = clamped.Y;
+                                ZAxisRotationAngle = clamped.Z;
 
-                                ikLink.IKリンクボーン.回転 = Quaternion.RotationMatrix( Matrix.RotationY( Y軸回転角 ) * Matrix.RotationZ( Z軸回転角 ) * Matrix.RotationX( X軸回転角 ) );    // Y, Z, X の順
+                                ikLink.IKLinkBone.Rotation = Quaternion.RotationMatrix( Matrix.RotationY( YAxisRotationAngle ) * Matrix.RotationZ( ZAxisRotationAngle ) * Matrix.RotationX( XAxisRotationAngle ) );    // Y, Z, X の順
                             }
-                            else if( CGHelper.クォータニオンをZXY回転に分解する( ikLink.IKリンクボーン.回転, out Z軸回転角, out X軸回転角, out Y軸回転角 ) )    // ジンバルロックが発生しなければ true
+                            else if( CGHelper.QuaternionZXYDisassembleIntoRotation( ikLink.IKLinkBone.Rotation, out ZAxisRotationAngle, out XAxisRotationAngle, out YAxisRotationAngle ) )    // ジンバルロックが発生しなければ true
                             {
-                                // (C) ZXY 回転
+                                // (C) ZXY Rotation
 
                                 var clamped = Vector3.Clamp(
-                                    new Vector3( X軸回転角, Y軸回転角, Z軸回転角 ).オイラー角の値域を正規化する(),
-                                    ikLink.最小回転量,
-                                    ikLink.最大回転量 );
+                                    new Vector3( XAxisRotationAngle, YAxisRotationAngle, ZAxisRotationAngle ).NormalizeTheRangeOfEulerAngles(),
+                                    ikLink.MinimumRotationAmount,
+                                    ikLink.MaximumRotationAmount );
 
-                                X軸回転角 = clamped.X;
-                                Y軸回転角 = clamped.Y;
-                                Z軸回転角 = clamped.Z;
+                                XAxisRotationAngle = clamped.X;
+                                YAxisRotationAngle = clamped.Y;
+                                ZAxisRotationAngle = clamped.Z;
 
-                                //ikLink.ikLinkBone.回転行列 = Quaternion.RotationYawPitchRoll( Y軸回転角, X軸回転角, Z軸回転角 );
-                                ikLink.IKリンクボーン.回転 = Quaternion.RotationMatrix( Matrix.RotationZ( Z軸回転角 ) * Matrix.RotationX( X軸回転角 ) * Matrix.RotationY( Y軸回転角 ) );    // Z, X, Y の順
+                                //ikLink.ikLinkBone.RotationMatrix = Quaternion.RotationYawPitchRoll( YAxisRotationAngle, XAxisRotationAngle, ZAxisRotationAngle );
+                                ikLink.IKLinkBone.Rotation = Quaternion.RotationMatrix( Matrix.RotationZ( ZAxisRotationAngle ) * Matrix.RotationX( XAxisRotationAngle ) * Matrix.RotationY( YAxisRotationAngle ) );    // Z, X, Y の順
                             }
                             else
                             {
@@ -138,7 +138,7 @@ namespace MikuMikuFlex3
 
                         // IKリンクの新しい回転行列を反映する。
 
-                        ikLink.IKリンクボーン.モデルポーズを計算する();
+                        ikLink.IKLinkBone.CalculateModelPose();
                     }
                 }
             }

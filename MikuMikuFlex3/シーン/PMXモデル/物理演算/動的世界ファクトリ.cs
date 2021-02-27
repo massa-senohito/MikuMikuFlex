@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +7,9 @@ using BulletSharp;
 
 namespace MikuMikuFlex3
 {
-	internal class 動的世界ファクトリ : IDisposable
+	internal class DynamicWorldFactory : IDisposable
 	{
-		public 動的世界ファクトリ()
+		public DynamicWorldFactory()
 		{
 			this._CollisionConfiguration = new DefaultCollisionConfiguration();
 			this._Dispatcher = new CollisionDispatcher( this._CollisionConfiguration );
@@ -25,11 +25,11 @@ namespace MikuMikuFlex3
             this._CollisionConfiguration?.Dispose();
         }
 
-        public DiscreteDynamicsWorld 動的世界を作って返す( SharpDX.Vector3 重力 )
+        public DiscreteDynamicsWorld CreateAndReturnADynamicWorld( SharpDX.Vector3 Gravity )
 		{
 			var dynamicsWorld = new DiscreteDynamicsWorld( this._Dispatcher, this._OverlappingPairCache, this._Solver, this._CollisionConfiguration );
 
-            dynamicsWorld.Gravity = 重力.ToBulletSharp();
+            dynamicsWorld.Gravity = Gravity.ToBulletSharp();
 
             return dynamicsWorld;
 		}

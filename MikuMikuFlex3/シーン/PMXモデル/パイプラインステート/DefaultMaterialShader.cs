@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -54,7 +54,7 @@ namespace MikuMikuFlex3
             }
             catch( Exception e )
             {
-                Trace.TraceError( $"リソースからのシェーダーの作成に失敗しました。[{csoName}][{e.Message}]" );
+                Trace.TraceError( $"FailedToCreateShaderFromResource。[{csoName}][{e.Message}]" );
             }
         }
 
@@ -75,50 +75,50 @@ namespace MikuMikuFlex3
         /// <param name="d3ddc">
         ///     描画に使用するDeviceContext。
         /// </param>
-        /// <param name="頂点数">
+        /// <param name="NumberOfVertices">
         ///     材質の頂点数。
         /// </param>
-        /// <param name="頂点の開始インデックス">
+        /// <param name="StartIndexOfVertices">
         ///     頂点バッファにおける、材質の開始インデックス。
         /// </param>
-        /// <param name="pass種別">
+        /// <param name="passType">
         ///     材質の描画種別。
         /// </param>
-        /// <param name="グローバルパラメータ">
-        ///     グローバルパラメータ。
+        /// <param name="GlobalParameters">
+        ///     GlobalParameters。
         /// </param>
-        /// <param name="グローバルパラメータ定数バッファ">
+        /// <param name="GlobalParameterConstantBuffer">
         ///     グローバルパラメータの内容が格納された定数バッファ。
         /// </param>
-        /// <param name="テクスチャSRV">
+        /// <param name="TextureSRV">
         ///     材質が使用するテクスチャリソースのSRV。未使用なら null。
         /// </param>
-        /// <param name="スフィアマップテクスチャSRV">
+        /// <param name="SphereMapTextureSRV">
         ///     材質が使用するスフィアマップテクスチャリソースのSRV。未使用なら null。
         /// </param>
-        /// <param name="トゥーンテクスチャSRV">
+        /// <param name="ToonTextureSRV">
         ///     材質が使用するトゥーンテクスチャリソースのSRV。未使用なら null。
         /// </param>
         /// <remarks>
         ///     このメソッドの呼び出し時には、<paramref name="d3ddc"/> には事前に以下のように設定される。
         ///     - InputAssembler
-        ///         - 頂点バッファ（モデル全体）の割り当て
+        ///         - VertexBuffer（モデル全体）の割り当て
         ///         - 頂点インデックスバッファ（モデル全体）の割り当て
         ///         - 頂点レイアウトの割り当て
         ///         - PrimitiveTopology の割り当て(PatchListWith3ControlPoints固定)
         ///     - VertexShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - HullShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - DomainShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - GeometryShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - PixelShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
-        ///         - slot( t0 ) …… <paramref name="テクスチャSRV"/>
-        ///         - slot( t1 ) …… <paramref name="スフィアマップテクスチャSRV"/>
-        ///         - slot( t2 ) …… <paramref name="トゥーンテクスチャSRV"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
+        ///         - slot( t0 ) …… <paramref name="TextureSRV"/>
+        ///         - slot( t1 ) …… <paramref name="SphereMapTextureSRV"/>
+        ///         - slot( t2 ) …… <paramref name="ToonTextureSRV"/>
         ///         - slot( s0 ) …… ピクセルシェーダー用サンプルステート
         ///     - Rasterizer
         ///         - Viewport の設定
@@ -130,16 +130,16 @@ namespace MikuMikuFlex3
         /// </remarks>
         public void Draw(
             DeviceContext d3ddc,
-            int 頂点数,
-            int 頂点の開始インデックス,
-            MMDPass pass種別,
-            in GlobalParameters グローバルパラメータ,
-            SharpDX.Direct3D11.Buffer グローバルパラメータ定数バッファ,
-            ShaderResourceView テクスチャSRV,
-            ShaderResourceView スフィアマップテクスチャSRV,
-            ShaderResourceView トゥーンテクスチャSRV )
+            int NumberOfVertices,
+            int StartIndexOfVertices,
+            MMDPass passType,
+            in GlobalParameters GlobalParameters,
+            SharpDX.Direct3D11.Buffer GlobalParameterConstantBuffer,
+            ShaderResourceView TextureSRV,
+            ShaderResourceView SphereMapTextureSRV,
+            ShaderResourceView ToonTextureSRV )
         {
-            switch( pass種別 )
+            switch( passType )
             {
                 case MMDPass.Object:
                     d3ddc.VertexShader.Set( this.VertexShaderForObject );
@@ -147,7 +147,7 @@ namespace MikuMikuFlex3
                     d3ddc.DomainShader.Set( this.DomainShader );
                     d3ddc.GeometryShader.Set( this.GeometryShader );
                     d3ddc.PixelShader.Set( this.PixelShaderForObject );
-                    d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
+                    d3ddc.DrawIndexed( NumberOfVertices, StartIndexOfVertices, 0 );
                     break;
 
                 case MMDPass.Edge:
@@ -156,7 +156,7 @@ namespace MikuMikuFlex3
                     d3ddc.DomainShader.Set( this.DomainShader );
                     d3ddc.GeometryShader.Set( this.GeometryShader );
                     d3ddc.PixelShader.Set( this.PixelShaderForEdge );
-                    d3ddc.DrawIndexed( 頂点数, 頂点の開始インデックス, 0 );
+                    d3ddc.DrawIndexed( NumberOfVertices, StartIndexOfVertices, 0 );
                     break;
 
                 case MMDPass.ObjectWithSelfShadow:

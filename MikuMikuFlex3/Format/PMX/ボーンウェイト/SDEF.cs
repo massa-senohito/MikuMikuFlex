@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
@@ -10,42 +10,42 @@ namespace MikuMikuFlex3.PMXFormat
     ///     実際の計算ではさらに補正値の算出が必要(一応そのままBDEF2としても使用可能)
     ///     参照インデックスは -1（非参照）の場合があるので注意。
     /// </summary>
-    public class SDEF : ボーンウェイト
+    public class SDEF : BoneWeight
     {
         /// <summary>
-        ///     ボーン１のインデックス。
+        ///     Bourne１のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone1ReferenceIndex;
 
         /// <summary>
-        ///     ボーン２のインデックス。
+        ///     Bourne２のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone2ReferenceIndex;
 
         /// <summary>
-        ///     ボーン１のウェイト値。
+        ///     Bourne１のウェイト値。
         /// </summary>
         public float Bone1Weight;
 
         /// <summary>
-        ///     ボーン２のウェイト値。
+        ///     Bourne２のウェイト値。
         /// </summary>
         public float Bone2Weight => ( 1.0f - Bone1Weight );
 
         /// <summary>
-        ///     点C。
+        ///     PointC。
         /// </summary>
         public Vector3 SDEF_C;
 
         /// <summary>
-        ///     点R0。
+        ///     PointR0。
         /// </summary>
         public Vector3 SDEF_R0;
 
         /// <summary>
-        ///     点R1。
+        ///     PointR1。
         ///     ※修正値を要計算
         /// </summary>
         public Vector3 SDEF_R1;

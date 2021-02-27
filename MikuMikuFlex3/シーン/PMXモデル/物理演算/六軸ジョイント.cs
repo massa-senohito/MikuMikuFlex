@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,80 +8,80 @@ using BulletSharp;
 
 namespace MikuMikuFlex3
 {
-	internal class 六軸ジョイントにつながる剛体
+	internal class RigidBodyConnectedToA6AxisJoint
 	{
-		public RigidBody 剛体 { get; private protected set; }
-        public Matrix ワールド変換行列 { get; private protected set; }
+		public RigidBody RigidBody { get; private protected set; }
+        public Matrix WorldTransformationMatrix { get; private protected set; }
 
-        public 六軸ジョイントにつながる剛体( RigidBody 剛体, Matrix ワールド変換行列 )
+        public RigidBodyConnectedToA6AxisJoint( RigidBody RigidBody, Matrix WorldTransformationMatrix )
 		{
-			this.剛体 = 剛体;
-			this.ワールド変換行列 = ワールド変換行列;
+			this.RigidBody = RigidBody;
+			this.WorldTransformationMatrix = WorldTransformationMatrix;
 		}
 	}
 
 
-	internal class 六軸ジョイントの移動制限
+	internal class RestrictionOnMovementOf6AxisJoint
 	{
-		public Vector3 移動制限1 { get; private protected set; }
-        public Vector3 移動制限2 { get; private protected set; }
+		public Vector3 MovementRestrictions1 { get; private protected set; }
+        public Vector3 MovementRestrictions2 { get; private protected set; }
 
-        public 六軸ジョイントの移動制限( Vector3 移動制限1, Vector3 移動制限2 )
+        public RestrictionOnMovementOf6AxisJoint( Vector3 MovementRestrictions1, Vector3 MovementRestrictions2 )
 		{
-			this.移動制限1 = 移動制限1;
-			this.移動制限2 = 移動制限2;
+			this.MovementRestrictions1 = MovementRestrictions1;
+			this.MovementRestrictions2 = MovementRestrictions2;
 		}
 	}
 
 
-    internal class 六軸ジョイントの回転制限
+    internal class RotationLimitOf6AxisJoint
 	{
-		public Vector3 回転制限1 { get; private protected set; }
-        public Vector3 回転制限2 { get; private protected set; }
+		public Vector3 RotationLimit1 { get; private protected set; }
+        public Vector3 RotationLimit2 { get; private protected set; }
 
-        public 六軸ジョイントの回転制限( Vector3 回転制限1, Vector3 回転制限2 )
+        public RotationLimitOf6AxisJoint( Vector3 RotationLimit1, Vector3 RotationLimit2 )
 		{
-			this.回転制限1 = 回転制限1;
-			this.回転制限2 = 回転制限2;
+			this.RotationLimit1 = RotationLimit1;
+			this.RotationLimit2 = RotationLimit2;
 		}
 	}
 
 
-	internal class 六軸バネ剛性
+	internal class SixAxisSpringRigidity
 	{
-		public Vector3 平行移動成分 { get; private protected set; }
-        public Vector3 回転移動成分 { get; private protected set; }
+		public Vector3 TranslationComponent { get; private protected set; }
+        public Vector3 RotationalMovementComponent { get; private protected set; }
 
-        public 六軸バネ剛性( Vector3 平行移動成分, Vector3 回転移動成分 )
+        public SixAxisSpringRigidity( Vector3 TranslationComponent, Vector3 RotationalMovementComponent )
 		{
-			this.平行移動成分 = 平行移動成分;
-			this.回転移動成分 = 回転移動成分;
+			this.TranslationComponent = TranslationComponent;
+			this.RotationalMovementComponent = RotationalMovementComponent;
 		}
 	}
 
 
-	internal class 六軸ジョイントにつながる剛体のペア
+	internal class APairOfRigidBodiesConnectedToASixAxisJoint
 	{
-		public 六軸ジョイントにつながる剛体 剛体A { get; private protected set; }
-        public 六軸ジョイントにつながる剛体 剛体B { get; private protected set; }
+		public RigidBodyConnectedToA6AxisJoint RigidBodyA { get; private protected set; }
+        public RigidBodyConnectedToA6AxisJoint RigidBodyB { get; private protected set; }
 
-        public 六軸ジョイントにつながる剛体のペア( 六軸ジョイントにつながる剛体 剛体A, 六軸ジョイントにつながる剛体 剛体B )
+        public APairOfRigidBodiesConnectedToASixAxisJoint( RigidBodyConnectedToA6AxisJoint RigidBodyA, RigidBodyConnectedToA6AxisJoint RigidBodyB )
 		{
-			this.剛体A = 剛体A;
-			this.剛体B = 剛体B;
+			this.RigidBodyA = RigidBodyA;
+			this.RigidBodyB = RigidBodyB;
 		}
 	}
 
 
-	internal class 六軸可動制限
+	internal class SixAxisMovableRestriction
 	{
-		public 六軸ジョイントの移動制限 移動制限 { get; private protected set; }
-        public 六軸ジョイントの回転制限 回転制限 { get; private protected set; }
+		public RestrictionOnMovementOf6AxisJoint MovementRestrictions { get; private protected set; }
+        public RotationLimitOf6AxisJoint RotationLimit { get; private protected set; }
 
-        public 六軸可動制限( 六軸ジョイントの移動制限 移動制限, 六軸ジョイントの回転制限 回転制限 )
+        public SixAxisMovableRestriction( RestrictionOnMovementOf6AxisJoint MovementRestrictions, RotationLimitOf6AxisJoint RotationLimit )
 		{
-			this.移動制限 = 移動制限;
-			this.回転制限 = 回転制限;
+			this.MovementRestrictions = MovementRestrictions;
+			this.RotationLimit = RotationLimit;
 		}
 	}
 }

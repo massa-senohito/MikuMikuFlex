@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class ボーンフレームリスト : List<ボーンフレーム>
+    public class BoneFrameList : List<BoneFrame>
     {
-        public ボーンフレームリスト()
+        public BoneFrameList()
             : base()
         {
         }
@@ -16,14 +16,14 @@ namespace MikuMikuFlex3.VMDFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーンフレームリスト( Stream fs )
+        internal BoneFrameList( Stream fs )
         {
-            var ボーンフレーム数 = (int) ParserHelper.get_DWORD( fs );
+            var NumberOfBoneFrames = (int) ParserHelper.get_DWORD( fs );
 
-            this.Capacity = ボーンフレーム数;
+            this.Capacity = NumberOfBoneFrames;
 
-            for( int i = 0; i < ボーンフレーム数; i++ )
-                this.Add( new ボーンフレーム( fs ) );
+            for( int i = 0; i < NumberOfBoneFrames; i++ )
+                this.Add( new BoneFrame( fs ) );
         }
     }
 }

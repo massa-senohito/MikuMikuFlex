@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,11 +8,11 @@ using SharpDX;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 材質
+    public class Material
     {
-        public string 材質名;
+        public string MaterialName;
 
-        public string 材質名_英;
+        public string MaterialName_English;
 
         
         // 材質色
@@ -20,122 +20,122 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     (R, G, B, A)
         /// </summary>
-        public Vector4 拡散色;
+        public Vector4 DiffuseColor;
 
         /// <summary>
         ///     (R, G, B)
         /// </summary>
-        public Vector3 反射色;
+        public Vector3 ReflectiveColor;
 
-        public float 反射強度;
+        public float ReflectionIntensity;
 
         /// <summary>
         ///     (R, B, B)
         /// </summary>
-        public Vector3 環境色;
+        public Vector3 EnvironmentalColor;
 
         
-        // 描画
+        // Drawing
 
-        public 描画フラグ 描画フラグ;
+        public DrawingFlag DrawingFlag;
 
         /// <summary>
-        ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
+        ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
         ///     (R, G, B, A)
         /// </summary>
-        public Vector4 エッジ色;
+        public Vector4 EdgeColor;
 
         /// <summary>
-        ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
-        ///     Point 描画時は Point サイズ(※2.1拡張)。
+        ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
+        ///     Point 描画時は Point Size(※2.1拡張)。
         /// </summary>
-        public float エッジサイズ;
+        public float EdgeSize;
 
 
-        // テクスチャ／メモ
+        // Texture／Note
 
-        public int 通常テクスチャの参照インデックス;
+        public int ReferenceIndexOfNormalTexture;
 
-        public int スフィアテクスチャの参照インデックス;
+        public int SphereTextureReferenceIndex;
 
-        public スフィアモード スフィアモード;
+        public SphereMode SphereMode;
 
         /// <summary>
         ///     0 or 1  。
-        ///     <see cref="共有Toonのテクスチャ参照インデックス"/> のサマリを参照のこと。
+        ///     <see cref="ShareToonのテクスチャ参照インデックス"/> のサマリを参照のこと。
         /// </summary>
-        public byte 共有Toonフラグ;
+        public byte ShareToonFlag;
 
         /// <summary>
-        ///     <see cref="共有Toonフラグ"/> が 0 の時は、Toonテクスチャテクスチャテーブルの参照インデックス。
-        ///     <see cref="共有Toonフラグ"/> が 1 の時は、共有Toonテクスチャ[0~9]がそれぞれ toon01.bmp~toon10.bmp に対応。
+        ///     <see cref="ShareToonFlag"/> が 0 の時は、Toonテクスチャテクスチャテーブルの参照インデックス。
+        ///     <see cref="ShareToonFlag"/> が 1 の時は、ShareToonTexture[0~9]がそれぞれ toon01.bmp~toon10.bmp に対応。
         /// </summary>
-        public int 共有Toonのテクスチャ参照インデックス;
+        public int ShareToonのテクスチャ参照インデックス;
 
         /// <summary>
         ///     自由欄／スクリプト記述／エフェクトへのパラメータ配置など
         /// </summary>
-        public String メモ;
+        public String Note;
 
 
         /// <summary>
         ///     材質に対応する面数（頂点数で示す）。
         ///     １面は３頂点なので、必ず３の倍数になる。
         /// </summary>
-        public int 頂点数;
+        public int NumberOfVertices;
 
-        public int 開始インデックス;
+        public int StartingIndex;
 
 
-        public 材質()
+        public Material()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 材質( Stream fs, ヘッダ header, int index )
+        internal Material( Stream fs, Header header, int index )
         {
-            this.開始インデックス = index;
-            this.材質名 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.材質名_英 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.拡散色 = ParserHelper.get_Float4( fs );
-            this.反射色 = ParserHelper.get_Float3( fs );
-            this.反射強度 = ParserHelper.get_Float( fs );
-            this.環境色 = ParserHelper.get_Float3( fs );
-            this.描画フラグ = (描画フラグ) ParserHelper.get_Byte( fs );
-            this.エッジ色 = ParserHelper.get_Float4( fs );
-            this.エッジサイズ = ParserHelper.get_Float( fs );
-            this.通常テクスチャの参照インデックス = ParserHelper.get_Index( fs, header.テクスチャインデックスサイズ );
-            this.スフィアテクスチャの参照インデックス = ParserHelper.get_Index( fs, header.テクスチャインデックスサイズ );
+            this.StartingIndex = index;
+            this.MaterialName = ParserHelper.get_TextBuf( fs, header.EncodingMethod );
+            this.MaterialName_English = ParserHelper.get_TextBuf( fs, header.EncodingMethod );
+            this.DiffuseColor = ParserHelper.get_Float4( fs );
+            this.ReflectiveColor = ParserHelper.get_Float3( fs );
+            this.ReflectionIntensity = ParserHelper.get_Float( fs );
+            this.EnvironmentalColor = ParserHelper.get_Float3( fs );
+            this.DrawingFlag = (DrawingFlag) ParserHelper.get_Byte( fs );
+            this.EdgeColor = ParserHelper.get_Float4( fs );
+            this.EdgeSize = ParserHelper.get_Float( fs );
+            this.ReferenceIndexOfNormalTexture = ParserHelper.get_Index( fs, header.TextureIndexSize );
+            this.SphereTextureReferenceIndex = ParserHelper.get_Index( fs, header.TextureIndexSize );
 
             switch( ParserHelper.get_Byte( fs ) )
             {
                 case 0:
-                    this.スフィアモード = スフィアモード.無効;
+                    this.SphereMode = SphereMode.Invalid;
                     break;
 
                 case 1:
-                    this.スフィアモード = スフィアモード.乗算;
+                    this.SphereMode = SphereMode.Multiply;
                     break;
 
                 case 2:
-                    this.スフィアモード = スフィアモード.加算;
+                    this.SphereMode = SphereMode.Addition;
                     break;
 
                 case 3:
-                    this.スフィアモード = スフィアモード.サブテクスチャ;
+                    this.SphereMode = SphereMode.Subtexture;
                     break;
 
                 default:
-                    throw new InvalidDataException( "スフィアモード値が異常です。" );
+                    throw new InvalidDataException( "SphereModeValueIsAbnormal。" );
             }
 
-            this.共有Toonフラグ = ParserHelper.get_Byte( fs );
-            this.共有Toonのテクスチャ参照インデックス = this.共有Toonフラグ == 0 ? ParserHelper.get_Index( fs, header.テクスチャインデックスサイズ ) : ParserHelper.get_Byte( fs );
-            this.メモ = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.頂点数 = ParserHelper.get_Int( fs );
-            if( this.頂点数 % 3 != 0 )
+            this.ShareToonFlag = ParserHelper.get_Byte( fs );
+            this.ShareToonのテクスチャ参照インデックス = this.ShareToonFlag == 0 ? ParserHelper.get_Index( fs, header.TextureIndexSize ) : ParserHelper.get_Byte( fs );
+            this.Note = ParserHelper.get_TextBuf( fs, header.EncodingMethod );
+            this.NumberOfVertices = ParserHelper.get_Int( fs );
+            if( this.NumberOfVertices % 3 != 0 )
                 throw new InvalidDataException();   // 3 の倍数じゃなければエラー。
         }
     }

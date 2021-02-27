@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,16 +8,16 @@ namespace MikuMikuFlex3
 {
     static class CGHelper
     {
-        public static readonly Vector3 オイラー角の最大値 = new Vector3( MathUtil.Pi - float.Epsilon, 0.5f * MathUtil.Pi - float.Epsilon, MathUtil.Pi - float.Epsilon );
+        public static readonly Vector3 MaximumEulerAngles = new Vector3( MathUtil.Pi - float.Epsilon, 0.5f * MathUtil.Pi - float.Epsilon, MathUtil.Pi - float.Epsilon );
 
-        public static Vector3 オイラー角の最小値 => -( オイラー角の最大値 );
+        public static Vector3 MinimumEulerAngles => -( MaximumEulerAngles );
 
-        public static bool 間にある( this float 値, float 最小値, float 最大値 ) => ( 最小値 <= 値 ) && ( 最大値 >= 値 );
+        public static bool Between( this float Value, float MinimumValue, float MaximumValue ) => ( MinimumValue <= Value ) && ( MaximumValue >= Value );
 
-        public static Vector3 オイラー角の値域を正規化する( this Vector3 source )
+        public static Vector3 NormalizeTheRangeOfEulerAngles( this Vector3 source )
         {
             // Y: -π/2 ～ π/2 に収める（ Y は Arcsin の引数とするため、この範囲になる）
-            if( !source.Y.間にある( (float) -Math.PI * 0.5f, (float) Math.PI * 0.5f ) )
+            if( !source.Y.Between( (float) -Math.PI * 0.5f, (float) Math.PI * 0.5f ) )
             {
                 if( source.Y > 0 )
                 {
@@ -30,7 +30,7 @@ namespace MikuMikuFlex3
             }
 
             // X: -π ～ π に収める
-            if( !source.X.間にある( (float) -Math.PI, (float) Math.PI ) )
+            if( !source.X.Between( (float) -Math.PI, (float) Math.PI ) )
             {
                 if( source.X > 0 )
                 {
@@ -43,7 +43,7 @@ namespace MikuMikuFlex3
             }
 
             // Z: -π ～ π に収める
-            if( !source.Z.間にある( (float) -Math.PI, (float) Math.PI ) )
+            if( !source.Z.Between( (float) -Math.PI, (float) Math.PI ) )
             {
                 if( source.Z > 0 )
                 {
@@ -83,152 +83,152 @@ namespace MikuMikuFlex3
 
 
         /// <summary>
-        ///		クォータニオンを、Yaw(X軸回転), Pitch(Y軸回転), Roll(Z軸回転)に分解する。
+        ///		Quaternion、Yaw(XAxleRotation), Pitch(YAxleRotation), Roll(ZAxleRotation)に分解する。
         /// </summary>
         /// <param name="input">分解するクォータニオン</param>
-        /// <param name="Z軸回転">Z軸回転</param>
-        /// <param name="X軸回転">X軸回転(-PI/2～PI/2)</param>
-        /// <param name="Y軸回転">Y軸回転</param>
+        /// <param name="ZAxleRotation">ZAxleRotation</param>
+        /// <param name="XAxleRotation">XAxleRotation(-PI/2～PI/2)</param>
+        /// <param name="YAxleRotation">YAxleRotation</param>
         /// <returns>ジンバルロックが発生した時はfalse。ジンバルロックはX軸回転で発生</returns>
-        public static bool クォータニオンをZXY回転に分解する( in Quaternion input, out float Z軸回転, out float X軸回転, out float Y軸回転 )
+        public static bool QuaternionZXYDisassembleIntoRotation( in Quaternion input, out float ZAxleRotation, out float XAxleRotation, out float YAxleRotation )
         {
             // クォータニオンを正規化する。
-            var 正規化済み入力 = new Quaternion( input.X, input.Y, input.Z, input.W );
-            正規化済み入力.Normalize();
+            var NormalizedInput = new Quaternion( input.X, input.Y, input.Z, input.W );
+            NormalizedInput.Normalize();
 
             // 正規化されたクォータニオンから回転行列を生成する。
-            Matrix 回転行列;
-            Matrix.RotationQuaternion( ref 正規化済み入力, out 回転行列 );
+            Matrix RotationMatrix;
+            Matrix.RotationQuaternion( ref NormalizedInput, out RotationMatrix );
 
             // X軸回転を取得する。
-            // M32 は -Sin(X軸回転角) であり、M32 が +1 または -1 に非常に近いと、X軸回転角は≒±90度、すなわちZ軸とのジンバルロックが発生していると判定する。
-            if( ( 回転行列.M32 > ( 1 - 1.0e-4 ) ) || ( 回転行列.M32 < ( -1 + 1.0e-4 ) ) )
+            // M32 は -Sin(XAxisRotationAngle) であり、M32 が +1 または -1 に非常に近いと、X軸回転角は≒±90度、すなわちZ軸とのジンバルロックが発生していると判定する。
+            if( ( RotationMatrix.M32 > ( 1 - 1.0e-4 ) ) || ( RotationMatrix.M32 < ( -1 + 1.0e-4 ) ) )
             {
                 // ジンバルロックしてる
-                X軸回転 = (float) ( 回転行列.M32 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                Y軸回転 = (float) Math.Atan2( -回転行列.M13, 回転行列.M11 );
-                Z軸回転 = 0;
+                XAxleRotation = (float) ( RotationMatrix.M32 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                YAxleRotation = (float) Math.Atan2( -RotationMatrix.M13, RotationMatrix.M11 );
+                ZAxleRotation = 0;
                 return false;
             }
-            // M32 = -Sin(X軸回転角) であることから
-            X軸回転 = -(float) Math.Asin( 回転行列.M32 );
+            // M32 = -Sin(XAxisRotationAngle) であることから
+            XAxleRotation = -(float) Math.Asin( RotationMatrix.M32 );
 
             // Z軸回転を取得する。
-            Z軸回転 = (float) Math.Asin( 回転行列.M12 / Math.Cos( X軸回転 ) );
-            if( float.IsNaN( Z軸回転 ) )   // 計算失敗？
+            ZAxleRotation = (float) Math.Asin( RotationMatrix.M12 / Math.Cos( XAxleRotation ) );
+            if( float.IsNaN( ZAxleRotation ) )   // 計算失敗？
             {
                 // 漏れ対策
-                X軸回転 = (float) ( 回転行列.M32 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                Y軸回転 = (float) Math.Atan2( -回転行列.M13, 回転行列.M11 );
-                Z軸回転 = 0;
+                XAxleRotation = (float) ( RotationMatrix.M32 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                YAxleRotation = (float) Math.Atan2( -RotationMatrix.M13, RotationMatrix.M11 );
+                ZAxleRotation = 0;
                 return false;
             }
-            if( 回転行列.M22 < 0 )
+            if( RotationMatrix.M22 < 0 )
             {
-                Z軸回転 = (float) ( Math.PI - Z軸回転 );
+                ZAxleRotation = (float) ( Math.PI - ZAxleRotation );
             }
 
-            // Pitch（Y軸回転）を取得する。
-            Y軸回転 = (float) Math.Atan2( 回転行列.M31, 回転行列.M33 );
+            // Pitch（YAxleRotation）を取得する。
+            YAxleRotation = (float) Math.Atan2( RotationMatrix.M31, RotationMatrix.M33 );
             return true;
         }
 
         /// <summary>
-        ///		クォータニオンを、X,Y,Z回転に分解する。
+        ///		Quaternion、X,Y,ZDisassembleIntoRotation。
         /// </summary>
         /// <param name="input">分解するクォータニオン</param>
-        /// <param name="X軸回転">X軸回転</param>
-        /// <param name="Y軸回転">Y軸回転(-PI/2～PI/2)</param>
-        /// <param name="Z軸回転">Z軸回転</param>
+        /// <param name="XAxleRotation">XAxleRotation</param>
+        /// <param name="YAxleRotation">YAxleRotation(-PI/2～PI/2)</param>
+        /// <param name="ZAxleRotation">ZAxleRotation</param>
         /// <returns></returns>
-        public static bool クォータニオンをXYZ回転に分解する( in Quaternion input, out float X軸回転, out float Y軸回転, out float Z軸回転 )
+        public static bool QuaternionXYZDisassembleIntoRotation( in Quaternion input, out float XAxleRotation, out float YAxleRotation, out float ZAxleRotation )
         {
             // クォータニオンを正規化する。
-            var 正規化済み入力 = new Quaternion( input.X, input.Y, input.Z, input.W );
-            正規化済み入力.Normalize();
+            var NormalizedInput = new Quaternion( input.X, input.Y, input.Z, input.W );
+            NormalizedInput.Normalize();
 
             // 正規化されたクォータニオンから回転行列を生成する。
-            Matrix 回転行列;
-            Matrix.RotationQuaternion( ref 正規化済み入力, out 回転行列 );
+            Matrix RotationMatrix;
+            Matrix.RotationQuaternion( ref NormalizedInput, out RotationMatrix );
 
             // Y軸回りの回転を取得する。
-            if( ( 回転行列.M13 > ( 1 - 1.0e-4 ) ) || ( 回転行列.M13 < ( -1 + 1.0e-4 ) ) )
+            if( ( RotationMatrix.M13 > ( 1 - 1.0e-4 ) ) || ( RotationMatrix.M13 < ( -1 + 1.0e-4 ) ) )
             {
                 // ジンバルロックしてる
-                X軸回転 = 0;
-                Y軸回転 = (float) ( 回転行列.M13 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                Z軸回転 = -(float) Math.Atan2( -回転行列.M21, 回転行列.M22 );
+                XAxleRotation = 0;
+                YAxleRotation = (float) ( RotationMatrix.M13 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                ZAxleRotation = -(float) Math.Atan2( -RotationMatrix.M21, RotationMatrix.M22 );
                 return false;
             }
-            Y軸回転 = -(float) Math.Asin( 回転行列.M13 );
+            YAxleRotation = -(float) Math.Asin( RotationMatrix.M13 );
 
             // X軸回りの回転を取得する。
-            X軸回転 = (float) Math.Asin( 回転行列.M23 / Math.Cos( Y軸回転 ) );
-            if( float.IsNaN( X軸回転 ) )
+            XAxleRotation = (float) Math.Asin( RotationMatrix.M23 / Math.Cos( YAxleRotation ) );
+            if( float.IsNaN( XAxleRotation ) )
             {
                 //ジンバルロック判定(漏れ対策)
-                X軸回転 = 0;
-                Y軸回転 = (float) ( 回転行列.M13 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                Z軸回転 = -(float) Math.Atan2( -回転行列.M21, 回転行列.M22 );
+                XAxleRotation = 0;
+                YAxleRotation = (float) ( RotationMatrix.M13 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                ZAxleRotation = -(float) Math.Atan2( -RotationMatrix.M21, RotationMatrix.M22 );
                 return false;
             }
-            if( 回転行列.M33 < 0 )
+            if( RotationMatrix.M33 < 0 )
             {
-                X軸回転 = (float) ( Math.PI - X軸回転 );
+                XAxleRotation = (float) ( Math.PI - XAxleRotation );
             }
 
             // Z軸回りの回転を取得する。
-            Z軸回転 = (float) Math.Atan2( 回転行列.M12, 回転行列.M11 );
+            ZAxleRotation = (float) Math.Atan2( RotationMatrix.M12, RotationMatrix.M11 );
             return true;
         }
 
         /// <summary>
-        ///		クォータニオンをY,Z,X回転に分解する。
+        ///		QuaternionY,Z,XDisassembleIntoRotation。
         /// </summary>
         /// <param name="input">分解するクォータニオン</param>
-        /// <param name="Y軸回転">Y軸回転</param>
-        /// <param name="Z軸回転">Z軸回転(-PI/2～PI/2)</param>
-        /// <param name="X軸回転">X軸回転</param>
+        /// <param name="YAxleRotation">YAxleRotation</param>
+        /// <param name="ZAxleRotation">ZAxleRotation(-PI/2～PI/2)</param>
+        /// <param name="XAxleRotation">XAxleRotation</param>
         /// <returns></returns>
-        public static bool クォータニオンをYZX回転に分解する( in Quaternion input, out float Y軸回転, out float Z軸回転, out float X軸回転 )
+        public static bool QuaternionYZXDisassembleIntoRotation( in Quaternion input, out float YAxleRotation, out float ZAxleRotation, out float XAxleRotation )
         {
             // クォータニオンを正規化する。
-            var 正規化済み入寮 = new Quaternion( input.X, input.Y, input.Z, input.W );
-            正規化済み入寮.Normalize();
+            var NormalizedDormitory = new Quaternion( input.X, input.Y, input.Z, input.W );
+            NormalizedDormitory.Normalize();
 
             // 正規化されたクォータニオンから回転行列を生成する。
-            Matrix 回転行列;
-            Matrix.RotationQuaternion( ref 正規化済み入寮, out 回転行列 );
+            Matrix RotationMatrix;
+            Matrix.RotationQuaternion( ref NormalizedDormitory, out RotationMatrix );
 
             // Z軸回りの回転を取得する。
-            if( ( 回転行列.M21 > ( 1 - 1.0e-4 ) ) || ( 回転行列.M21 < ( -1 + 1.0e-4 ) ) )
+            if( ( RotationMatrix.M21 > ( 1 - 1.0e-4 ) ) || ( RotationMatrix.M21 < ( -1 + 1.0e-4 ) ) )
             {
                 // ジンバルロックしてる
-                Y軸回転 = 0;
-                Z軸回転 = (float) ( 回転行列.M21 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                X軸回転 = -(float) Math.Atan2( -回転行列.M32, 回転行列.M33 );
+                YAxleRotation = 0;
+                ZAxleRotation = (float) ( RotationMatrix.M21 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                XAxleRotation = -(float) Math.Atan2( -RotationMatrix.M32, RotationMatrix.M33 );
                 return false;
             }
 
-            Z軸回転 = -(float) Math.Asin( 回転行列.M21 );
+            ZAxleRotation = -(float) Math.Asin( RotationMatrix.M21 );
 
             // Y軸回りの回転を取得する。
-            Y軸回転 = (float) Math.Asin( 回転行列.M31 / Math.Cos( Z軸回転 ) );
-            if( float.IsNaN( Y軸回転 ) )
+            YAxleRotation = (float) Math.Asin( RotationMatrix.M31 / Math.Cos( ZAxleRotation ) );
+            if( float.IsNaN( YAxleRotation ) )
             {
                 //ジンバルロック判定(漏れ対策)
-                Y軸回転 = 0;
-                Z軸回転 = (float) ( 回転行列.M21 < 0 ? Math.PI / 2 : -Math.PI / 2 );
-                X軸回転 = -(float) Math.Atan2( -回転行列.M32, 回転行列.M33 );
+                YAxleRotation = 0;
+                ZAxleRotation = (float) ( RotationMatrix.M21 < 0 ? Math.PI / 2 : -Math.PI / 2 );
+                XAxleRotation = -(float) Math.Atan2( -RotationMatrix.M32, RotationMatrix.M33 );
                 return false;
             }
-            if( 回転行列.M11 < 0 )
+            if( RotationMatrix.M11 < 0 )
             {
-                Y軸回転 = (float) ( Math.PI - Y軸回転 );
+                YAxleRotation = (float) ( Math.PI - YAxleRotation );
             }
 
             // X軸回りの回転を取得する。
-            X軸回転 = (float) Math.Atan2( 回転行列.M23, 回転行列.M22 );
+            XAxleRotation = (float) Math.Atan2( RotationMatrix.M23, RotationMatrix.M22 );
             return true;
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,9 +12,9 @@ namespace MikuMikuFlex3.Utility
 
         public Quaternion Dual;
 
-        public Quaternion 回転 => this.Real;
+        public Quaternion Rotation => this.Real;
 
-        public Quaternion 移動 => this.Dual;
+        public Quaternion Move => this.Dual;
 
         public float Length
             => Quaternion.Dot( this.Real, this.Dual );

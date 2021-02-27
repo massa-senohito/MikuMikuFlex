@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,9 @@ namespace MikuMikuFlex3
 	/// <summary>
 	///     剛体を作るクラス
 	/// </summary>
-	internal class 剛体ファクトリ : IDisposable
+	internal class RigidBodyFactory : IDisposable
 	{
-		public 剛体ファクトリ( DiscreteDynamicsWorld dynamicsWorld )
+		public RigidBodyFactory( DiscreteDynamicsWorld dynamicsWorld )
 		{
 			this._DynamicsWorld = dynamicsWorld;
 		}
@@ -42,35 +42,35 @@ namespace MikuMikuFlex3
             this._CollisionShapes.Clear();
 		}
 
-        public RigidBody 剛体を作成して返す( CollisionShape 剛体の形, Matrix 剛体のワールド変換行列, 剛体物性 剛体の物性, 物理演算を超越した特性 物理演算を超越した特性 )
+        public RigidBody CreateAndReturnARigidBody( CollisionShape RigidBodyShape, Matrix RigidBodyWorldTransformationMatrix, RigidPhysicalCharacteristics RigidBodyCharacteristics, CharacteristicsThatTranscendPhysics CharacteristicsThatTranscendPhysics )
         {
-            var mass = ( 物理演算を超越した特性.物理演算の影響を受けないKinematic剛体である ) ? 0 : 剛体の物性.質量;
+            var mass = ( CharacteristicsThatTranscendPhysics.NotAffectedByPhysicsKinematicRigidBody ) ? 0 : RigidBodyCharacteristics.Mass;
 
-            this._CollisionShapes.Add( 剛体の形 );
+            this._CollisionShapes.Add( RigidBodyShape );
 
             var localInertia = new BulletSharp.Math.Vector3( 0, 0, 0 );
 
             if( mass != 0 )
-                剛体の形.CalculateLocalInertia( mass, out localInertia );
+                RigidBodyShape.CalculateLocalInertia( mass, out localInertia );
 
-            var motionState = new DefaultMotionState( 剛体のワールド変換行列.ToBulletSharp() );
-            var rbInfo = new RigidBodyConstructionInfo( mass, motionState, 剛体の形, localInertia );
+            var motionState = new DefaultMotionState( RigidBodyWorldTransformationMatrix.ToBulletSharp() );
+            var rbInfo = new RigidBodyConstructionInfo( mass, motionState, RigidBodyShape, localInertia );
 
             var body = new RigidBody( rbInfo ) {
-                Restitution = 剛体の物性.反発係数,
-                Friction = 剛体の物性.摩擦係数,
+                Restitution = RigidBodyCharacteristics.CoefficientOfRestitution,
+                Friction = RigidBodyCharacteristics.CoefficientOfFriction,
             };
-            body.SetDamping( 剛体の物性.移動減衰係数, 剛体の物性.回転減衰係数 );
+            body.SetDamping( RigidBodyCharacteristics.MovementDampingCoefficient, RigidBodyCharacteristics.RotationDampingCoefficient );
 
             float linearDamp = body.LinearDamping;
             float angularDamp = body.AngularDamping;
 
-            if( 物理演算を超越した特性.物理演算の影響を受けないKinematic剛体である )
+            if( CharacteristicsThatTranscendPhysics.NotAffectedByPhysicsKinematicRigidBody )
                 body.CollisionFlags = body.CollisionFlags | CollisionFlags.KinematicObject;
 
             body.ActivationState = ActivationState.DisableDeactivation;
 
-            this._DynamicsWorld.AddRigidBody( body, 物理演算を超越した特性.自身の衝突グループ番号, 物理演算を超越した特性.自身と衝突する他の衝突グループ番号 );
+            this._DynamicsWorld.AddRigidBody( body, CharacteristicsThatTranscendPhysics.OwnCollisionGroupNumber, CharacteristicsThatTranscendPhysics.OtherCollisionGroupNumbersThatCollideWithItself );
 
             return body;
         }

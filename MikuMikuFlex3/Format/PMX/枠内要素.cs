@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,35 +9,35 @@ namespace MikuMikuFlex3.PMXFormat
     /// <summary>
     ///     PMX仕様521行目参照、枠内要素にあたるクラス
     /// </summary>
-    public class 枠内要素
+    public class ElementsInTheFrame
     {
         /// <summary>
-        ///     true なら <see cref="要素対象インデックス"/> は モーフインデックス であり、
-        ///     false なら <see cref="要素対象インデックス"/> は ボーンインデックス である。
+        ///     true なら <see cref="ElementTargetIndex"/> は MorphIndex であり、
+        ///     false なら <see cref="ElementTargetIndex"/> は BoneIndex である。
         /// </summary>
-        public bool 要素対象 { get; private set; }
+        public bool ElementTarget { get; private set; }
 
-        public int 要素対象インデックス { get; private set; }
+        public int ElementTargetIndex { get; private set; }
 
 
-        public 枠内要素()
+        public ElementsInTheFrame()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 枠内要素( Stream fs, ヘッダ header )
+        internal ElementsInTheFrame( Stream fs, Header header )
         {
-            this.要素対象 = ( ParserHelper.get_Byte( fs ) == 1 );
+            this.ElementTarget = ( ParserHelper.get_Byte( fs ) == 1 );
 
-            if( this.要素対象 )
+            if( this.ElementTarget )
             {
-                this.要素対象インデックス = ParserHelper.get_Index( fs, header.モーフインデックスサイズ );
+                this.ElementTargetIndex = ParserHelper.get_Index( fs, header.MorphIndexSize );
             }
             else
             {
-                this.要素対象インデックス = ParserHelper.get_Index( fs, header.ボーンインデックスサイズ );
+                this.ElementTargetIndex = ParserHelper.get_Index( fs, header.BoneIndexSize );
             }
         }
     }

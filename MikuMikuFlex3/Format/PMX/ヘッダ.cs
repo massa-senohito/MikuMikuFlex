@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,63 +7,63 @@ using System.Text;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class ヘッダ
+    public class Header
     {
         /// <summary>
         ///     PMXのバージョン。
         ///     2.0 か 2.1 。
         /// </summary>
-        public float PMXバージョン { get; private set; }
+        public float PMXVersion { get; private set; }
 
         /// <summary>
-        ///     エンコード方式。UTF8 または Unicode。
+        ///     EncodingMethod。UTF8 または Unicode。
         /// </summary>
-        public Encoding エンコード方式 { get; private set; }
+        public Encoding EncodingMethod { get; private set; }
 
         /// <summary>
         ///     0～4 。
         /// </summary>
-        public int 追加UV数 { get; private set; }
+        public int AddToUVNumber { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int 頂点インデックスサイズ { get; private set; }
+        public int VertexIndexSize { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int テクスチャインデックスサイズ { get; private set; }
+        public int TextureIndexSize { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int 材質インデックスサイズ { get; private set; }
+        public int MaterialIndexSize { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int ボーンインデックスサイズ { get; private set; }
+        public int BoneIndexSize { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int モーフインデックスサイズ { get; private set; }
+        public int MorphIndexSize { get; private set; }
 
         /// <summary>
         ///     1, 2, 4 のいずれか。
         /// </summary>
-        public int 剛体インデックスサイズ { get; private set; }
+        public int RigidBodyIndexSize { get; private set; }
 
 
-        public ヘッダ()
+        public Header()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ヘッダ( Stream st )
+        internal Header( Stream st )
         {
             // マジックナンバー("PMX "の４バイト）の読み取り
 
@@ -77,7 +77,7 @@ namespace MikuMikuFlex3.PMXFormat
 
             // バージョン情報の読み取り
 
-            this.PMXバージョン = ParserHelper.get_Float( st );
+            this.PMXVersion = ParserHelper.get_Float( st );
 
             // 後のデータ列のバイト列
 
@@ -89,14 +89,14 @@ namespace MikuMikuFlex3.PMXFormat
             // 詳細のデータ（８バイト固定）
 
             st.Read( descriptionbuf, 0, 8 );
-            this.エンコード方式 = ( 1 == descriptionbuf[ 0 ] ) ? Encoding.UTF8 : Encoding.Unicode;   // Unicode==UTF16LE
-            this.追加UV数 = descriptionbuf[ 1 ];
-            this.頂点インデックスサイズ = descriptionbuf[ 2 ];
-            this.テクスチャインデックスサイズ = descriptionbuf[ 3 ];
-            this.材質インデックスサイズ = descriptionbuf[ 4 ];
-            this.ボーンインデックスサイズ = descriptionbuf[ 5 ];
-            this.モーフインデックスサイズ = descriptionbuf[ 6 ];
-            this.剛体インデックスサイズ = descriptionbuf[ 7 ];
+            this.EncodingMethod = ( 1 == descriptionbuf[ 0 ] ) ? Encoding.UTF8 : Encoding.Unicode;   // Unicode==UTF16LE
+            this.AddToUVNumber = descriptionbuf[ 1 ];
+            this.VertexIndexSize = descriptionbuf[ 2 ];
+            this.TextureIndexSize = descriptionbuf[ 3 ];
+            this.MaterialIndexSize = descriptionbuf[ 4 ];
+            this.BoneIndexSize = descriptionbuf[ 5 ];
+            this.MorphIndexSize = descriptionbuf[ 6 ];
+            this.RigidBodyIndexSize = descriptionbuf[ 7 ];
         }
     }
 }

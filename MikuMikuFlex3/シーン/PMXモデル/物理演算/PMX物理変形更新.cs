@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SharpDX;
@@ -6,36 +6,36 @@ using BulletSharp;
 
 namespace MikuMikuFlex3
 {
-	class PMX物理変形更新 : IDisposable
+	class PMXPhysicalTransformationUpdate : IDisposable
 	{
-        public PMX物理変形更新( PMXボーン制御[] ボーン配列, List<PMXFormat.剛体> 剛体リスト, List<PMXFormat.ジョイント> ジョイントリスト )
+        public PMXPhysicalTransformationUpdate( PMXBoneControl[] BoneArray, List<PMXFormat.RigidBody> RigidBodyList, List<PMXFormat.Joint> JointList )
         {
-            this._ボーン配列 = ボーン配列;
+            this._BoneArray = BoneArray;
 
-            var 重力 = new Vector3( 0, -9.8f * 10f, 0 ); // 既定の重力値
-            this._Bullet管理 = new Bullet管理( 重力 );
+            var Gravity = new Vector3( 0, -9.8f * 10f, 0 ); // 既定の重力値
+            this._BulletManagement = new BulletManagement( Gravity );
 
-            this._剛体を作成する( 剛体リスト );
-            this._ジョイントを作成する( ジョイントリスト );
+            this._CreateARigidBody( RigidBodyList );
+            this._CreateAJoint( JointList );
         }
 
         public void Dispose()
         {
-            this._剛体キャッシュリスト.Clear();
+            this._RigidBodyCacheList.Clear();
 
-            foreach( var 剛体 in this._Bulletの剛体リスト )
-                剛体.Dispose();
+            foreach( var RigidBody in this._Bulletの剛体リスト )
+                RigidBody.Dispose();
             this._Bulletの剛体リスト.Clear();
 
-            this._Bullet管理?.Dispose();
+            this._BulletManagement?.Dispose();
         }
 
-        public void 変形を更新する()
+        public void UpdateTransformation()
         {
             // ここでは、
             // (1) 剛体タイプがボーン追従であるものすべてに対応するボーン行列を適用し、
             // (2) 物理演算を行った後に、
-            // (3) 剛体タイプが 物理演算 のものを設定、
+            // (3) 剛体タイプが Physics のものを設定、
             // (4) その後に剛体タイプが 物理＋ボーン位置あわせ の物を設定する。
             // 設定および計算を行う順番に注意すること。
 
@@ -44,50 +44,50 @@ namespace MikuMikuFlex3
 
             for( int i = 0; i < this._Bulletの剛体リスト.Count; ++i )
             {
-                var 剛体 = this._剛体キャッシュリスト[ i ];
+                var RigidBody = this._RigidBodyCacheList[ i ];
 
                 // 関連ボーン有りで剛体タイプがボーン追従の場合
-                if( 剛体.ボーンインデックス != -1 && 
-                    剛体.物理計算種別 == PMXFormat.剛体の物理演算.ボーン追従 )
+                if( RigidBody.BoneIndex != -1 && 
+                    RigidBody.PhysicalCalculationType == PMXFormat.RigidBodyPhysics.BoneTracking )
                 {
-                    var bone = this._ボーン配列[ 剛体.ボーンインデックス ];
+                    var bone = this._BoneArray[ RigidBody.BoneIndex ];
 
-                    this._Bullet管理.剛体を移動する(     // ボーン行列を適用
+                    this._BulletManagement.MoveARigidBody(     // ボーン行列を適用
                         this._Bulletの剛体リスト[ i ], 
-                        剛体.初期姿勢行列 * bone.モデルポーズ行列 );
+                        RigidBody.InitialAttitudeMatrix * bone.ModelPoseMatrix );
                 }
             }
 
 
             // (2) 物理演算シミュレーション
 
-            this._Bullet管理.物理演算の世界の時間を進める();
+            this._BulletManagement.AdvanceTimeInTheWorldOfPhysics();
 
 
             // (3) 物理演算の結果に合わせてボーンの位置を修正
 
             for( int i = 0; i < this._Bulletの剛体リスト.Count; ++i )
             {
-                var 剛体 = this._剛体キャッシュリスト[ i ];
+                var RigidBody = this._RigidBodyCacheList[ i ];
 
-                if( 剛体.ボーンインデックス == -1 )
+                if( RigidBody.BoneIndex == -1 )
                     continue;   // 関連ボーンがないなら次へ
 
-                var bone = this._ボーン配列[ 剛体.ボーンインデックス ];
-                var globalPose = 剛体.オフセット行列 * this._Bullet管理.物理演算結果のワールド行列を取得する( this._Bulletの剛体リスト[ i ] );
+                var bone = this._BoneArray[ RigidBody.BoneIndex ];
+                var globalPose = RigidBody.OffsetMatrix * this._BulletManagement.GetTheWorldMatrixOfThePhysicsResult( this._Bulletの剛体リスト[ i ] );
 
                 if( float.IsNaN( globalPose.M11 ) )
                 {
                     if( !_physicsAsserted )
-                        Debug.WriteLine( "物理演算の結果が不正な結果を出力しました。\nPMXの設定を見直してください。うまくモーション動作しない可能性があります。" );
+                        Debug.WriteLine( "TheResultOfThePhysicsOperationOutputAnInvalidResult。\nPMXの設定を見直してください。MotionMayNotWorkWell。" );
                     _physicsAsserted = true;
                     continue;
                 }
-                var localPose = globalPose * ( ( null != bone.親ボーン ) ? Matrix.Invert( bone.親ボーン.モデルポーズ行列 ) : Matrix.Identity );
-                var mat = Matrix.Translation( bone.ローカル位置 ) * localPose * Matrix.Translation( -bone.ローカル位置 );
-                bone.移動 = new Vector3( mat.M41, mat.M42, mat.M43 );
-                bone.回転 = Quaternion.RotationMatrix( mat );
-                bone.モデルポーズを計算する();
+                var localPose = globalPose * ( ( null != bone.ParentBone ) ? Matrix.Invert( bone.ParentBone.ModelPoseMatrix ) : Matrix.Identity );
+                var mat = Matrix.Translation( bone.LocalLocation ) * localPose * Matrix.Translation( -bone.LocalLocation );
+                bone.Move = new Vector3( mat.M41, mat.M42, mat.M43 );
+                bone.Rotation = Quaternion.RotationMatrix( mat );
+                bone.CalculateModelPose();
             }
 
 
@@ -95,20 +95,20 @@ namespace MikuMikuFlex3
 
             for( int i = 0; i < this._Bulletの剛体リスト.Count; ++i )
             {
-                var 剛体 = this._剛体キャッシュリスト[ i ];
+                var RigidBody = this._RigidBodyCacheList[ i ];
 
                 // 関連ボーン有りで剛体タイプが物理＋ボーン位置あわせの場合ボーンの位置移動量を設定
-                if( 剛体.ボーンインデックス != -1 &&
-                    剛体.物理計算種別 == PMXFormat.剛体の物理演算.物理演算とボーン位置合わせ )
+                if( RigidBody.BoneIndex != -1 &&
+                    RigidBody.PhysicalCalculationType == PMXFormat.RigidBodyPhysics.PhysicsAndBoneAlignment )
                 {
-                    var bone = this._ボーン配列[ 剛体.ボーンインデックス ];
-                    var v = new Vector3( bone.モデルポーズ行列.M41, bone.モデルポーズ行列.M42, bone.モデルポーズ行列.M43 );   // ボーンの移動量
-                    var p = new Vector3( 剛体.初期姿勢行列.M41, 剛体.初期姿勢行列.M42, 剛体.初期姿勢行列.M43 ) + v;
-                    var m = this._Bullet管理.物理演算結果のワールド行列を取得する( this._Bulletの剛体リスト[ i ] );
+                    var bone = this._BoneArray[ RigidBody.BoneIndex ];
+                    var v = new Vector3( bone.ModelPoseMatrix.M41, bone.ModelPoseMatrix.M42, bone.ModelPoseMatrix.M43 );   // ボーンの移動量
+                    var p = new Vector3( RigidBody.InitialAttitudeMatrix.M41, RigidBody.InitialAttitudeMatrix.M42, RigidBody.InitialAttitudeMatrix.M43 ) + v;
+                    var m = this._BulletManagement.GetTheWorldMatrixOfThePhysicsResult( this._Bulletの剛体リスト[ i ] );
                     m.M41 = p.X;
                     m.M42 = p.Y;
                     m.M43 = p.Z;
-                    this._Bullet管理.剛体を移動する( this._Bulletの剛体リスト[ i ], m );
+                    this._BulletManagement.MoveARigidBody( this._Bulletの剛体リスト[ i ], m );
                 }
             }
         }
@@ -117,133 +117,133 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     最初に計算しておいてあとで繰り返し使う剛体データ
         /// </summary>
-        private class 剛体キャッシュ
+        private class RigidBodyCache
         {
-            public readonly Vector3 初期位置;
-            public readonly Matrix 初期姿勢行列;
-            public readonly Matrix オフセット行列;
-            public readonly int ボーンインデックス;
-            public readonly PMXFormat.剛体の物理演算 物理計算種別;
-            public readonly PMXFormat.剛体形状 剛体形状;
+            public readonly Vector3 InitialPosition;
+            public readonly Matrix InitialAttitudeMatrix;
+            public readonly Matrix OffsetMatrix;
+            public readonly int BoneIndex;
+            public readonly PMXFormat.RigidBodyPhysics PhysicalCalculationType;
+            public readonly PMXFormat.RigidBodyShape RigidBodyShape;
 
-            public 剛体キャッシュ( PMXFormat.剛体 rigidBodyData )
+            public RigidBodyCache( PMXFormat.RigidBody rigidBodyData )
             {
-                初期位置 = rigidBodyData.位置;
+                InitialPosition = rigidBodyData.Position;
 
-                var r = rigidBodyData.回転rad;
-                初期姿勢行列 = Matrix.RotationYawPitchRoll( r.Y, r.X, r.Z ) * Matrix.Translation( 初期位置 );
+                var r = rigidBodyData.Rotationrad;
+                InitialAttitudeMatrix = Matrix.RotationYawPitchRoll( r.Y, r.X, r.Z ) * Matrix.Translation( InitialPosition );
 
-                オフセット行列 = Matrix.Invert( 初期姿勢行列 );
+                OffsetMatrix = Matrix.Invert( InitialAttitudeMatrix );
 
-                ボーンインデックス = rigidBodyData.関連ボーンインデックス;
-                物理計算種別 = rigidBodyData.物理演算;
-                剛体形状 = rigidBodyData.形状;
+                BoneIndex = rigidBodyData.RelatedBoneIndex;
+                PhysicalCalculationType = rigidBodyData.Physics;
+                RigidBodyShape = rigidBodyData.Shape;
             }
         }
 
-        private PMXボーン制御[] _ボーン配列;
+        private PMXBoneControl[] _BoneArray;
 
-        private List<剛体キャッシュ> _剛体キャッシュリスト;
+        private List<RigidBodyCache> _RigidBodyCacheList;
 
-		private Bullet管理 _Bullet管理;
+		private BulletManagement _BulletManagement;
 
         private List<RigidBody> _Bulletの剛体リスト;
 
 		private static bool _physicsAsserted;
 
 
-		private void _剛体を作成する( List<PMXFormat.剛体> 剛体リスト )
+		private void _CreateARigidBody( List<PMXFormat.RigidBody> RigidBodyList )
 		{
-            this._剛体キャッシュリスト = new List<剛体キャッシュ>( 剛体リスト.Count );
-            this._Bulletの剛体リスト = new List<RigidBody>( 剛体リスト.Count );
+            this._RigidBodyCacheList = new List<RigidBodyCache>( RigidBodyList.Count );
+            this._Bulletの剛体リスト = new List<RigidBody>( RigidBodyList.Count );
 
-			foreach( var 剛体 in 剛体リスト )
+			foreach( var RigidBody in RigidBodyList )
 			{
-				var 一時剛体 = new 剛体キャッシュ( 剛体 );
-				var 初期行列 = 一時剛体.初期姿勢行列;
+				var TemporaryRigidBody = new RigidBodyCache( RigidBody );
+				var InitialMatrix = TemporaryRigidBody.InitialAttitudeMatrix;
 
-                _剛体キャッシュリスト.Add( 一時剛体 );
+                _RigidBodyCacheList.Add( TemporaryRigidBody );
 
-                CollisionShape bullet形状;
-                switch( 剛体.形状 )
+                CollisionShape bulletShape;
+                switch( RigidBody.Shape )
 				{
-					case PMXFormat.剛体形状.球:
-						bullet形状 = new SphereShape( 剛体.サイズ.X );
+					case PMXFormat.RigidBodyShape.Ball:
+						bulletShape = new SphereShape( RigidBody.Size.X );
 						break;
 
-                    case PMXFormat.剛体形状.箱:
-						bullet形状 = new BoxShape( 剛体.サイズ.X, 剛体.サイズ.Y, 剛体.サイズ.Z );
+                    case PMXFormat.RigidBodyShape.Box:
+						bulletShape = new BoxShape( RigidBody.Size.X, RigidBody.Size.Y, RigidBody.Size.Z );
 						break;
 
-                    case PMXFormat.剛体形状.カプセル:
-						bullet形状 = new CapsuleShape( 剛体.サイズ.X, 剛体.サイズ.Y );
+                    case PMXFormat.RigidBodyShape.Capsule:
+						bulletShape = new CapsuleShape( RigidBody.Size.X, RigidBody.Size.Y );
 						break;
 
                     default:
-						throw new Exception( "未知の剛体形状です。" );
+						throw new Exception( "ItIsAnUnknownRigidBodyShape。" );
 				}
 
-                var 剛体プロパティ = new 剛体物性( 剛体.質量, 剛体.反発力, 剛体.摩擦力, 剛体.移動減衰, 剛体.回転減衰 );
+                var RigidBodyProperties = new RigidPhysicalCharacteristics( RigidBody.Mass, RigidBody.RepulsiveForce, RigidBody.FrictionForce, RigidBody.MovementAttenuation, RigidBody.RotationalDamping );
 
-                var 超越プロパティ = new 物理演算を超越した特性(
-                    物理演算の影響を受けないKinematic剛体である: ( 剛体.物理演算 == PMXFormat.剛体の物理演算.ボーン追従 ),
-                    自身の衝突グループ番号: (CollisionFilterGroups) ( 1 << 剛体.グループ ),
-                    自身と衝突する他の衝突グループ番号: (CollisionFilterGroups) 剛体.非衝突グループフラグ );
+                var TranscendentalProperty = new CharacteristicsThatTranscendPhysics(
+                    NotAffectedByPhysicsKinematicRigidBody: ( RigidBody.Physics == PMXFormat.RigidBodyPhysics.BoneTracking ),
+                    OwnCollisionGroupNumber: (CollisionFilterGroups) ( 1 << RigidBody.Group ),
+                    OtherCollisionGroupNumbersThatCollideWithItself: (CollisionFilterGroups) RigidBody.NonCollisionGroupFlag );
 
-                var bullet剛体 = this._Bullet管理.剛体を作成する( bullet形状, 初期行列, 剛体プロパティ, 超越プロパティ );
+                var bulletRigidBody = this._BulletManagement.CreateARigidBody( bulletShape, InitialMatrix, RigidBodyProperties, TranscendentalProperty );
 
-                this._Bulletの剛体リスト.Add( bullet剛体 );
+                this._Bulletの剛体リスト.Add( bulletRigidBody );
 			}
 		}
 
-		private void _ジョイントを作成する( List<PMXFormat.ジョイント> ジョイントリスト )
+		private void _CreateAJoint( List<PMXFormat.Joint> JointList )
 		{
-			foreach( var jointData in ジョイントリスト )
+			foreach( var jointData in JointList )
 			{
-                switch( jointData.種別 )
+                switch( jointData.Type )
                 {
-                    case PMXFormat.ジョイント種別.P2P:
-                    case PMXFormat.ジョイント種別.スライダー:
-                    case PMXFormat.ジョイント種別.ヒンジ:
-                    case PMXFormat.ジョイント種別.円錐回転:
-                    case PMXFormat.ジョイント種別.基本6DOF:
-                        break;  // TODO: ばね付き6DOF以外のジョイントへの対応
+                    case PMXFormat.JointType.P2P:
+                    case PMXFormat.JointType.Slider:
+                    case PMXFormat.JointType.Hinge:
+                    case PMXFormat.JointType.ConeRotation:
+                    case PMXFormat.JointType.Basic6DOF:
+                        break;  // TODO: WithSpring6DOF以外のジョイントへの対応
 
-                    case PMXFormat.ジョイント種別.ばね付き6DOF:
+                    case PMXFormat.JointType.WithSpring6DOF:
                         {
-                            var jointParam = (PMXFormat.ばね付き6DOFジョイントパラメータ) jointData.パラメータ;
+                            var jointParam = (PMXFormat.WithSpring6DOFJointParameters) jointData.Parameters;
 
                             // 六軸ジョイントに繋がる剛体のペアを作成する。
 
-                            var bodyA = this._Bulletの剛体リスト[ jointParam.関連剛体Aのインデックス ];
-                            var bodyAworld_inv = Matrix.Invert( this._Bullet管理.物理演算結果のワールド行列を取得する( bodyA ) );
+                            var bodyA = this._Bulletの剛体リスト[ jointParam.RelatedRigidBodyAのインデックス ];
+                            var bodyAworld_inv = Matrix.Invert( this._BulletManagement.GetTheWorldMatrixOfThePhysicsResult( bodyA ) );
 
-                            var bodyB = this._Bulletの剛体リスト[ jointParam.関連剛体Bのインデックス ];
-                            var bodyBworld_inv = Matrix.Invert( this._Bullet管理.物理演算結果のワールド行列を取得する( bodyB ) );
+                            var bodyB = this._Bulletの剛体リスト[ jointParam.RelatedRigidBodyBのインデックス ];
+                            var bodyBworld_inv = Matrix.Invert( this._BulletManagement.GetTheWorldMatrixOfThePhysicsResult( bodyB ) );
 
-                            var jointRotation = jointParam.回転rad;
-                            var jointPosition = jointParam.位置;
+                            var jointRotation = jointParam.Rotationrad;
+                            var jointPosition = jointParam.Position;
 
                             var jointWorld = Matrix.RotationYawPitchRoll( jointRotation.Y, jointRotation.X, jointRotation.Z ) * Matrix.Translation( jointPosition.X, jointPosition.Y, jointPosition.Z );
 
-                            var connectedBodyA = new 六軸ジョイントにつながる剛体( bodyA, jointWorld * bodyAworld_inv );
-                            var connectedBodyB = new 六軸ジョイントにつながる剛体( bodyB, jointWorld * bodyBworld_inv );
+                            var connectedBodyA = new RigidBodyConnectedToA6AxisJoint( bodyA, jointWorld * bodyAworld_inv );
+                            var connectedBodyB = new RigidBodyConnectedToA6AxisJoint( bodyB, jointWorld * bodyBworld_inv );
 
-                            var つなぐ剛体のペア = new 六軸ジョイントにつながる剛体のペア( connectedBodyA, connectedBodyB );
+                            var APairOfRigidBodiesToConnect = new APairOfRigidBodiesConnectedToASixAxisJoint( connectedBodyA, connectedBodyB );
 
                             // 六軸可動制限を作成する。
 
-                            var movementRestriction = new 六軸ジョイントの移動制限( jointParam.移動制限の下限, jointParam.移動制限の上限 );
-                            var rotationRestriction = new 六軸ジョイントの回転制限( jointParam.回転制限の下限rad, jointParam.回転制限の上限rad );
-                            var 六軸可動制限 = new 六軸可動制限( movementRestriction, rotationRestriction );
+                            var movementRestriction = new RestrictionOnMovementOf6AxisJoint( jointParam.LowerLimitOfMovementLimit, jointParam.UpperLimitOfMovementLimit );
+                            var rotationRestriction = new RotationLimitOf6AxisJoint( jointParam.LowerLimitOfRotationLimitrad, jointParam.UpperLimitOfRotationLimitrad );
+                            var SixAxisMovableRestriction = new SixAxisMovableRestriction( movementRestriction, rotationRestriction );
 
 
                             // 六軸バネを作成する。
 
-                            var 六軸バネ = new 六軸バネ剛性( jointParam.バネ移動定数, jointParam.バネ回転定数 );
+                            var SixAxisSpring = new SixAxisSpringRigidity( jointParam.SpringMovementConstant, jointParam.SpringRotationConstant );
 
 
-                            this._Bullet管理.剛体と剛体の間に6軸バネ拘束を追加する( つなぐ剛体のペア, 六軸可動制限, 六軸バネ );
+                            this._BulletManagement.BetweenRigidBodies6AddShaftSpringRestraint( APairOfRigidBodiesToConnect, SixAxisMovableRestriction, SixAxisSpring );
                         }
                         break;
                 }

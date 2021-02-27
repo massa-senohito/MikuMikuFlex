@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,14 +12,14 @@ namespace MikuMikuFlex3.PMXFormat
     ///     材質内で参照されるテクスチャパスのテーブル。
     /// </summary>
     /// <remarks>
-    ///     ※材質からはこちらのIndexを参照。テクスチャ／スフィア／個別Toonで一括して利用
-    ///     ※共有Toon -> toon01.bmp～toon10.bmp はテクスチャテーブルには入れないので注意
+    ///     ※材質からはこちらのIndexを参照。Texture／スフィア／個別Toonで一括して利用
+    ///     ※ShareToon -> toon01.bmp～toon10.bmp はテクスチャテーブルには入れないので注意
     ///     ※PMDと同様にモデル位置を基準としてサブフォルダ指定が可能
     ///     　パス区切りについてはシステム側で認識可能な文字('\'or'/'など)とし、PMXとして固定はしない。
     /// </remarks>
-    public class テクスチャリスト : List<string>
+    public class TextureList : List<string>
     {
-        public テクスチャリスト()
+        public TextureList()
             : base()
         {
         }
@@ -27,15 +27,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal テクスチャリスト( Stream st, ヘッダ header )
+        internal TextureList( Stream st, Header header )
         {
-            int テクスチャ数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"テクスチャ数: {テクスチャ数}" );
+            int NumberOfTextures = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfTextures: {NumberOfTextures}" );
 
-            this.Capacity = テクスチャ数;
+            this.Capacity = NumberOfTextures;
 
-            for( int i = 0; i < テクスチャ数; i++ )
-                this.Add( ParserHelper.get_TextBuf( st, header.エンコード方式 ) );
+            for( int i = 0; i < NumberOfTextures; i++ )
+                this.Add( ParserHelper.get_TextBuf( st, header.EncodingMethod ) );
         }
     }
 }

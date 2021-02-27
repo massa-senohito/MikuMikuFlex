@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class ボーンリスト : List<ボーン>
+    public class BoneList : List<Bourne>
     {
-        public ボーンリスト()
+        public BoneList()
             : base()
         {
         }
@@ -16,15 +16,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーンリスト( Stream st, ヘッダ header )
+        internal BoneList( Stream st, Header header )
         {
-            int ボーン数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"ボーン数: {ボーン数}" );
+            int NumberOfBones = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfBones: {NumberOfBones}" );
 
-            this.Capacity = ボーン数;
+            this.Capacity = NumberOfBones;
 
-            for( int i = 0; i < ボーン数; i++ )
-                this.Add( new ボーン( st, header ) );
+            for( int i = 0; i < NumberOfBones; i++ )
+                this.Add( new Bourne( st, header ) );
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,24 +7,24 @@ namespace MikuMikuFlex3.Utility
 {
     public class FPS
     {
-        public int 現在のFPS
+        public int CurrentFPS
         {
             get
             {
-                lock( this._スレッド間同期 )
+                lock( this._ThreadToThreadSynchronization )
                 {
-                    return this._現在のFPS;
+                    return this._CurrentFPS;
                 }
             }
         }
 
-        public int 現在のVPS
+        public int CurrentVPS
         {
             get
             {
-                lock( this._スレッド間同期 )
+                lock( this._ThreadToThreadSynchronization )
                 {
-                    return this._現在のVPS;
+                    return this._CurrentVPS;
                 }
             }
         }
@@ -32,55 +32,55 @@ namespace MikuMikuFlex3.Utility
 
         public FPS()
         {
-            this._現在のFPS = 0;
-            this._現在のVPS = 0;
+            this._CurrentFPS = 0;
+            this._CurrentVPS = 0;
             this._Stopwatch = Stopwatch.StartNew();
         }
 
         public bool FPSをカウントする()
         {
-            lock( this._スレッド間同期 )
+            lock( this._ThreadToThreadSynchronization )
             {
-                this._fps用カウンタ++;
+                this._fpsCounterFor++;
 
-                return this._更新チェックする();
+                return this._CheckForUpdates();
             }
         }
 
         public bool VPSをカウントする()
         {
-            lock( this._スレッド間同期 )
+            lock( this._ThreadToThreadSynchronization )
             {
-                this._vps用カウンタ++;
+                this._vpsCounterFor++;
 
-                return this._更新チェックする();
+                return this._CheckForUpdates();
             }
         }
 
 
-        private int _現在のFPS = 0;
+        private int _CurrentFPS = 0;
 
-        private int _現在のVPS = 0;
+        private int _CurrentVPS = 0;
 
-        private int _fps用カウンタ = 0;
+        private int _fpsCounterFor = 0;
 
-        private int _vps用カウンタ = 0;
+        private int _vpsCounterFor = 0;
 
         private Stopwatch _Stopwatch;
         
-        private readonly object _スレッド間同期 = new object();
+        private readonly object _ThreadToThreadSynchronization = new object();
 
 
-        private bool _更新チェックする()
+        private bool _CheckForUpdates()
         {
             if( 1000 <= this._Stopwatch.ElapsedMilliseconds )
             {
                 this._Stopwatch.Restart();
 
-                this._現在のFPS = this._fps用カウンタ;
-                this._現在のVPS = this._vps用カウンタ;
-                this._fps用カウンタ = 0;
-                this._vps用カウンタ = 0;
+                this._CurrentFPS = this._fpsCounterFor;
+                this._CurrentVPS = this._vpsCounterFor;
+                this._fpsCounterFor = 0;
+                this._vpsCounterFor = 0;
 
                 return true;
             }

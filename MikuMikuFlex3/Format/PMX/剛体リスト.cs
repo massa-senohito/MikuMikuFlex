@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 剛体リスト : List<剛体>
+    public class RigidBodyList : List<RigidBody>
     {
-        public 剛体リスト()
+        public RigidBodyList()
             : base()
         {
         }
@@ -18,15 +18,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 剛体リスト( Stream st, ヘッダ header )
+        internal RigidBodyList( Stream st, Header header )
         {
-            int 剛体数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"剛体数: {剛体数}" );
+            int RigidBodyNumber = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"RigidBodyNumber: {RigidBodyNumber}" );
 
-            this.Capacity = 剛体数;
+            this.Capacity = RigidBodyNumber;
 
-            for( int i = 0; i < 剛体数; i++ )
-                this.Add( new 剛体( st, header ) );
+            for( int i = 0; i < RigidBodyNumber; i++ )
+                this.Add( new RigidBody( st, header ) );
         }
     }
 }

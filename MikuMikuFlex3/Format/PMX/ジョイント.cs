@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,30 +10,30 @@ namespace MikuMikuFlex3.PMXFormat
     ///     すべてのジョイントパラメータの基本クラス。
     ///     詳細は別クラスで実装すること。
     /// </summary>
-    public class ジョイント
+    public class Joint
     {
-        public string ジョイント名 { get; private set; }
+        public string JointName { get; private set; }
 
-        public string ジョイント名_英 { get; private set; }
+        public string JointName_English { get; private set; }
 
-        public ジョイント種別 種別 { get; private set; }
+        public JointType Type { get; private set; }
 
-        public ジョイントパラメータ パラメータ { get; private set; }
+        public JointParameters Parameters { get; private set; }
 
 
-        public ジョイント()
+        public Joint()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ジョイント( Stream fs, ヘッダ header )
+        internal Joint( Stream fs, Header header )
         {
-            this.ジョイント名 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.ジョイント名_英 = ParserHelper.get_TextBuf( fs, header.エンコード方式 );
-            this.種別 = (ジョイント種別) ParserHelper.get_Byte( fs );
-            this.パラメータ = ジョイントパラメータ.読み込む( fs, header, this.種別 );
+            this.JointName = ParserHelper.get_TextBuf( fs, header.EncodingMethod );
+            this.JointName_English = ParserHelper.get_TextBuf( fs, header.EncodingMethod );
+            this.Type = (JointType) ParserHelper.get_Byte( fs );
+            this.Parameters = JointParameters.Read( fs, header, this.Type );
         }
     }
 }

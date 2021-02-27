@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class モーフフレームリスト : List<モーフフレーム>
+    public class MorphFrameList : List<MorphFrame>
     {
-        public モーフフレームリスト()
+        public MorphFrameList()
             : base()
         {
         }
@@ -16,14 +16,14 @@ namespace MikuMikuFlex3.VMDFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal モーフフレームリスト( Stream fs )
+        internal MorphFrameList( Stream fs )
         {
-            var モーフフレーム数 = (int) ParserHelper.get_DWORD( fs );
+            var NumberOfMorphFrames = (int) ParserHelper.get_DWORD( fs );
 
-            this.Capacity = モーフフレーム数;
+            this.Capacity = NumberOfMorphFrames;
 
-            for( int i = 0; i < モーフフレーム数; i++ )
-                this.Add( new モーフフレーム( fs ) );
+            for( int i = 0; i < NumberOfMorphFrames; i++ )
+                this.Add( new MorphFrame( fs ) );
         }
     }
 }

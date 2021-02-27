@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,29 +7,29 @@ using SharpDX;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class カメラフレーム : IComparer<カメラフレーム>
+    public class CameraFrame : IComparer<CameraFrame>
     {
-        public uint フレーム番号;
+        public uint FrameNumber;
 
 		/// <summary>
 		///		目標点とカメラの距離
 		///		目標点がカメラの前にあるとき負数
 		/// </summary>
-        public float 距離;
+        public float Distance;
 
 		/// <summary>
 		///		目標点の位置
 		/// </summary>
-        public Vector3 位置;
+        public Vector3 Position;
 
 		/// <summary>
 		///		カメラの回転量[ラジアン]
-		///		X, Y, Z 軸回転。
+		///		X, Y, Z AxleRotation。
 		/// </summary>
-        public Vector3 回転;
+        public Vector3 Rotation;
 
         /// <summary>
-        ///     X軸, Y軸, Z軸, 回転, 距離, 視野角 のベジェ補間曲線。
+        ///     XAxis, YAxis, ZAxis, Rotation, Distance, ViewingAngle のベジェ補間曲線。
         ///     [6][4] の 24bytes。
         /// </summary>
         /// <remarks>
@@ -50,76 +50,76 @@ namespace MikuMikuFlex3.VMDFormat
         ///         V_x1 V_x2 V_y1 V_y2
         /// </remarks>
         /// <seealso cref="https://harigane.at.webry.info/201103/article_1.html"/>
-        public byte[][] 補間データ;
+        public byte[][] InterpolatedData;
 
         /// <summary>
-        ///     [0]X軸, [1]Y軸, [2]Z軸, [3]回転, [4]距離, [5]視野角 のベジェ補間曲線。
+        ///     [0]XAxis, [1]YAxis, [2]ZAxis, [3]Rotation, [4]Distance, [5]ViewingAngle のベジェ補間曲線。
         ///     回転は４次元だが曲線は１つなので注意。
         /// </summary>
         /// <remarks>
-        ///     読み込み後、<see cref="補間データ"/> から自動生成される。
+        ///     読み込み後、<see cref="InterpolatedData"/> から自動生成される。
         /// </remarks>
-        public ベジェ曲線[] ベジェ曲線;
+        public BezierCurve[] BezierCurve;
 
 		/// <summary>
-		///		視野角[度]
+		///		ViewingAngle[度]
 		/// </summary>
-        public uint 視野角;
+        public uint ViewingAngle;
 
         /// <summary>
         ///     true:ON, false:OFF
         /// </summary>
-        public bool パースペクティブ;
+        public bool Perspective;
 
 
-        public カメラフレーム()
+        public CameraFrame()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal カメラフレーム( Stream fs )
+        internal CameraFrame( Stream fs )
         {
-            this.フレーム番号 = ParserHelper.get_DWORD( fs );
-            this.距離 = ParserHelper.get_Float( fs );
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.回転 = ParserHelper.get_Float3( fs );
-            this.回転.X = -this.回転.X;   // カメラの回転量は正負が逆であるため、ここで符号を反転しておく。
-            this.回転.Y = -this.回転.Y;
-            this.回転.Z = -this.回転.Z;
+            this.FrameNumber = ParserHelper.get_DWORD( fs );
+            this.Distance = ParserHelper.get_Float( fs );
+            this.Position = ParserHelper.get_Float3( fs );
+            this.Rotation = ParserHelper.get_Float3( fs );
+            this.Rotation.X = -this.Rotation.X;   // カメラの回転量は正負が逆であるため、ここで符号を反転しておく。
+            this.Rotation.Y = -this.Rotation.Y;
+            this.Rotation.Z = -this.Rotation.Z;
 
-            this.補間データ = new byte[ 6 ][];
+            this.InterpolatedData = new byte[ 6 ][];
             for( int i = 0; i < 6; i++ )
             {
-                this.補間データ[ i ] = new byte[ 4 ];
+                this.InterpolatedData[ i ] = new byte[ 4 ];
                 for( int j = 0; j < 4; j++ )
-                    this.補間データ[ i ][ j ] = ParserHelper.get_Byte( fs );
+                    this.InterpolatedData[ i ][ j ] = ParserHelper.get_Byte( fs );
             }
 
-            this.視野角 = ParserHelper.get_DWORD( fs );
-            this.パースペクティブ = ( 0 == ParserHelper.get_Byte( fs ) ) ? true : false;    // 0 が ON で 1 が OFF なので注意
+            this.ViewingAngle = ParserHelper.get_DWORD( fs );
+            this.Perspective = ( 0 == ParserHelper.get_Byte( fs ) ) ? true : false;    // 0 が ON で 1 が OFF なので注意
 
             // 補間データからベジェ曲線を生成する。
-            this.ベジェ曲線 = new ベジェ曲線[ 6 ];
+            this.BezierCurve = new BezierCurve[ 6 ];
             for( int i = 0; i < 6; i++ )
             {
-                var curve = new ベジェ曲線 {
+                var curve = new BezierCurve {
                     //v0 = new Vector2( 0, 0 ),
-                    v1 = new Vector2( this.補間データ[ i ][ 0 ] / 128f, this.補間データ[ i ][ 1 ] / 128f ),
-                    v2 = new Vector2( this.補間データ[ i ][ 2 ] / 128f, this.補間データ[ i ][ 3 ] / 128f ),
+                    v1 = new Vector2( this.InterpolatedData[ i ][ 0 ] / 128f, this.InterpolatedData[ i ][ 1 ] / 128f ),
+                    v2 = new Vector2( this.InterpolatedData[ i ][ 2 ] / 128f, this.InterpolatedData[ i ][ 3 ] / 128f ),
                     //v3 = new Vector2( 1, 1 ),
                 };
-                this.ベジェ曲線[ i ] = curve;
+                this.BezierCurve[ i ] = curve;
             }
         }
 
         /// <summary>
         ///     比較メソッド。
         /// </summary>
-        public int Compare( カメラフレーム x, カメラフレーム y )
+        public int Compare( CameraFrame x, CameraFrame y )
         {
-            return (int) ( x.フレーム番号 - y.フレーム番号 );
+            return (int) ( x.FrameNumber - y.FrameNumber );
         }
     }
 }

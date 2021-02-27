@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace MikuMikuFlex3.VMDFormat
 {
-    public class モーション
+    public class Motion
     {
-        public ヘッダ ヘッダ;
+        public Header Header;
 
-        public ボーンフレームリスト ボーンフレームリスト;
+        public BoneFrameList BoneFrameList;
 
-        public モーフフレームリスト モーフフレームリスト;
+        public MorphFrameList MorphFrameList;
 
-        public カメラフレームリスト カメラフレームリスト;
+        public CameraFrameList CameraFrameList;
 
-        public 照明フレームリスト 照明フレームリスト;
+        public LightingFrameList LightingFrameList;
 
         // todo: VMDのセルフ影への対応
         //public セルフ影リスト セルフ影リスト;
@@ -25,36 +25,36 @@ namespace MikuMikuFlex3.VMDFormat
         //public モデル表示_IKリスト モデル表示_IKリスト;
 
 
-        public モーション()
+        public Motion()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        public モーション( Stream fs )
+        public Motion( Stream fs )
             : this()
         {
-            this._読み込む( fs );
+            this._Read( fs );
         }
 
         /// <summary>
         ///     指定されたファイルから読み込む。
         /// </summary>
-        public モーション( string filePath )
+        public Motion( string filePath )
             : this()
         {
             using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-                this._読み込む( fs );
+                this._Read( fs );
         }
 
-        private void _読み込む( Stream fs )
+        private void _Read( Stream fs )
         {
-            this.ヘッダ = new ヘッダ( fs );
-            this.ボーンフレームリスト = new ボーンフレームリスト( fs );
-            this.モーフフレームリスト = new モーフフレームリスト( fs );
-            this.カメラフレームリスト = new カメラフレームリスト( fs );
-            this.照明フレームリスト = new 照明フレームリスト( fs );
+            this.Header = new Header( fs );
+            this.BoneFrameList = new BoneFrameList( fs );
+            this.MorphFrameList = new MorphFrameList( fs );
+            this.CameraFrameList = new CameraFrameList( fs );
+            this.LightingFrameList = new LightingFrameList( fs );
             //this.セルフ影リスト = new セルフ影リスト( fs );
             //this.モデル表示_IKリスト = new モデル表示_IKリスト( fs );
         }

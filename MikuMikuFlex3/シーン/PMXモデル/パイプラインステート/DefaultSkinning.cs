@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -27,7 +27,7 @@ namespace MikuMikuFlex3
             }
             catch( Exception e )
             {
-                Trace.TraceError( $"リソースからのコンピュートシェーダーの作成に失敗しました。[{this.CSOName}][{e.Message}]" );
+                Trace.TraceError( $"FailedToCreateComputeShaderFromResource。[{this.CSOName}][{e.Message}]" );
                 this.ComputeShader = null;
             }
         }
@@ -43,49 +43,49 @@ namespace MikuMikuFlex3
         /// <param name="d3ddc">
         ///     実行対象のDeviceContext。
         /// </param>
-        /// <param name="入力頂点数">
+        /// <param name="NumberOfInputVertices">
         ///     モデルの全頂点数。
         /// </param>
-        /// <param name="ボーンのモデルポーズ行列定数バッファ">
+        /// <param name="BoneModelPoseMatrixConstantBuffer">
         ///     ボーンのモデルポーズ行列の配列を格納された定数バッファ。
-        ///     構造については <see cref="PMXモデル.D3DBoneTrans"/> 参照。
+        ///     構造については <see cref="PMXModel.D3DBoneTrans"/> 参照。
         /// </param>
-        /// <param name="ボーンのローカル位置定数バッファ">
+        /// <param name="BoneLocalPositionConstantBuffer">
         ///     ボーンのローカル位置の配列が格納された定数バッファ。
-        ///     構造については <see cref="PMXモデル.D3DBoneLocalPosition"/>　参照。
+        ///     構造については <see cref="PMXModel.D3DBoneLocalPosition"/>　参照。
         /// </param>
-        /// <param name="ボーンの回転行列定数バッファ">
+        /// <param name="BoneRotationMatrixConstantBuffer">
         ///     ボーンの回転行列の配列が格納された定数バッファ。
-        ///     構造については <see cref="PMXモデル.D3DBoneLocalPosition"/> 参照。
+        ///     構造については <see cref="PMXModel.D3DBoneLocalPosition"/> 参照。
         /// </param>
-        /// <param name="変形前頂点データSRV">
+        /// <param name="PreDeformationVertexDataSRV">
         ///     スキニングの入力となる頂点データリソースのSRV。
         ///     構造については <see cref="CS_INPUT"/> 参照。
         /// </param>
-        /// <param name="変形後頂点データUAV">
+        /// <param name="VertexDataAfterTransformationUAV">
         ///     スキニングの出力を書き込む頂点データリソースのUAV。
         ///     構造については <see cref="VS_INPUT"/> 参照。
         /// </param>
         /// <remarks>
         ///     このメソッドの呼び出し時には、<paramref name="d3ddc"/> には事前に以下のように設定される。
         ///     ComputeShader
-        ///         - slot( b1 ) …… <paramref name="ボーンのモデルポーズ行列定数バッファ"/>
-        ///         - slot( b2 ) …… <paramref name="ボーンのローカル位置定数バッファ"/>
-        ///         - slot( b3 ) …… <paramref name="ボーンの回転行列定数バッファ"/>
-        ///         - slot( t0 ) …… <paramref name="変形前頂点データSRV"/>
-        ///         - slot( u0 ) …… <paramref name="変形後頂点データUAV"/>
+        ///         - slot( b1 ) …… <paramref name="BoneModelPoseMatrixConstantBuffer"/>
+        ///         - slot( b2 ) …… <paramref name="BoneLocalPositionConstantBuffer"/>
+        ///         - slot( b3 ) …… <paramref name="BoneRotationMatrixConstantBuffer"/>
+        ///         - slot( t0 ) …… <paramref name="PreDeformationVertexDataSRV"/>
+        ///         - slot( u0 ) …… <paramref name="VertexDataAfterTransformationUAV"/>
         /// </remarks>
         public void Run(
             SharpDX.Direct3D11.DeviceContext d3ddc,
-            int 入力頂点数,
-            SharpDX.Direct3D11.Buffer ボーンのモデルポーズ行列定数バッファ,
-            SharpDX.Direct3D11.Buffer ボーンのローカル位置定数バッファ,
-            SharpDX.Direct3D11.Buffer ボーンの回転行列定数バッファ,
-            SharpDX.Direct3D11.ShaderResourceView 変形前頂点データSRV,
-            SharpDX.Direct3D11.UnorderedAccessView 変形後頂点データUAV )
+            int NumberOfInputVertices,
+            SharpDX.Direct3D11.Buffer BoneModelPoseMatrixConstantBuffer,
+            SharpDX.Direct3D11.Buffer BoneLocalPositionConstantBuffer,
+            SharpDX.Direct3D11.Buffer BoneRotationMatrixConstantBuffer,
+            SharpDX.Direct3D11.ShaderResourceView PreDeformationVertexDataSRV,
+            SharpDX.Direct3D11.UnorderedAccessView VertexDataAfterTransformationUAV )
         {
             d3ddc.ComputeShader.Set( this.ComputeShader );
-            d3ddc.Dispatch( ( 入力頂点数 / 64 ) + 1, 1, 1 ); // 既定のシェーダー（DefaultSkinningComputeShader.hlsl）に合わせてある
+            d3ddc.Dispatch( ( NumberOfInputVertices / 64 ) + 1, 1, 1 ); // 既定のシェーダー（DefaultSkinningComputeShader.hlsl）に合わせてある
         }
 
 

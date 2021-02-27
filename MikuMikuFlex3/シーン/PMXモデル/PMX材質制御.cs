@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,50 +7,50 @@ using SharpDX;
 namespace MikuMikuFlex3
 {
     /// <summary>
-    ///     <see cref="PMXFormat.材質"/> に追加情報を付与するクラス。
+    ///     <see cref="PMXFormat.Material"/> に追加情報を付与するクラス。
     /// </summary>
-    public class PMX材質制御 : IDisposable
+    public class PMXMaterialControl : IDisposable
     {
-        public string 名前 => this._PMXF材質.材質名;
+        public string GivenNames => this._PMXFMaterial.MaterialName;
 
-        public float テッセレーション係数 { get; set; } = 1f;
+        public float TessellationCoefficient { get; set; } = 1f;
 
 
-        public class 状態
+        public class Status
         {
             /// <summary>
             ///     (R, G, B, A)
             /// </summary>
-            public Vector4 拡散色 { get; set; }
+            public Vector4 DiffuseColor { get; set; }
 
             /// <summary>
             ///     (R, G, B)
             /// </summary>
-            public Vector3 反射色 { get; set; }
+            public Vector3 ReflectiveColor { get; set; }
 
-            public float 反射強度 { get; set; }
+            public float ReflectionIntensity { get; set; }
 
             /// <summary>
             ///     (R, G, B)
             /// </summary>
-            public Vector3 環境色 { get; set; }
+            public Vector3 EnvironmentalColor { get; set; }
 
             /// <summary>
-            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
+            ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
             ///     (R, G, B, A)
             /// </summary>
-            public Vector4 エッジ色 { get; set; }
+            public Vector4 EdgeColor { get; set; }
 
             /// <summary>
-            ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
-            ///     Point 描画時は Point サイズ(※2.1拡張)。
+            ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
+            ///     Point 描画時は Point Size(※2.1拡張)。
             /// </summary>
-            public float エッジサイズ { get; set; }
+            public float EdgeSize { get; set; }
         }
 
-        public 状態 加算差分 { get; protected set; }
+        public Status AdditionDifference { get; protected set; }
 
-        public 状態 乗算差分 { get; protected set; }
+        public Status MultiplyDifference { get; protected set; }
 
 
 
@@ -60,100 +60,100 @@ namespace MikuMikuFlex3
         /// <summary>
         ///     (R, G, B, A)
         /// </summary>
-        public Vector4 拡散色 => MulEachMember( this._PMXF材質.拡散色, this.乗算差分.拡散色 ) + 加算差分.拡散色;
+        public Vector4 DiffuseColor => MulEachMember( this._PMXFMaterial.DiffuseColor, this.MultiplyDifference.DiffuseColor ) + AdditionDifference.DiffuseColor;
 
         /// <summary>
         ///     (R, G, B)
         /// </summary>
-        public Vector3 反射色 => MulEachMember( this._PMXF材質.反射色, this.乗算差分.反射色 ) + 加算差分.反射色;
+        public Vector3 ReflectiveColor => MulEachMember( this._PMXFMaterial.ReflectiveColor, this.MultiplyDifference.ReflectiveColor ) + AdditionDifference.ReflectiveColor;
 
-        public float 反射強度 => this._PMXF材質.反射強度 * this.乗算差分.反射強度 + this.加算差分.反射強度;
+        public float ReflectionIntensity => this._PMXFMaterial.ReflectionIntensity * this.MultiplyDifference.ReflectionIntensity + this.AdditionDifference.ReflectionIntensity;
 
         /// <summary>
         ///     (R, G, B)
         /// </summary>
-        public Vector3 環境色 => MulEachMember( this._PMXF材質.環境色, this.乗算差分.環境色 ) + 加算差分.環境色;
+        public Vector3 EnvironmentalColor => MulEachMember( this._PMXFMaterial.EnvironmentalColor, this.MultiplyDifference.EnvironmentalColor ) + AdditionDifference.EnvironmentalColor;
 
         /// <summary>
-        ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
+        ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
         ///     (R, G, B, A)
         /// </summary>
-        public Vector4 エッジ色 => ( this.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) ) ? MulEachMember( this._PMXF材質.エッジ色, this.乗算差分.エッジ色 ) + 加算差分.エッジ色 : new Vector4( 0f );
+        public Vector4 EdgeColor => ( this.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.Edge ) ) ? MulEachMember( this._PMXFMaterial.EdgeColor, this.MultiplyDifference.EdgeColor ) + AdditionDifference.EdgeColor : new Vector4( 0f );
 
         /// <summary>
-        ///     <see cref="描画フラグ.エッジ"/> が指定されているときのみ有効。
-        ///     Point 描画時は Point サイズ(※2.1拡張)。
+        ///     <see cref="DrawingFlag.Edge"/> が指定されているときのみ有効。
+        ///     Point 描画時は Point Size(※2.1拡張)。
         /// </summary>
-        public float エッジサイズ => ( this.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) ) ? this._PMXF材質.エッジサイズ * this.乗算差分.エッジサイズ + 加算差分.エッジサイズ : 0f;
+        public float EdgeSize => ( this.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.Edge ) ) ? this._PMXFMaterial.EdgeSize * this.MultiplyDifference.EdgeSize + AdditionDifference.EdgeSize : 0f;
 
 
 
-        // 描画
+        // Drawing
 
 
-        public PMXFormat.描画フラグ 描画フラグ => this._PMXF材質.描画フラグ;
+        public PMXFormat.DrawingFlag DrawingFlag => this._PMXFMaterial.DrawingFlag;
 
         /// <summary>
         ///     材質の描画をおこなうシェーダー。
         ///     null なら既定のシェーダーが利用される。
         /// </summary>
-        public IMaterialShader 材質描画シェーダー { get; set; }
+        public IMaterialShader MaterialDrawingShader { get; set; }
 
 
 
-        // テクスチャ／メモ
+        // Texture／Note
 
 
-        public int 通常テクスチャの参照インデックス => this._PMXF材質.通常テクスチャの参照インデックス;
+        public int ReferenceIndexOfNormalTexture => this._PMXFMaterial.ReferenceIndexOfNormalTexture;
 
-        public int スフィアテクスチャの参照インデックス => this._PMXF材質.スフィアテクスチャの参照インデックス;
+        public int SphereTextureReferenceIndex => this._PMXFMaterial.SphereTextureReferenceIndex;
 
-        public PMXFormat.スフィアモード スフィアモード => this._PMXF材質.スフィアモード;
+        public PMXFormat.SphereMode SphereMode => this._PMXFMaterial.SphereMode;
 
         /// <summary>
         ///     0 or 1  。
-        ///     <see cref="共有Toonのテクスチャ参照インデックス"/> のサマリを参照のこと。
+        ///     <see cref="ShareToonのテクスチャ参照インデックス"/> のサマリを参照のこと。
         /// </summary>
-        public byte 共有Toonフラグ => this._PMXF材質.共有Toonフラグ;
+        public byte ShareToonFlag => this._PMXFMaterial.ShareToonFlag;
 
         /// <summary>
-        ///     <see cref="共有Toonフラグ"/> が 0 の時は、Toonテクスチャテクスチャテーブルの参照インデックス。
-        ///     <see cref="共有Toonフラグ"/> が 1 の時は、共有Toonテクスチャ[0~9]がそれぞれ toon01.bmp~toon10.bmp に対応。
+        ///     <see cref="ShareToonFlag"/> が 0 の時は、Toonテクスチャテクスチャテーブルの参照インデックス。
+        ///     <see cref="ShareToonFlag"/> が 1 の時は、ShareToonTexture[0~9]がそれぞれ toon01.bmp~toon10.bmp に対応。
         /// </summary>
-        public int 共有Toonのテクスチャ参照インデックス => this._PMXF材質.共有Toonのテクスチャ参照インデックス;
+        public int ShareToonのテクスチャ参照インデックス => this._PMXFMaterial.ShareToonのテクスチャ参照インデックス;
 
         /// <summary>
         ///     自由欄／スクリプト記述／エフェクトへのパラメータ配置など
         /// </summary>
-        public String メモ => this._PMXF材質.メモ;
+        public String Note => this._PMXFMaterial.Note;
 
         /// <summary>
         ///     材質に対応する面数（頂点数で示す）。
         ///     １面は３頂点なので、必ず３の倍数になる。
         /// </summary>
-        public int 頂点数 => this._PMXF材質.頂点数;
+        public int NumberOfVertices => this._PMXFMaterial.NumberOfVertices;
 
-        public int 開始インデックス => this._PMXF材質.開始インデックス;
+        public int StartingIndex => this._PMXFMaterial.StartingIndex;
 
 
 
         // 生成と終了
 
 
-        public PMX材質制御( PMXFormat.材質 material, IMaterialShader 材質描画シェーダー )
+        public PMXMaterialControl( PMXFormat.Material material, IMaterialShader MaterialDrawingShader )
         {
-            this._PMXF材質 = material;
-            this.材質描画シェーダー = 材質描画シェーダー;
+            this._PMXFMaterial = material;
+            this.MaterialDrawingShader = MaterialDrawingShader;
 
-            this.加算差分 = new 状態();
-            this.乗算差分 = new 状態();
+            this.AdditionDifference = new Status();
+            this.MultiplyDifference = new Status();
 
-            this.状態をリセットする();
+            this.ResetState();
         }
 
         public virtual void Dispose()
         {
-            this._PMXF材質 = null;
+            this._PMXFMaterial = null;
         }
 
 
@@ -161,21 +161,21 @@ namespace MikuMikuFlex3
         // 更新
 
 
-        public void 状態をリセットする()
+        public void ResetState()
         {
-            this.加算差分.拡散色 = Vector4.Zero;
-            this.加算差分.反射色 = Vector3.Zero;
-            this.加算差分.反射強度 = 0;
-            this.加算差分.環境色 = Vector3.Zero;
-            this.加算差分.エッジ色 = Vector4.Zero;
-            this.加算差分.エッジサイズ = 0;
+            this.AdditionDifference.DiffuseColor = Vector4.Zero;
+            this.AdditionDifference.ReflectiveColor = Vector3.Zero;
+            this.AdditionDifference.ReflectionIntensity = 0;
+            this.AdditionDifference.EnvironmentalColor = Vector3.Zero;
+            this.AdditionDifference.EdgeColor = Vector4.Zero;
+            this.AdditionDifference.EdgeSize = 0;
 
-            this.乗算差分.拡散色 = new Vector4( 1f );
-            this.乗算差分.反射色 = new Vector3( 1f );
-            this.乗算差分.反射強度 = 1;
-            this.乗算差分.環境色 = new Vector3( 1f );
-            this.乗算差分.エッジ色 = new Vector4( 1f );
-            this.乗算差分.エッジサイズ = 1;
+            this.MultiplyDifference.DiffuseColor = new Vector4( 1f );
+            this.MultiplyDifference.ReflectiveColor = new Vector3( 1f );
+            this.MultiplyDifference.ReflectionIntensity = 1;
+            this.MultiplyDifference.EnvironmentalColor = new Vector3( 1f );
+            this.MultiplyDifference.EdgeColor = new Vector4( 1f );
+            this.MultiplyDifference.EdgeSize = 1;
         }
 
 
@@ -183,7 +183,7 @@ namespace MikuMikuFlex3
         // private
 
 
-        private PMXFormat.材質 _PMXF材質;
+        private PMXFormat.Material _PMXFMaterial;
 
 
         public static Vector4 MulEachMember( Vector4 vec1, Vector4 vec2 )

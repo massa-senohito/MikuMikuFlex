@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,27 +6,27 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public abstract class ジョイントパラメータ
+    public abstract class JointParameters
     {
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal static ジョイントパラメータ 読み込む( Stream fs, ヘッダ header, ジョイント種別 type )
+        internal static JointParameters Read( Stream fs, Header header, JointType type )
         {
             switch( type )
             {
                 // PMX 2.0
-                case ジョイント種別.ばね付き6DOF:
-                    var sp6 = new ばね付き6DOFジョイントパラメータ();
-                    sp6.読み込む( fs, header );
+                case JointType.WithSpring6DOF:
+                    var sp6 = new WithSpring6DOFJointParameters();
+                    sp6.Read( fs, header );
                     return sp6;
 
                 // PMX 2.1
-                case ジョイント種別.基本6DOF:
-                case ジョイント種別.P2P:
-                case ジョイント種別.円錐回転:
-                case ジョイント種別.スライダー:
-                case ジョイント種別.ヒンジ:
+                case JointType.Basic6DOF:
+                case JointType.P2P:
+                case JointType.ConeRotation:
+                case JointType.Slider:
+                case JointType.Hinge:
                     throw new NotSupportedException( "PMX2.1 以降には未対応です。" );     // todo: PMX2.1 拡張のジョイントの実装
 
                 default:
@@ -37,6 +37,6 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。（派生クラスで実装のこと。）
         /// </summary>
-        internal abstract void 読み込む( Stream fs, ヘッダ header );
+        internal abstract void Read( Stream fs, Header header );
     }
 }

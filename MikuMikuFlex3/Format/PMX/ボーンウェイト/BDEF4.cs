@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
@@ -6,38 +6,38 @@ using SharpDX;
 namespace MikuMikuFlex3.PMXFormat
 {
     /// <summary>
-    ///     ボーン4つの参照インデックスと、それぞれのウェイト値。
+    ///     Bourne4つの参照インデックスと、それぞれのウェイト値。
     ///     ウェイトの合計が1.0である保障はしない。
     ///     参照インデックスは -1（非参照）の場合があるので注意。
     /// </summary>
-    public class BDEF4 : ボーンウェイト
+    public class BDEF4 : BoneWeight
     {
         /// <summary>
-        ///     ボーン１のインデックス。
+        ///     Bourne１のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone1ReferenceIndex;
 
         /// <summary>
-        ///     ボーン２のインデックス。
+        ///     Bourne２のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone2ReferenceIndex;
 
         /// <summary>
-        ///     ボーン３のインデックス。
+        ///     Bourne３のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone3ReferenceIndex;
 
         /// <summary>
-        ///     ボーン４のインデックス。
+        ///     Bourne４のインデックス。
         ///     -1 なら非参照。
         /// </summary>
         public int Bone4ReferenceIndex;
 
         /// <summary>
-        ///     ボーン１～４のウェイト値。
+        ///     Bourne１～４のウェイト値。
         ///     (x,y,z,w) = (Bone1Weight, Bone2Weight, Bone3Weight, Bone4Weight)
         /// </summary>
         public Vector4 Weights;

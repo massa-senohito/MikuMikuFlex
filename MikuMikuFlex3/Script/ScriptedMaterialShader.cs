@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -42,7 +42,7 @@ switch( Reason )
             var imms = this._ShaderScript.Compile();
 
             if( 0 != imms.Length )
-                throw new Exception( $"スクリプトのコンパイルに失敗しました。- {imms[ 0 ].ToString()}" );
+                throw new Exception( $"ScriptCompilationFailed。- {imms[ 0 ].ToString()}" );
 
             this._PipelineState = new PipelineState( d3dDevice );
 
@@ -62,50 +62,50 @@ switch( Reason )
         /// <param name="d3ddc">
         ///     描画に使用するDeviceContext。
         /// </param>
-        /// <param name="頂点数">
+        /// <param name="NumberOfVertices">
         ///     材質の頂点数。
         /// </param>
-        /// <param name="頂点の開始インデックス">
+        /// <param name="StartIndexOfVertices">
         ///     頂点バッファにおける、材質の開始インデックス。
         /// </param>
-        /// <param name="pass種別">
+        /// <param name="passType">
         ///     材質の描画種別。
         /// </param>
-        /// <param name="グローバルパラメータ">
-        ///     グローバルパラメータ。
+        /// <param name="GlobalParameters">
+        ///     GlobalParameters。
         /// </param>
-        /// <param name="グローバルパラメータ定数バッファ">
+        /// <param name="GlobalParameterConstantBuffer">
         ///     グローバルパラメータの内容が格納された定数バッファ。
         /// </param>
-        /// <param name="テクスチャSRV">
+        /// <param name="TextureSRV">
         ///     材質が使用するテクスチャリソースのSRV。未使用なら null。
         /// </param>
-        /// <param name="スフィアマップテクスチャSRV">
+        /// <param name="SphereMapTextureSRV">
         ///     材質が使用するスフィアマップテクスチャリソースのSRV。未使用なら null。
         /// </param>
-        /// <param name="トゥーンテクスチャSRV">
+        /// <param name="ToonTextureSRV">
         ///     材質が使用するトゥーンテクスチャリソースのSRV。未使用なら null。
         /// </param>
         /// <remarks>
         ///     このメソッドの呼び出し時には、<paramref name="d3ddc"/> には事前に以下のように設定される。
         ///     - InputAssembler
-        ///         - 頂点バッファ（モデル全体）の割り当て
+        ///         - VertexBuffer（モデル全体）の割り当て
         ///         - 頂点インデックスバッファ（モデル全体）の割り当て
         ///         - 頂点レイアウトの割り当て
         ///         - PrimitiveTopology の割り当て(PatchListWith3ControlPoints固定)
         ///     - VertexShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - HullShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - DomainShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - GeometryShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
         ///     - PixelShader
-        ///         - slot( b0 ) …… <paramref name="グローバルパラメータ定数バッファ"/>
-        ///         - slot( t0 ) …… <paramref name="テクスチャSRV"/>
-        ///         - slot( t1 ) …… <paramref name="スフィアマップテクスチャSRV"/>
-        ///         - slot( t2 ) …… <paramref name="トゥーンテクスチャSRV"/>
+        ///         - slot( b0 ) …… <paramref name="GlobalParameterConstantBuffer"/>
+        ///         - slot( t0 ) …… <paramref name="TextureSRV"/>
+        ///         - slot( t1 ) …… <paramref name="SphereMapTextureSRV"/>
+        ///         - slot( t2 ) …… <paramref name="ToonTextureSRV"/>
         ///         - slot( s0 ) …… ピクセルシェーダー用サンプルステート
         ///     - Rasterizer
         ///         - Viewport の設定
@@ -117,16 +117,16 @@ switch( Reason )
         /// </remarks>
         public void Draw(
             DeviceContext d3ddc,
-            int 頂点数, 
-            int 頂点の開始インデックス, 
-            MMDPass pass種別, 
-            in GlobalParameters グローバルパラメータ,
-            SharpDX.Direct3D11.Buffer グローバルパラメータ定数バッファ, 
-            ShaderResourceView テクスチャSRV, 
-            ShaderResourceView スフィアマップテクスチャSRV, 
-            ShaderResourceView トゥーンテクスチャSRV )
+            int NumberOfVertices, 
+            int StartIndexOfVertices, 
+            MMDPass passType, 
+            in GlobalParameters GlobalParameters,
+            SharpDX.Direct3D11.Buffer GlobalParameterConstantBuffer, 
+            ShaderResourceView TextureSRV, 
+            ShaderResourceView SphereMapTextureSRV, 
+            ShaderResourceView ToonTextureSRV )
         {
-            this._PipelineState.ResetDrawState( 頂点数, 頂点の開始インデックス, pass種別, d3ddc );
+            this._PipelineState.ResetDrawState( NumberOfVertices, StartIndexOfVertices, passType, d3ddc );
 
             this._PipelineState.Reason = Reason.Run;
             this._ShaderScript.RunAsync( this._PipelineState );

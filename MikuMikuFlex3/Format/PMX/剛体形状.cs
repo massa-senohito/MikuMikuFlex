@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public enum 剛体形状
+    public enum RigidBodyShape
     {
-        球 = 0,
-        箱 = 1,
-        カプセル = 2,
+        Ball = 0,
+        Box = 1,
+        Capsule = 2,
     }
 }

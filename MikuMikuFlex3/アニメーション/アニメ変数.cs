@@ -1,4 +1,4 @@
-﻿    using System;
+    using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -6,18 +6,18 @@ using System.Linq;
 
 namespace MikuMikuFlex3
 {
-    public class アニメ変数<T>
+    public class AnimeVariables<T>
     {
-        public T 値 { get; set; }
+        public T Value { get; set; }
 
 
 
         // 生成と終了
 
 
-        public アニメ変数( T 初期値 )
+        public AnimeVariables( T InitialValue )
         {
-            this.値 = 初期値;
+            this.Value = InitialValue;
         }
 
 
@@ -25,14 +25,14 @@ namespace MikuMikuFlex3
         // リストを構築
 
 
-        public void 遷移を追加する( アニメ遷移<T> 遷移 )
+        public void AddATransition( AnimeTransition<T> Transition )
         {
-            this._遷移リスト.Enqueue( 遷移 );
+            this._TransitionList.Enqueue( Transition );
         }
 
-        public void 遷移をクリアする()
+        public void ClearTheTransition()
         {
-            this._遷移リスト = new ConcurrentQueue<アニメ遷移<T>>();
+            this._TransitionList = new ConcurrentQueue<AnimeTransition<T>>();
         }
 
 
@@ -40,51 +40,51 @@ namespace MikuMikuFlex3
         // リストを再生
 
 
-        internal T 更新する( double 現在時刻sec )
+        internal T Update( double CurrentTimesec )
         {
-            bool 現在値を取得完了 = false;
+            bool CompletedAcquisitionOfCurrentValue = false;
 
-            double 次の連続する遷移の開始時刻sec = 現在時刻sec;
+            double StartTimeOfTheNextConsecutiveTransitionsec = CurrentTimesec;
 
-            while( !現在値を取得完了 )
+            while( !CompletedAcquisitionOfCurrentValue )
             {
-                if( this._遷移リスト.TryPeek( out var 遷移 ) )
+                if( this._TransitionList.TryPeek( out var Transition ) )
                 {
                     // (A) リストに遷移がある
 
-                    if( 遷移.確定されていない )
+                    if( Transition.NotConfirmed )
                     {
-                        遷移.確定する( 次の連続する遷移の開始時刻sec, this.値 );
+                        Transition.Determine( StartTimeOfTheNextConsecutiveTransitionsec, this.Value );
                     }
 
-                    if( 遷移.更新する( 現在時刻sec, out T 現在の値 ) )
+                    if( Transition.Update( CurrentTimesec, out T CurrentValue ) )
                     {
-                        this.値 = 現在の値;
+                        this.Value = CurrentValue;
 
-                        現在値を取得完了 = true;
+                        CompletedAcquisitionOfCurrentValue = true;
                     }
                     else
                     {
                         // 遷移リストに次の遷移が入っているなら、その遷移はこのあとすぐ開始されるが、現在時刻ではなく、この時刻から開始しなければならない。（ずれを抑えるため）
                         // なお、遷移リストに次の遷移が入ってないなら、このメソッドはいったん抜けるので、次に入ってくる遷移の開始時刻は現在時刻にリセットされる。
 
-                        次の連続する遷移の開始時刻sec = 遷移.開始時刻sec + 遷移.持続時間sec;
+                        StartTimeOfTheNextConsecutiveTransitionsec = Transition.StartTimesec + Transition.Durationsec;
 
 
                         // この遷移は終了した → 次の遷移へ
 
-                        this._遷移リスト.TryDequeue( out _ );
+                        this._TransitionList.TryDequeue( out _ );
                     }
                 }
                 else
                 {
                     // (B) リストが空 → 現状維持
 
-                    現在値を取得完了 = true;
+                    CompletedAcquisitionOfCurrentValue = true;
                 }
             }
 
-            return this.値;
+            return this.Value;
         }
 
 
@@ -92,6 +92,6 @@ namespace MikuMikuFlex3
         // private
 
 
-        private ConcurrentQueue<アニメ遷移<T>> _遷移リスト = new ConcurrentQueue<アニメ遷移<T>>();
+        private ConcurrentQueue<AnimeTransition<T>> _TransitionList = new ConcurrentQueue<AnimeTransition<T>>();
     }
 }

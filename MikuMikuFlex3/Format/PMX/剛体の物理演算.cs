@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public enum 剛体の物理演算
+    public enum RigidBodyPhysics
     {
-        ボーン追従 = 0,
-        物理演算 = 1,
-        物理演算とボーン位置合わせ = 2,
+        BoneTracking = 0,
+        Physics = 1,
+        PhysicsAndBoneAlignment = 2,
     }
 }

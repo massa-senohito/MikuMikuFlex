@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,58 +6,58 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class モデル
+    public class Model
     {
-        public ヘッダ ヘッダ { get; private set; }
+        public Header Header { get; private set; }
 
-        public モデル情報 モデル情報 { get; private set; }
+        public ModelInformation ModelInformation { get; private set; }
 
-        public 頂点リスト 頂点リスト { get; private set; }
+        public VertexList VertexList { get; private set; }
 
-        public 面リスト 面リスト { get; private set; }
+        public FaceList FaceList { get; private set; }
 
-        public テクスチャリスト テクスチャリスト { get; private set; }
+        public TextureList TextureList { get; private set; }
 
-        public 材質リスト 材質リスト { get; private set; }
+        public MaterialList MaterialList { get; private set; }
 
-        public ボーンリスト ボーンリスト { get; private set; }
+        public BoneList BoneList { get; private set; }
 
-        public モーフリスト モーフリスト { get; private set; }
+        public MorphList MorphList { get; private set; }
 
-        public 表示枠リスト 表示枠リスト { get; private set; }
+        public DisplayFrameList DisplayFrameList { get; private set; }
 
-        public 剛体リスト 剛体リスト { get; private set; }
+        public RigidBodyList RigidBodyList { get; private set; }
 
-        public ジョイントリスト ジョイントリスト { get; private set; }
+        public JointList JointList { get; private set; }
 
         // todo: SoftBody は未実装(PMX2.1)
         //public 軟体リスト 軟体リスト { get; private set; }
 
 
-        public モデル()
+        public Model()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        public モデル( Stream st )
+        public Model( Stream st )
         {
-            this.ヘッダ = new ヘッダ( st );
-            this.モデル情報 = new モデル情報( st, this.ヘッダ );
-            this.頂点リスト = new 頂点リスト( st, this.ヘッダ );
-            this.面リスト = new 面リスト( st, this.ヘッダ );
-            this.テクスチャリスト = new テクスチャリスト( st, this.ヘッダ );
-            this.材質リスト = new 材質リスト( st, this.ヘッダ );
-            this.ボーンリスト = new ボーンリスト( st, this.ヘッダ );
-            this.モーフリスト = new モーフリスト( st, this.ヘッダ );
-            this.表示枠リスト = new 表示枠リスト( st, this.ヘッダ );
-            this.剛体リスト = new 剛体リスト( st, this.ヘッダ );
-            this.ジョイントリスト = new ジョイントリスト( st, this.ヘッダ );
-            if( this.ヘッダ.PMXバージョン >= 2.1 )
+            this.Header = new Header( st );
+            this.ModelInformation = new ModelInformation( st, this.Header );
+            this.VertexList = new VertexList( st, this.Header );
+            this.FaceList = new FaceList( st, this.Header );
+            this.TextureList = new TextureList( st, this.Header );
+            this.MaterialList = new MaterialList( st, this.Header );
+            this.BoneList = new BoneList( st, this.Header );
+            this.MorphList = new MorphList( st, this.Header );
+            this.DisplayFrameList = new DisplayFrameList( st, this.Header );
+            this.RigidBodyList = new RigidBodyList( st, this.Header );
+            this.JointList = new JointList( st, this.Header );
+            if( this.Header.PMXVersion >= 2.1 )
             {
                 // Todo: SoftBody の読み込みは未対応
-                //this.軟体リスト = 軟体リスト.読み込む( st, this.ヘッダ );
+                //this.軟体リスト = 軟体リスト.Read( st, this.Header );
             }
         }
     }

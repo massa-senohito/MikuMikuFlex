@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace MikuMikuFlex.VMD
 {
-    public class モーション
+    public class Motion
     {
-        public ヘッダ ヘッダ;
+        public Header Header;
 
-        public ボーンフレームリスト ボーンフレームリスト;
+        public BoneFrameList BoneFrameList;
 
-        public モーフフレームリスト モーフフレームリスト;
+        public MorphFrameList MorphFrameList;
 
-        public カメラフレームリスト カメラフレームリスト;
+        public CameraFrameList CameraFrameList;
 
-        public 照明フレームリスト 照明フレームリスト;
+        public LightingFrameList LightingFrameList;
 
         // Todo: セルフ影には未対応
         //public セルフ影リスト セルフ影リスト;
@@ -25,20 +25,20 @@ namespace MikuMikuFlex.VMD
         //public モデル表示_IKリスト モデル表示_IKリスト;
 
 
-        public モーション()
+        public Motion()
         {
         }
 
 		/// <summary>
 		///     指定されたストリームから読み込む。
 		/// </summary>
-		public モーション( Stream fs )
+		public Motion( Stream fs )
         {
-            this.ヘッダ = new ヘッダ( fs );
-            this.ボーンフレームリスト = new ボーンフレームリスト( fs );
-            this.モーフフレームリスト = new モーフフレームリスト( fs );
-            this.カメラフレームリスト = new カメラフレームリスト( fs );
-            this.照明フレームリスト = new 照明フレームリスト( fs );
+            this.Header = new Header( fs );
+            this.BoneFrameList = new BoneFrameList( fs );
+            this.MorphFrameList = new MorphFrameList( fs );
+            this.CameraFrameList = new CameraFrameList( fs );
+            this.LightingFrameList = new LightingFrameList( fs );
             // 拡張
             //this.セルフ影リスト = new セルフ影リスト( fs );
         }

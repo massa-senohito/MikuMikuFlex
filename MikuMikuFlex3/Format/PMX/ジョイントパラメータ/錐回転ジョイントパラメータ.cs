@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,63 +7,63 @@ using SharpDX;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 錐回転ジョイントパラメータ: ジョイントパラメータ
+    public class GimletRotationJointParameters: JointParameters
     {
-        public int 関連剛体Aのインデックス { get; private set; }
+        public int RelatedRigidBodyAのインデックス { get; private set; }
 
-        public int 関連剛体Bのインデックス { get; private set; }
+        public int RelatedRigidBodyBのインデックス { get; private set; }
 
-        public Vector3 位置 { get; private set; }
+        public Vector3 Position { get; private set; }
 
-        public Vector3 回転rad { get; private set; }
+        public Vector3 Rotationrad { get; private set; }
 
         /// <summary>
-        ///     回転制限 - 下限 - Z
+        ///     RotationLimit - 下限 - Z
         /// </summary>
         public float SwingSpan1 { get; private set; }
 
         /// <summary>
-        ///     回転制限 - 下限 - Y
+        ///     RotationLimit - 下限 - Y
         /// </summary>
         public float SwingSpan2 { get; private set; }
 
         /// <summary>
-        ///     回転制限 - 下限 - X
+        ///     RotationLimit - 下限 - X
         /// </summary>
         public float TwistSpan { get; private set; }
 
         /// <summary>
-        ///     バネ定数 - 移動 - X
+        ///     バネ定数 - Move - X
         /// </summary>
         public float Softness { get; private set; }
 
         /// <summary>
-        ///     バネ定数 - 移動 - Y
+        ///     バネ定数 - Move - Y
         /// </summary>
         public float BiasFactor { get; private set; }
 
         /// <summary>
-        ///     バネ定数 - 移動 - Z
+        ///     バネ定数 - Move - Z
         /// </summary>
         public float RelaxationFactor { get; private set; }
 
         /// <summary>
-        ///     移動制限 - 下限 - X
+        ///     MovementRestrictions - 下限 - X
         /// </summary>
         public float Damping { get; private set; }
 
         /// <summary>
-        ///     移動制限 - 上限 - X
+        ///     MovementRestrictions - 上限 - X
         /// </summary>
         public float FixThresh { get; private set; }
 
         /// <summary>
-        ///     移動制限-下限 - Z  | モーター有効 - 0:OFF 1:ON
+        ///     MovementRestrictions-下限 - Z  | モーター有効 - 0:OFF 1:ON
         /// </summary>
         public bool MoterEnabled { get;private set; }
 
         /// <summary>
-        ///     移動制限 - 上限 - Z
+        ///     MovementRestrictions - 上限 - Z
         ///     ※ モーター有効の場合。
         /// </summary>
         public float MaxMotorImpluse { get; private set; }
@@ -72,12 +72,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal override void 読み込む( Stream fs, ヘッダ header )
+        internal override void Read( Stream fs, Header header )
         {
-            this.関連剛体Aのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.関連剛体Bのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.回転rad = ParserHelper.get_Float3( fs );
+            this.RelatedRigidBodyAのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.RelatedRigidBodyBのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.Position = ParserHelper.get_Float3( fs );
+            this.Rotationrad = ParserHelper.get_Float3( fs );
 
             Vector3 moveLimitationMin = ParserHelper.get_Float3( fs );
             Vector3 moveLimitationMax = ParserHelper.get_Float3( fs );

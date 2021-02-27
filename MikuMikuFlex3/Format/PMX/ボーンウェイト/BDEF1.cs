@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace MikuMikuFlex3.PMXFormat
     ///     ウェイト 1.0 の単一ボーンの参照インデックス。
     ///     参照インデックスは -1（非参照）の場合があるので注意。
     /// </summary>
-    public class BDEF1 : ボーンウェイト
+    public class BDEF1 : BoneWeight
     {
         /// <summary>
         ///     ボーンのインデックス。

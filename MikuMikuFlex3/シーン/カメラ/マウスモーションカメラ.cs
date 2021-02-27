@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,129 +10,129 @@ namespace MikuMikuFlex3
     /// <summary>
     ///     マウスで動かせるカメラ。
     /// </summary>
-    public class マウスモーションカメラ : スタンダードカメラ
+    public class MouseMotionCamera : StandardCamera
     {
         public void OnMouseDown( object sender, MouseEventArgs e )
         {
-            lock( this._lock排他 )
+            lock( this._lockExclusive )
             {
                 if( e.Button == MouseButtons.Right )
-                    this._マウスの右ボタンが押されている = true;
+                    this.RightMouseButtonIsPressed = true;
 
                 if( e.Button == MouseButtons.Middle )
-                    this._マウスの中ボタンが押されている = true;
+                    this.MiddleMouseButtonIsPressed = true;
             }
         }
 
         public void OnMouseUp( object sender, MouseEventArgs e )
         {
-            lock( this._lock排他 )
+            lock( this._lockExclusive )
             {
                 if( e.Button == MouseButtons.Right )
-                    this._マウスの右ボタンが押されている = false;
+                    this.RightMouseButtonIsPressed = false;
 
                 if( e.Button == MouseButtons.Middle )
-                    this._マウスの中ボタンが押されている = false;
+                    this.MiddleMouseButtonIsPressed = false;
             }
         }
 
         public void OnMouseMove( object sender, MouseEventArgs e )
         {
-            lock( this._lock排他 )
+            lock( this._lockExclusive )
             {
-                int x = e.Location.X - this._マウスの前回の位置.X;
-                int y = e.Location.Y - this._マウスの前回の位置.Y;
+                int x = e.Location.X - this._PreviousPositionOfMouse.X;
+                int y = e.Location.Y - this._PreviousPositionOfMouse.Y;
 
-                if( this._マウスの右ボタンが押されている )
+                if( this.RightMouseButtonIsPressed )
                 {
-                    this._カメラの注視点を中心とする回転量 *=    // 回転量については累積で記録
-                        Quaternion.RotationAxis( _Y軸, マウスの右ボタンの感度 * x ) *
-                        Quaternion.RotationAxis( _X軸, マウスの右ボタンの感度 * ( -y ) );
+                    this._AmountOfRotationAroundTheGazingPointOfTheCamera *=    // 回転量については累積で記録
+                        Quaternion.RotationAxis( _YAxis, RightMouseButtonSensitivity * x ) *
+                        Quaternion.RotationAxis( _XAxis, RightMouseButtonSensitivity * ( -y ) );
 
-                    this._カメラの注視点を中心とする回転量.Normalize();
+                    this._AmountOfRotationAroundTheGazingPointOfTheCamera.Normalize();
                 }
 
-                if( this._マウスの中ボタンが押されている )
+                if( this.MiddleMouseButtonIsPressed )
                 {
-                    this._カメラの注視点の変形行列 +=    // 変化量を記録しておく
-                        new Vector2( x, y ) * マウスの中ボタンの感度;
+                    this._DeformationMatrixOfTheCamerasGazePoint +=    // 変化量を記録しておく
+                        new Vector2( x, y ) * MouseMiddleButtonSensitivity;
                 }
 
-                this._マウスの前回の位置 = e.Location;
+                this._PreviousPositionOfMouse = e.Location;
             }
         }
 
         public void OnMouseWheel( object sender, MouseEventArgs e )
         {
-            lock( this._lock排他 )
+            lock( this._lockExclusive )
             {
                 if( e.Delta > 0 )
                 {
-                    this._距離 -= this.マウスホイールの感度;
+                    this._Distance -= this.MouseWheelSensitivity;
 
-                    if( this._距離 <= 0 )
-                        this._距離 = 0.0001f;
+                    if( this._Distance <= 0 )
+                        this._Distance = 0.0001f;
                 }
                 else
                 {
-                    this._距離 += this.マウスホイールの感度;
+                    this._Distance += this.MouseWheelSensitivity;
                 }
             }
         }
 
 
-        public float マウスホイールの感度 { get; set; } = 2.0f;
+        public float MouseWheelSensitivity { get; set; } = 2.0f;
 
-        public float マウスの右ボタンの感度 { get; set; } = 0.005f;
+        public float RightMouseButtonSensitivity { get; set; } = 0.005f;
 
-        public float マウスの中ボタンの感度 { get; set; } = 0.01f;
+        public float MouseMiddleButtonSensitivity { get; set; } = 0.01f;
 
 
-        public マウスモーションカメラ( float 初期距離 )
-            : base( 初期距離, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, MathUtil.Pi, 0f ) )
+        public MouseMotionCamera( float InitialDistance )
+            : base( InitialDistance, new Vector3( 0f, 10f, 0f ), new Vector3( 0f, MathUtil.Pi, 0f ) )
         {
-            this._距離 = 初期距離;
-            this._カメラの注視点を中心とする回転量 = Quaternion.Identity;
+            this._Distance = InitialDistance;
+            this._AmountOfRotationAroundTheGazingPointOfTheCamera = Quaternion.Identity;
         }
 
-        public override void 更新する( double 現在時刻sec )
+        public override void Update( double CurrentTimesec )
         {
-            lock( this._lock排他 )
+            lock( this._lockExclusive )
             {
                 var camera2la = Vector3.TransformCoordinate(
                     new Vector3( 0, 0, 1 ),
-                    Matrix.RotationQuaternion( this._カメラの注視点を中心とする回転量 ) );
+                    Matrix.RotationQuaternion( this._AmountOfRotationAroundTheGazingPointOfTheCamera ) );
 
-                this._X軸 = Vector3.Cross( camera2la, this.上方向 );
-                this._X軸.Normalize();
+                this._XAxis = Vector3.Cross( camera2la, this.Upward );
+                this._XAxis.Normalize();
 
-                this._Y軸 = Vector3.Cross( this._X軸, camera2la );
-                this._Y軸.Normalize();
+                this._YAxis = Vector3.Cross( this._XAxis, camera2la );
+                this._YAxis.Normalize();
 
-                this.注視点 += this._X軸 * this._カメラの注視点の変形行列.X + this._Y軸 * this._カメラの注視点の変形行列.Y;
-                this.位置 = this.注視点 + this._距離 * ( -camera2la );
+                this.GazePoint += this._XAxis * this._DeformationMatrixOfTheCamerasGazePoint.X + this._YAxis * this._DeformationMatrixOfTheCamerasGazePoint.Y;
+                this.Position = this.GazePoint + this._Distance * ( -camera2la );
 
-                this._カメラの注視点の変形行列 = Vector2.Zero;
+                this._DeformationMatrixOfTheCamerasGazePoint = Vector2.Zero;
             }
         }
 
 
-        private float _距離;
+        private float _Distance;
 
-        private Vector3 _X軸 = new Vector3( 1, 0, 0 );
+        private Vector3 _XAxis = new Vector3( 1, 0, 0 );
 
-        private Vector3 _Y軸 = new Vector3( 0, 1, 0 );
+        private Vector3 _YAxis = new Vector3( 0, 1, 0 );
 
-        private Quaternion _カメラの注視点を中心とする回転量;
+        private Quaternion _AmountOfRotationAroundTheGazingPointOfTheCamera;
 
-        private Vector2 _カメラの注視点の変形行列;
+        private Vector2 _DeformationMatrixOfTheCamerasGazePoint;
 
-        private bool _マウスの右ボタンが押されている;
+        private bool RightMouseButtonIsPressed;
 
-        private bool _マウスの中ボタンが押されている;
+        private bool MiddleMouseButtonIsPressed;
 
-        private System.Drawing.Point _マウスの前回の位置;
+        private System.Drawing.Point _PreviousPositionOfMouse;
 
-        private readonly object _lock排他 = new object();
+        private readonly object _lockExclusive = new object();
     }
 }

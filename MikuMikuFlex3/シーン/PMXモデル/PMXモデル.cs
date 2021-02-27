@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,49 +16,49 @@ using MikuMikuFlex3.Utility;
 
 namespace MikuMikuFlex3
 {
-    public class PMXモデル : IDisposable
+    public class PMXModel : IDisposable
     {
 
         // 構造
 
 
-        public Matrix ワールド変換行列 { get; set; } = Matrix.Identity;
+        public Matrix WorldTransformationMatrix { get; set; } = Matrix.Identity;
 
-        public const int 最大ボーン数 = 768;
+        public const int MaximumNumberOfBones = 768;
 
-        public PMXボーン制御[] ボーンリスト { get; protected set; }
+        public PMXBoneControl[] BoneList { get; protected set; }
 
-        public PMX材質制御[] 材質リスト { get; protected set; }
+        public PMXMaterialControl[] MaterialList { get; protected set; }
 
-        public PMXモーフ制御[] モーフリスト { get; protected set; }
+        public PMXMorphControl[] MorphList { get; protected set; }
 
-        public List<PMXボーン制御> ルートボーンリスト { get; protected set; }
+        public List<PMXBoneControl> RootBoneList { get; protected set; }
 
-        public List<PMXボーン制御> IKボーンリスト { get; private protected set; }
+        public List<PMXBoneControl> IKBoneList { get; private protected set; }
 
-        public PMX頂点制御 PMX頂点制御 { get; private protected set; }
+        public PMXVertexControl PMXVertexControl { get; private protected set; }
 
-        public uint[] インデックスリスト { get; protected set; }
+        public uint[] IndexList { get; protected set; }
 
-        public PMXFormat.モデル Format { get; protected set; }
+        public PMXFormat.Model Format { get; protected set; }
 
 
 
         // シェーダー
 
 
-        public ISkinning スキニングシェーダー { get; set; }
+        public ISkinning SkinningShader { get; set; }
 
-        private bool _スキニングを解放する;
+        private bool _ReleaseSkinning;
 
 
         /// <summary>
-        ///     既定の材質描画シェーダー。
-        ///     材質ごとの <see cref="PMX材質制御.材質描画シェーダー"/> が null のときに使用される。
+        ///     DefaultMaterialDrawingShader。
+        ///     材質ごとの <see cref="PMXMaterialControl.MaterialDrawingShader"/> が null のときに使用される。
         /// </summary>
-        public IMaterialShader 既定の材質描画シェーダー { get; set; }
+        public IMaterialShader DefaultMaterialDrawingShader { get; set; }
 
-        private bool _材質描画を解放する;
+        private bool _ReleaseMaterialDrawing;
 
 
 
@@ -66,19 +66,19 @@ namespace MikuMikuFlex3
 
 
         /// <summary>
-        ///     ファイルからPMXモデルを読み込む。
+        ///     ファイルからPMXLoadTheModel。
         /// </summary>
         /// <remarks>
         ///     PMXファイルで使用されるテクスチャ等のリソースファイルは、
         ///     PMXファイルと同じフォルダを基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, string PMXファイルパス, ISkinning skinning = null, IMaterialShader 既定の材質シェーダー = null )
+        public PMXModel( SharpDX.Direct3D11.Device d3dDevice, string PMXFilePath, ISkinning skinning = null, IMaterialShader DefaultMaterialShader = null )
         {
-            var stream = new FileStream( PMXファイルパス, FileMode.Open, FileAccess.Read, FileShare.Read );
+            var stream = new FileStream( PMXFilePath, FileMode.Open, FileAccess.Read, FileShare.Read );
 
-            this._読み込んで初期化する( d3dDevice, stream, skinning, 既定の材質シェーダー, リソースを開く: ( file ) => {
+            this._ReadAndInitialize( d3dDevice, stream, skinning, DefaultMaterialShader, OpenResource: ( file ) => {
 
-                var baseFolder = Path.GetDirectoryName( PMXファイルパス );
+                var baseFolder = Path.GetDirectoryName( PMXFilePath );
                 var path = Path.Combine( baseFolder, file );
                 return new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read );
 
@@ -88,196 +88,196 @@ namespace MikuMikuFlex3
         }
 
         /// <summary>
-        ///     埋め込みリソースからPMXモデルを読み込む。
+        ///     埋め込みリソースからPMXLoadTheModel。
         /// </summary>
         /// <remarks>
         ///     PMXリソースで使用されるテクスチャ等のリソースは、
         ///     PMXリソースと同じ名前空間を基準として検索される。
         /// </remarks>
-        public PMXモデル( SharpDX.Direct3D11.Device d3dDevice, Type 名前空間を示す型, string リソース名, ISkinning skinning = null, IMaterialShader 既定の材質シェーダー = null )
+        public PMXModel( SharpDX.Direct3D11.Device d3dDevice, Type NamespaceType, string ResourceName, ISkinning skinning = null, IMaterialShader DefaultMaterialShader = null )
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var path = $"{this.GetType().Namespace}.{リソース名}";
+            var path = $"{this.GetType().Namespace}.{ResourceName}";
 
             var stream = assembly.GetManifestResourceStream( path );
 
-            this._読み込んで初期化する( d3dDevice, stream, skinning, 既定の材質シェーダー, リソースを開く: ( resource ) => {
+            this._ReadAndInitialize( d3dDevice, stream, skinning, DefaultMaterialShader, OpenResource: ( resource ) => {
 
                 // PMXではテクスチャ名などにパス区切り文字を使用できるが、その区切りがなんであるかはOSに依存して
                 // PMXでは感知しないとのことなので、とりあえず '/' と '\' を想定する。
                 var rpath = resource.Replace( Path.DirectorySeparatorChar, '.' ).Replace( Path.AltDirectorySeparatorChar, '.' );    // '.' 区切りに変換
 
-                return assembly.GetManifestResourceStream( 名前空間を示す型, rpath );
+                return assembly.GetManifestResourceStream( NamespaceType, rpath );
 
             } );
 
             // stream は、上記初期化作業の中で閉じられる。
         }
 
-        private void _読み込んで初期化する( SharpDX.Direct3D11.Device d3dDevice, Stream PMXデータ, ISkinning skinning, IMaterialShader 既定の材質シェーダー, Func<string, Stream> リソースを開く )
+        private void _ReadAndInitialize( SharpDX.Direct3D11.Device d3dDevice, Stream PMXData, ISkinning skinning, IMaterialShader DefaultMaterialShader, Func<string, Stream> OpenResource )
         {
-            #region " モデルを読み込む。"
+            #region " LoadTheModel。"
             //----------------
-            this.Format = new PMXFormat.モデル( PMXデータ );
+            this.Format = new PMXFormat.Model( PMXData );
 
-            if( this.Format.ボーンリスト.Count > 最大ボーン数 )
-                throw new Exception( "ボーン数が多すぎます。" );
+            if( this.Format.BoneList.Count > MaximumNumberOfBones )
+                throw new Exception( "TooManyBones。" );
 
-            PMXデータ.Dispose();
+            PMXData.Dispose();
             //----------------
             #endregion
-            #region " ボーンリストを作成する。"
+            #region " CreateABoneList。"
             //----------------
             {
-                int ボーン数 = this.Format.ボーンリスト.Count;
-                this.ボーンリスト = new PMXボーン制御[ ボーン数 ];
+                int NumberOfBones = this.Format.BoneList.Count;
+                this.BoneList = new PMXBoneControl[ NumberOfBones ];
 
-                for( int i = 0; i < ボーン数; i++ )
-                    this.ボーンリスト[ i ] = new PMXボーン制御( this.Format.ボーンリスト[ i ], i );
+                for( int i = 0; i < NumberOfBones; i++ )
+                    this.BoneList[ i ] = new PMXBoneControl( this.Format.BoneList[ i ], i );
 
-                for( int i = 0; i < ボーン数; i++ )
-                    this.ボーンリスト[ i ].読み込み後の処理を行う( this.ボーンリスト );
+                for( int i = 0; i < NumberOfBones; i++ )
+                    this.BoneList[ i ].PerformPostReadingProcessing( this.BoneList );
             }
             //----------------
             #endregion
-            #region " IKボーンリストを作成する。"
+            #region " IKCreateABoneList。"
             //----------------
             {
-                var ikBones = this.ボーンリスト.Where( ( bone ) => bone.PMXFボーン.IKボーンである );
+                var ikBones = this.BoneList.Where( ( bone ) => bone.PMXFBourne.IKBone );
 
-                this.IKボーンリスト = new List<PMXボーン制御>( ikBones.Count() );
+                this.IKBoneList = new List<PMXBoneControl>( ikBones.Count() );
 
                 for( int i = 0; i < ikBones.Count(); i++ )
-                    this.IKボーンリスト.Add( ikBones.ElementAt( i ) );
+                    this.IKBoneList.Add( ikBones.ElementAt( i ) );
             }
             //----------------
             #endregion
-            #region " ボーンのルートリストを作成する。"
+            #region " CreateARouteListForBones。"
             //----------------
             {
-                this.ルートボーンリスト = new List<PMXボーン制御>();
+                this.RootBoneList = new List<PMXBoneControl>();
 
-                for( int i = 0; i < this.ボーンリスト.Length; i++ )
+                for( int i = 0; i < this.BoneList.Length; i++ )
                 {
                     // 親ボーンを持たないのがルートボーン。
-                    if( this.ボーンリスト[ i ].PMXFボーン.親ボーンのインデックス == -1 )
+                    if( this.BoneList[ i ].PMXFBourne.ParentBoneIndex == -1 )
                     {
-                        this.ルートボーンリスト.Add( this.ボーンリスト[ i ] );
+                        this.RootBoneList.Add( this.BoneList[ i ] );
                     }
                 }
             }
             //----------------
             #endregion
-            #region " PMXボーンの変形階層を設定する。"
+            #region " PMXSetTheDeformationHierarchyOfBones。"
             //----------------
             {
-                foreach( var root in this.ルートボーンリスト )
+                foreach( var root in this.RootBoneList )
                 {
-                    設定( root, 0 );
+                    Setting( root, 0 );
                 }
 
-                void 設定( PMXボーン制御 bone, int layer )
+                void Setting( PMXBoneControl bone, int layer )
                 {
-                    bone.変形階層 = layer;
+                    bone.TransformationHierarchy = layer;
 
-                    foreach( var child in bone.子ボーンリスト )
-                        設定( child, layer + 1 );
+                    foreach( var child in bone.ChildBoneList )
+                        Setting( child, layer + 1 );
                 }
             }
             //----------------
             #endregion
-            #region " ボーンをソートする。"
+            #region " SortBones。"
             //----------------
             {
-                var comparison = new Comparison<PMXボーン制御>( ( x, y ) => {
+                var comparison = new Comparison<PMXBoneControl>( ( x, y ) => {
 
                     // 後であればあるほどスコアが大きくなるように計算する
 
                     int xScore = 0;
                     int yScore = 0;
-                    int BoneCount = this.ボーンリスト.Length;
+                    int BoneCount = this.BoneList.Length;
 
-                    if( x.PMXFボーン.物理後変形である )
+                    if( x.PMXFBourne.PostPhysicalDeformation )
                     {
                         xScore += BoneCount * BoneCount;
                     }
-                    if( y.PMXFボーン.物理後変形である )
+                    if( y.PMXFBourne.PostPhysicalDeformation )
                     {
                         yScore += BoneCount * BoneCount;
                     }
-                    xScore += BoneCount * x.変形階層;
-                    yScore += BoneCount * y.変形階層;
-                    xScore += x.ボーンインデックス;
-                    yScore += y.ボーンインデックス;
+                    xScore += BoneCount * x.TransformationHierarchy;
+                    yScore += BoneCount * y.TransformationHierarchy;
+                    xScore += x.BoneIndex;
+                    yScore += y.BoneIndex;
                     return xScore - yScore;
 
                 } );
 
-                this.IKボーンリスト.Sort( comparison );
-                this.ルートボーンリスト.Sort( comparison );
+                this.IKBoneList.Sort( comparison );
+                this.RootBoneList.Sort( comparison );
             }
             //----------------
             #endregion
-            #region " 親付与によるFKを初期化する。"
+            #region " ByParentalGrantFKを初期化する。"
             //----------------
             {
-                this._親付与によるFK変形更新 = new 親付与によるFK変形更新( this.ボーンリスト );
+                this._ByParentalGrantFKDeformationUpdate = new ByParentalGrantFKDeformationUpdate( this.BoneList );
             }
             //----------------
             #endregion
-            #region " 物理変形を初期化する。"
+            #region " InitializePhysicalDeformation。"
             //----------------
             {
-                this._物理変形更新 = new PMX物理変形更新( this.ボーンリスト, this.Format.剛体リスト, this.Format.ジョイントリスト );
+                this._PhysicalTransformationUpdate = new PMXPhysicalTransformationUpdate( this.BoneList, this.Format.RigidBodyList, this.Format.JointList );
             }
             //----------------
             #endregion
-            #region " 材質リストを作成する。"
+            #region " CreateAMaterialList。"
             //----------------
             {
-                int 材質数 = this.Format.材質リスト.Count;
+                int NumberOfMaterials = this.Format.MaterialList.Count;
 
-                this.材質リスト = new PMX材質制御[ 材質数 ];
+                this.MaterialList = new PMXMaterialControl[ NumberOfMaterials ];
 
-                for( int i = 0; i < 材質数; i++ )
-                    this.材質リスト[ i ] = new PMX材質制御( this.Format.材質リスト[ i ], 既定の材質シェーダー );
+                for( int i = 0; i < NumberOfMaterials; i++ )
+                    this.MaterialList[ i ] = new PMXMaterialControl( this.Format.MaterialList[ i ], DefaultMaterialShader );
             }
             //----------------
             #endregion
-            #region " モーフリストを作成する。"
+            #region " CreateAMorphList。"
             //----------------
             {
-                int モーフ数 = this.Format.モーフリスト.Count;
+                int NumberOfMorphs = this.Format.MorphList.Count;
 
-                this.モーフリスト = new PMXモーフ制御[ モーフ数 ];
+                this.MorphList = new PMXMorphControl[ NumberOfMorphs ];
 
-                for( int i = 0; i < モーフ数; i++ )
-                    this.モーフリスト[ i ] = new PMXモーフ制御( this.Format.モーフリスト[ i ] );
+                for( int i = 0; i < NumberOfMorphs; i++ )
+                    this.MorphList[ i ] = new PMXMorphControl( this.Format.MorphList[ i ] );
             }
             //----------------
             #endregion
 
-            #region " PMX頂点制御を生成する。"
+            #region " PMXGenerateVertexControl。"
             //----------------
             {
-                var 頂点リスト = new List<CS_INPUT>( this.Format.頂点リスト.Count );
+                var VertexList = new List<CS_INPUT>( this.Format.VertexList.Count );
 
-                for( int i = 0; i < this.Format.頂点リスト.Count; i++ )
+                for( int i = 0; i < this.Format.VertexList.Count; i++ )
                 {
-                    this._頂点データを頂点レイアウトリストに追加する( this.Format.頂点リスト[ i ], 頂点リスト );
+                    this._AddVertexDataToTheVertexLayoutList( this.Format.VertexList[ i ], VertexList );
                 }
 
-                this.PMX頂点制御 = new PMX頂点制御( 頂点リスト.ToArray() );
+                this.PMXVertexControl = new PMXVertexControl( VertexList.ToArray() );
             }
             //----------------
             #endregion
-            #region " スキニングバッファを作成する。"
+            #region " CreateASkinningBuffer。"
             //----------------
             {
-                this._D3Dスキニングバッファ = new SharpDX.Direct3D11.Buffer(
+                this._D3DSkinningBuffer = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = CS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
+                        SizeInBytes = CS_INPUT.SizeInBytes * this.PMXVertexControl.InputVertexArray.Length,
                         Usage = ResourceUsage.Default,
                         BindFlags = BindFlags.ShaderResource,// | BindFlags.UnorderedAccess,
                         CpuAccessFlags = CpuAccessFlags.None,
@@ -285,49 +285,49 @@ namespace MikuMikuFlex3
                         StructureByteStride = CS_INPUT.SizeInBytes,
                     } );
 
-                this._D3DスキニングバッファSRView = new ShaderResourceView(
+                this._D3DSkinningBufferSRView = new ShaderResourceView(
                     d3dDevice,
-                    this._D3Dスキニングバッファ,  // 構造化バッファ
+                    this._D3DSkinningBuffer,  // 構造化バッファ
                     new ShaderResourceViewDescription {
                         Format = SharpDX.DXGI.Format.Unknown,
                         Dimension = ShaderResourceViewDimension.ExtendedBuffer,
                         BufferEx = new ShaderResourceViewDescription.ExtendedBufferResource {
                             FirstElement = 0,
-                            ElementCount = this.PMX頂点制御.入力頂点配列.Length,
+                            ElementCount = this.PMXVertexControl.InputVertexArray.Length,
                         },
                     } );
             }
             //----------------
             #endregion
-            #region " 頂点バッファを作成する。"
+            #region " CreateAVertexBuffer。"
             //----------------
             {
-                this._D3D頂点バッファ = new SharpDX.Direct3D11.Buffer(
+                this._D3DVertexBuffer = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = VS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length,
+                        SizeInBytes = VS_INPUT.SizeInBytes * this.PMXVertexControl.InputVertexArray.Length,
                         Usage = ResourceUsage.Default,
                         BindFlags = BindFlags.VertexBuffer | BindFlags.ShaderResource | BindFlags.UnorderedAccess,  // 非順序アクセス
                             CpuAccessFlags = CpuAccessFlags.None,
                         OptionFlags = ResourceOptionFlags.BufferAllowRawViews,   // 生ビューバッファ
                         } );
 
-                this._D3D頂点バッファビューUAView = new UnorderedAccessView(
+                this._D3DVertexBufferViewUAView = new UnorderedAccessView(
                     d3dDevice,
-                    this._D3D頂点バッファ,
+                    this._D3DVertexBuffer,
                     new UnorderedAccessViewDescription {
                         Format = SharpDX.DXGI.Format.R32_Typeless,
                         Dimension = UnorderedAccessViewDimension.Buffer,
                         Buffer = new UnorderedAccessViewDescription.BufferResource {
                             FirstElement = 0,
-                            ElementCount = VS_INPUT.SizeInBytes * this.PMX頂点制御.入力頂点配列.Length / 4,
+                            ElementCount = VS_INPUT.SizeInBytes * this.PMXVertexControl.InputVertexArray.Length / 4,
                             Flags = UnorderedAccessViewBufferFlags.Raw,
                         },
                     } );
             }
             //----------------
             #endregion
-            #region " 頂点レイアウトを作成する。"
+            #region " CreateAVertexLayout。"
             //----------------
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -336,28 +336,28 @@ namespace MikuMikuFlex3
                     var buffer = new byte[ fs.Length ];
                     fs.Read( buffer, 0, buffer.Length );
 
-                    this._D3D頂点レイアウト = new InputLayout( d3dDevice, buffer, VS_INPUT.VertexElements );
+                    this._D3DVertexLayout = new InputLayout( d3dDevice, buffer, VS_INPUT.VertexElements );
                 }
             }
             //----------------
             #endregion
-            #region " インデックスバッファを作成する。"
+            #region " CreateAnIndexBuffer。"
             //----------------
             {
                 var indexList = new List<uint>();
 
-                foreach( PMXFormat.面 surface in this.Format.面リスト )
+                foreach( PMXFormat.Surface surface in this.Format.FaceList )
                 {
-                    indexList.Add( surface.頂点1 );
-                    indexList.Add( surface.頂点2 );
-                    indexList.Add( surface.頂点3 );
+                    indexList.Add( surface.Vertex1 );
+                    indexList.Add( surface.Vertex2 );
+                    indexList.Add( surface.Vertex3 );
                 }
 
-                this.インデックスリスト = indexList.ToArray();
+                this.IndexList = indexList.ToArray();
 
-                using( var dataStream = DataStream.Create( this.インデックスリスト, true, true ) )
+                using( var dataStream = DataStream.Create( this.IndexList, true, true ) )
                 {
-                    this._D3Dインデックスバッファ = new SharpDX.Direct3D11.Buffer(
+                    this._D3DIndexBuffer = new SharpDX.Direct3D11.Buffer(
                         d3dDevice,
                         dataStream,
                         new BufferDescription {
@@ -369,39 +369,39 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " ラスタライザステートを作成する。"
+            #region " CreateARasterizerState。"
             //----------------
             {
-                this._片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                this._RasterizerStateWhenDrawingOnOneSide = new RasterizerState( d3dDevice, new RasterizerStateDescription {
                     CullMode = CullMode.Back,
                     FillMode = FillMode.Solid,
                 } );
 
-                this._両面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                this._RasterizerStateForDoubleSidedDrawing = new RasterizerState( d3dDevice, new RasterizerStateDescription {
                     CullMode = CullMode.None,
                     FillMode = FillMode.Solid,
                 } );
 
-                this._片面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                this._RasterizerStateWhenDrawingOnOneSideLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
                     CullMode = CullMode.Back,
                     FillMode = FillMode.Wireframe,
                 } );
 
-                this._両面描画の際のラスタライザステートLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                this._RasterizerStateForDoubleSidedDrawingLine = new RasterizerState( d3dDevice, new RasterizerStateDescription {
                     CullMode = CullMode.None,
                     FillMode = FillMode.Wireframe,
                 } );
 
-                this._裏側片面描画の際のラスタライザステート = new RasterizerState( d3dDevice, new RasterizerStateDescription {
+                this._RasterizerStateWhenDrawingOnOneSideOfTheBackSide = new RasterizerState( d3dDevice, new RasterizerStateDescription {
                     CullMode = CullMode.Front,
                     FillMode = FillMode.Solid,
                 } );
             }
             //----------------
             #endregion
-            #region " サンプラーステートを作成する。"
+            #region " CreateASamplerState。"
             //----------------
-            this._PS用SamplerState = new SamplerState( d3dDevice, new SamplerStateDescription {
+            this._PSForSamplerState = new SamplerState( d3dDevice, new SamplerStateDescription {
                 Filter = Filter.MinMagLinearMipPoint,
                 AddressU = TextureAddressMode.Wrap,
                 AddressV = TextureAddressMode.Wrap,
@@ -415,7 +415,7 @@ namespace MikuMikuFlex3
             } );
             //----------------
             #endregion
-            #region " ブレンドステートを作成する。"
+            #region " CreateABlendState。"
             //----------------
             {
                 var blendStateNorm = new BlendStateDescription() {
@@ -433,17 +433,17 @@ namespace MikuMikuFlex3
                 blendStateNorm.RenderTarget[ 0 ].DestinationAlphaBlend = BlendOption.Zero;
                 blendStateNorm.RenderTarget[ 0 ].AlphaBlendOperation = BlendOperation.Add;
 
-                this._BlendState通常合成 = new BlendState( d3dDevice, blendStateNorm );
+                this._BlendStateNormalSynthesis = new BlendState( d3dDevice, blendStateNorm );
             }
             //----------------
             #endregion
 
-            #region " 共有テクスチャを読み込む。"
+            #region " LoadSharedTextures。"
             //----------------
             {
-                this._共有テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ 11 ];
+                this._SharedTextureList = new (Texture2D tex2d, ShaderResourceView srv)[ 11 ];
 
-                var 共有テクスチャパス = new string[] {
+                var SharedTexturePath = new string[] {
                     @"Resources.Toon.toon0.bmp",
                     @"Resources.Toon.toon1.bmp",
                     @"Resources.Toon.toon2.bmp",
@@ -461,9 +461,9 @@ namespace MikuMikuFlex3
 
                 for( int i = 0; i < 11; i++ )
                 {
-                    this._共有テクスチャリスト[ i ] = (null, null);
+                    this._SharedTextureList[ i ] = (null, null);
 
-                    var path = $"{this.GetType().Namespace}.{共有テクスチャパス[ i ]}";
+                    var path = $"{this.GetType().Namespace}.{SharedTexturePath[ i ]}";
 
                     try
                     {
@@ -472,41 +472,41 @@ namespace MikuMikuFlex3
                             var stream = assembly.GetManifestResourceStream( path );
                             var srv = MMFShaderResourceView.FromStream( d3dDevice, stream, out var tex2d );
 
-                            this._共有テクスチャリスト[ i ] = (tex2d, srv);
+                            this._SharedTextureList[ i ] = (tex2d, srv);
                         }
                     }
                     catch( Exception e )
                     {
-                        Trace.TraceError( $"共有テクスチャの読み込みに失敗しました。[{path}][{e.Message}]" );
+                        Trace.TraceError( $"FailedToLoadSharedTexture。[{path}][{e.Message}]" );
                     }
                 }
             }
             //----------------
             #endregion
-            #region " 個別テクスチャを読み込む。"
+            #region " LoadIndividualTextures。"
             //----------------
             {
-                this._個別テクスチャリスト = new (Texture2D tex2d, ShaderResourceView srv)[ this.Format.テクスチャリスト.Count ];
+                this._IndividualTextureList = new (Texture2D tex2d, ShaderResourceView srv)[ this.Format.TextureList.Count ];
 
-                for( int i = 0; i < this.Format.テクスチャリスト.Count; i++ )
+                for( int i = 0; i < this.Format.TextureList.Count; i++ )
                 {
-                    this._個別テクスチャリスト[ i ] = (null, null);
+                    this._IndividualTextureList[ i ] = (null, null);
 
-                    var texturePath = this.Format.テクスチャリスト[ i ];
-                    var 拡張子 = Path.GetExtension( texturePath ).ToLower();
+                    var texturePath = this.Format.TextureList[ i ];
+                    var Extension = Path.GetExtension( texturePath ).ToLower();
 
                     Debug.Write( $"Loading {texturePath} ... " );
 
                     try
                     {
-                        using( var stream = リソースを開く( texturePath ) )    // 開く方法は呼び出し元に任せる
+                        using( var stream = OpenResource( texturePath ) )    // 開く方法は呼び出し元に任せる
                         {
                             var srv = MMFShaderResourceView.FromStream(
                                 d3dDevice,
-                                ( 拡張子 == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
+                                ( Extension == ".tga" ) ? TargaSolver.LoadTargaImage( stream ) : stream,
                                 out var tex2d );
 
-                            this._個別テクスチャリスト[ i ] = (tex2d, srv);
+                            this._IndividualTextureList[ i ] = (tex2d, srv);
 
                             Debug.WriteLine( "OK" );
                         }
@@ -514,50 +514,50 @@ namespace MikuMikuFlex3
                     catch( Exception e )
                     {
                         Debug.WriteLine( "error!" );
-                        Trace.TraceError( $"個別テクスチャファイルの読み込みに失敗しました。[{texturePath}][{e.Message}]" );
+                        Trace.TraceError( $"FailedToLoadIndividualTextureFile。[{texturePath}][{e.Message}]" );
                     }
                 }
             }
             //----------------
             #endregion
 
-            #region " ボーン用の配列を作成する。"
+            #region " CreateAnArrayForBones。"
             //----------------
-            this._ボーンのモデルポーズ配列 = new Matrix[ this.Format.ボーンリスト.Count ];
-            this._ボーンのローカル位置配列 = new Vector4[ this.Format.ボーンリスト.Count ];
-            this._ボーンの回転配列 = new Vector4[ this.Format.ボーンリスト.Count ];
+            this._BoneModelPoseArray = new Matrix[ this.Format.BoneList.Count ];
+            this._LocalPositionArrayOfBones = new Vector4[ this.Format.BoneList.Count ];
+            this._RotationalArrayOfBones = new Vector4[ this.Format.BoneList.Count ];
             //----------------
             #endregion
-            #region " ボーン用の定数バッファを作成する。"
+            #region " CreateAConstantBufferForBones。"
             //----------------
             {
-                this._D3DBoneTrans定数バッファ = new SharpDX.Direct3D11.Buffer(
+                this._D3DBoneTransConstantBuffer = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * D3DBoneTrans.SizeInBytes,
+                        SizeInBytes = this.BoneList.Length * D3DBoneTrans.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
-                this._D3DBoneLocalPosition定数バッファ = new SharpDX.Direct3D11.Buffer(
+                this._D3DBoneLocalPositionConstantBuffer = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * D3DBoneLocalPosition.SizeInBytes,
+                        SizeInBytes = this.BoneList.Length * D3DBoneLocalPosition.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
 
-                this._D3DBoneQuaternion定数バッファ = new SharpDX.Direct3D11.Buffer(
+                this._D3DBoneQuaternionConstantBuffer = new SharpDX.Direct3D11.Buffer(
                     d3dDevice,
                     new BufferDescription {
-                        SizeInBytes = this.ボーンリスト.Length * D3DBoneQuaternion.SizeInBytes,
+                        SizeInBytes = this.BoneList.Length * D3DBoneQuaternion.SizeInBytes,
                         BindFlags = BindFlags.ConstantBuffer,
                     } );
             }
             //----------------
             #endregion
 
-            #region " グローバルパラメータ定数バッファを作成する。"
+            #region " CreateAGlobalParameterConstantBuffer。"
             //----------------
-            this._GlobalParameters定数バッファ = new SharpDX.Direct3D11.Buffer(
+            this._GlobalParametersConstantBuffer = new SharpDX.Direct3D11.Buffer(
                 d3dDevice,
                 new BufferDescription {
                     SizeInBytes = GlobalParameters.SizeInBytes,
@@ -569,101 +569,101 @@ namespace MikuMikuFlex3
             //----------------
             if( null != skinning )
             {
-                this.スキニングシェーダー = skinning;
-                this._スキニングを解放する = false;
+                this.SkinningShader = skinning;
+                this._ReleaseSkinning = false;
             }
             else
             {
-                this.スキニングシェーダー = new DefaultSkinning( d3dDevice );
-                this._スキニングを解放する = true;
+                this.SkinningShader = new DefaultSkinning( d3dDevice );
+                this._ReleaseSkinning = true;
             }
             //----------------
             #endregion
             #region " IMaterialShader を作成する。"
             //----------------
-            if( null != 既定の材質シェーダー )
+            if( null != DefaultMaterialShader )
             {
-                this.既定の材質描画シェーダー = 既定の材質シェーダー;
-                this._材質描画を解放する = false;
+                this.DefaultMaterialDrawingShader = DefaultMaterialShader;
+                this._ReleaseMaterialDrawing = false;
             }
             else
             {
-                this.既定の材質描画シェーダー = new DefaultMaterialShader( d3dDevice );
-                this._材質描画を解放する = true;
+                this.DefaultMaterialDrawingShader = new DefaultMaterialShader( d3dDevice );
+                this._ReleaseMaterialDrawing = true;
             }
 
             //----------------
             #endregion
 
-            this._初期化完了.Set();
+            this._InitializationCompletion.Set();
         }
 
         public virtual void Dispose()
         {
-            this._初期化完了.Reset();
+            this._InitializationCompletion.Reset();
 
-            if( this._材質描画を解放する )
-                this.既定の材質描画シェーダー?.Dispose();
+            if( this._ReleaseMaterialDrawing )
+                this.DefaultMaterialDrawingShader?.Dispose();
 
-            if( this._スキニングを解放する )
-                this.スキニングシェーダー?.Dispose();
+            if( this._ReleaseSkinning )
+                this.SkinningShader?.Dispose();
 
-            this._GlobalParameters定数バッファ?.Dispose();
+            this._GlobalParametersConstantBuffer?.Dispose();
 
-            this._物理変形更新?.Dispose();
-            this._D3DBoneTrans定数バッファ?.Dispose();
-            this._D3DBoneLocalPosition定数バッファ?.Dispose();
-            this._D3DBoneQuaternion定数バッファ?.Dispose();
-            this._ボーンのモデルポーズ配列 = null;
-            this._ボーンのローカル位置配列 = null;
-            this._ボーンの回転配列 = null;
+            this._PhysicalTransformationUpdate?.Dispose();
+            this._D3DBoneTransConstantBuffer?.Dispose();
+            this._D3DBoneLocalPositionConstantBuffer?.Dispose();
+            this._D3DBoneQuaternionConstantBuffer?.Dispose();
+            this._BoneModelPoseArray = null;
+            this._LocalPositionArrayOfBones = null;
+            this._RotationalArrayOfBones = null;
 
-            foreach( var pair in this._個別テクスチャリスト )
+            foreach( var pair in this._IndividualTextureList )
             {
                 pair.srv?.Dispose();
                 pair.tex2d?.Dispose();
             }
-            foreach( var pair in this._共有テクスチャリスト )
+            foreach( var pair in this._SharedTextureList )
             {
                 pair.srv?.Dispose();
                 pair.tex2d?.Dispose();
             }
 
-            this._PS用SamplerState?.Dispose();
-            this._BlendState通常合成?.Dispose();
-            this._裏側片面描画の際のラスタライザステート?.Dispose();
-            this._片面描画の際のラスタライザステート?.Dispose();
-            this._片面描画の際のラスタライザステートLine?.Dispose();
-            this._両面描画の際のラスタライザステート?.Dispose();
-            this._両面描画の際のラスタライザステートLine?.Dispose();
-            this._D3D頂点レイアウト?.Dispose();
-            this._D3Dインデックスバッファ?.Dispose();
-            this._D3D頂点バッファビューUAView?.Dispose();
-            this._D3D頂点バッファ?.Dispose();
-            this._D3DスキニングバッファSRView?.Dispose();
-            this._D3Dスキニングバッファ?.Dispose();
+            this._PSForSamplerState?.Dispose();
+            this._BlendStateNormalSynthesis?.Dispose();
+            this._RasterizerStateWhenDrawingOnOneSideOfTheBackSide?.Dispose();
+            this._RasterizerStateWhenDrawingOnOneSide?.Dispose();
+            this._RasterizerStateWhenDrawingOnOneSideLine?.Dispose();
+            this._RasterizerStateForDoubleSidedDrawing?.Dispose();
+            this._RasterizerStateForDoubleSidedDrawingLine?.Dispose();
+            this._D3DVertexLayout?.Dispose();
+            this._D3DIndexBuffer?.Dispose();
+            this._D3DVertexBufferViewUAView?.Dispose();
+            this._D3DVertexBuffer?.Dispose();
+            this._D3DSkinningBufferSRView?.Dispose();
+            this._D3DSkinningBuffer?.Dispose();
 
-            this.PMX頂点制御 = null;
+            this.PMXVertexControl = null;
 
-            foreach( var morph in this.モーフリスト )
+            foreach( var morph in this.MorphList )
                 morph.Dispose();
-            this.モーフリスト = null;
+            this.MorphList = null;
 
-            foreach( var material in this.材質リスト )
+            foreach( var material in this.MaterialList )
                 material.Dispose();
-            this.材質リスト = null;
+            this.MaterialList = null;
 
-            this.ルートボーンリスト = null;
-            this.IKボーンリスト = null;
-            this._親付与によるFK変形更新 = null;
-            foreach( var bone in this.ボーンリスト )
+            this.RootBoneList = null;
+            this.IKBoneList = null;
+            this._ByParentalGrantFKDeformationUpdate = null;
+            foreach( var bone in this.BoneList )
                 bone.Dispose();
-            this.ボーンリスト = null;
+            this.BoneList = null;
 
             this.Format = null;
         }
 
-        private ManualResetEventSlim _初期化完了 = new ManualResetEventSlim( false );
+        private ManualResetEventSlim _InitializationCompletion = new ManualResetEventSlim( false );
 
 
 
@@ -671,155 +671,155 @@ namespace MikuMikuFlex3
 
 
         /// <summary>
-        ///     現在時刻におけるモデルの状態を更新し、描画する。
+        ///     現在時刻におけるモデルの状態を更新し、Draw。
         /// </summary>
-        /// <param name="現在時刻sec">現在時刻[秒]。</param>
+        /// <param name="CurrentTimesec">CurrentTime[Seconds]。</param>
         /// <param name="d3ddc">描画先のデバイスコンテキスト。</param>
-        /// <param name="ワールド変換行列">モデルに適用するワールド変換行列。</param>
+        /// <param name="WorldTransformationMatrix">モデルに適用するワールド変換行列。</param>
         /// <param name="camera">モデルに適用するカメラ。</param>
         /// <param name="light">モデルに適用する照明。</param>
         /// <param name="viewport">描画先ビューポートのサイズ。</param>
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc, GlobalParameters globalParameters )
+        public void Draw( double CurrentTimesec, DeviceContext d3ddc, GlobalParameters globalParameters )
         {
-            if( !this._初期化完了.IsSet )
-                this._初期化完了.Wait();
+            if( !this._InitializationCompletion.IsSet )
+                this._InitializationCompletion.Wait();
 
 
             // 進行
 
 
-            #region " 材質の状態をリセットする。"
+            #region " ResetTheStateOfTheMaterial。"
             //----------------
-            foreach( var mat in this.材質リスト )
-                mat.状態をリセットする();
-            //----------------
-            #endregion
-
-            #region " 頂点状態をリセットする。"
-            //----------------
-            this.PMX頂点制御.状態をリセットする( this.Format.ヘッダ.追加UV数, this.Format.頂点リスト );
+            foreach( var mat in this.MaterialList )
+                mat.ResetState();
             //----------------
             #endregion
 
-            #region " ボーン状態をリセットする。"
+            #region " ResetVertexState。"
             //----------------
-            foreach( var bone in this.ボーンリスト )
+            this.PMXVertexControl.ResetState( this.Format.Header.AddToUVNumber, this.Format.VertexList );
+            //----------------
+            #endregion
+
+            #region " ResetBoneState。"
+            //----------------
+            foreach( var bone in this.BoneList )
             {
-                bone.ローカル位置 = bone.PMXFボーン.位置;
-                bone.移動 = Vector3.Zero;
-                bone.回転 = Quaternion.Identity;
+                bone.LocalLocation = bone.PMXFBourne.Position;
+                bone.Move = Vector3.Zero;
+                bone.Rotation = Quaternion.Identity;
             }
             //----------------
             #endregion
 
-            this._モデルポーズを再計算する();
+            this._RecalculateTheModelPose();
 
-            #region " モーフを適用する。"
+            #region " ApplyMorphs。"
             //----------------
-            foreach( var morph in this.モーフリスト )
-                morph.モーフを適用する( 現在時刻sec, this );
+            foreach( var morph in this.MorphList )
+                morph.ApplyMorphs( CurrentTimesec, this );
 
-            this._モデルポーズを再計算する();
+            this._RecalculateTheModelPose();
             //----------------
             #endregion
 
-            #region " ボーンモーションを適用する。"
+            #region " ApplyBoneMotion。"
             //----------------
-            foreach( var bone in this.ボーンリスト )
-                bone.ボーンモーションを適用する( 現在時刻sec );
+            foreach( var bone in this.BoneList )
+                bone.ApplyBoneMotion( CurrentTimesec );
 
-            this._モデルポーズを再計算する();
+            this._RecalculateTheModelPose();
             //----------------
             #endregion
 
             #region " IKを適用する。"
             //----------------
-            CCDによるIK変形更新.変形を更新する( this.IKボーンリスト );
+            CCDによるIKDeformationUpdate.UpdateTransformation( this.IKBoneList );
             //----------------
             #endregion
 
-            #region " 親付与によるFKを適用する。"
+            #region " ByParentalGrantFKを適用する。"
             //----------------
-            this._親付与によるFK変形更新.変形を更新する();
-            this._モデルポーズを再計算する();
+            this._ByParentalGrantFKDeformationUpdate.UpdateTransformation();
+            this._RecalculateTheModelPose();
             //----------------
             #endregion
             
-            #region " 物理演算による変形を適用する。"
+            #region " ApplyTransformationByPhysics。"
             //----------------
-            this._物理変形更新.変形を更新する();
+            this._PhysicalTransformationUpdate.UpdateTransformation();
             //----------------
             #endregion
 
-            #region " モデルポーズを再計算しつつ、ボーン状態を確定する。"
+            #region " WhileRecalculatingTheModelPose、DetermineTheBoneState。"
             //----------------
-            foreach( var root in this.ルートボーンリスト )
+            foreach( var root in this.RootBoneList )
             {
-                root.モデルポーズを計算する();
-                root.状態を確定する( this._ボーンのモデルポーズ配列, this._ボーンのローカル位置配列, this._ボーンの回転配列 );
+                root.CalculateModelPose();
+                root.ConfirmTheState( this._BoneModelPoseArray, this._LocalPositionArrayOfBones, this._RotationalArrayOfBones );
             }
             //----------------
             #endregion
 
 
-            // 描画
+            // Drawing
 
-            #region " スキニングを行う。"
+            #region " DoSkinning。"
             //----------------
             {
-                bool コンピュートシェーダーを使う = true;
+                bool UseComputeShader = true;
 
-                if( コンピュートシェーダーを使う )
+                if( UseComputeShader )
                 {
-                    #region " コンピュートシェーダーでスキニングする。"
+                    #region " SkinningWithComputeShader。"
                     //----------------
 
                     // ボーン用定数バッファを更新する。
 
-                    d3ddc.UpdateSubresource( this._ボーンのモデルポーズ配列, this._D3DBoneTrans定数バッファ );
-                    d3ddc.UpdateSubresource( this._ボーンのローカル位置配列, this._D3DBoneLocalPosition定数バッファ );
-                    d3ddc.UpdateSubresource( this._ボーンの回転配列, this._D3DBoneQuaternion定数バッファ );
+                    d3ddc.UpdateSubresource( this._BoneModelPoseArray, this._D3DBoneTransConstantBuffer );
+                    d3ddc.UpdateSubresource( this._LocalPositionArrayOfBones, this._D3DBoneLocalPositionConstantBuffer );
+                    d3ddc.UpdateSubresource( this._RotationalArrayOfBones, this._D3DBoneQuaternionConstantBuffer );
 
 
                     // 入力頂点リスト[] を D3Dスキニングバッファへ転送する。
 
-                    if( _初めての描画 )
+                    if( _FirstDrawing )
                     {
                         // 初回は全部転送。
-                        d3ddc.UpdateSubresource( this.PMX頂点制御.入力頂点配列, this._D3Dスキニングバッファ );
+                        d3ddc.UpdateSubresource( this.PMXVertexControl.InputVertexArray, this._D3DSkinningBuffer );
                     }
                     else
                     {
                         // ２回目以降は差分のみ転送。
                         var dstRegion = new ResourceRegion( 0, 0, 0, 1, 1, 1 );
 
-                        for( int i = 0; i < this.PMX頂点制御.単位更新フラグ.Length; i++ )
+                        for( int i = 0; i < this.PMXVertexControl.UnitUpdateFlag.Length; i++ )
                         {
-                            if( this.PMX頂点制御.単位更新フラグ[ i ] )
+                            if( this.PMXVertexControl.UnitUpdateFlag[ i ] )
                             {
-                                dstRegion.Left = i * PMX頂点制御.単位更新の頂点数 * CS_INPUT.SizeInBytes;
-                                dstRegion.Right = Math.Min( ( i + 1 ) * PMX頂点制御.単位更新の頂点数, this.PMX頂点制御.入力頂点配列.Length ) * CS_INPUT.SizeInBytes;
-                                d3ddc.UpdateSubresource( ref this.PMX頂点制御.入力頂点配列[ i * PMX頂点制御.単位更新の頂点数 ], this._D3Dスキニングバッファ, region: dstRegion );
+                                dstRegion.Left = i * PMXVertexControl.NumberOfVerticesForUnitUpdate * CS_INPUT.SizeInBytes;
+                                dstRegion.Right = Math.Min( ( i + 1 ) * PMXVertexControl.NumberOfVerticesForUnitUpdate, this.PMXVertexControl.InputVertexArray.Length ) * CS_INPUT.SizeInBytes;
+                                d3ddc.UpdateSubresource( ref this.PMXVertexControl.InputVertexArray[ i * PMXVertexControl.NumberOfVerticesForUnitUpdate ], this._D3DSkinningBuffer, region: dstRegion );
                             }
                         }
                     }
 
                     // コンピュートシェーダーでスキニングを実行し、結果を頂点バッファに格納する。
 
-                    d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTrans定数バッファ );           // b1
-                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneLocalPosition定数バッファ );   // b2
-                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneQuaternion定数バッファ );      // b3
-                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DスキニングバッファSRView );        // t0
-                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3D頂点バッファビューUAView );   // u0
+                    d3ddc.ComputeShader.SetConstantBuffer( 1, this._D3DBoneTransConstantBuffer );           // b1
+                    d3ddc.ComputeShader.SetConstantBuffer( 2, this._D3DBoneLocalPositionConstantBuffer );   // b2
+                    d3ddc.ComputeShader.SetConstantBuffer( 3, this._D3DBoneQuaternionConstantBuffer );      // b3
+                    d3ddc.ComputeShader.SetShaderResource( 0, this._D3DSkinningBufferSRView );        // t0
+                    d3ddc.ComputeShader.SetUnorderedAccessView( 0, this._D3DVertexBufferViewUAView );   // u0
 
-                    this.スキニングシェーダー.Run(
+                    this.SkinningShader.Run(
                         d3ddc,
-                        this.PMX頂点制御.入力頂点配列.Length,
-                        this._D3DBoneTrans定数バッファ,
-                        this._D3DBoneLocalPosition定数バッファ,
-                        this._D3DBoneQuaternion定数バッファ,
-                        this._D3DスキニングバッファSRView,
-                        this._D3D頂点バッファビューUAView );
+                        this.PMXVertexControl.InputVertexArray.Length,
+                        this._D3DBoneTransConstantBuffer,
+                        this._D3DBoneLocalPositionConstantBuffer,
+                        this._D3DBoneQuaternionConstantBuffer,
+                        this._D3DSkinningBufferSRView,
+                        this._D3DVertexBufferViewUAView );
 
                     // UAVを外す（このあと頂点シェーダーが使えるように）
 
@@ -831,21 +831,21 @@ namespace MikuMikuFlex3
                 {
                     #region " CPUで行う場合 "
                     //----------------
-                    var boneTrans = this._ボーンのモデルポーズ配列; // コンピュートシェーダー（HLSL）用に転置されているので注意。
+                    var boneTrans = this._BoneModelPoseArray; // コンピュートシェーダー（HLSL）用に転置されているので注意。
 
-                    var スキニング後の入力頂点リスト = new VS_INPUT[ this.PMX頂点制御.入力頂点配列.Length ];
+                    var ListOfInputVerticesAfterSkinning = new VS_INPUT[ this.PMXVertexControl.InputVertexArray.Length ];
 
-                    for( int i = 0; i < this.PMX頂点制御.入力頂点配列.Length; i++ )
+                    for( int i = 0; i < this.PMXVertexControl.InputVertexArray.Length; i++ )
                     {
-                        switch( this.PMX頂点制御.入力頂点配列[ i ].変形方式 )
+                        switch( this.PMXVertexControl.InputVertexArray[ i ].DeformationMethod )
                         {
-                            case (uint) PMXFormat.ボーンウェイト種別.BDEF1:
+                            case (uint) PMXFormat.BoneWeightType.BDEF1:
                                 #region " *** "
                                 //----------------
                                 {
-                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+                                    var Vertex = this.PMXVertexControl.InputVertexArray[ i ];
 
-                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    var bt1 = boneTrans[ Vertex.BoneIndex1 ];
                                     bt1.Transpose();
 
                                     Matrix bt =
@@ -854,73 +854,73 @@ namespace MikuMikuFlex3
                                     if( Matrix.Zero == bt )
                                         bt = Matrix.Identity;
 
-                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                    ListOfInputVerticesAfterSkinning[ i ].Position = Vector4.Transform( Vertex.Position, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal = Vector3.TransformNormal( Vertex.Normal, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal.Normalize();
                                 }
                                 //----------------
                                 #endregion
                                 break;
 
-                            case (uint) PMXFormat.ボーンウェイト種別.BDEF2:
+                            case (uint) PMXFormat.BoneWeightType.BDEF2:
                                 #region " *** "
                                 //----------------
                                 {
-                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+                                    var Vertex = this.PMXVertexControl.InputVertexArray[ i ];
 
-                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    var bt1 = boneTrans[ Vertex.BoneIndex1 ];
                                     bt1.Transpose();
-                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    var bt2 = boneTrans[ Vertex.BoneIndex2 ];
                                     bt2.Transpose();
 
                                     Matrix bt =
-                                        bt1 * 頂点.BoneWeight1 +
-                                        bt2 * 頂点.BoneWeight2;
+                                        bt1 * Vertex.BoneWeight1 +
+                                        bt2 * Vertex.BoneWeight2;
 
                                     if( Matrix.Zero == bt )
                                         bt = Matrix.Identity;
 
-                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                    ListOfInputVerticesAfterSkinning[ i ].Position = Vector4.Transform( Vertex.Position, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal = Vector3.TransformNormal( Vertex.Normal, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal.Normalize();
                                 }
                                 //----------------
                                 #endregion
                                 break;
 
-                            case (uint) PMXFormat.ボーンウェイト種別.BDEF4:
+                            case (uint) PMXFormat.BoneWeightType.BDEF4:
                                 #region " *** "
                                 //----------------
                                 {
-                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+                                    var Vertex = this.PMXVertexControl.InputVertexArray[ i ];
 
-                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    var bt1 = boneTrans[ Vertex.BoneIndex1 ];
                                     bt1.Transpose();
-                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    var bt2 = boneTrans[ Vertex.BoneIndex2 ];
                                     bt2.Transpose();
-                                    var bt3 = boneTrans[ 頂点.BoneIndex3 ];
+                                    var bt3 = boneTrans[ Vertex.BoneIndex3 ];
                                     bt3.Transpose();
-                                    var bt4 = boneTrans[ 頂点.BoneIndex4 ];
+                                    var bt4 = boneTrans[ Vertex.BoneIndex4 ];
                                     bt4.Transpose();
 
                                     Matrix bt =
-                                        bt1 * 頂点.BoneWeight1 +
-                                        bt2 * 頂点.BoneWeight2 +
-                                        bt3 * 頂点.BoneWeight3 +
-                                        bt4 * 頂点.BoneWeight4;
+                                        bt1 * Vertex.BoneWeight1 +
+                                        bt2 * Vertex.BoneWeight2 +
+                                        bt3 * Vertex.BoneWeight3 +
+                                        bt4 * Vertex.BoneWeight4;
 
                                     if( Matrix.Zero == bt )
                                         bt = Matrix.Identity;
 
-                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, bt );
-                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                    ListOfInputVerticesAfterSkinning[ i ].Position = Vector4.Transform( Vertex.Position, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal = Vector3.TransformNormal( Vertex.Normal, bt );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal.Normalize();
                                 }
                                 //----------------
                                 #endregion
                                 break;
 
-                            case (uint) PMXFormat.ボーンウェイト種別.SDEF:
+                            case (uint) PMXFormat.BoneWeightType.SDEF:
                                 #region " *** "
                                 //----------------
                                 {
@@ -928,68 +928,68 @@ namespace MikuMikuFlex3
                                     // 自分用メモ「PMXのスフィリカルデフォームのコードっぽいもの」（sma42氏）
                                     // https://www.pixiv.net/member_illust.php?mode=medium&illust_id=60755964
 
-                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+                                    var Vertex = this.PMXVertexControl.InputVertexArray[ i ];
 
-                                    var bt1 = boneTrans[ 頂点.BoneIndex1 ];
+                                    var bt1 = boneTrans[ Vertex.BoneIndex1 ];
                                     bt1.Transpose();
-                                    var bt2 = boneTrans[ 頂点.BoneIndex2 ];
+                                    var bt2 = boneTrans[ Vertex.BoneIndex2 ];
                                     bt2.Transpose();
 
-                                    #region " 影響度0,1 の算出 "
+                                    #region " Impact0,1 の算出 "
                                     //----------------
-                                    float 影響度0 = 0f;  // 固定値であるSDEFパラメータにのみ依存するので、これらの値も固定値。
-                                    float 影響度1 = 0f;  //
+                                    float Impact0 = 0f;  // 固定値であるSDEFパラメータにのみ依存するので、これらの値も固定値。
+                                    float Impact1 = 0f;  //
                                     {
-                                        float L0 = ( 頂点.SdefR0 - (Vector3) this._ボーンのローカル位置配列[ 頂点.BoneIndex2 ] ).Length();   // 子ボーンからR0までの距離
-                                        float L1 = ( 頂点.SdefR1 - (Vector3) this._ボーンのローカル位置配列[ 頂点.BoneIndex2 ] ).Length();   // 子ボーンからR1までの距離
+                                        float L0 = ( Vertex.SdefR0 - (Vector3) this._LocalPositionArrayOfBones[ Vertex.BoneIndex2 ] ).Length();   // 子ボーンからR0までの距離
+                                        float L1 = ( Vertex.SdefR1 - (Vector3) this._LocalPositionArrayOfBones[ Vertex.BoneIndex2 ] ).Length();   // 子ボーンからR1までの距離
 
-                                        影響度0 = ( Math.Abs( L0 - L1 ) < 0.0001f ) ? 0.5f : MathUtil.Clamp( L0 / ( L0 + L1 ), 0.0f, 1.0f );
-                                        影響度1 = 1.0f - 影響度0;
+                                        Impact0 = ( Math.Abs( L0 - L1 ) < 0.0001f ) ? 0.5f : MathUtil.Clamp( L0 / ( L0 + L1 ), 0.0f, 1.0f );
+                                        Impact1 = 1.0f - Impact0;
                                     }
                                     //----------------
                                     #endregion
 
-                                    Matrix モデルポーズ行列L = bt1 * 頂点.BoneWeight1;
-                                    Matrix モデルポーズ行列R = bt2 * 頂点.BoneWeight2;
-                                    Matrix モデルポーズ行列C = モデルポーズ行列L + モデルポーズ行列R;
+                                    Matrix ModelPoseMatrixL = bt1 * Vertex.BoneWeight1;
+                                    Matrix ModelPoseMatrixR = bt2 * Vertex.BoneWeight2;
+                                    Matrix ModelPoseMatrixC = ModelPoseMatrixL + ModelPoseMatrixR;
 
-                                    Vector4 点C = Vector4.Transform( 頂点.Sdef_C, モデルポーズ行列C );    // BDEF2で計算された点Cの位置
-                                    Vector4 点P = Vector4.Transform( 頂点.Position, モデルポーズ行列C );  // BDEF2で計算された頂点の位置
+                                    Vector4 PointC = Vector4.Transform( Vertex.Sdef_C, ModelPoseMatrixC );    // BDEF2で計算された点Cの位置
+                                    Vector4 PointP = Vector4.Transform( Vertex.Position, ModelPoseMatrixC );  // BDEF2で計算された頂点の位置
 
-                                    Matrix 重み付き回転行列 = Matrix.RotationQuaternion(
+                                    Matrix WeightedRotationMatrix = Matrix.RotationQuaternion(
                                         Quaternion.Slerp(   // 球体線形補間
-                                            new Quaternion( this._ボーンの回転配列[ 頂点.BoneIndex1 ].ToArray() ) * 頂点.BoneWeight1,
-                                            new Quaternion( this._ボーンの回転配列[ 頂点.BoneIndex2 ].ToArray() ) * 頂点.BoneWeight2,
-                                            頂点.BoneWeight1 ) );
+                                            new Quaternion( this._RotationalArrayOfBones[ Vertex.BoneIndex1 ].ToArray() ) * Vertex.BoneWeight1,
+                                            new Quaternion( this._RotationalArrayOfBones[ Vertex.BoneIndex2 ].ToArray() ) * Vertex.BoneWeight2,
+                                            Vertex.BoneWeight1 ) );
 
-                                    Vector4 点R0 = Vector4.Transform( new Vector4( 頂点.SdefR0, 1f ), ( モデルポーズ行列L + ( モデルポーズ行列C * -頂点.BoneWeight1 ) ) );
-                                    Vector4 点R1 = Vector4.Transform( new Vector4( 頂点.SdefR1, 1f ), ( モデルポーズ行列R + ( モデルポーズ行列C * -頂点.BoneWeight2 ) ) );
-                                    点C += ( 点R0 * 影響度0 ) + ( 点R1 * 影響度1 );   // 膨らみすぎ防止
+                                    Vector4 PointR0 = Vector4.Transform( new Vector4( Vertex.SdefR0, 1f ), ( ModelPoseMatrixL + ( ModelPoseMatrixC * -Vertex.BoneWeight1 ) ) );
+                                    Vector4 PointR1 = Vector4.Transform( new Vector4( Vertex.SdefR1, 1f ), ( ModelPoseMatrixR + ( ModelPoseMatrixC * -Vertex.BoneWeight2 ) ) );
+                                    PointC += ( PointR0 * Impact0 ) + ( PointR1 * Impact1 );   // 膨らみすぎ防止
 
-                                    点P -= 点C;     // 頂点を点Cが中心になるよう移動して
-                                    点P = Vector4.Transform( 点P, 重み付き回転行列 );   // 回転して
-                                    点P += 点C;     // 元の位置へ
+                                    PointP -= PointC;     // 頂点を点Cが中心になるよう移動して
+                                    PointP = Vector4.Transform( PointP, WeightedRotationMatrix );   // 回転して
+                                    PointP += PointC;     // 元の位置へ
 
-                                    スキニング後の入力頂点リスト[ i ].Position = 点P;
-                                    スキニング後の入力頂点リスト[ i ].Normal = Vector3.TransformNormal( 頂点.Normal, 重み付き回転行列 );
-                                    スキニング後の入力頂点リスト[ i ].Normal.Normalize();
+                                    ListOfInputVerticesAfterSkinning[ i ].Position = PointP;
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal = Vector3.TransformNormal( Vertex.Normal, WeightedRotationMatrix );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal.Normalize();
                                 }
                                 //----------------
                                 #endregion
                                 break;
 
-                            case (uint) PMXFormat.ボーンウェイト種別.QDEF:
+                            case (uint) PMXFormat.BoneWeightType.QDEF:
                                 #region " *** "
                                 //----------------
                                 {
                                     // ※ QDEFを使ったモデルが見つからないのでテストしてません。あれば教えてください！
 
-                                    var 頂点 = this.PMX頂点制御.入力頂点配列[ i ];
+                                    var Vertex = this.PMXVertexControl.InputVertexArray[ i ];
 
                                     var dualQuaternion = new DualQuaternion[ 4 ];   // 最大４ボーンまで対応
 
-                                    var boneIndexes = new[] { 頂点.BoneIndex1, 頂点.BoneIndex2, 頂点.BoneIndex3, 頂点.BoneIndex4 };
-                                    var boneWeights = new[] { 頂点.BoneWeight1, 頂点.BoneWeight2, 頂点.BoneWeight3, 頂点.BoneWeight4 };
+                                    var boneIndexes = new[] { Vertex.BoneIndex1, Vertex.BoneIndex2, Vertex.BoneIndex3, Vertex.BoneIndex4 };
+                                    var boneWeights = new[] { Vertex.BoneWeight1, Vertex.BoneWeight2, Vertex.BoneWeight3, Vertex.BoneWeight4 };
 
                                     var bt = new[] { boneTrans[ boneIndexes[ 0 ] ], boneTrans[ boneIndexes[ 1 ] ], boneTrans[ boneIndexes[ 2 ] ], boneTrans[ boneIndexes[ 3 ] ] };
                                     for( int b = 0; b < 4; b++ )
@@ -999,7 +999,7 @@ namespace MikuMikuFlex3
                                     {
                                         if( boneWeights[ b ] == 0f )
                                         {
-                                            dualQuaternion[ b ] = DualQuaternion.Zero;  // 未使用
+                                            dualQuaternion[ b ] = DualQuaternion.Zero;  // Unused
                                         }
                                         else
                                         {
@@ -1016,24 +1016,24 @@ namespace MikuMikuFlex3
                                     if( Matrix.Zero == btm )
                                         btm = Matrix.Identity;
 
-                                    スキニング後の入力頂点リスト[ i ].Position = Vector4.Transform( 頂点.Position, btm );
-                                    スキニング後の入力頂点リスト[ i ].Normal = 頂点.Normal;
+                                    ListOfInputVerticesAfterSkinning[ i ].Position = Vector4.Transform( Vertex.Position, btm );
+                                    ListOfInputVerticesAfterSkinning[ i ].Normal = Vertex.Normal;
                                 }
                                 //----------------
                                 #endregion
                                 break;
                         }
 
-                        スキニング後の入力頂点リスト[ i ].UV = this.PMX頂点制御.入力頂点配列[ i ].UV;
-                        スキニング後の入力頂点リスト[ i ].AddUV1 = this.PMX頂点制御.入力頂点配列[ i ].AddUV1;
-                        スキニング後の入力頂点リスト[ i ].AddUV2 = this.PMX頂点制御.入力頂点配列[ i ].AddUV2;
-                        スキニング後の入力頂点リスト[ i ].AddUV3 = this.PMX頂点制御.入力頂点配列[ i ].AddUV3;
-                        スキニング後の入力頂点リスト[ i ].AddUV4 = this.PMX頂点制御.入力頂点配列[ i ].AddUV4;
-                        スキニング後の入力頂点リスト[ i ].EdgeWeight = this.PMX頂点制御.入力頂点配列[ i ].EdgeWeight;
-                        スキニング後の入力頂点リスト[ i ].Index = this.PMX頂点制御.入力頂点配列[ i ].Index;
+                        ListOfInputVerticesAfterSkinning[ i ].UV = this.PMXVertexControl.InputVertexArray[ i ].UV;
+                        ListOfInputVerticesAfterSkinning[ i ].AddUV1 = this.PMXVertexControl.InputVertexArray[ i ].AddUV1;
+                        ListOfInputVerticesAfterSkinning[ i ].AddUV2 = this.PMXVertexControl.InputVertexArray[ i ].AddUV2;
+                        ListOfInputVerticesAfterSkinning[ i ].AddUV3 = this.PMXVertexControl.InputVertexArray[ i ].AddUV3;
+                        ListOfInputVerticesAfterSkinning[ i ].AddUV4 = this.PMXVertexControl.InputVertexArray[ i ].AddUV4;
+                        ListOfInputVerticesAfterSkinning[ i ].EdgeWeight = this.PMXVertexControl.InputVertexArray[ i ].EdgeWeight;
+                        ListOfInputVerticesAfterSkinning[ i ].Index = this.PMXVertexControl.InputVertexArray[ i ].Index;
                     }
 
-                    d3ddc.UpdateSubresource( スキニング後の入力頂点リスト, this._D3D頂点バッファ );
+                    d3ddc.UpdateSubresource( ListOfInputVerticesAfterSkinning, this._D3DVertexBuffer );
                     //----------------
                     #endregion
                 }
@@ -1041,12 +1041,12 @@ namespace MikuMikuFlex3
             //----------------
             #endregion
 
-            #region " D3Dパイプライン（モデル単位）を設定する。"
+            #region " D3DPipeline（ModelUnit）を設定する。"
             //----------------
             {
-                d3ddc.InputAssembler.SetVertexBuffers( 0, new VertexBufferBinding( this._D3D頂点バッファ, VS_INPUT.SizeInBytes, 0 ) );
-                d3ddc.InputAssembler.SetIndexBuffer( this._D3Dインデックスバッファ, SharpDX.DXGI.Format.R32_UInt, 0 );
-                d3ddc.InputAssembler.InputLayout = this._D3D頂点レイアウト;
+                d3ddc.InputAssembler.SetVertexBuffers( 0, new VertexBufferBinding( this._D3DVertexBuffer, VS_INPUT.SizeInBytes, 0 ) );
+                d3ddc.InputAssembler.SetIndexBuffer( this._D3DIndexBuffer, SharpDX.DXGI.Format.R32_UInt, 0 );
+                d3ddc.InputAssembler.InputLayout = this._D3DVertexLayout;
                 d3ddc.InputAssembler.PrimitiveTopology = PrimitiveTopology.PatchListWith3ControlPoints;
 
                 d3ddc.Rasterizer.SetViewport( new ViewportF {
@@ -1058,187 +1058,187 @@ namespace MikuMikuFlex3
                     MaxDepth = 1f,
                 } );
 
-                d3ddc.PixelShader.SetSampler( 0, this._PS用SamplerState );
-                d3ddc.OutputMerger.BlendState = this._BlendState通常合成;
+                d3ddc.PixelShader.SetSampler( 0, this._PSForSamplerState );
+                d3ddc.OutputMerger.BlendState = this._BlendStateNormalSynthesis;
             }
             //----------------
             #endregion
 
-            #region " グローバルパラメータ（モデル単位）を設定する。"
+            #region " GlobalParameters（ModelUnit）を設定する。"
             //----------------
-            globalParameters.WorldMatrix = ワールド変換行列;
+            globalParameters.WorldMatrix = WorldTransformationMatrix;
             globalParameters.WorldMatrix.Transpose();
             //----------------
             #endregion
 
-            #region " すべての材質を描画する。"
+            #region " DrawAllMaterials。"
             //----------------
-            for( int i = 0; i < this.材質リスト.Length; i++ )
+            for( int i = 0; i < this.MaterialList.Length; i++ )
             {
-                var 材質 = this.材質リスト[ i ];
+                var Material = this.MaterialList[ i ];
 
-                #region " 材質モーフでのZファイティングへの対策 → 非表示（完全透明）なら描画（深度ステンシルへの描画）自体行わない "
+                #region " InMaterialMorphZMeasuresForFighting → Hide（CompletelyTransparent）ThenDraw（DrawingOnADepthStencil）DoNotDoItItself "
                 //----------------
-                if( 材質.拡散色.W < 0.0001f ) // 完全透明 ＝ 拡散色のαがほぼゼロ
+                if( Material.DiffuseColor.W < 0.0001f ) // CompletelyTransparent ＝ 拡散色のαがほぼゼロ
                     continue;
                 //----------------
                 #endregion
 
-                #region " グローバルパラメータ（材質単位）を設定する。"
+                #region " GlobalParameters（MaterialUnit）を設定する。"
                 //----------------
-                globalParameters.EdgeColor = 材質.エッジ色;
-                globalParameters.EdgeWidth = 材質.エッジサイズ;
-                globalParameters.TessellationFactor = 材質.テッセレーション係数;
-                globalParameters.UseSelfShadow = ( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.セルフ影 ) );
-                globalParameters.AmbientColor = new Vector4( 材質.環境色, 1f );
-                globalParameters.DiffuseColor = 材質.拡散色;
-                globalParameters.SpecularColor = new Vector4( 材質.反射色, 1f );
-                globalParameters.SpecularPower = 材質.反射強度;
+                globalParameters.EdgeColor = Material.EdgeColor;
+                globalParameters.EdgeWidth = Material.EdgeSize;
+                globalParameters.TessellationFactor = Material.TessellationCoefficient;
+                globalParameters.UseSelfShadow = ( Material.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.SelfShadow ) );
+                globalParameters.AmbientColor = new Vector4( Material.EnvironmentalColor, 1f );
+                globalParameters.DiffuseColor = Material.DiffuseColor;
+                globalParameters.SpecularColor = new Vector4( Material.ReflectiveColor, 1f );
+                globalParameters.SpecularPower = Material.ReflectionIntensity;
 
-                ShaderResourceView テクスチャSRV = null;
-                if( -1 != 材質.通常テクスチャの参照インデックス )
+                ShaderResourceView TextureSRV = null;
+                if( -1 != Material.ReferenceIndexOfNormalTexture )
                 {
                     globalParameters.UseTexture = true;
-                    テクスチャSRV = this._個別テクスチャリスト[ 材質.通常テクスチャの参照インデックス ].srv;
-                    d3ddc.PixelShader.SetShaderResource( 0, テクスチャSRV );
+                    TextureSRV = this._IndividualTextureList[ Material.ReferenceIndexOfNormalTexture ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 0, TextureSRV );
                 }
                 else
                 {
                     globalParameters.UseTexture = false;
                 }
 
-                ShaderResourceView スフィアマップテクスチャSRV = null;
-                if( -1 != 材質.スフィアテクスチャの参照インデックス )
+                ShaderResourceView SphereMapTextureSRV = null;
+                if( -1 != Material.SphereTextureReferenceIndex )
                 {
                     globalParameters.UseSphereMap = true;
-                    globalParameters.IsAddSphere = ( 材質.スフィアモード == PMXFormat.スフィアモード.加算 );
-                    スフィアマップテクスチャSRV = this._個別テクスチャリスト[ 材質.スフィアテクスチャの参照インデックス ].srv;
-                    d3ddc.PixelShader.SetShaderResource( 1, スフィアマップテクスチャSRV );
+                    globalParameters.IsAddSphere = ( Material.SphereMode == PMXFormat.SphereMode.Addition );
+                    SphereMapTextureSRV = this._IndividualTextureList[ Material.SphereTextureReferenceIndex ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 1, SphereMapTextureSRV );
                 }
                 else
                 {
                     globalParameters.UseSphereMap = false;
                 }
 
-                ShaderResourceView トゥーンテクスチャSRV = null;
-                if( 1 == 材質.共有Toonフラグ )
+                ShaderResourceView ToonTextureSRV = null;
+                if( 1 == Material.ShareToonFlag )
                 {
                     globalParameters.UseToonTextureMap = true;
-                    トゥーンテクスチャSRV = this._共有テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv;
-                    d3ddc.PixelShader.SetShaderResource( 2, トゥーンテクスチャSRV );
+                    ToonTextureSRV = this._SharedTextureList[ Material.ShareToonのテクスチャ参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 2, ToonTextureSRV );
                 }
-                else if( -1 != 材質.共有Toonのテクスチャ参照インデックス )
+                else if( -1 != Material.ShareToonのテクスチャ参照インデックス )
                 {
                     globalParameters.UseToonTextureMap = true;
-                    トゥーンテクスチャSRV = this._個別テクスチャリスト[ 材質.共有Toonのテクスチャ参照インデックス ].srv;
-                    d3ddc.PixelShader.SetShaderResource( 2, トゥーンテクスチャSRV );
+                    ToonTextureSRV = this._IndividualTextureList[ Material.ShareToonのテクスチャ参照インデックス ].srv;
+                    d3ddc.PixelShader.SetShaderResource( 2, ToonTextureSRV );
                 }
                 else
                 {
                     globalParameters.UseToonTextureMap = false;
-                    //d3ddc.PixelShader.SetShaderResource( 2, this._共有テクスチャリスト[ 0 ].srv );
+                    //d3ddc.PixelShader.SetShaderResource( 2, this._SharedTextureList[ 0 ].srv );
                 }
                 //----------------
                 #endregion
 
-                #region " グローバルパラメータを各シェーダステージの定数バッファ b0 へ転送する。"
+                #region " GlobalParametersConstantBufferForEachShaderStage b0 へ転送する。"
                 //----------------
-                d3ddc.UpdateSubresource( ref globalParameters, this._GlobalParameters定数バッファ );
+                d3ddc.UpdateSubresource( ref globalParameters, this._GlobalParametersConstantBuffer );
 
-                d3ddc.VertexShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
-                d3ddc.HullShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
-                d3ddc.DomainShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
-                d3ddc.GeometryShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
-                d3ddc.PixelShader.SetConstantBuffer( 0, this._GlobalParameters定数バッファ );
+                d3ddc.VertexShader.SetConstantBuffer( 0, this._GlobalParametersConstantBuffer );
+                d3ddc.HullShader.SetConstantBuffer( 0, this._GlobalParametersConstantBuffer );
+                d3ddc.DomainShader.SetConstantBuffer( 0, this._GlobalParametersConstantBuffer );
+                d3ddc.GeometryShader.SetConstantBuffer( 0, this._GlobalParametersConstantBuffer );
+                d3ddc.PixelShader.SetConstantBuffer( 0, this._GlobalParametersConstantBuffer );
                 //----------------
                 #endregion
 
-                var 材質描画シェーダー = 材質.材質描画シェーダー ?? this.既定の材質描画シェーダー;
+                var MaterialDrawingShader = Material.MaterialDrawingShader ?? this.DefaultMaterialDrawingShader;
 
 
                 // オブジェクト描画
 
-                #region " D3Dパイプライン（材質単位）を設定する。"
+                #region " D3DPipeline（MaterialUnit）を設定する。"
                 //----------------
-                if( !材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.両面描画 ) )
+                if( !Material.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.DoubleSidedDrawing ) )
                 {
-                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
-                        d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステートLine;
+                    if( Material.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.LineDrawing ) )
+                        d3ddc.Rasterizer.State = this._RasterizerStateWhenDrawingOnOneSideLine;
                     else
-                        d3ddc.Rasterizer.State = this._片面描画の際のラスタライザステート;
+                        d3ddc.Rasterizer.State = this._RasterizerStateWhenDrawingOnOneSide;
                 }
                 else
                 {
-                    if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.Line描画 ) )
-                        d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステートLine;
+                    if( Material.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.LineDrawing ) )
+                        d3ddc.Rasterizer.State = this._RasterizerStateForDoubleSidedDrawingLine;
                     else
-                        d3ddc.Rasterizer.State = this._両面描画の際のラスタライザステート;
+                        d3ddc.Rasterizer.State = this._RasterizerStateForDoubleSidedDrawing;
                 }
                 //----------------
                 #endregion
 
-                材質描画シェーダー.Draw(
+                MaterialDrawingShader.Draw(
                     d3ddc,
-                    材質.頂点数,
-                    材質.開始インデックス,
+                    Material.NumberOfVertices,
+                    Material.StartingIndex,
                     MMDPass.Object,
                     globalParameters,
-                    this._GlobalParameters定数バッファ,
-                    テクスチャSRV,
-                    スフィアマップテクスチャSRV,
-                    トゥーンテクスチャSRV );
+                    this._GlobalParametersConstantBuffer,
+                    TextureSRV,
+                    SphereMapTextureSRV,
+                    ToonTextureSRV );
 
 
                 // エッジ描画
 
-                if( 材質.描画フラグ.HasFlag( PMXFormat.描画フラグ.エッジ ) )
+                if( Material.DrawingFlag.HasFlag( PMXFormat.DrawingFlag.Edge ) )
                 {
-                    #region " D3Dパイプライン（材質単位）を設定する。"
+                    #region " D3DPipeline（MaterialUnit）を設定する。"
                     //----------------
-                    d3ddc.Rasterizer.State = this._裏側片面描画の際のラスタライザステート;
+                    d3ddc.Rasterizer.State = this._RasterizerStateWhenDrawingOnOneSideOfTheBackSide;
                     //----------------
                     #endregion
 
-                    材質描画シェーダー.Draw(
+                    MaterialDrawingShader.Draw(
                         d3ddc,
-                        材質.頂点数,
-                        材質.開始インデックス,
+                        Material.NumberOfVertices,
+                        Material.StartingIndex,
                         MMDPass.Edge,
                         globalParameters,
-                        this._GlobalParameters定数バッファ,
-                        テクスチャSRV,
-                        スフィアマップテクスチャSRV,
-                        トゥーンテクスチャSRV );
+                        this._GlobalParametersConstantBuffer,
+                        TextureSRV,
+                        SphereMapTextureSRV,
+                        ToonTextureSRV );
                 }
             }
             //----------------
             #endregion
 
-            this._初めての描画 = false;
+            this._FirstDrawing = false;
         }
 
-        private void _モデルポーズを再計算する()
+        private void _RecalculateTheModelPose()
         {
-            foreach( var root in this.ルートボーンリスト )
-                root.モデルポーズを計算する();
+            foreach( var root in this.RootBoneList )
+                root.CalculateModelPose();
         }
 
-        private bool _初めての描画 = true;
+        private bool _FirstDrawing = true;
 
 
 
         // private
 
 
-        private (Texture2D tex2d, ShaderResourceView srv)[] _共有テクスチャリスト;
+        private (Texture2D tex2d, ShaderResourceView srv)[] _SharedTextureList;
 
-        private (Texture2D tex2d, ShaderResourceView srv)[] _個別テクスチャリスト;
+        private (Texture2D tex2d, ShaderResourceView srv)[] _IndividualTextureList;
 
-        private Matrix[] _ボーンのモデルポーズ配列;
+        private Matrix[] _BoneModelPoseArray;
 
-        private Vector4[] _ボーンのローカル位置配列;
+        private Vector4[] _LocalPositionArrayOfBones;
 
-        private Vector4[] _ボーンの回転配列;
+        private Vector4[] _RotationalArrayOfBones;
 
         public struct D3DBoneTrans    // サイズ計測用構造体
         {
@@ -1250,7 +1250,7 @@ namespace MikuMikuFlex3
             public static int SizeInBytes
                 => ( ( Marshal.SizeOf( typeof( D3DBoneTrans ) ) ) / 16 + 1 ) * 16;
         }
-        private SharpDX.Direct3D11.Buffer _D3DBoneTrans定数バッファ;
+        private SharpDX.Direct3D11.Buffer _D3DBoneTransConstantBuffer;
 
         public struct D3DBoneLocalPosition    // サイズ計測用構造体
         {
@@ -1263,7 +1263,7 @@ namespace MikuMikuFlex3
             /// </summary>
             public static int SizeInBytes = 16;
         }
-        private SharpDX.Direct3D11.Buffer _D3DBoneLocalPosition定数バッファ;
+        private SharpDX.Direct3D11.Buffer _D3DBoneLocalPositionConstantBuffer;
 
         public struct D3DBoneQuaternion    // サイズ計測用構造体
         {
@@ -1275,39 +1275,39 @@ namespace MikuMikuFlex3
             public static int SizeInBytes
                 => ( ( Marshal.SizeOf( typeof( D3DBoneQuaternion ) ) ) / 16 + 1 ) * 16;
         }
-        private SharpDX.Direct3D11.Buffer _D3DBoneQuaternion定数バッファ;
+        private SharpDX.Direct3D11.Buffer _D3DBoneQuaternionConstantBuffer;
 
-        private SharpDX.Direct3D11.Buffer _D3Dスキニングバッファ;
+        private SharpDX.Direct3D11.Buffer _D3DSkinningBuffer;
 
-        private ShaderResourceView _D3DスキニングバッファSRView;
+        private ShaderResourceView _D3DSkinningBufferSRView;
 
-        private SharpDX.Direct3D11.Buffer _D3D頂点バッファ;
+        private SharpDX.Direct3D11.Buffer _D3DVertexBuffer;
 
-        private InputLayout _D3D頂点レイアウト;
+        private InputLayout _D3DVertexLayout;
 
-        private UnorderedAccessView _D3D頂点バッファビューUAView;
+        private UnorderedAccessView _D3DVertexBufferViewUAView;
 
-        private SharpDX.Direct3D11.Buffer _D3Dインデックスバッファ;
+        private SharpDX.Direct3D11.Buffer _D3DIndexBuffer;
 
-        private RasterizerState _裏側片面描画の際のラスタライザステート;
+        private RasterizerState _RasterizerStateWhenDrawingOnOneSideOfTheBackSide;
 
-        private RasterizerState _片面描画の際のラスタライザステート;
+        private RasterizerState _RasterizerStateWhenDrawingOnOneSide;
 
-        private RasterizerState _片面描画の際のラスタライザステートLine;
+        private RasterizerState _RasterizerStateWhenDrawingOnOneSideLine;
 
-        private RasterizerState _両面描画の際のラスタライザステート;
+        private RasterizerState _RasterizerStateForDoubleSidedDrawing;
 
-        private RasterizerState _両面描画の際のラスタライザステートLine;
+        private RasterizerState _RasterizerStateForDoubleSidedDrawingLine;
 
-        private BlendState _BlendState通常合成;
+        private BlendState _BlendStateNormalSynthesis;
 
-        private 親付与によるFK変形更新 _親付与によるFK変形更新;
+        private ByParentalGrantFKDeformationUpdate _ByParentalGrantFKDeformationUpdate;
 
-        private PMX物理変形更新 _物理変形更新;
+        private PMXPhysicalTransformationUpdate _PhysicalTransformationUpdate;
 
-        private SharpDX.Direct3D11.Buffer _GlobalParameters定数バッファ;
+        private SharpDX.Direct3D11.Buffer _GlobalParametersConstantBuffer;
 
-        private SamplerState _PS用SamplerState;
+        private SamplerState _PSForSamplerState;
 
 
         /// <summary>
@@ -1316,22 +1316,22 @@ namespace MikuMikuFlex3
         /// </summary>
         /// <param name="リソースパス">ファイルパスまたはリソースパス。</param>
         /// <returns></returns>
-        private void _頂点データを頂点レイアウトリストに追加する( PMXFormat.頂点 頂点データ, List<CS_INPUT> 頂点レイアウトリスト )
+        private void _AddVertexDataToTheVertexLayoutList( PMXFormat.Vertex VertexData, List<CS_INPUT> VertexLayoutList )
         {
             var layout = new CS_INPUT() {
-                Position = new Vector4( 頂点データ.位置, 1f ),
-                Normal = 頂点データ.法線,
-                UV = 頂点データ.UV,
-                Index = (uint) 頂点レイアウトリスト.Count,    // 現在の要素数 ＝ List<>内でのこの要素のインデックス番号
-                EdgeWeight = 頂点データ.エッジ倍率,
-                変形方式 = (uint) 頂点データ.ウェイト変形方式,
+                Position = new Vector4( VertexData.Position, 1f ),
+                Normal = VertexData.Normal,
+                UV = VertexData.UV,
+                Index = (uint) VertexLayoutList.Count,    // 現在の要素数 ＝ List<>内でのこの要素のインデックス番号
+                EdgeWeight = VertexData.EdgeMagnification,
+                DeformationMethod = (uint) VertexData.WeightDeformationMethod,
             };
 
-            switch( 頂点データ.ウェイト変形方式 )
+            switch( VertexData.WeightDeformationMethod )
             {
-                case PMXFormat.ボーンウェイト種別.BDEF1:
+                case PMXFormat.BoneWeightType.BDEF1:
                     {
-                        var v = (PMXFormat.BDEF1) 頂点データ.ボーンウェイト;
+                        var v = (PMXFormat.BDEF1) VertexData.BoneWeight;
                         layout.BoneIndex1 = (uint) ( ( v.boneReferenceIndex < 0 ) ? 0 : v.boneReferenceIndex );
                         layout.BoneIndex2 = 0;
                         layout.BoneIndex3 = 0;
@@ -1343,9 +1343,9 @@ namespace MikuMikuFlex3
                     }
                     break;
 
-                case PMXFormat.ボーンウェイト種別.BDEF2:
+                case PMXFormat.BoneWeightType.BDEF2:
                     {
-                        var v = (PMXFormat.BDEF2) 頂点データ.ボーンウェイト;
+                        var v = (PMXFormat.BDEF2) VertexData.BoneWeight;
                         layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
                         layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
                         layout.BoneIndex3 = 0;
@@ -1357,9 +1357,9 @@ namespace MikuMikuFlex3
                     }
                     break;
 
-                case PMXFormat.ボーンウェイト種別.SDEF:
+                case PMXFormat.BoneWeightType.SDEF:
                     {
-                        var v = (PMXFormat.SDEF) 頂点データ.ボーンウェイト;
+                        var v = (PMXFormat.SDEF) VertexData.BoneWeight;
                         layout.BoneIndex1 = (uint) ( ( v.Bone1ReferenceIndex < 0 ) ? 0 : v.Bone1ReferenceIndex );
                         layout.BoneIndex2 = (uint) ( ( v.Bone2ReferenceIndex < 0 ) ? 0 : v.Bone2ReferenceIndex );
                         layout.BoneIndex3 = 0;
@@ -1374,10 +1374,10 @@ namespace MikuMikuFlex3
                     }
                     break;
 
-                case PMXFormat.ボーンウェイト種別.BDEF4:
-                case PMXFormat.ボーンウェイト種別.QDEF:
+                case PMXFormat.BoneWeightType.BDEF4:
+                case PMXFormat.BoneWeightType.QDEF:
                     {
-                        var v = (PMXFormat.BDEF4) 頂点データ.ボーンウェイト;
+                        var v = (PMXFormat.BDEF4) VertexData.BoneWeight;
                         float sumWeight = v.Weights.X + v.Weights.Y + v.Weights.Z + v.Weights.W;
                         if( !( 0.99999f < sumWeight && sumWeight < 1.00001f ) && v.Weights.W == 0f )
                         {
@@ -1397,7 +1397,7 @@ namespace MikuMikuFlex3
                     break;
             }
 
-            頂点レイアウトリスト.Add( ( layout ) );
+            VertexLayoutList.Add( ( layout ) );
         }
     }
 }

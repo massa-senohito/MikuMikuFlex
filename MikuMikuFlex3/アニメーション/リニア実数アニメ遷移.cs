@@ -1,32 +1,32 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace MikuMikuFlex3
 {
-    public class リニア実数アニメ遷移 : アニメ遷移<float>
+    public class LinearRealAnimationTransition : AnimeTransition<float>
     {
-        public リニア実数アニメ遷移( float 目標値, double 持続時間sec )
+        public LinearRealAnimationTransition( float TargetValue, double Durationsec )
         {
-            this.終了値 = 目標値;
-            this.持続時間sec = 持続時間sec;
+            this.EndValue = TargetValue;
+            this.Durationsec = Durationsec;
         }
 
         // 遷移が完了しているなら false を返す。
-        internal override bool 更新する( double 現在時刻sec, out float 現在の値 )
+        internal override bool Update( double CurrentTimesec, out float CurrentValue )
         {
-            Debug.Assert( !this.確定されていない, "遷移が開始されていません。" );
+            Debug.Assert( !this.NotConfirmed, "TheTransitionHasNotStarted。" );
 
-            if( 現在時刻sec >= this.開始時刻sec + this.持続時間sec )
+            if( CurrentTimesec >= this.StartTimesec + this.Durationsec )
             {
-                現在の値 = this.終了値;
+                CurrentValue = this.EndValue;
                 return false;   // 遷移終了済み
             }
 
-            var t = ( 現在時刻sec - this.開始時刻sec ) / this.持続時間sec;
+            var t = ( CurrentTimesec - this.StartTimesec ) / this.Durationsec;
 
-            現在の値 = (float) ( this.開始値 + ( this.終了値 - this.開始値 ) * t );
+            CurrentValue = (float) ( this.StartingValue + ( this.EndValue - this.StartingValue ) * t );
 
             return true;
         }

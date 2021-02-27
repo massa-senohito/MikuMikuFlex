@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class ジョイントリスト : List<ジョイント>
+    public class JointList : List<Joint>
     {
-        public ジョイントリスト()
+        public JointList()
             : base()
         {
         }
@@ -16,15 +16,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ジョイントリスト( Stream st, ヘッダ header )
+        internal JointList( Stream st, Header header )
         {
-            int ジョイント数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"ジョイント数: {ジョイント数}" );
+            int NumberOfJoints = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfJoints: {NumberOfJoints}" );
 
-            this.Capacity = ジョイント数;
+            this.Capacity = NumberOfJoints;
 
-            for( int i = 0; i < ジョイント数; i++ )
-                this.Add( new ジョイント( st, header ) );
+            for( int i = 0; i < NumberOfJoints; i++ )
+                this.Add( new Joint( st, header ) );
         }
     }
 }

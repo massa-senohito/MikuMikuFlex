@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 材質リスト : List<材質>
+    public class MaterialList : List<Material>
     {
-        public 材質リスト()
+        public MaterialList()
             : base()
         {
         }
@@ -16,32 +16,32 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 材質リスト( Stream st, ヘッダ header )
+        internal MaterialList( Stream st, Header header )
         {
-            int 材質数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"材質数: {材質数}" );
+            int NumberOfMaterials = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfMaterials: {NumberOfMaterials}" );
 
-            this.Capacity = 材質数;
+            this.Capacity = NumberOfMaterials;
 
-            int 開始index = 0;
-            for( int i = 0; i < 材質数; i++ )
+            int Startindex = 0;
+            for( int i = 0; i < NumberOfMaterials; i++ )
             {
-                var mat = new 材質( st, header, 開始index );
+                var mat = new Material( st, header, Startindex );
                 this.Add( mat );
-                開始index += mat.頂点数;
+                Startindex += mat.NumberOfVertices;
 
             }
         }
 
-        public 材質 指定された位置の材質を返す( int index )
+        public Material ReturnsTheMaterialAtTheSpecifiedPosition( int index )
         {
-            int 面数 = 0;
+            int NumberOfFaces = 0;
 
             for( int i = 0; i < this.Count; i++ )
             {
-                面数 += this[ i ].頂点数 / 3;
+                NumberOfFaces += this[ i ].NumberOfVertices / 3;
 
-                if( index < 面数 )
+                if( index < NumberOfFaces )
                     return this[ i ];
             }
 

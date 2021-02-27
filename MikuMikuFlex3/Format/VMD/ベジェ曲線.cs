@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,11 +12,11 @@ namespace MikuMikuFlex3.VMDFormat
     /// <remarks>
     ///     V0=(0,0) V1=V0側方向点, V2=V3側方向点, V3=(1,1) とし、V0 から V3へ至る３次ベジェ曲線を表す。
     ///     V1, V2 は、いずれも (0,0)-(1,1) の範囲内にあるものとする。
-    ///     このとき、曲線上割合 t (0≦t≦1) における 点P の位置 P(t) は、次のように表される。
+    ///     このとき、曲線上割合 t (0≦t≦1) における PointP の位置 P(t) は、次のように表される。
     ///         P(t) = V0*(1-t)^3 + 3*V1*(1-t)^2*t + 3*V2*(1-t)*t^2 + V3*t^3
     /// </remarks>
     /// <seealso cref="http://pr0jectze10.blogspot.com/2011/04/xnammd-part3.html"/>
-    public class ベジェ曲線
+    public class BezierCurve
     {
         /// <summary>
         ///     始点(0,0)側方向点。
@@ -32,16 +32,16 @@ namespace MikuMikuFlex3.VMDFormat
 
 
         /// <summary>
-        ///     ベジェ曲線上の 点P (Px,Py) において、指定された Px から Py を求めて返す。
+        ///     ベジェ曲線上の PointP (Px,Py) において、指定された Px から Py を求めて返す。
         /// </summary>
-        /// <param name="Px">ベジェ補間曲線上の 点P の X値 Px を指定する。0.0～1.0。</param>
-        /// <returns>指定された進行度合いに対応する、ベジェ補間曲線上の 点P の Y値 Py を表す。0.0～1.0。</returns>
+        /// <param name="Px">ベジェ補間曲線上の PointP の XValue Px を指定する。0.0～1.0。</param>
+        /// <returns>指定された進行度合いに対応する、ベジェ補間曲線上の PointP の YValue Py を表す。0.0～1.0。</returns>
         /// <remarks>
         ///     Px から Py を算出するには、まず Px に対応する 曲線上の割合 t を求め、
         ///     次に３次ベジェ曲線の式を使って t から Py を算出する。
         ///     t の算出には、ニュートン法による近似を使う。
         /// </remarks>
-        public float 横位置Pxに対応する縦位置Pyを返す( float Px )
+        public float HorizontalPositionPxに対応する縦位置Pyを返す( float Px )
         {
             // (1) ニュートン法による近似を使って、Px に対応するベジェ補間曲線上の割合 t を算出する。
 
@@ -56,7 +56,7 @@ namespace MikuMikuFlex3.VMDFormat
 
                 t += MathUtil.Clamp( dt, -1f, 1f ); // 大幅に移動して別の解に到達するのを防止する用
 
-            } while( Math.Abs( dt ) > _最小解像度 ); // dt が十分小さくなるまで繰り返す。
+            } while( Math.Abs( dt ) > _MinimumResolution ); // dt が十分小さくなるまで繰り返す。
 
 
             // (2) ３次ベジェ曲線の式を使って、t に対応する Py を算出して返す。
@@ -67,7 +67,7 @@ namespace MikuMikuFlex3.VMDFormat
         }
 
 
-        private const float _最小解像度 = 1.0e-3f;
+        private const float _MinimumResolution = 1.0e-3f;
 
 
         // fy(t)を計算する関数

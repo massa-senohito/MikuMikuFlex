@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,30 +6,30 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class モデル情報
+    public class ModelInformation
     {
-        public string モデル名 { get; private set; }
+        public string ModelName { get; private set; }
 
-        public string モデル名_英 { get; private set; }
+        public string ModelName_English { get; private set; }
 
-        public string コメント { get; private set; }
+        public string Comment { get; private set; }
 
-        public string コメント_英 { get; private set; }
+        public string Comment_English { get; private set; }
 
 
-        public モデル情報()
+        public ModelInformation()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal モデル情報( Stream st, ヘッダ header )
+        internal ModelInformation( Stream st, Header header )
         {
-            this.モデル名 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
-            this.モデル名_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
-            this.コメント = ParserHelper.get_TextBuf( st, header.エンコード方式 );
-            this.コメント_英 = ParserHelper.get_TextBuf( st, header.エンコード方式 );
+            this.ModelName = ParserHelper.get_TextBuf( st, header.EncodingMethod );
+            this.ModelName_English = ParserHelper.get_TextBuf( st, header.EncodingMethod );
+            this.Comment = ParserHelper.get_TextBuf( st, header.EncodingMethod );
+            this.Comment_English = ParserHelper.get_TextBuf( st, header.EncodingMethod );
         }
     }
 }

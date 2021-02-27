@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,66 +10,66 @@ namespace MikuMikuFlex3.PMXFormat
     /// <summary>
     ///     軸移動ジョイント。
     /// </summary>
-    public class スライダージョイントパラメータ : ジョイントパラメータ
+    public class SliderJointParameters : JointParameters
     {
-        public int 関連剛体Aのインデックス { get; private set; }
+        public int RelatedRigidBodyAのインデックス { get; private set; }
 
-        public int 関連剛体Bのインデックス { get; private set; }
+        public int RelatedRigidBodyBのインデックス { get; private set; }
 
-        public Vector3 位置 { get; private set; }
+        public Vector3 Position { get; private set; }
 
-        public Vector3 回転 { get; private set; }
+        public Vector3 Rotation { get; private set; }
 
         /// <summary>
-        ///     移動制限-下限 - X
+        ///     MovementRestrictions-下限 - X
         /// </summary>
         public float LowerLinLimit { get; private set; }
 
         /// <summary>
-        ///     移動制限-上限 - X
+        ///     MovementRestrictions-上限 - X
         /// </summary>
         public float UpperLinLimit { get; private set; }
 
         /// <summary>
-        ///     回転制限-下限 - X
+        ///     RotationLimit-下限 - X
         /// </summary>
         public float LowerAngLimit { get; private set; }
 
         /// <summary>
-        ///     回転制限-上限 - X
+        ///     RotationLimit-上限 - X
         /// </summary>
         public float UpperAngLimit { get; private set; }
 
         /// <summary>
-        ///     バネ定数-移動 - X  | 移動モーター有効 - 0:OFF 1:ON
+        ///     バネ定数-Move - X  | 移動モーター有効 - 0:OFF 1:ON
         /// </summary>
         public bool IsPoweredLinMoter { get; private set; }
 
         /// <summary>
-        ///     バネ定数-移動 - Y
+        ///     バネ定数-Move - Y
         ///     ※移動モーター有効時
         /// </summary>
         public float TargetLinMotorVelocity { get; private set; }
 
         /// <summary>
-        ///     バネ定数-移動 - Z
+        ///     バネ定数-Move - Z
         ///     ※移動モーター有効時
         /// </summary>
         public float MaxLinMotorForce { get; private set; }
 
         /// <summary>
-        ///     バネ定数-回転 - X  | 回転モーター有効 - 0:OFF 1:ON
+        ///     バネ定数-Rotation - X  | 回転モーター有効 - 0:OFF 1:ON
         /// </summary>
         public bool IsPoweredAngMotor { get; private set; }
 
         /// <summary>
-        ///     バネ定数-回転 - Y
+        ///     バネ定数-Rotation - Y
         ///     ※回転モーター有効時
         /// </summary>
         public float TargetAngMotorVelocity { get; private set; }
 
         /// <summary>
-        ///     バネ定数-回転 - Z
+        ///     バネ定数-Rotation - Z
         ///     ※回転モーター有効時
         /// </summary>
         public float MaxAngMotorForce { get; private set; }
@@ -78,12 +78,12 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal override void 読み込む( Stream fs, ヘッダ header )
+        internal override void Read( Stream fs, Header header )
         {
-            this.関連剛体Aのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.関連剛体Bのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.回転 = ParserHelper.get_Float3( fs );
+            this.RelatedRigidBodyAのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.RelatedRigidBodyBのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.Position = ParserHelper.get_Float3( fs );
+            this.Rotation = ParserHelper.get_Float3( fs );
 
             Vector3 moveLimitationMin = ParserHelper.get_Float3( fs );
             Vector3 moveLimitationMax = ParserHelper.get_Float3( fs );

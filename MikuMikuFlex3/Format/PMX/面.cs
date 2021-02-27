@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 namespace MikuMikuFlex3.PMXFormat
 {
     /// <summary>
-    ///     3点(3頂点の参照インデックス)で1面。
-    ///     材質毎の面数は材質内の面（頂点）数で管理（同PMD方式）
+    ///     3Point(3頂点の参照インデックス)で1Surface。
+    ///     材質毎の面数は材質内の面（Vertex）数で管理（同PMD方式）
     /// </summary>
-    public class 面
+    public class Surface
     {
-        public uint 頂点1;
+        public uint Vertex1;
 
-        public uint 頂点2;
+        public uint Vertex2;
 
-        public uint 頂点3;
+        public uint Vertex3;
 
-        public 面( uint 頂点1, uint 頂点2, uint 頂点3 )
+        public Surface( uint Vertex1, uint Vertex2, uint Vertex3 )
         {
-            this.頂点1 = 頂点1;
-            this.頂点2 = 頂点2;
-            this.頂点3 = 頂点3;
+            this.Vertex1 = Vertex1;
+            this.Vertex2 = Vertex2;
+            this.Vertex3 = Vertex3;
         }
     }
 }

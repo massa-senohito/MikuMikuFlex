@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,14 +15,14 @@ namespace MikuMikuFlex3
             // 文字数を取得。
             var temp = new byte[ 4 ];
             fs.Read( temp, 0, 4 );
-            int 文字数 = BitConverter.ToInt32( temp, 0 );
+            int WordCount = BitConverter.ToInt32( temp, 0 );
 
             // 文字列を取得。
-            var 文字列 = new byte[ 文字数 ];
-            fs.Read( 文字列, 0, 文字数 );
+            var String = new byte[ WordCount ];
+            fs.Read( String, 0, WordCount );
 
             // 指定されたエンコーダで変換する。
-            return encoding.GetString( 文字列 );
+            return encoding.GetString( String );
         }
 
         public static float get_Float( Stream fs )

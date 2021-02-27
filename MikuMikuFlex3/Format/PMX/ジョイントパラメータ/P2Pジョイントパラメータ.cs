@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,26 +10,26 @@ namespace MikuMikuFlex3.PMXFormat
     /// <summary>
     ///     点結合ジョイント。
     /// </summary>
-    public class P2Pジョイントパラメータ : ジョイントパラメータ
+    public class P2PJointParameters : JointParameters
     {
-        public int 関連剛体Aのインデックス { get; private set; }
+        public int RelatedRigidBodyAのインデックス { get; private set; }
 
-        public int 関連剛体Bのインデックス { get; private set; }
+        public int RelatedRigidBodyBのインデックス { get; private set; }
 
-        public Vector3 位置 { get; private set; }
+        public Vector3 Position { get; private set; }
 
-        public Vector3 回転rad { get; private set; }
+        public Vector3 Rotationrad { get; private set; }
 
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal override void 読み込む( Stream fs, ヘッダ header )
+        internal override void Read( Stream fs, Header header )
         {
-            this.関連剛体Aのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.関連剛体Bのインデックス = ParserHelper.get_Index( fs, header.剛体インデックスサイズ );
-            this.位置 = ParserHelper.get_Float3( fs );
-            this.回転rad = ParserHelper.get_Float3( fs );
+            this.RelatedRigidBodyAのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.RelatedRigidBodyBのインデックス = ParserHelper.get_Index( fs, header.RigidBodyIndexSize );
+            this.Position = ParserHelper.get_Float3( fs );
+            this.Rotationrad = ParserHelper.get_Float3( fs );
             ParserHelper.get_Float3( fs );   // 使わないフィールドをスキップ
             ParserHelper.get_Float3( fs );
             ParserHelper.get_Float3( fs );

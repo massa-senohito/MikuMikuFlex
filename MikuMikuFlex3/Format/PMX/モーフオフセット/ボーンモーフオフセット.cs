@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,31 +7,31 @@ using SharpDX;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class ボーンモーフオフセット : モーフオフセット
+    public class BoneMorphOffset : MorphOffset
     {
-        public int ボーンインデックス { get; private set; }
+        public int BoneIndex { get; private set; }
 
-        public Vector3 移動量 { get; private set; }
+        public Vector3 AmountOfMovement { get; private set; }
 
         /// <summary>
         ///     クォータニオン(x,y,z,w)
         /// </summary>
-        public Vector4 回転量 { get; private set; }
+        public Vector4 RotationAmount { get; private set; }
 
 
-        public ボーンモーフオフセット()
+        public BoneMorphOffset()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal ボーンモーフオフセット( Stream st, ヘッダ header )
+        internal BoneMorphOffset( Stream st, Header header )
         {
-            this.モーフ種類 = モーフ種別.ボーン;
-            this.ボーンインデックス = ParserHelper.get_Index( st, header.ボーンインデックスサイズ );
-            this.移動量 = ParserHelper.get_Float3( st );
-            this.回転量 = ParserHelper.get_Float4( st );
+            this.MorphType = MorphType.Bourne;
+            this.BoneIndex = ParserHelper.get_Index( st, header.BoneIndexSize );
+            this.AmountOfMovement = ParserHelper.get_Float3( st );
+            this.RotationAmount = ParserHelper.get_Float4( st );
         }
     }
 }

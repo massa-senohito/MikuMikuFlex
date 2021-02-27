@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +7,7 @@ using SharpDX.Direct3D11;
 
 namespace MikuMikuFlex3
 {
-    public class シーン : IDisposable
+    public class Scene : IDisposable
     {
         public Size2F ViewportSize
         {
@@ -15,140 +15,140 @@ namespace MikuMikuFlex3
             set => this._GlobalParameters.ViewportSize = new Vector2( value.Width, value.Height );
         }
 
-        protected List<カメラ> カメラリスト { get; private protected set; } = new List<カメラ>();
+        protected List<Camera> CameraList { get; private protected set; } = new List<Camera>();
 
-        public カメラ 選択中のカメラ { get; set; }
+        public Camera SelectedCamera { get; set; }
         
-        protected List<照明> 照明リスト { get; private protected set; } = new List<照明>();
+        protected List<Illumination> LightingList { get; private protected set; } = new List<Illumination>();
 
-        protected List<パス> パスリスト { get; private protected set; } = new List<パス>();
+        protected List<Pass> PassList { get; private protected set; } = new List<Pass>();
 
-        public Dictionary<object, (Resource tex, Color4 clearColor)> グローバルテクスチャリスト { get; protected set; } = new Dictionary<object, (Resource tex, Color4 clearColor)>();
+        public Dictionary<object, (Resource tex, Color4 clearColor)> GlobalTextureList { get; protected set; } = new Dictionary<object, (Resource tex, Color4 clearColor)>();
 
 
-        public シーン( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
+        public Scene( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
         {
             this._D3DDevice = d3dDevice;
-            this.スワップチェーンに依存するリソースを作成する( d3dDevice, depthStencil, renderTarget );
-            this.パスリスト = new List<パス>();
+            this.CreateResourcesThatDependOnTheSwapChain( d3dDevice, depthStencil, renderTarget );
+            this.PassList = new List<Pass>();
         }
 
         public virtual void Dispose()
         {
-            this.カメラリスト = null;      // Dispose不要
-            this.選択中のカメラ = null;    //
-            this.照明リスト = null;        //
+            this.CameraList = null;      // Dispose不要
+            this.SelectedCamera = null;    //
+            this.LightingList = null;        //
 
-            this.スワップチェーンに依存するリソースを解放する();
+            this.FreeUpResourcesThatDependOnTheSwapChain();
 
-            foreach( var pass in this.パスリスト )
+            foreach( var pass in this.PassList )
                 pass.Dispose();
-            this.パスリスト = null;
+            this.PassList = null;
 
-            foreach( var kvp in this.グローバルテクスチャリスト )
+            foreach( var kvp in this.GlobalTextureList )
                 kvp.Value.tex?.Dispose();
 
 
             this._D3DDevice = null;     // Dispose はしない
         }
 
-        public void スワップチェーンに依存するリソースを作成する( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
+        public void CreateResourcesThatDependOnTheSwapChain( Device d3dDevice, Texture2D depthStencil, Texture2D renderTarget )
         {
             this.ViewportSize = new Size2F( renderTarget.Description.Width, renderTarget.Description.Height );
 
-            this._既定のDepthStencil = depthStencil;
-            this._既定のRenderTarget = renderTarget;
-            this._既定のDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
-            this._既定のRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
+            this._DefaultDepthStencil = depthStencil;
+            this._DefaultRenderTarget = renderTarget;
+            this._DefaultDepthStencilView = new DepthStencilView( d3dDevice, depthStencil );
+            this._DefaultRenderTargetView = new RenderTargetView( d3dDevice, renderTarget );
 
-            foreach( var pass in this.パスリスト )
-                this._リソースをバインドする( pass );
+            foreach( var pass in this.PassList )
+                this._BindResources( pass );
         }
 
-        public void スワップチェーンに依存するリソースを解放する()
+        public void FreeUpResourcesThatDependOnTheSwapChain()
         {
-            foreach( var pass in this.パスリスト )
-                this._リソースを解放する( pass );
+            foreach( var pass in this.PassList )
+                this._FreeResources( pass );
 
-            this._既定のDepthStencil = null;   // Dispose はしない
-            this._既定のRenderTarget = null;   // Dispose はしない
-            this._既定のDepthStencilView?.Dispose();
-            this._既定のRenderTargetView?.Dispose();
+            this._DefaultDepthStencil = null;   // Dispose はしない
+            this._DefaultRenderTarget = null;   // Dispose はしない
+            this._DefaultDepthStencilView?.Dispose();
+            this._DefaultRenderTargetView?.Dispose();
         }
 
 
-        public void 追加する( パス pass )
+        public void ToAdd( Pass pass )
         {
-            this.パスリスト.Add( pass );
+            this.PassList.Add( pass );
 
-            this._リソースをバインドする( pass );
+            this._BindResources( pass );
         }
 
-        public void 追加する( PMXモデル model )
+        public void ToAdd( PMXModel model )
         {
-            var modelPass = new PMXモデルパス( model );
-            this.追加する( modelPass );
+            var modelPass = new PMXModelPath( model );
+            this.ToAdd( modelPass );
         }
 
-        public void 追加する( Effekseer effekseer )
+        public void ToAdd( Effekseer effekseer )
         {
-            var effekseerPass = new Effekseerパス( effekseer );
-            this.追加する( effekseerPass );
+            var effekseerPass = new EffekseerPass( effekseer );
+            this.ToAdd( effekseerPass );
         }
 
-        public void 追加する( カメラ camera )
+        public void ToAdd( Camera camera )
         {
-            this.カメラリスト.Add( camera );
+            this.CameraList.Add( camera );
         }
 
-        public void 追加する( 照明 light )
+        public void ToAdd( Illumination light )
         {
-            this.照明リスト.Add( light );
+            this.LightingList.Add( light );
         }
 
 
-        public Texture2D グローバルテクスチャを作成する( Device d3dDevice, object key, Texture2DDescription desc, Color4? clearColor = null )
+        public Texture2D CreateAGlobalTexture( Device d3dDevice, object key, Texture2DDescription desc, Color4? clearColor = null )
         {
             var tex2d = new Texture2D( d3dDevice, desc );
 
-            if( this.グローバルテクスチャリスト.ContainsKey( key ) )
+            if( this.GlobalTextureList.ContainsKey( key ) )
             {
-                this.グローバルテクスチャリスト[ key ].tex.Dispose();
-                this.グローバルテクスチャリスト.Remove( key );
+                this.GlobalTextureList[ key ].tex.Dispose();
+                this.GlobalTextureList.Remove( key );
             }
 
-            this.グローバルテクスチャリスト[ key ] = (tex2d, (clearColor.HasValue ? clearColor.Value : Color4.Black ));
+            this.GlobalTextureList[ key ] = (tex2d, (clearColor.HasValue ? clearColor.Value : Color4.Black ));
 
             return tex2d;
         }
 
 
-        public void 描画する( double 現在時刻sec, DeviceContext d3ddc )
+        public void Draw( double CurrentTimesec, DeviceContext d3ddc )
         {
             // カメラを進行する。
 
-            if( 0 == this.カメラリスト.Count )
-                throw new Exception( "シーンにカメラが設定されていません。" );
-            if( 0 == this.照明リスト.Count )
-                throw new Exception( "シーンに照明が設定されていません。" );
+            if( 0 == this.CameraList.Count )
+                throw new Exception( "NoCameraSetInTheScene。" );
+            if( 0 == this.LightingList.Count )
+                throw new Exception( "NoLightingIsSetInTheScene。" );
 
-            this.選択中のカメラ = this.カメラリスト[ 0 ];
-            this.選択中のカメラ.更新する( 現在時刻sec );
+            this.SelectedCamera = this.CameraList[ 0 ];
+            this.SelectedCamera.Update( CurrentTimesec );
 
 
             // GlobalParameters の設定（シーン単位）
 
-            this._GlobalParameters.ViewMatrix = this.選択中のカメラ.ビュー変換行列;
+            this._GlobalParameters.ViewMatrix = this.SelectedCamera.ViewTransformationMatrix;
             this._GlobalParameters.ViewMatrix.Transpose();
-            this._GlobalParameters.ProjectionMatrix = this.選択中のカメラ.射影変換行列;
+            this._GlobalParameters.ProjectionMatrix = this.SelectedCamera.HomographicTransformationMatrix;
             this._GlobalParameters.ProjectionMatrix.Transpose();
-            this._GlobalParameters.CameraPosition = new Vector4( this.選択中のカメラ.カメラ位置, 0f );
-            this._GlobalParameters.Light1Direction = new Vector4( this.照明リスト[ 0 ].照射方向, 0f );
+            this._GlobalParameters.CameraPosition = new Vector4( this.SelectedCamera.CameraPosition, 0f );
+            this._GlobalParameters.Light1Direction = new Vector4( this.LightingList[ 0 ].IrradiationDirection, 0f );
 
 
             // レンダーターゲットと深度ステンシルであるグローバルテクスチャをすべてクリア。
 
-            foreach( var kvp in this.グローバルテクスチャリスト )
+            foreach( var kvp in this.GlobalTextureList )
             {
                 if( kvp.Value.tex is Texture2D tex2d && tex2d.Description.BindFlags.HasFlag( BindFlags.RenderTarget ) )
                 {
@@ -168,9 +168,9 @@ namespace MikuMikuFlex3
 
             // リストの先頭から順番にパスを描画。
 
-            for( int i = 0; i < this.パスリスト.Count; i++ )
+            for( int i = 0; i < this.PassList.Count; i++ )
             {
-                this.パスリスト[ i ].描画する( 現在時刻sec, d3ddc, this._GlobalParameters );
+                this.PassList[ i ].Draw( CurrentTimesec, d3ddc, this._GlobalParameters );
             }
 
 
@@ -185,40 +185,40 @@ namespace MikuMikuFlex3
 
         protected Device _D3DDevice;
 
-        protected Texture2D _既定のDepthStencil;
+        protected Texture2D _DefaultDepthStencil;
 
-        protected Texture2D _既定のRenderTarget;
+        protected Texture2D _DefaultRenderTarget;
 
-        protected DepthStencilView _既定のDepthStencilView;
+        protected DepthStencilView _DefaultDepthStencilView;
 
-        protected RenderTargetView _既定のRenderTargetView;
+        protected RenderTargetView _DefaultRenderTargetView;
 
 
-        private void _リソースをバインドする( パス pass )
+        private void _BindResources( Pass pass )
         {
             // PMXモデルの場合、ビューの設定がなければ既定のビューを設定する。
-            if( pass is PMXモデルパス objPass )
+            if( pass is PMXModelPath objPass )
             {
-                if( null == objPass.深度ステンシルビュー || 0 == objPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    objPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+                if( null == objPass.DepthStencilView || 0 == objPass.RenderTargetViews.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    objPass.BindResources( this._D3DDevice, this._DefaultDepthStencil, this._DefaultRenderTarget );
             }
             // Effekseerパスの場合、ビューの設定がなければ既定のビューを設定する。
-            else if( pass is Effekseerパス effekseerPass )
+            else if( pass is EffekseerPass effekseerPass )
             {
-                if( null == effekseerPass.深度ステンシルビュー || 0 == effekseerPass.レンダーターゲットビューs.Where( ( rtv ) => ( null != rtv ) ).Count() )
-                    effekseerPass.リソースをバインドする( this._D3DDevice, this._既定のDepthStencil, this._既定のRenderTarget );
+                if( null == effekseerPass.DepthStencilView || 0 == effekseerPass.RenderTargetViews.Where( ( rtv ) => ( null != rtv ) ).Count() )
+                    effekseerPass.BindResources( this._D3DDevice, this._DefaultDepthStencil, this._DefaultRenderTarget );
             }
         }
 
-        private void _リソースを解放する( パス pass )
+        private void _FreeResources( Pass pass )
         {
-            if( pass is PMXモデルパス objPass )
+            if( pass is PMXModelPath objPass )
             {
-                objPass.リソースを解放する();
+                objPass.FreeResources();
             }
-            else if( pass is Effekseerパス effekseerPass )
+            else if( pass is EffekseerPass effekseerPass )
             {
-                effekseerPass.リソースを解放する();
+                effekseerPass.FreeResources();
             }
         }
     }

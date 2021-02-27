@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 表示枠リスト : List<表示枠>
+    public class DisplayFrameList : List<DisplayFrame>
     {
-        public 表示枠リスト()
+        public DisplayFrameList()
             : base()
         {
         }
@@ -18,15 +18,15 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 表示枠リスト( Stream st, ヘッダ header )
+        internal DisplayFrameList( Stream st, Header header )
         {
-            int 表示枠数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"表示枠数: {表示枠数}" );
+            int NumberOfDisplayFrames = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfDisplayFrames: {NumberOfDisplayFrames}" );
 
-            this.Capacity = 表示枠数;
+            this.Capacity = NumberOfDisplayFrames;
 
-            for( int i = 0; i < 表示枠数; i++ )
-                this.Add( new 表示枠( st, header ) );
+            for( int i = 0; i < NumberOfDisplayFrames; i++ )
+                this.Add( new DisplayFrame( st, header ) );
         }
     }
 }

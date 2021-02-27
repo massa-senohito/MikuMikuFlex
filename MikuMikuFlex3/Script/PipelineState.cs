@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -168,21 +168,21 @@ namespace MikuMikuFlex3.Script
             try
             {
                 var srv = MikuMikuFlex3.Utility.MMFShaderResourceView.FromFile( this._d3dDevice, imageFilePath, out Texture2D tex2d );
-                this._プライベートテクスチャリスト[ key ] = (tex2d, srv);
+                this._PrivateTextureList[ key ] = (tex2d, srv);
             }
             catch( Exception e )
             {
-                Trace.WriteLine( $"テクスチャの生成に失敗しました。[{imageFilePath}][{e.Message}]" );
+                Trace.WriteLine( $"TextureGenerationFailed。[{imageFilePath}][{e.Message}]" );
             }
         }
 
         public void RemoveTexture2D( object key )
         {
-            if( this._プライベートテクスチャリスト.ContainsKey( key ) )
+            if( this._PrivateTextureList.ContainsKey( key ) )
             {
-                this._プライベートテクスチャリスト[ key ].tex?.Dispose();
-                this._プライベートテクスチャリスト[ key ].srv?.Dispose();
-                this._プライベートテクスチャリスト.Remove( key );
+                this._PrivateTextureList[ key ].tex?.Dispose();
+                this._PrivateTextureList[ key ].srv?.Dispose();
+                this._PrivateTextureList.Remove( key );
             }
         }
 
@@ -195,32 +195,32 @@ namespace MikuMikuFlex3.Script
 
         public void SetVertexShader( object key )
         {
-            this._選択中のVertexShader = key;
+            this._SelectedVertexShader = key;
         }
 
         public void SetHullShader( object key )
         {
-            this._選択中のHullShader = key;
+            this._SelectedHullShader = key;
         }
 
         public void SetDomainShader( object key )
         {
-            this._選択中のDomainShader = key;
+            this._SelectedDomainShader = key;
         }
 
         public void SetGeometryShader( object key )
         {
-            this._選択中のGeometryShader = key;
+            this._SelectedGeometryShader = key;
         }
 
         public void SetPixelShader( object key )
         {
-            this._選択中のPixelShader = key;
+            this._SelectedPixelShader = key;
         }
 
         public void SetComputeShader( object key )
         {
-            this._選択中のComputeShader = key;
+            this._SelectedComputeShader = key;
         }
 
         public Size2 GetViewportSize()
@@ -243,25 +243,25 @@ namespace MikuMikuFlex3.Script
         {
             // 選択されたシェーダーが既定値(null) ではなかったら設定する。
 
-            if( null != this._選択中のVertexShader && this._VertexShaderes.ContainsKey( this._選択中のVertexShader ) )
-                this._d3ddc.VertexShader.Set( this._VertexShaderes[ this._選択中のVertexShader ] );
+            if( null != this._SelectedVertexShader && this._VertexShaderes.ContainsKey( this._SelectedVertexShader ) )
+                this._d3ddc.VertexShader.Set( this._VertexShaderes[ this._SelectedVertexShader ] );
 
-            if( null != this._選択中のHullShader && this._HullShaderes.ContainsKey( this._選択中のHullShader ) )
-                this._d3ddc.HullShader.Set( this._HullShaderes[ this._選択中のHullShader ] );
+            if( null != this._SelectedHullShader && this._HullShaderes.ContainsKey( this._SelectedHullShader ) )
+                this._d3ddc.HullShader.Set( this._HullShaderes[ this._SelectedHullShader ] );
 
-            if( null != this._選択中のDomainShader && this._DomainShaderes.ContainsKey( this._選択中のDomainShader ) )
-                this._d3ddc.DomainShader.Set( this._DomainShaderes[ this._選択中のDomainShader ] );
+            if( null != this._SelectedDomainShader && this._DomainShaderes.ContainsKey( this._SelectedDomainShader ) )
+                this._d3ddc.DomainShader.Set( this._DomainShaderes[ this._SelectedDomainShader ] );
 
-            if( null != this._選択中のGeometryShader && this._GeometryShaderes.ContainsKey( this._選択中のGeometryShader ) )
-                this._d3ddc.GeometryShader.Set( this._GeometryShaderes[ this._選択中のGeometryShader ] );
+            if( null != this._SelectedGeometryShader && this._GeometryShaderes.ContainsKey( this._SelectedGeometryShader ) )
+                this._d3ddc.GeometryShader.Set( this._GeometryShaderes[ this._SelectedGeometryShader ] );
 
-            if( null != this._選択中のPixelShader && this._PixelShaderes.ContainsKey( this._選択中のPixelShader ) )
-                this._d3ddc.PixelShader.Set( this._PixelShaderes[ this._選択中のPixelShader ] );
+            if( null != this._SelectedPixelShader && this._PixelShaderes.ContainsKey( this._SelectedPixelShader ) )
+                this._d3ddc.PixelShader.Set( this._PixelShaderes[ this._SelectedPixelShader ] );
 
 
-            // 描画する。
+            // Draw。
 
-            this._d3ddc.DrawIndexed( this._頂点数, this._頂点の開始インデックス, 0 );
+            this._d3ddc.DrawIndexed( this._NumberOfVertices, this._StartIndexOfVertices, 0 );
         }
 
         // ポストエフェクト用
@@ -269,8 +269,8 @@ namespace MikuMikuFlex3.Script
         {
             // 選択されたシェーダーが既定値(null) ではなかったら設定する。
 
-            if( null != this._選択中のComputeShader && this._ComputeShaderes.ContainsKey( this._選択中のComputeShader ) )
-                this._d3ddc.ComputeShader.Set( this._ComputeShaderes[ this._選択中のComputeShader ] );
+            if( null != this._SelectedComputeShader && this._ComputeShaderes.ContainsKey( this._SelectedComputeShader ) )
+                this._d3ddc.ComputeShader.Set( this._ComputeShaderes[ this._SelectedComputeShader ] );
 
 
             // 実行する。
@@ -309,7 +309,7 @@ namespace MikuMikuFlex3.Script
             foreach( var kvp in this._PixelShaderes )
                 kvp.Value.Dispose();
 
-            foreach( var kvp in this._プライベートテクスチャリスト )
+            foreach( var kvp in this._PrivateTextureList )
             {
                 kvp.Value.tex.Dispose();
                 kvp.Value.srv.Dispose();
@@ -320,16 +320,16 @@ namespace MikuMikuFlex3.Script
             this._d3dDevice = null; // Disposeしない
         }
 
-        public void ResetDrawState( int 頂点数, int 頂点の開始インデックス, MMDPass pass種別, DeviceContext d3ddc )
+        public void ResetDrawState( int NumberOfVertices, int StartIndexOfVertices, MMDPass passType, DeviceContext d3ddc )
         {
-            this._頂点数 = 頂点数;
-            this._頂点の開始インデックス = 頂点の開始インデックス;
-            this.MMDPass = pass種別;
+            this._NumberOfVertices = NumberOfVertices;
+            this._StartIndexOfVertices = StartIndexOfVertices;
+            this.MMDPass = passType;
             this._d3ddc = d3ddc;
 
             // 既定のパイプラインステートを設定。
 
-            switch( pass種別 )
+            switch( passType )
             {
                 case MMDPass.Edge:
                     this._d3ddc.VertexShader.Set( this._DefaultMaterialShader.VertexShaderForEdge );    // Edge
@@ -348,24 +348,24 @@ namespace MikuMikuFlex3.Script
                     break;
             }
 
-            this._選択中のVertexShader = null;
-            this._選択中のHullShader = null;
-            this._選択中のDomainShader = null;
-            this._選択中のGeometryShader = null;
-            this._選択中のPixelShader = null;
+            this._SelectedVertexShader = null;
+            this._SelectedHullShader = null;
+            this._SelectedDomainShader = null;
+            this._SelectedGeometryShader = null;
+            this._SelectedPixelShader = null;
         }
 
         public void ResetBlitState( DeviceContext d3ddc )
         {
             this._d3ddc = d3ddc;
             this._d3ddc.ComputeShader.Set( null );
-            this._選択中のComputeShader = null;
+            this._SelectedComputeShader = null;
         }
 
 
-        protected int _頂点数;
+        protected int _NumberOfVertices;
 
-        protected int _頂点の開始インデックス;
+        protected int _StartIndexOfVertices;
 
         protected DeviceContext _d3ddc;
 
@@ -386,19 +386,19 @@ namespace MikuMikuFlex3.Script
 
         protected Dictionary<object, ComputeShader> _ComputeShaderes = new Dictionary<object, ComputeShader>();
 
-        protected object _選択中のVertexShader = null;
+        protected object _SelectedVertexShader = null;
 
-        protected object _選択中のHullShader = null;
+        protected object _SelectedHullShader = null;
 
-        protected object _選択中のDomainShader = null;
+        protected object _SelectedDomainShader = null;
 
-        protected object _選択中のGeometryShader = null;
+        protected object _SelectedGeometryShader = null;
 
-        protected object _選択中のPixelShader = null;
+        protected object _SelectedPixelShader = null;
 
-        protected object _選択中のComputeShader = null;
+        protected object _SelectedComputeShader = null;
 
-        protected Dictionary<object, (Texture2D tex, ShaderResourceView srv)> _プライベートテクスチャリスト = new Dictionary<object, (Texture2D tex, ShaderResourceView srv)>();
+        protected Dictionary<object, (Texture2D tex, ShaderResourceView srv)> _PrivateTextureList = new Dictionary<object, (Texture2D tex, ShaderResourceView srv)>();
 
 
         protected void _CreateShader( string csoFilePath, Action<byte[]> create )
@@ -436,7 +436,7 @@ namespace MikuMikuFlex3.Script
                     var compileResult = ShaderBytecode.Compile( buffer, "main", profile, flags );
 
                     if( compileResult?.Bytecode == null )
-                        throw new Exception( "このHLSLファイルには対応していないか、エラーが発生しました。" );
+                        throw new Exception( "このHLSLDoesItSupportFiles?、AnErrorHasOccurred。" );
 
                     create( compileResult.Bytecode );
                 }

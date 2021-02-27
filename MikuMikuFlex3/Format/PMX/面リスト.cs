@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class 面リスト : List<面>
+    public class FaceList : List<Surface>
     {
-        public 面リスト()
+        public FaceList()
             : base()
         {
         }
@@ -16,20 +16,20 @@ namespace MikuMikuFlex3.PMXFormat
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 面リスト( Stream st, ヘッダ header )
+        internal FaceList( Stream st, Header header )
         {
-            int 面数 = ParserHelper.get_Int( st );
-            Debug.WriteLine( $"面数: {面数 / 3}" );
+            int NumberOfFaces = ParserHelper.get_Int( st );
+            Debug.WriteLine( $"NumberOfFaces: {NumberOfFaces / 3}" );
 
-            this.Capacity = 面数 / 3;
+            this.Capacity = NumberOfFaces / 3;
 
-            for( int i = 0; i < 面数 / 3; i++ )
+            for( int i = 0; i < NumberOfFaces / 3; i++ )
             {
                 this.Add(
-                    new 面(
-                        ParserHelper.get_VertexIndex( st, header.頂点インデックスサイズ ),
-                        ParserHelper.get_VertexIndex( st, header.頂点インデックスサイズ ),
-                        ParserHelper.get_VertexIndex( st, header.頂点インデックスサイズ ) ) );
+                    new Surface(
+                        ParserHelper.get_VertexIndex( st, header.VertexIndexSize ),
+                        ParserHelper.get_VertexIndex( st, header.VertexIndexSize ),
+                        ParserHelper.get_VertexIndex( st, header.VertexIndexSize ) ) );
             }
         }
     }

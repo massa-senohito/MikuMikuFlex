@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,39 +7,39 @@ using SharpDX;
 namespace MikuMikuFlex3
 {
     /// <summary>
-    ///     <see cref="PMXFormat.モーフ"/> に追加情報を付与するクラス。
+    ///     <see cref="PMXFormat.Morph"/> に追加情報を付与するクラス。
     /// </summary>
-    public class PMXモーフ制御 : IDisposable
+    public class PMXMorphControl : IDisposable
     {
 
         // 基本情報
 
 
-        public string 名前 => this.PMXFモーフ.モーフ名;
+        public string GivenNames => this.PMXFMorph.MorphName;
 
-        public PMXFormat.モーフ種別 モーフ種類 => this.PMXFモーフ.モーフ種類;
+        public PMXFormat.MorphType MorphType => this.PMXFMorph.MorphType;
 
-        public PMXFormat.モーフ PMXFモーフ { get; protected set; }
+        public PMXFormat.Morph PMXFMorph { get; protected set; }
 
-        public float モーフ値 { get; set; }
+        public float MorphValue { get; set; }
 
-        public アニメ変数<float> アニメ変数_モーフ;
+        public AnimeVariables<float> AnimeVariables_Morph;
 
 
 
         // 生成と終了
 
 
-        public PMXモーフ制御( PMXFormat.モーフ morph )
+        public PMXMorphControl( PMXFormat.Morph morph )
         {
-            this.PMXFモーフ = morph;
-            this.モーフ値 = 0;
-            this.アニメ変数_モーフ = new アニメ変数<float>( 0f );
+            this.PMXFMorph = morph;
+            this.MorphValue = 0;
+            this.AnimeVariables_Morph = new AnimeVariables<float>( 0f );
         }
 
         public virtual void Dispose()
         {
-            this.PMXFモーフ = null;
+            this.PMXFMorph = null;
         }
 
 
@@ -47,168 +47,168 @@ namespace MikuMikuFlex3
         // 更新
 
 
-        internal void モーフを適用する( double 現在時刻sec, PMXモデル PMXモデル )
+        internal void ApplyMorphs( double CurrentTimesec, PMXModel PMXModel )
         {
-            var 現在値 = this.アニメ変数_モーフ.更新する( 現在時刻sec );
+            var PresentValue = this.AnimeVariables_Morph.Update( CurrentTimesec );
 
-            this._モーフを適用する( 現在値, PMXモデル, this );
+            this._ApplyMorphs( PresentValue, PMXModel, this );
         }
 
-        private void _モーフを適用する( float 現在値, PMXモデル PMXモデル, PMXモーフ制御 適用対象モーフ )
+        private void _ApplyMorphs( float PresentValue, PMXModel PMXModel, PMXMorphControl ApplicableMorph )
         {
-            switch( 適用対象モーフ.PMXFモーフ.モーフ種類 )
+            switch( ApplicableMorph.PMXFMorph.MorphType )
             {
-                case PMXFormat.モーフ種別.頂点:
-                    #region " 頂点モーフ "
+                case PMXFormat.MorphType.Vertex:
+                    #region " VertexMorph "
                     //----------------
                     {
-                        foreach( PMXFormat.頂点モーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.VertexMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.X += offset.座標オフセット量.X * 現在値;
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.Y += offset.座標オフセット量.Y * 現在値;
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].Position.Z += offset.座標オフセット量.Z * 現在値;
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].Position.X += offset.CoordinateOffsetAmount.X * PresentValue;
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].Position.Y += offset.CoordinateOffsetAmount.Y * PresentValue;
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].Position.Z += offset.CoordinateOffsetAmount.Z * PresentValue;
 
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.UV:
-                    #region " UVモーフ "
+                case PMXFormat.MorphType.UV:
+                    #region " UVMorph "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].UV += new Vector2( offset.UVオフセット量.X, offset.UVオフセット量.Y ) * 現在値;
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].UV += new Vector2( offset.UVOffsetAmount.X, offset.UVOffsetAmount.Y ) * PresentValue;
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.追加UV1:
-                    #region " 追加UV1モーフ "
+                case PMXFormat.MorphType.AddToUV1:
+                    #region " AddToUV1Morph "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV1 += offset.UVオフセット量 * 現在値;
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].AddUV1 += offset.UVOffsetAmount * PresentValue;
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.追加UV2:
-                    #region " 追加UV2モーフ "
+                case PMXFormat.MorphType.AddToUV2:
+                    #region " AddToUV2Morph "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV2 += offset.UVオフセット量 * 現在値;
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].AddUV2 += offset.UVOffsetAmount * PresentValue;
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.追加UV3:
-                    #region " 追加UV3モーフ "
+                case PMXFormat.MorphType.AddToUV3:
+                    #region " AddToUV3Morph "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV3 += offset.UVオフセット量 * 現在値;
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].AddUV3 += offset.UVOffsetAmount * PresentValue;
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.追加UV4:
-                    #region " 追加UV4モーフ "
+                case PMXFormat.MorphType.AddToUV4:
+                    #region " AddToUV4Morph "
                     //----------------
                     {
-                        foreach( PMXFormat.UVモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.UVMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            PMXモデル.PMX頂点制御.入力頂点配列[ offset.頂点インデックス ].AddUV4 += offset.UVオフセット量 * 現在値;
-                            PMXモデル.PMX頂点制御.頂点の変更を通知する( (int) offset.頂点インデックス );
+                            PMXModel.PMXVertexControl.InputVertexArray[ offset.VertexIndex ].AddUV4 += offset.UVOffsetAmount * PresentValue;
+                            PMXModel.PMXVertexControl.NotifyChangesOfVertices( (int) offset.VertexIndex );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.ボーン:
-                    #region " ボーンモーフ "
+                case PMXFormat.MorphType.Bourne:
+                    #region " BoneMorph "
                     //----------------
                     {
-                        foreach( PMXFormat.ボーンモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.BoneMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            var bone = PMXモデル.ボーンリスト[ offset.ボーンインデックス ];
+                            var bone = PMXModel.BoneList[ offset.BoneIndex ];
 
-                            bone.移動 += offset.移動量 * 現在値;
-                            bone.回転 *= new Quaternion(
-                                offset.回転量.X * 現在値,
-                                offset.回転量.Y * 現在値,
-                                offset.回転量.Z * 現在値,
-                                offset.回転量.W * 現在値 );
+                            bone.Move += offset.AmountOfMovement * PresentValue;
+                            bone.Rotation *= new Quaternion(
+                                offset.RotationAmount.X * PresentValue,
+                                offset.RotationAmount.Y * PresentValue,
+                                offset.RotationAmount.Z * PresentValue,
+                                offset.RotationAmount.W * PresentValue );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.材質:
-                    #region " 材質モーフ "
+                case PMXFormat.MorphType.Material:
+                    #region " MaterialMorph "
                     //----------------
                     {
                         // todo: 材質モーフ・テクスチャ係数への対応
                         // todo: 材質モーフ・スフィアテクスチャ係数への対応
                         // todo: 材質モーフ・Toonテクスチャ係数への対応
 
-                        foreach( PMXFormat.材質モーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.MaterialMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            if( offset.材質インデックス == -1 ) // -1:全材質が対象
+                            if( offset.MaterialIndex == -1 ) // -1:全材質が対象
                             {
-                                foreach( var 材質 in PMXモデル.材質リスト )
-                                    差分セット( offset, 材質 );
+                                foreach( var Material in PMXModel.MaterialList )
+                                    DifferenceSet( offset, Material );
                             }
                             else
                             {
-                                var 材質 = PMXモデル.材質リスト[ offset.材質インデックス ];
+                                var Material = PMXModel.MaterialList[ offset.MaterialIndex ];
 
-                                差分セット( offset, 材質 );
+                                DifferenceSet( offset, Material );
                             }
                         }
 
 
-                        void 差分セット( PMXFormat.材質モーフオフセット offset, PMX材質制御 材質 )
+                        void DifferenceSet( PMXFormat.MaterialMorphOffset offset, PMXMaterialControl Material )
                         {
-                            switch( offset.オフセット演算形式 )
+                            switch( offset.OffsetCalculationFormat )
                             {
-                                case 0: // 乗算
-                                    材質.乗算差分.拡散色 += offset.拡散色 * 現在値;
-                                    材質.乗算差分.反射色 += offset.反射色 * 現在値;
-                                    材質.乗算差分.反射強度 += offset.反射強度 * 現在値;
-                                    材質.乗算差分.環境色 += offset.環境色 * 現在値;
-                                    材質.乗算差分.エッジ色 += offset.エッジ色 * 現在値;
-                                    材質.乗算差分.エッジサイズ += offset.エッジサイズ * 現在値;
+                                case 0: // Multiply
+                                    Material.MultiplyDifference.DiffuseColor += offset.DiffuseColor * PresentValue;
+                                    Material.MultiplyDifference.ReflectiveColor += offset.ReflectiveColor * PresentValue;
+                                    Material.MultiplyDifference.ReflectionIntensity += offset.ReflectionIntensity * PresentValue;
+                                    Material.MultiplyDifference.EnvironmentalColor += offset.EnvironmentalColor * PresentValue;
+                                    Material.MultiplyDifference.EdgeColor += offset.EdgeColor * PresentValue;
+                                    Material.MultiplyDifference.EdgeSize += offset.EdgeSize * PresentValue;
                                     break;
 
-                                case 1: // 加算
-                                    材質.加算差分.拡散色 += offset.拡散色 * 現在値;
-                                    材質.加算差分.反射色 += offset.反射色 * 現在値;
-                                    材質.加算差分.反射強度 += offset.反射強度 * 現在値;
-                                    材質.加算差分.環境色 += offset.環境色 * 現在値;
-                                    材質.加算差分.エッジ色 += offset.エッジ色 * 現在値;
-                                    材質.加算差分.エッジサイズ += offset.エッジサイズ * 現在値;
+                                case 1: // Addition
+                                    Material.AdditionDifference.DiffuseColor += offset.DiffuseColor * PresentValue;
+                                    Material.AdditionDifference.ReflectiveColor += offset.ReflectiveColor * PresentValue;
+                                    Material.AdditionDifference.ReflectionIntensity += offset.ReflectionIntensity * PresentValue;
+                                    Material.AdditionDifference.EnvironmentalColor += offset.EnvironmentalColor * PresentValue;
+                                    Material.AdditionDifference.EdgeColor += offset.EdgeColor * PresentValue;
+                                    Material.AdditionDifference.EdgeSize += offset.EdgeSize * PresentValue;
                                     break;
                             }
                         }
@@ -217,29 +217,29 @@ namespace MikuMikuFlex3
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.グループ:
-                    #region " グループモーフ "
+                case PMXFormat.MorphType.Group:
+                    #region " GroupMorph "
                     //----------------
                     {
-                        foreach( PMXFormat.グループモーフオフセット offset in 適用対象モーフ.PMXFモーフ.モーフオフセットリスト )
+                        foreach( PMXFormat.GroupMorphOffset offset in ApplicableMorph.PMXFMorph.MorphOffsetList )
                         {
-                            var メンバモーフ = PMXモデル.モーフリスト[ offset.モーフインデックス ];
+                            var MemberMorph = PMXModel.MorphList[ offset.MorphIndex ];
 
-                            if( メンバモーフ.PMXFモーフ.モーフ種類 == PMXFormat.モーフ種別.グループ )
-                                throw new InvalidOperationException( "グループモーフのグループとしてグループモーフが指定されています。" );
+                            if( MemberMorph.PMXFMorph.MorphType == PMXFormat.MorphType.Group )
+                                throw new InvalidOperationException( "GroupMorphIsSpecifiedAsAGroupOfGroupMorph。" );
 
-                            this._モーフを適用する( 現在値 * offset.影響度, PMXモデル, メンバモーフ );
+                            this._ApplyMorphs( PresentValue * offset.Impact, PMXModel, MemberMorph );
                         }
                     }
                     //----------------
                     #endregion
                     break;
 
-                case PMXFormat.モーフ種別.フリップ:
+                case PMXFormat.MorphType.Flip:
                     // todo: フリップモーフの実装
                     break;
 
-                case PMXFormat.モーフ種別.インパルス:
+                case PMXFormat.MorphType.Impulse:
                     // todo: インパルスモーフの実装
                     break;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,18 +7,18 @@ using SharpDX;
 
 namespace MikuMikuFlex3
 {
-	class 親付与によるFK変形更新
+	class ByParentalGrantFKDeformationUpdate
     {
 
         // 生成と終了
 
 
-		public 親付与によるFK変形更新( PMXボーン制御[] 全ボーン )
+		public ByParentalGrantFKDeformationUpdate( PMXBoneControl[] AllBones )
 		{
-            this._ボーン配列 = new 階層順リスト<PMXボーン制御>(
-                全ボーン,
-                ( child ) => ( child.PMXFボーン.移動付与される || child.PMXFボーン.回転付与される ) ? child.PMXFボーン.付与親ボーンインデックス : -1,
-                ( target ) => ( target.ボーンインデックス ) );
+            this._BoneArray = new HierarchicalList<PMXBoneControl>(
+                AllBones,
+                ( child ) => ( child.PMXFBourne.GrantedToMove || child.PMXFBourne.RotationIsGranted ) ? child.PMXFBourne.GrantedParentBoneIndex : -1,
+                ( target ) => ( target.BoneIndex ) );
         }
 
 
@@ -26,20 +26,20 @@ namespace MikuMikuFlex3
         // 更新
 
 
-		public void 変形を更新する()
+		public void UpdateTransformation()
 		{
-			foreach( var pmxBone in _ボーン配列 )
+			foreach( var pmxBone in _BoneArray )
 			{
-				if( pmxBone.PMXFボーン.移動付与される )
+				if( pmxBone.PMXFBourne.GrantedToMove )
 				{
-					var pp = _ボーン配列[ pmxBone.PMXFボーン.付与親ボーンインデックス ];
-					pmxBone.移動 += Vector3.Lerp( Vector3.Zero, pp.移動, pmxBone.PMXFボーン.付与率 );
+					var pp = _BoneArray[ pmxBone.PMXFBourne.GrantedParentBoneIndex ];
+					pmxBone.Move += Vector3.Lerp( Vector3.Zero, pp.Move, pmxBone.PMXFBourne.GrantRate );
 				}
 
-				if( pmxBone.PMXFボーン.回転付与される )
+				if( pmxBone.PMXFBourne.RotationIsGranted )
 				{
-					var pp = _ボーン配列[ pmxBone.PMXFボーン.付与親ボーンインデックス ];
-					pmxBone.回転 *= Quaternion.Slerp( Quaternion.Identity, pp.回転, pmxBone.PMXFボーン.付与率 );
+					var pp = _BoneArray[ pmxBone.PMXFBourne.GrantedParentBoneIndex ];
+					pmxBone.Rotation *= Quaternion.Slerp( Quaternion.Identity, pp.Rotation, pmxBone.PMXFBourne.GrantRate );
 				}
 			}
 		}
@@ -49,6 +49,6 @@ namespace MikuMikuFlex3
         // private
 
 
-        private 階層順リスト<PMXボーン制御> _ボーン配列;
+        private HierarchicalList<PMXBoneControl> _BoneArray;
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 namespace MikuMikuFlex3
 {
 	/// <summary>
-	///     経過時間[ms]を計るクラス
+	///     ElapsedTime[ms]を計るクラス
 	/// </summary>
-	internal class Bulletタイマ
+	internal class BulletTimer
 	{
-		public Bulletタイマ()
+		public BulletTimer()
 		{
 			this._StopWatch.Start();
 		}
 
-		public long 経過時間msを返す()
+		public long ElapsedTimemsを返す()
 		{
-			var 現在時刻ms = this._StopWatch.ElapsedMilliseconds;
-			var 経過時間ms = 現在時刻ms - this._前回時計を見た時の時刻ms;
+			var CurrentTimems = this._StopWatch.ElapsedMilliseconds;
+			var ElapsedTimems = CurrentTimems - this._TheTimeWhenYouLastSawTheClockms;
 
-            this._前回時計を見た時の時刻ms = 現在時刻ms;
+            this._TheTimeWhenYouLastSawTheClockms = CurrentTimems;
 
-            return 経過時間ms;
+            return ElapsedTimems;
 		}
 
 
         private Stopwatch _StopWatch = new Stopwatch();
 
-        private long _前回時計を見た時の時刻ms = 0;
+        private long _TheTimeWhenYouLastSawTheClockms = 0;
     }
 }

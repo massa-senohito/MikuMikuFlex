@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,31 +9,31 @@ namespace MikuMikuFlex3.VMDFormat
     /// <summary>
     ///     光源が不可視の平行光線。環境光。
     /// </summary>
-    public class 照明フレーム
+    public class LightingFrame
     {
-        public uint フレーム番号;
+        public uint FrameNumber;
 
-        public Vector3 色;
+        public Vector3 Color;
 
 		/// <summary>
 		///		位置は、その場所から原点に向かう方向に光が射すことを意味する。
 		///     環境光なので、その位置に光源があるわけではない。
 		/// </summary>
-		public Vector3 位置;
+		public Vector3 Position;
 
 
-        public 照明フレーム()
+        public LightingFrame()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal 照明フレーム( Stream fs )
+        internal LightingFrame( Stream fs )
         {
-            this.フレーム番号 = ParserHelper.get_DWORD( fs );
-            this.色 = ParserHelper.get_Float3( fs );
-            this.位置 = ParserHelper.get_Float3( fs );
+            this.FrameNumber = ParserHelper.get_DWORD( fs );
+            this.Color = ParserHelper.get_Float3( fs );
+            this.Position = ParserHelper.get_Float3( fs );
         }
     }
 }

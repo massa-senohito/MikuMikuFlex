@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,40 +7,40 @@ using SharpDX;
 
 namespace MikuMikuFlex3.PMXFormat
 {
-    public class インパルスモーフオフセット : モーフオフセット
+    public class ImpulseMorphOffset : MorphOffset
     {
-        public int 剛体インデックス { get; private set; }
+        public int RigidBodyIndex { get; private set; }
 
         /// <summary>
         ///     0:OFF, 1:ON
         /// </summary>
-        public byte ローカルフラグ { get; private set; }
+        public byte LocalFlag { get; private set; }
 
         /// <summary>
         ///     すべて 0 の場合は"停止制御"として特殊化
         /// </summary>
-        public Vector3 移動速度 { get; private set; }
+        public Vector3 MovingSpeed { get; private set; }
 
         /// <summary>
         ///     すべて 0 の場合は"停止制御"として特殊化
         /// </summary>
-        public Vector3 回転トルク { get; private set; }
+        public Vector3 RotationTorque { get; private set; }
 
 
-        public インパルスモーフオフセット()
+        public ImpulseMorphOffset()
         {
         }
 
         /// <summary>
         ///     指定されたストリームから読み込む。
         /// </summary>
-        internal インパルスモーフオフセット( Stream st, ヘッダ header )
+        internal ImpulseMorphOffset( Stream st, Header header )
         {
-            this.モーフ種類 = モーフ種別.インパルス;
-            this.剛体インデックス = ParserHelper.get_Index( st, header.剛体インデックスサイズ );
-            this.ローカルフラグ = ParserHelper.get_Byte( st );
-            this.移動速度 = ParserHelper.get_Float3( st );
-            this.回転トルク = ParserHelper.get_Float3( st );
+            this.MorphType = MorphType.Impulse;
+            this.RigidBodyIndex = ParserHelper.get_Index( st, header.RigidBodyIndexSize );
+            this.LocalFlag = ParserHelper.get_Byte( st );
+            this.MovingSpeed = ParserHelper.get_Float3( st );
+            this.RotationTorque = ParserHelper.get_Float3( st );
         }
     }
 }
