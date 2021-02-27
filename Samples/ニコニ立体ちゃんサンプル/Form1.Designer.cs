@@ -1,4 +1,4 @@
-﻿namespace ニコニ立体ちゃんサンプル
+﻿namespace NikoniSolidSample
 {
     partial class Form1
     {
