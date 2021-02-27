@@ -2,13 +2,10 @@
 
 MMF (Miku Miku Flex Library) は、.NET Framework で利用可能な MMD (Miku Miku Dance) ライブラリです。
 
-MMF公式の開発が終了してしまったようなので、それを独自に改変したものです。
+フォーク元のDTXMania様のリポジトリからメソッド名などを英語に変換し、.net core3.1に対応させています。
 
-## リリース
-
-依存するNuGetパッケージが多いので、リリースは NuGet 上で行っています。
-
-[NuGet Gallery | MikuMikuFlex<br/>![Nuget](https://img.shields.io/nuget/vpre/MikuMikuFlex.svg)](https://www.nuget.org/packages/MikuMikuFlex/)
+https://github.com/GnicoJP/MikuMikuFlex/
+csproj,slnを参考にし.net core 3.1対応しています。
 
 
 ## 動作環境

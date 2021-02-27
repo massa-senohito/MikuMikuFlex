@@ -1,3 +1,4 @@
+using MikuMikuFlex3.VMDFormat;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

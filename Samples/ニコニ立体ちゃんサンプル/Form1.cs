@@ -22,6 +22,7 @@ namespace NikoniSolidSample
         // アプリの初期化
         protected override void OnLoad( EventArgs e )
         {
+            Encoding.RegisterProvider( CodePagesEncodingProvider.Instance );
             this.ClientSize = new Size( 1280, 720 );
             this.Text = "NikoniSolidSample for MikuMikuFlex 3";
 
