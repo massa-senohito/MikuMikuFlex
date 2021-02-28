@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ニコニ立体ちゃんサ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgaLib", "TgaLib\TgaLib\TgaLib.csproj", "{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpRenderEngine", "FSharpRenderEngine\FSharpRenderEngine.fsproj", "{52EF3268-5060-4F47-9AA7-78FD1FE1F302}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,14 @@ Global
 		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|x64.ActiveCfg = Release|Any CPU
 		{D31BE8C0-63FF-45D5-BCBA-9DE3FF66B40F}.Release|x64.Build.0 = Release|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Debug|x64.Build.0 = Debug|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Release|x64.ActiveCfg = Release|Any CPU
+		{52EF3268-5060-4F47-9AA7-78FD1FE1F302}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

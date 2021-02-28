@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework> 
+    <UseWindowsForms>true</UseWindowsForms>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="SharpDXUtil.fs" />
+    <Compile Include="RenderDevice.fs" />
+    <Compile Include="ModelRenderer.fs" />
+    <Compile Include="MMDRenderer.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DSoft.SharpDX.Desktop" Version="4.2.0" />
+    <PackageReference Include="FSharp.Compiler.Service" Version="39.0.0" />
+    <PackageReference Include="SharpDX.DirectInput" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MikuMikuFlex3\MikuMikuFlex3.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="5.0.1" />
+  </ItemGroup>
+</Project>

@@ -79,7 +79,7 @@ namespace NikoniSolidSample
             // 照明を作成してシーンに追加します。
             {
                 // 照明を作成します。
-                this._Illumination = new MikuMikuFlex3.Illumination();
+                this._Illumination = new MikuMikuFlex3.Light();
 
                 // 照明をシーンに追加します。
                 this._Scene.ToAdd( this._Illumination );
@@ -126,6 +126,8 @@ namespace NikoniSolidSample
                 // 時刻を指定して、シーンを描画します。
 
                 var CurrentTimesec = timer.ElapsedMilliseconds / 1000.0;
+
+                Debug.WriteLine( CurrentTimesec );
                 this._Scene.Draw( CurrentTimesec, this._D3D11Device.ImmediateContext );
 
 
@@ -156,7 +158,7 @@ namespace NikoniSolidSample
 
         private MikuMikuFlex3.MouseMotionCamera _Camera;
 
-        private MikuMikuFlex3.Illumination _Illumination;
+        private MikuMikuFlex3.Light _Illumination;
 
         private MikuMikuFlex3.PMXModel _Model;
 

@@ -19,7 +19,7 @@ namespace MikuMikuFlex3
 
         public Camera SelectedCamera { get; set; }
         
-        protected List<Illumination> LightingList { get; private protected set; } = new List<Illumination>();
+        protected List<Light> LightingList { get; private protected set; } = new List<Light>();
 
         protected List<Pass> PassList { get; private protected set; } = new List<Pass>();
 
@@ -101,7 +101,7 @@ namespace MikuMikuFlex3
             this.CameraList.Add( camera );
         }
 
-        public void ToAdd( Illumination light )
+        public void ToAdd( Light light )
         {
             this.LightingList.Add( light );
         }
