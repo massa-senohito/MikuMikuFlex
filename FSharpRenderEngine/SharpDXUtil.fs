@@ -66,7 +66,20 @@ module SharpDXUtil=
       match t with
       |SomeD d-> f d
       |NoneD  -> ()
-      
+    member t.Value =
+      match t with
+      |SomeD d-> d
+      |NoneD  -> assert(false);Unchecked.defaultof<'a>
+
+  type OPDBuilder ()=
+    member t.Bind (m,f) =
+      match m with
+      |SomeD d-> f d
+      |NoneD  -> NoneD
+    member t.Return m =
+      SomeD m
+    member t.Zero () =
+      NoneD
   let attemtDispose (mayD:OptionDisposable<'a> byref ) =
     match mayD with
     |SomeD d->d.Dispose(); mayD <- NoneD

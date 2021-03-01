@@ -24,6 +24,7 @@ module MMDRenderer =
     let mutable mouseHandles = []
     let mutable backGroundColor = rawColorA1 0.2f 0.4f 0.8f
     let timer = Stopwatch.StartNew()
+    let opd = new SharpDXUtil.OPDBuilder()
 
     do
       Encoding.RegisterProvider( CodePagesEncodingProvider.Instance )
@@ -47,10 +48,16 @@ module MMDRenderer =
       rasterState <- new RasterizerState(dev.Device , SharpDXUtil.normalRasterStateDesc)
 
     member t.AddChara path =
-      match modelRenderer with
-      |SomeD m-> Some <| m.Add path
-      |NoneD -> None
+      opd{
+        let! dev = renderDevice
+        let model = new PMXModel( dev.Device , path );
+        let! modelR = modelRenderer
+        return modelR.Add model
+      }
 
+    member t.ResetEnv() =
+      modelRenderer.Attempt (fun m->m.ResetScene())
+      
     member t.ApplyAnim path model=
       VMDAnimationBuilder.AddAnimation(path , model)
 

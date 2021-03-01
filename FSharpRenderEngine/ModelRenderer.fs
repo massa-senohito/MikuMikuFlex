@@ -23,8 +23,7 @@ module ModelRenderModule =
       viewport <- Some <| SharpDXUtil.fillViewPort scene.ViewportSize.Width scene.ViewportSize.Height
       form.MouseClick.Add click
 
-    member t.Add path =
-      let model = new PMXModel( device.Device , path );
+    member t.Add (model:PMXModel)=
       scene.ToAdd( model );
       modelList <- model :: modelList;
       model
@@ -37,6 +36,10 @@ module ModelRenderModule =
       scene.ToAdd light
     member t.Draw time =
       scene.Draw(time , device.ImmCxt );
+
+    member t.ResetScene () =
+      scene.Clear() 
+      modelList <- []
 
     interface IDisposable with
       member t.Dispose() =

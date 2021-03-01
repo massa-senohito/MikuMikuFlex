@@ -4,25 +4,31 @@ open System.Diagnostics
 open System.Windows.Forms
 open SharpDX.Windows
 open SharpDX
-
+open SharpDXUtil
 module Main =
-
+  let initScene (form :MMDRenderer.MMDForm) =
+    form.AddMouseCam()
+    form.AddDefaultLight()
+    let mutable chara = form.AddChara @""
+    form.ApplyAnim @"" chara.Value
+    chara
+ 
   [<EntryPoint; STAThread>]
   let main argv =
     Application.EnableVisualStyles()
     Application.SetCompatibleTextRenderingDefault(false)
     let form = new MMDRenderer.MMDForm()
-    form.AddMouseCam()
-    form.AddDefaultLight()
-    let mutable chara = form.AddChara @""
-    form.ApplyAnim @"" chara.Value
+    let mutable chara = initScene form
     let onUpdate () =
       match chara with
-      |Some c->
+      |SomeD c->
         let pos = c.WorldTransformationMatrix.TranslationVector
-        let newPos = pos + (SharpDXUtil.vec3 0.00f 0.0f 0.0f)
+        let newPos = pos + (SharpDXUtil.vec3 0.01f 0.0f 0.0f)
+        if pos.X > 22.0f then
+          form.ResetEnv()
+          chara <- initScene form
         c.WorldTransformationMatrix<- Matrix.Translation newPos
-      |None -> ()
+      |NoneD -> ()
       form.OnUpdate()
     let run e = 
       RenderLoop.Run(form , onUpdate)

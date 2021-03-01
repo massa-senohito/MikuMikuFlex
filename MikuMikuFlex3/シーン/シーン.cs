@@ -32,22 +32,37 @@ namespace MikuMikuFlex3
             this.CreateResourcesThatDependOnTheSwapChain( d3dDevice, depthStencil, renderTarget );
             this.PassList = new List<Pass>();
         }
+        public void Clear()
+        {
+          
+            this.CameraList.Clear();
+            this.LightingList.Clear();
+            // defaultDepthなどがなくなるため
+            //this.FreeUpResourcesThatDependOnTheSwapChain();
+            foreach( var pass in this.PassList )
+                this._FreeResources( pass );
+
+            foreach( var pass in this.PassList )
+                pass.Dispose();
+            this.PassList.Clear();
+
+        }
 
         public virtual void Dispose()
         {
-            this.CameraList = null;      // Dispose不要
+            this.CameraList.Clear();      // Dispose不要
             this.SelectedCamera = null;    //
-            this.LightingList = null;        //
+            this.LightingList.Clear();        //
 
             this.FreeUpResourcesThatDependOnTheSwapChain();
 
             foreach( var pass in this.PassList )
                 pass.Dispose();
-            this.PassList = null;
+            this.PassList.Clear();
 
             foreach( var kvp in this.GlobalTextureList )
                 kvp.Value.tex?.Dispose();
-
+            GlobalTextureList.Clear( );
 
             this._D3DDevice = null;     // Dispose はしない
         }
