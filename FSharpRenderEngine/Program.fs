@@ -5,12 +5,23 @@ open System.Windows.Forms
 open SharpDX.Windows
 open SharpDX
 open SharpDXUtil
+open System.Text
+open System.IO
+
 module Main =
   let initScene (form :MMDRenderer.MMDForm) =
     form.AddMouseCam()
     form.AddDefaultLight()
-    let mutable chara = form.AddChara @""
-    form.ApplyAnim @"" chara.Value
+    let exePath = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).FullName
+    let sp = Path.DirectorySeparatorChar |> string
+    let cp () = 
+      let builder = new StringBuilder(Directory.GetParent(exePath).Parent.Parent.Parent.FullName)
+      let b2 = builder.Append(sp).Append("Samples")
+      b2.Append(sp).Append("ニコニ立体ちゃんサンプル").Append( sp).Append( "サンプルデータ").Append( sp).Append( "Alicia").Append( sp)
+    let modelPath = cp().Append( "MMD").Append(sp).Append("Alicia_solid.pmx").ToString()
+    let motionPath = cp().Append("MMD Motion").Append(sp).Append("2分ループステップ1.vmd").ToString()
+    let mutable chara = form.AddChara modelPath
+    form.ApplyAnim motionPath chara.Value
     chara
  
   [<EntryPoint; STAThread>]

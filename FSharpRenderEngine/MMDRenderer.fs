@@ -18,7 +18,6 @@ module MMDRenderer =
     inherit SharpDX.Windows.RenderForm()
     let mutable renderDevice = NoneD
     let mutable modelRenderer = NoneD
-    let mutable components = null
     let mutable addBlendState = null
     let mutable rasterState = null
     let mutable mouseHandles = []
@@ -28,7 +27,6 @@ module MMDRenderer =
 
     do
       Encoding.RegisterProvider( CodePagesEncodingProvider.Instance )
-      components <- new System.ComponentModel.Container();
       t.AutoScaleMode <- System.Windows.Forms.AutoScaleMode.Font;
       t.Text <- "Form1"
       t.ClientSize <- new Size( 1280, 720 )
@@ -112,5 +110,4 @@ module MMDRenderer =
           i.Dispose()
         mouseHandles <- []
         addBlendState.Dispose()
-        components.Dispose()
 
