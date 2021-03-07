@@ -1,5 +1,4 @@
 ﻿namespace MMDEng
-open MikuMikuFlex3
 open SharpDX
 open System
 open System.IO

@@ -146,6 +146,10 @@ namespace MikuMikuFlex3
         private List<RigidBodyCache> _RigidBodyCacheList;
 
 		private BulletManagement _BulletManagement;
+		public MMFlexUtil.BulletUtil.SharpDXBulletDrawer Drawer
+        {
+            get { return _BulletManagement.Drawer; }
+        }
 
         private List<RigidBody> _Bulletの剛体リスト;
 

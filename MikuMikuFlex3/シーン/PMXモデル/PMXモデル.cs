@@ -1304,6 +1304,11 @@ namespace MikuMikuFlex3
         private ByParentalGrantFKDeformationUpdate _ByParentalGrantFKDeformationUpdate;
 
         private PMXPhysicalTransformationUpdate _PhysicalTransformationUpdate;
+        public MMFlexUtil.BulletUtil.SharpDXBulletDrawer Drawer
+        {
+            get { return _PhysicalTransformationUpdate.Drawer; }
+        }
+
         public RayResult CastRay( Vector3 rayStart , Vector3 rayEnd )
         {
             return _PhysicalTransformationUpdate.CastRay( rayStart , rayEnd );

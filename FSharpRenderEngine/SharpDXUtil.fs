@@ -112,3 +112,4 @@ module DXUtilV =
   let vec4 x y z = new Vector4(x,y,z,1.0f)
   let vec4i (x:int) y z = vec4 (f32 x) (f32 y) (f32 z)
   let transform (v:Vector4) (m:Matrix) = Vector4.Transform(v,m)
+  let bulletV3ToV4 (v:BulletSharp.Math.Vector3) = vec4 v.X v.Y v.Z

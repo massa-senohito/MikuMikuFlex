@@ -105,7 +105,9 @@ module MMDRenderer =
         |NoneD ->()
         let sec = timer.Elapsed.TotalSeconds
         debug.Attempt(fun m->m.DrawLine())
-        modelRenderer.Attempt (fun m->m.Draw sec)
+        modelRenderer.Attempt (fun m->
+          m.DrawDebugLine(t.Line)
+          m.Draw sec)
         renderDevice.Attempt(fun r->r.Present();() )
       //let loop = new RenderLoop(t)
       //loop.

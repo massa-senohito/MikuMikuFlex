@@ -82,6 +82,7 @@
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MMFlexUtil\MMFlexUtil.fsproj" />
     <ProjectReference Include="..\TgaLib\TgaLib\TgaLib.csproj" />
   </ItemGroup>
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />

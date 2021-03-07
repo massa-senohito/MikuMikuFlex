@@ -40,6 +40,12 @@ module ModelRenderModule =
         v * p
     member t.Draw time =
       scene.Draw(time , device.ImmCxt );
+    member t.DrawDebugLine f=
+      for i in modelList do
+        for line in i.Drawer.LineList do
+          let from = DXUtilV.bulletV3ToV4 line.From
+          let top = DXUtilV.bulletV3ToV4 line.To
+          f from top
       
     member t.ResetScene () =
       scene.Clear() 

@@ -21,7 +21,7 @@ module Main =
     let modelPath = cp().Append( "MMD").Append(sp).Append("Alicia_solid.pmx").ToString()
     let motionPath = cp().Append("MMD Motion").Append(sp).Append("2分ループステップ1.vmd").ToString()
     let mutable chara = form.AddChara modelPath
-    //form.ApplyAnim motionPath chara.Value
+    form.ApplyAnim motionPath chara.Value
     chara
  
   [<EntryPoint; STAThread>]

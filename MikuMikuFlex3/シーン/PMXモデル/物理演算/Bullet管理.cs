@@ -9,16 +9,21 @@ namespace MikuMikuFlex3
     {
         public List<CollisionObject> CollisionObjects;
     }
-	/// <summary>
-	///     Physics Bullet の Wrapper クラス
-	/// </summary>
-	internal class BulletManagement : IDisposable
+
+    //class OverUser :OverlappingPairCallback
+    //{
+
+    //}
+    /// <summary>
+    ///     Physics Bullet の Wrapper クラス
+    /// </summary>
+    internal class BulletManagement : IDisposable
 	{
 		public BulletManagement( Vector3 Gravity )
 		{
 			this._DynamicsWorld = this._DynamicsWorldFactory.CreateAndReturnADynamicWorld( Gravity );
-            //_DynamicsWorld.DebugDrawer = new SharpDXBulletDrawer( );
-            //_DynamicsWorld.DebugDrawObject
+            Drawer.DebugMode = DebugDrawModes.All;
+            _DynamicsWorld.DebugDrawer = Drawer;
             this._RigidBodyFactory = new RigidBodyFactory( this._DynamicsWorld );
 			this._RestraintFactory = new RestraintFactory( this._DynamicsWorld );
 		}
@@ -36,6 +41,7 @@ namespace MikuMikuFlex3
             this._DynamicsWorldFactory?.Dispose();
 		}
 
+        public MMFlexUtil.BulletUtil.SharpDXBulletDrawer Drawer = new MMFlexUtil.BulletUtil.SharpDXBulletDrawer();
 		public RigidBody CreateARigidBody( CollisionShape RigidBodyShape, Matrix RigidBodyWorldMatrix, RigidPhysicalCharacteristics RigidBodyCharacteristics, CharacteristicsThatTranscendPhysics CharacteristicsThatTranscendPhysics )
 			=> this._RigidBodyFactory.CreateAndReturnARigidBody( RigidBodyShape, RigidBodyWorldMatrix, RigidBodyCharacteristics, CharacteristicsThatTranscendPhysics );
 
@@ -57,7 +63,10 @@ namespace MikuMikuFlex3
 		{
 			var ElapsedTimems = this._BulletTimer.ElapsedTimemsを返す();
 
+            Drawer.Present( );
 			this._DynamicsWorld.StepSimulation( ElapsedTimems / 1000f, 10 );
+            _DynamicsWorld.DebugDrawWorld();
+            //_DynamicsWorld.DebugDrawer.DrawLine( ref zero , ref zero , ref zero );
 		}
 
 		public Matrix GetTheWorldMatrixOfThePhysicsResult( RigidBody RigidBody )
