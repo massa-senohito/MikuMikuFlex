@@ -60,6 +60,22 @@ module Renderer =
       immeCxt.ClearDepthStencilView(depthStencilView , depAndSte , oneF , byte 0)
     member t.Present() =
       swapChain.Value.Present(0,  SharpDX.DXGI.PresentFlags.None)
+    member t.SetVertexShader p = immeCxt.VertexShader.Set(p)
+    member t.SetVertexBuffer (slot:int) (buf:VertexBufferBinding) = immeCxt.InputAssembler.SetVertexBuffers( slot , buf)
+    member t.SetPixelShader p = immeCxt.PixelShader.Set(p)
+
+    member t.SetHullShader p = immeCxt.HullShader.Set(p)
+    member t.SetDomainShader p = immeCxt.DomainShader.Set(p)
+    member t.SetGeoShader p = immeCxt.GeometryShader.Set(p)
+    member t.SetComputeShader p = immeCxt.ComputeShader.Set(p)
+
+    member t.SetInputLayout p = immeCxt.InputAssembler.InputLayout <- p
+    member t.SetPrimitiveTopo p = immeCxt.InputAssembler.PrimitiveTopology <- p
+    member t.Draw count loc = immeCxt.Draw( count, loc)
+    member t.BlendState p = immeCxt.OutputMerger.SetBlendState p
+    member t.RasterState p = immeCxt.Rasterizer.State <- p
+    //member t.Viewport w h = 
+    //  immeCxt.Rasterizer.SetViewport( 
 
     member t.RenderTarget =
       renderTarget

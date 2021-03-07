@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="SharpDXUtil.fs" />
     <Compile Include="RenderDevice.fs" />
+    <Compile Include="ShaderFacade.fs" />
     <Compile Include="ModelRenderer.fs" />
     <Compile Include="MMDRenderer.fs" />
     <Compile Include="Program.fs" />

@@ -1,9 +1,14 @@
 using System;
+using System.Collections.Generic;
 using BulletSharp;
 using SharpDX;
 
 namespace MikuMikuFlex3
 {
+    public class RayResult
+    {
+        public List<CollisionObject> CollisionObjects;
+    }
 	/// <summary>
 	///     Physics Bullet の Wrapper クラス
 	/// </summary>
@@ -12,7 +17,8 @@ namespace MikuMikuFlex3
 		public BulletManagement( Vector3 Gravity )
 		{
 			this._DynamicsWorld = this._DynamicsWorldFactory.CreateAndReturnADynamicWorld( Gravity );
-
+            //_DynamicsWorld.DebugDrawer = new SharpDXBulletDrawer( );
+            //_DynamicsWorld.DebugDrawObject
             this._RigidBodyFactory = new RigidBodyFactory( this._DynamicsWorld );
 			this._RestraintFactory = new RestraintFactory( this._DynamicsWorld );
 		}
@@ -62,6 +68,20 @@ namespace MikuMikuFlex3
         ///     Bulletの世界
         /// </summary>
         private DiscreteDynamicsWorld _DynamicsWorld;
+        public RayResult CastRay( Vector3 rayStart , Vector3 rayEnd )
+        {
+            BulletSharp.Math.Vector3 bRayS = new BulletSharp.Math.Vector3(rayStart.X,rayStart.Y , rayStart.Z);
+            BulletSharp.Math.Vector3 bRayE = new BulletSharp.Math.Vector3(rayEnd.X,rayEnd.Y , rayEnd.Z);
+            //var res = new ClosestRayResultCallback(ref rayStart , ref rayEnd);
+            var res = new AllHitsRayResultCallback( bRayS , bRayE);
+            _DynamicsWorld.RayTest( bRayS , bRayE , res );
+            var obj = res.CollisionObjects;
+            var hitPos = res.HitPointWorld;
+            var hitNorm = res.HitNormalWorld;
+            var rayres = new RayResult();
+            rayres.CollisionObjects = obj;
+            return rayres;
+        }
 
         /// <summary>
         /// Bulletの世界を作るクラス

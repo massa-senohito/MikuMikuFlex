@@ -24,6 +24,7 @@ module MMDRenderer =
     let mutable backGroundColor = rawColorA1 0.2f 0.4f 0.8f
     let timer = Stopwatch.StartNew()
     let opd = new SharpDXUtil.OPDBuilder()
+    let mutable debug = NoneD 
 
     do
       Encoding.RegisterProvider( CodePagesEncodingProvider.Instance )
@@ -38,6 +39,8 @@ module MMDRenderer =
     member t.InitDirect3D() =
       let dev = new RenderDevice(t)
       renderDevice <- SomeD <| dev
+      let debugS = new ShaderFacadeModule.DebugShader(dev)
+      debug <- SomeD debugS
       modelRenderer <- SomeD <| new ModelRenderer(dev , t)
       addBlendState <- new BlendState(dev.Device , SharpDXUtil.alphaBlendStateDesc)
       let om = dev.ImmCxt.OutputMerger
@@ -55,6 +58,14 @@ module MMDRenderer =
 
     member t.ResetEnv() =
       modelRenderer.Attempt (fun m->m.ResetScene())
+    member t.ScreenLine s e =
+      debug.Attempt(fun m->m.AddLine s e )
+
+    member t.Line s e =
+      let mutable vp = modelRenderer.Value.VP
+      let zer =  DXUtilV.transform (DXUtilV.vec4 -0.38f 1.44f 0.0f) vp
+      //t.Text <- zer.ToString()
+      debug.Attempt(fun m->m.AddLine (Vector4.Transform( s , vp)) ((Vector4.Transform( e , vp))) )
       
     member t.ApplyAnim path model=
       VMDAnimationBuilder.AddAnimation(path , model)
@@ -93,6 +104,7 @@ module MMDRenderer =
         |SomeD r-> r.Clear( backGroundColor )
         |NoneD ->()
         let sec = timer.Elapsed.TotalSeconds
+        debug.Attempt(fun m->m.DrawLine())
         modelRenderer.Attempt (fun m->m.Draw sec)
         renderDevice.Attempt(fun r->r.Present();() )
       //let loop = new RenderLoop(t)

@@ -1304,6 +1304,10 @@ namespace MikuMikuFlex3
         private ByParentalGrantFKDeformationUpdate _ByParentalGrantFKDeformationUpdate;
 
         private PMXPhysicalTransformationUpdate _PhysicalTransformationUpdate;
+        public RayResult CastRay( Vector3 rayStart , Vector3 rayEnd )
+        {
+            return _PhysicalTransformationUpdate.CastRay( rayStart , rayEnd );
+        }
 
         private SharpDX.Direct3D11.Buffer _GlobalParametersConstantBuffer;
 

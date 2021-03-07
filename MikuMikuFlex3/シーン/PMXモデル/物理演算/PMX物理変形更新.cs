@@ -151,6 +151,10 @@ namespace MikuMikuFlex3
 
 		private static bool _physicsAsserted;
 
+        public RayResult CastRay( Vector3 rayStart , Vector3 rayEnd )
+        {
+            return _BulletManagement.CastRay( rayStart , rayEnd );
+        }
 
 		private void _CreateARigidBody( List<PMXFormat.RigidBody> RigidBodyList )
 		{
@@ -191,6 +195,7 @@ namespace MikuMikuFlex3
                     OtherCollisionGroupNumbersThatCollideWithItself: (CollisionFilterGroups) RigidBody.NonCollisionGroupFlag );
 
                 var bulletRigidBody = this._BulletManagement.CreateARigidBody( bulletShape, InitialMatrix, RigidBodyProperties, TranscendentalProperty );
+                //bulletRigidBody.SetIgnoreCollisionCheck
 
                 this._Bulletの剛体リスト.Add( bulletRigidBody );
 			}

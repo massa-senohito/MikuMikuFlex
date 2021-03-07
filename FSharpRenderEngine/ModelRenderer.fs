@@ -34,9 +34,13 @@ module ModelRenderModule =
     member t.AddLight (light:Light) =
       mainLight <- light
       scene.ToAdd light
+    member t.VP =
+        let v = mainCamera.ViewTransformationMatrix
+        let p = mainCamera.HomographicTransformationMatrix
+        v * p
     member t.Draw time =
       scene.Draw(time , device.ImmCxt );
-
+      
     member t.ResetScene () =
       scene.Clear() 
       modelList <- []
